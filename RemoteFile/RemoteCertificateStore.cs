@@ -21,7 +21,7 @@ using Keyfactor.Orchestrators.Extensions;
 
 namespace Keyfactor.Extensions.Orchestrator.RemoteFile
 {
-    internal class RemoteCertificateStore
+    internal class RemoteCertificateStore : Pkcs12Store
     {
         private const string NO_EXTENSION = "noext";
         private const string FULL_SCAN = "fullscan";
@@ -50,6 +50,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
 
         internal string UploadFilePath { get; set; }
 
+        internal RemoteCertificateStore() { }
 
         internal RemoteCertificateStore(string server, string serverId, string serverPassword, string storeFileAndPath, string storePassword, Dictionary<string, object> jobProperties)
         {
@@ -373,14 +374,5 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
         {
             return path + (path.Substring(path.Length - 1) == @"\" ? string.Empty : @"\");
         }
-    }
-
-    class PKCS12Exception : ApplicationException
-    {
-        public PKCS12Exception(string message) : base(message)
-        { }
-
-        public PKCS12Exception(string message, Exception ex) : base(message, ex)
-        { }
     }
 }

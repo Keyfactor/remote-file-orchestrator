@@ -8,12 +8,16 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Security.Cryptography;
 using System.Text.RegularExpressions;
 using System.Text;
 
 using Renci.SshNet;
 
 using Microsoft.Extensions.Logging;
+
+using Keyfactor.PKI.PrivateKeys;
+using Keyfactor.PKI.PEM;
 
 namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
 {
@@ -30,9 +34,27 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
 
             List<AuthenticationMethod> authenticationMethods = new List<AuthenticationMethod>();
             if (serverPassword.Length < PASSWORD_LENGTH_MAX)
+            {
                 authenticationMethods.Add(new PasswordAuthenticationMethod(serverLogin, serverPassword));
+            }
             else
-                authenticationMethods.Add(new PrivateKeyAuthenticationMethod(serverLogin, new PrivateKeyFile[] { new PrivateKeyFile(new MemoryStream(Encoding.ASCII.GetBytes(ReplaceSpacesWithLF(serverPassword)))) }));
+            {
+                try
+                {
+                    using (MemoryStream ms = new MemoryStream(Encoding.ASCII.GetBytes(FormatRSAPrivateKey(serverPassword))))
+                    {
+                        authenticationMethods.Add(new PrivateKeyAuthenticationMethod(serverLogin, new PrivateKeyFile[] { new PrivateKeyFile(ms) }));
+                    }
+                }
+                catch (Exception ex)
+                {
+                    using (MemoryStream ms = new MemoryStream(Encoding.ASCII.GetBytes(ConvertToPKCS1(serverPassword))))
+                    {
+                        authenticationMethods.Add(new PrivateKeyAuthenticationMethod(serverLogin, new PrivateKeyFile[] { new PrivateKeyFile(ms) }));
+                    }
+                }
+
+            }
 
             Connection = new ConnectionInfo(server, serverLogin, authenticationMethods.ToArray());
         }
@@ -216,7 +238,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
                 }
             }
 
-            if (ApplicationSettings.UseSeparateUploadFilePath)
+            if (!string.IsNullOrEmpty(ApplicationSettings.SeparateUploadFilePath))
             {
                 RunCommand($"rm {downloadPath}", null, ApplicationSettings.UseSudo, null);
             }
@@ -274,9 +296,18 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
             }
         }
 
-        private string ReplaceSpacesWithLF(string privateKey)
+        private string FormatRSAPrivateKey(string privateKey)
         {
             return privateKey.Replace(" RSA PRIVATE ", "^^^").Replace(" ", System.Environment.NewLine).Replace("^^^", " RSA PRIVATE ");
+        }
+
+        private string ConvertToPKCS1(string privateKey)
+        {
+            privateKey = privateKey.Replace(System.Environment.NewLine, string.Empty).Replace("-----BEGIN PRIVATE KEY-----", string.Empty).Replace("-----END PRIVATE KEY-----", string.Empty);
+            PrivateKeyConverter conv = PrivateKeyConverterFactory.FromPkcs8Blob(Convert.FromBase64String(privateKey), string.Empty);
+            RSA alg = (RSA)conv.ToNetPrivateKey();
+            string pemString = PemUtilities.DERToPEM(alg.ExportRSAPrivateKey(), PemUtilities.PemObjectType.PrivateKey);
+            return pemString.Replace("PRIVATE", "RSA PRIVATE");
         }
 
         private string FormatFTPPath(string path)
