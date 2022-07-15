@@ -35,8 +35,6 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
                 ApplicationSettings.Initialize(this.GetType().Assembly.Location);
                 certificateStore = GetRemoteCertificateStore(config);
 
-                bool hasPassword = !string.IsNullOrEmpty(config.JobCertificate.PrivateKeyPassword);
-
                 switch (config.OperationType)
                 {
                     case CertStoreOperationType.Add:
@@ -48,26 +46,28 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
                         else
                         {
                             certificateStore.AddCertificate(config.JobCertificate.Alias, config.JobCertificate.Contents, config.Overwrite, config.JobCertificate.PrivateKeyPassword);
+                            SaveRemoteCertificateStore(certificateStore);
                         }
                         break;
 
                     case CertStoreOperationType.Remove:
                         logger.LogDebug($"Begin Delete Operation for {config.CertificateStoreDetails.StorePath} on {config.CertificateStoreDetails.ClientMachine}.");
-                        if (!pkcs12Store.DoesStoreExist())
+                        if (!certificateStore.DoesStoreExist())
                         {
-                            throw new PKCS12Exception($"Certificate store {pkcs12Store.StorePath + pkcs12Store.StoreFileName} does not exist on server {pkcs12Store.Server}.");
+                            throw new RemoteFileException($"Certificate store {config.CertificateStoreDetails.StorePath} does not exist on server {config.CertificateStoreDetails.ClientMachine}.");
                         }
                         else
                         {
-                            pkcs12Store.DeleteCertificateByAlias(config.JobCertificate.Alias);
+                            certificateStore.DeleteCertificateByAlias(config.JobCertificate.Alias);
+                            SaveRemoteCertificateStore(certificateStore);
                         }
                         break;
 
                     case CertStoreOperationType.Create:
                         logger.LogDebug($"Begin Create Operation for {config.CertificateStoreDetails.StorePath} on {config.CertificateStoreDetails.ClientMachine}.");
-                        if (pkcs12Store.DoesStoreExist())
+                        if (certificateStore.DoesStoreExist())
                         {
-                            throw new PKCS12Exception($"Certificate store {pkcs12Store.StorePath + pkcs12Store.StoreFileName} already exists.");
+                            throw new RemoteFileException($"Certificate store {config.CertificateStoreDetails.StorePath} already exists.");
                         }
                         else
                         {
@@ -76,7 +76,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
                                 ApplicationSettings.DefaultLinuxPermissionsOnStoreCreation :
                                 properties.linuxFilePermissionsOnStoreCreation.Value;
 
-                            pkcs12Store.CreateCertificateStore(config.CertificateStoreDetails.StorePath, linuxFilePermissions);
+                            certificateStore.CreateCertificateStore(config.CertificateStoreDetails.StorePath, linuxFilePermissions);
                         }
                         break;
 
@@ -86,11 +86,11 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             }
             catch (Exception ex)
             {
-                return new JobResult() { Result = OrchestratorJobStatusJobResult.Failure, JobHistoryId = config.JobHistoryId, FailureMessage = ExceptionHandler.FlattenExceptionMessages(ex, $"Site {config.CertificateStoreDetails.StorePath} on server {config.CertificateStoreDetails.ClientMachine}:") };
+                return new JobResult() { Result = OrchestratorJobStatusJobResult.Failure, JobHistoryId = config.JobHistoryId, FailureMessage = RemoteFileException.FlattenExceptionMessages(ex, $"Site {config.CertificateStoreDetails.StorePath} on server {config.CertificateStoreDetails.ClientMachine}:") };
             }
             finally
             {
-                pkcs12Store.Terminate();
+                certificateStore.Terminate();
             }
 
             return new JobResult() { Result = OrchestratorJobStatusJobResult.Success, JobHistoryId = config.JobHistoryId };

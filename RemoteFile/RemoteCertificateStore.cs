@@ -17,7 +17,7 @@ using System.Threading;
 using Org.BouncyCastle.Pkcs;
 using Org.BouncyCastle.Security;
 
-using Keyfactor.Orchestrators.Extensions;
+using Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers;
 
 namespace Keyfactor.Extensions.Orchestrator.RemoteFile
 {
