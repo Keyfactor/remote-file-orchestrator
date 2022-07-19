@@ -46,7 +46,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
                         authenticationMethods.Add(new PrivateKeyAuthenticationMethod(serverLogin, new PrivateKeyFile[] { new PrivateKeyFile(ms) }));
                     }
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     using (MemoryStream ms = new MemoryStream(Encoding.ASCII.GetBytes(ConvertToPKCS1(serverPassword))))
                     {
@@ -106,7 +106,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
             }
             catch (Exception ex)
             {
-                _logger.LogDebug($"Exception during RunCommand...{ExceptionHandler.FlattenExceptionMessages(ex, ex.Message)}");
+                _logger.LogDebug($"Exception during RunCommand...{RemoteFileException.FlattenExceptionMessages(ex, ex.Message)}");
                 throw ex;
             }
         }
@@ -116,12 +116,12 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
             _logger.LogDebug($"UploadCertificateFile: {path}{fileName}");
             string uploadPath = path+fileName;
 
-            if (ApplicationSettings.UseSeparateUploadFilePath)
+            if (!string.IsNullOrEmpty(ApplicationSettings.SeparateUploadFilePath))
             {
                 uploadPath = ApplicationSettings.SeparateUploadFilePath + fileName;
             }
 
-            if (ApplicationSettings.UseSCP)
+            if (ApplicationSettings.FileTransferProtocol == ApplicationSettings.FileTransferProtocolEnum.Both || ApplicationSettings.FileTransferProtocol == ApplicationSettings.FileTransferProtocolEnum.SCP)
             {
                 using (ScpClient client = new ScpClient(Connection))
                 {
@@ -137,8 +137,11 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
                     catch (Exception ex)
                     {
                         _logger.LogDebug("Exception during SCP upload...");
-                        _logger.LogDebug($"Upload Exception: {ExceptionHandler.FlattenExceptionMessages(ex, ex.Message)}");
-                        throw ex;
+                        _logger.LogDebug($"Upload Exception: {RemoteFileException.FlattenExceptionMessages(ex, ex.Message)}");
+                        if (ApplicationSettings.FileTransferProtocol == ApplicationSettings.FileTransferProtocolEnum.Both)
+                            _logger.LogDebug($"SCP upload failed.  Attempting with SFTP protocol...");
+                        else
+                            throw ex;
                     }
                     finally
                     {
@@ -146,7 +149,8 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
                     }
                 }
             }
-            else
+
+            if (ApplicationSettings.FileTransferProtocol == ApplicationSettings.FileTransferProtocolEnum.Both || ApplicationSettings.FileTransferProtocol == ApplicationSettings.FileTransferProtocolEnum.SFTP)
             {
                 using (SftpClient client = new SftpClient(Connection))
                 {
@@ -162,7 +166,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
                     catch (Exception ex)
                     {
                         _logger.LogDebug("Exception during SFTP upload...");
-                        _logger.LogDebug($"Upload Exception: {ExceptionHandler.FlattenExceptionMessages(ex, ex.Message)}");
+                        _logger.LogDebug($"Upload Exception: {RemoteFileException.FlattenExceptionMessages(ex, ex.Message)}");
                         throw ex;
                     }
                     finally
@@ -172,7 +176,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
                 }
             }
 
-            if (ApplicationSettings.UseSeparateUploadFilePath)
+            if (!string.IsNullOrEmpty(ApplicationSettings.SeparateUploadFilePath))
             {
                 RunCommand($"cp -a {uploadPath} {path}", null, ApplicationSettings.UseSudo, null);
                 RunCommand($"rm {uploadPath}", null, ApplicationSettings.UseSudo, null);
@@ -183,13 +187,13 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
         {
             _logger.LogDebug($"DownloadCertificateFile: {path}");
 
-            byte[] rtnStore;
+            byte[] rtnStore = new byte[] { };
 
             string downloadPath = path;
             string altPathOnly = string.Empty;
             string altFileNameOnly = string.Empty;
 
-            if (ApplicationSettings.UseSeparateUploadFilePath)
+            if (!string.IsNullOrEmpty(ApplicationSettings.SeparateUploadFilePath))
             {
                 SplitStorePathFile(path, out altPathOnly, out altFileNameOnly);
                 downloadPath = ApplicationSettings.SeparateUploadFilePath + altFileNameOnly;
@@ -197,7 +201,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
                 RunCommand($"sudo chown {Connection.Username} {path}", null, ApplicationSettings.UseSudo, null);
             }
 
-            if (ApplicationSettings.UseSCP)
+            if (ApplicationSettings.FileTransferProtocol == ApplicationSettings.FileTransferProtocolEnum.Both || ApplicationSettings.FileTransferProtocol == ApplicationSettings.FileTransferProtocolEnum.SCP)
             {
                 using (ScpClient client = new ScpClient(Connection))
                 {
@@ -211,13 +215,23 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
                             rtnStore = stream.ToArray();
                         }
                     }
+                    catch (Exception ex)
+                    {
+                        _logger.LogDebug("Exception during SCP download...");
+                        _logger.LogDebug($"Upload Exception: {RemoteFileException.FlattenExceptionMessages(ex, ex.Message)}");
+                        if (ApplicationSettings.FileTransferProtocol == ApplicationSettings.FileTransferProtocolEnum.Both)
+                            _logger.LogDebug($"SCP download failed.  Attempting with SFTP protocol...");
+                        else
+                            throw ex;
+                    }
                     finally
                     {
                         client.Disconnect();
                     }
                 }
             }
-            else
+
+            if (ApplicationSettings.FileTransferProtocol == ApplicationSettings.FileTransferProtocolEnum.Both || ApplicationSettings.FileTransferProtocol == ApplicationSettings.FileTransferProtocolEnum.SFTP)
             {
                 using (SftpClient client = new SftpClient(Connection))
                 {
@@ -230,6 +244,12 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
                             client.DownloadFile(FormatFTPPath(downloadPath), stream);
                             rtnStore = stream.ToArray();
                         }
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.LogDebug("Exception during SFTP download...");
+                        _logger.LogDebug($"Download Exception: {RemoteFileException.FlattenExceptionMessages(ex, ex.Message)}");
+                        throw ex;
                     }
                     finally
                     {
@@ -250,8 +270,6 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
         {
             AreLinuxPermissionsValid(linuxFilePermissions);
             RunCommand($"install -m {linuxFilePermissions} /dev/null {path}", null, false, null);
-            //using sudo will create as root. set useSudo to false 
-            //to ensure ownership is with the credentials configued in the platform
         }
 
         public override bool DoesFileExist(string path)
@@ -279,7 +297,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
         {
             Regex regex = new Regex(LINUX_PERMISSION_REGEXP);
             if (!regex.IsMatch(permissions))
-                throw new PKCS12Exception($"Invalid format for Linux file permissions.  This value must be exactly 3 digits long with each digit between 0-7 but found {permissions} instead.");
+                throw new RemoteFileException($"Invalid format for Linux file permissions.  This value must be exactly 3 digits long with each digit between 0-7 but found {permissions} instead.");
         }
 
         private void SplitStorePathFile(string pathFileName, out string path, out string fileName)
@@ -292,7 +310,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
             }
             catch (Exception ex)
             {
-                throw new PKCS12Exception($"Error attempting to parse certficate store/key path={pathFileName}.", ex);
+                throw new RemoteFileException($"Error attempting to parse certficate store/key path={pathFileName}.", ex);
             }
         }
 

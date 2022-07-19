@@ -21,7 +21,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
         public static bool UseNegotiate { get { return configuration["UseNegotiate"]?.ToUpper() == "Y"; } }
         public static string SeparateUploadFilePath { get { return configuration["SeparateUploadFilePath"]; } }
         public static string DefaultLinuxPermissionsOnStoreCreation { get { return configuration["DefaultLinuxPermissionsOnStoreCreation"]; } }
-        public FileTransferProtocolEnum FileTransferProtocol 
+        public static FileTransferProtocolEnum FileTransferProtocol 
         { 
             get 
             {

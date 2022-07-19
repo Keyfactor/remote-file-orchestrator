@@ -18,6 +18,7 @@ using Org.BouncyCastle.Pkcs;
 using Org.BouncyCastle.Security;
 
 using Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers;
+using Keyfactor.Extensions.Orchestrator.RemoteFile.Models;
 
 namespace Keyfactor.Extensions.Orchestrator.RemoteFile
 {
@@ -50,6 +51,8 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
 
         internal string UploadFilePath { get; set; }
 
+        protected Pkcs12Store CertificateStore = new Pkcs12Store();
+
         internal RemoteCertificateStore() { }
 
         internal RemoteCertificateStore(string server, string serverId, string serverPassword, string storeFileAndPath, string storePassword, Dictionary<string, object> jobProperties)
@@ -60,12 +63,12 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             ServerPassword = serverPassword ?? string.Empty;
             StorePassword = storePassword;
             ServerType = StorePath.Substring(0, 1) == "/" ? ServerTypeEnum.Linux : ServerTypeEnum.Windows;
-            UploadFilePath = ApplicationSettings.UseSeparateUploadFilePath && ServerType == ServerTypeEnum.Linux ? ApplicationSettings.SeparateUploadFilePath : StorePath;
+            UploadFilePath = !string.IsNullOrEmpty(ApplicationSettings.SeparateUploadFilePath) && ServerType == ServerTypeEnum.Linux ? ApplicationSettings.SeparateUploadFilePath : StorePath;
 
             if (!IsStorePathValid())
             {
                 string partialMessage = ServerType == ServerTypeEnum.Windows ? @"'\', ':', " : string.Empty;
-                throw new PKCS12Exception($"PKCS12 store path {storeFileAndPath} is invalid.  Only alphanumeric, '.', '/', {partialMessage}'-', and '_' characters are allowed in the store path.");
+                throw new RemoteFileException($"PKCS12 store path {storeFileAndPath} is invalid.  Only alphanumeric, '.', '/', {partialMessage}'-', and '_' characters are allowed in the store path.");
             }
         }
 
@@ -108,26 +111,24 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             byte[] byteContents = SSH.DownloadCertificateFile(StorePath + StoreFileName);
             if (byteContents.Length < 5)
                 return certificateChains;
-
-            Pkcs12Store store = new Pkcs12Store();
             
             using (MemoryStream stream = new MemoryStream(byteContents))
             {
-                store = new Pkcs12Store(stream, string.IsNullOrEmpty(StorePassword) ? new char[0] : StorePassword.ToCharArray());
+                CertificateStore = new Pkcs12Store(stream, string.IsNullOrEmpty(StorePassword) ? new char[0] : StorePassword.ToCharArray());
             }
 
-            foreach(string alias in store.Aliases)
+            foreach(string alias in CertificateStore.Aliases)
             {
                 X509Certificate2Collection chain = new X509Certificate2Collection();
                 X509CertificateEntry[] entries;
 
-                if (store.IsKeyEntry(alias))
+                if (CertificateStore.IsKeyEntry(alias))
                 {
-                    entries = store.GetCertificateChain(alias);
+                    entries = CertificateStore.GetCertificateChain(alias);
                 }
                 else
                 {
-                    X509CertificateEntry entry = store.GetCertificate(alias);
+                    X509CertificateEntry entry = CertificateStore.GetCertificate(alias);
                     entries = new X509CertificateEntry[] { entry };
                 }
 
@@ -150,34 +151,33 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             {
                 mutex.WaitOne();
                 byte[] byteContents = SSH.DownloadCertificateFile(StorePath + StoreFileName);
-                Pkcs12Store store = new Pkcs12Store();
 
                 using (MemoryStream stream = new MemoryStream(byteContents))
                 {
                     if (stream.Length == 0)
                     {
-                        throw new PKCS12Exception($"Alias {alias} does not exist in certificate store {StorePath + StoreFileName}.");
+                        throw new RemoteFileException($"Alias {alias} does not exist in certificate store {StorePath + StoreFileName}.");
                     }
 
-                    store = new Pkcs12Store(stream, string.IsNullOrEmpty(StorePassword) ? new char[0] : StorePassword.ToCharArray());
+                    CertificateStore = new Pkcs12Store(stream, string.IsNullOrEmpty(StorePassword) ? new char[0] : StorePassword.ToCharArray());
 
-                    if (!store.ContainsAlias(alias))
+                    if (!CertificateStore.ContainsAlias(alias))
                     {
-                        throw new PKCS12Exception($"Alias {alias} does not exist in certificate store {StorePath + StoreFileName}.");
+                        throw new RemoteFileException($"Alias {alias} does not exist in certificate store {StorePath + StoreFileName}.");
                     }
 
-                    store.DeleteEntry(alias);
+                    CertificateStore.DeleteEntry(alias);
 
                     using (MemoryStream outStream = new MemoryStream())
                     {
-                        store.Save(outStream, string.IsNullOrEmpty(StorePassword) ? new char[0] : StorePassword.ToCharArray(), new Org.BouncyCastle.Security.SecureRandom());
+                        CertificateStore.Save(outStream, string.IsNullOrEmpty(StorePassword) ? new char[0] : StorePassword.ToCharArray(), new Org.BouncyCastle.Security.SecureRandom());
                         SSH.UploadCertificateFile(StorePath, StoreFileName, outStream.ToArray());
                     }
                 }
             }
             catch (Exception ex)
             {
-                throw new PKCS12Exception($"Error attempting to remove certficate for store path={StorePath}, file name={StoreFileName}.", ex);
+                throw new RemoteFileException($"Error attempting to remove certficate for store path={StorePath}, file name={StoreFileName}.", ex);
             }
             finally
             {
@@ -200,7 +200,6 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
                 byte[] storeBytes = SSH.DownloadCertificateFile(StorePath + StoreFileName);
                 byte[] newCertBytes = Convert.FromBase64String(certificateEntry);
 
-                Pkcs12Store store = new Pkcs12Store();
                 Pkcs12Store newEntry = new Pkcs12Store();
 
                 X509Certificate2 cert = new X509Certificate2(newCertBytes, pfxPassword, X509KeyStorageFlags.Exportable);
@@ -214,11 +213,11 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
                 using (MemoryStream stream = new MemoryStream(storeBytes))
                 {
                     if (stream.Length > 5)
-                        store = new Pkcs12Store(stream, string.IsNullOrEmpty(StorePassword) ? new char[0] : StorePassword.ToCharArray());
+                        CertificateStore = new Pkcs12Store(stream, string.IsNullOrEmpty(StorePassword) ? new char[0] : StorePassword.ToCharArray());
 
-                    if (store.ContainsAlias(alias) && !overwrite)
+                    if (CertificateStore.ContainsAlias(alias) && !overwrite)
                     {
-                        throw new PKCS12Exception($"Alias {alias} already exists in store {StorePath + StoreFileName} and overwrite is set to False.  Please try again with overwrite set to True if you wish to replace this entry.");
+                        throw new RemoteFileException($"Alias {alias} already exists in store {StorePath + StoreFileName} and overwrite is set to False.  Please try again with overwrite set to True if you wish to replace this entry.");
                     }
 
                     string checkAliasExists = string.Empty;
@@ -229,30 +228,30 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
 
                         checkAliasExists = newEntryAlias;
 
-                        store.SetKeyEntry(alias, newEntry.GetKey(newEntryAlias), newEntry.GetCertificateChain(newEntryAlias));
+                        CertificateStore.SetKeyEntry(alias, newEntry.GetKey(newEntryAlias), newEntry.GetCertificateChain(newEntryAlias));
                     }
 
                     if (string.IsNullOrEmpty(checkAliasExists))
                     {
                         Org.BouncyCastle.X509.X509Certificate bcCert = DotNetUtilities.FromX509Certificate(cert);
                         X509CertificateEntry bcEntry = new X509CertificateEntry(bcCert);
-                        if (store.ContainsAlias(alias))
+                        if (CertificateStore.ContainsAlias(alias))
                         {
-                            store.DeleteEntry(alias);
+                            CertificateStore.DeleteEntry(alias);
                         }
-                        store.SetCertificateEntry(alias, bcEntry);
+                        CertificateStore.SetCertificateEntry(alias, bcEntry);
                     }
 
                     using (MemoryStream outStream = new MemoryStream())
                     {
-                        store.Save(outStream, string.IsNullOrEmpty(StorePassword) ? new char[0] : StorePassword.ToCharArray(), new Org.BouncyCastle.Security.SecureRandom());
+                        CertificateStore.Save(outStream, string.IsNullOrEmpty(StorePassword) ? new char[0] : StorePassword.ToCharArray(), new Org.BouncyCastle.Security.SecureRandom());
                         SSH.UploadCertificateFile(StorePath, StoreFileName, outStream.ToArray());
                     }
                 }
             }
             catch (Exception ex)
             {
-                throw new PKCS12Exception($"Error attempting to add certficate for store path={StorePath}, file name={StoreFileName}.", ex);
+                throw new RemoteFileException($"Error attempting to add certficate for store path={StorePath}, file name={StoreFileName}.", ex);
             }
             finally
             {
@@ -265,7 +264,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             return SSH.DoesFileExist(StorePath + StoreFileName);
         }
 
-        internal bool IsStorePathValid()
+        private bool IsStorePathValid()
         {
             Regex regex = new Regex(ServerType == ServerTypeEnum.Linux ? $@"^[\d\s\w-_/.]*$" : $@"^[\d\s\w-_/.:\\\\]*$");
             return regex.IsMatch(StorePath + StoreFileName);
@@ -299,7 +298,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             }
             catch (Exception ex)
             {
-                throw new PKCS12Exception($"Error attempting to find certificate stores for path={string.Join(" ", paths)}.", ex);
+                throw new RemoteFileException($"Error attempting to find certificate stores for path={string.Join(" ", paths)}.", ex);
             }
         }
 
@@ -310,7 +309,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
 
             if (paths[0] == FULL_SCAN)
             {
-                paths = GetAvailablePaths();
+                paths = GetAvailableDrives();
                 for (int i = 0; i < paths.Length; i++)
                     paths[i] += "/";
             }
@@ -331,7 +330,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             return results;
         }
 
-        private string[] GetAvailablePaths()
+        private string[] GetAvailableDrives()
         {
             string command = @"Get-WmiObject Win32_Logicaldisk -Filter ""DriveType = '3'"" | % {$_.DeviceId}";
             string result = SSH.RunCommand(command, null, false, null);
@@ -349,25 +348,8 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             }
             catch (Exception ex)
             {
-                throw new PKCS12Exception($"Error attempting to parse certficate store path={StorePath}, file name={StoreFileName}.", ex);
+                throw new RemoteFileException($"Error attempting to parse certficate store path={StorePath}, file name={StoreFileName}.", ex);
             }
-        }
-
-        private int GetChainLength(string certificates)
-        {
-            int count = 0;
-            int i = 0;
-            while ((i = certificates.IndexOf(BEG_DELIM, i)) != -1)
-            {
-                i += BEG_DELIM.Length;
-                count++;
-            }
-            return count;
-        }
-
-        private string FormatStorePassword()
-        {
-            return (!string.IsNullOrEmpty(StorePassword) ? $"-storepass '{StorePassword}'" : string.Empty);
         }
 
         private string FormatPath(string path)

@@ -17,13 +17,14 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
 
         public string ExtensionName => string.Empty;
 
+        RemoteCertificateStore certificateStore = new RemoteCertificateStore();
+
         public JobResult ProcessJob(InventoryJobConfiguration config, SubmitInventoryUpdate submitInventory)
         {
             ILogger logger = LogHandler.GetClassLogger(this.GetType());
             logger.LogDebug($"Begin {config.Capability} for job id {config.JobId}...");
-
-            RemoteCertificateStore certificateStore = new RemoteCertificateStore();
             List<CurrentInventoryItem> inventoryItems = new List<CurrentInventoryItem>();
+
             try
             {
                 ApplicationSettings.Initialize(this.GetType().Assembly.Location);

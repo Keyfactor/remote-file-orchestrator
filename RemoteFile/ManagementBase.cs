@@ -23,12 +23,12 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
     {
         public string ExtensionName => "";
 
+        internal RemoteCertificateStore certificateStore = new RemoteCertificateStore();
+
         public JobResult ProcessJob(ManagementJobConfiguration config)
         {
             ILogger logger = LogHandler.GetClassLogger(this.GetType());
             logger.LogDebug($"Begin {config.Capability} Management-{Enum.GetName(typeof(CertStoreOperationType), config.OperationType)} job for job id {config.JobId}...");
-
-            RemoteCertificateStore certificateStore = new RemoteCertificateStore();
 
             try
             {
