@@ -51,7 +51,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
 
         internal string UploadFilePath { get; set; }
 
-        protected Pkcs12Store CertificateStore = new Pkcs12Store();
+        internal Pkcs12Store CertificateStore = new Pkcs12Store();
 
         internal RemoteCertificateStore() { }
 
