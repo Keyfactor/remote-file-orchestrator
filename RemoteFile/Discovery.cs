@@ -9,8 +9,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-using Newtonsoft.Json;
-
 using Keyfactor.Logging;
 using Keyfactor.Orchestrators.Extensions;
 using Keyfactor.Orchestrators.Common.Enums;
@@ -19,14 +17,16 @@ using Microsoft.Extensions.Logging;
 
 namespace Keyfactor.Extensions.Orchestrator.RemoteFile
 {
-    public abstract class DiscoveryBase: IDiscoveryJobExtension
+    public abstract class Discovery: IDiscoveryJobExtension
     {
         public string ExtensionName => "";
 
         public JobResult ProcessJob(DiscoveryJobConfiguration config, SubmitDiscoveryUpdate submitDiscovery)
         {
             ILogger logger = LogHandler.GetClassLogger(this.GetType());
-            logger.LogDebug($"Begin {config.Capability} job for job id {config.JobId}...");
+            logger.LogDebug($"Begin {config.Capability} for job id {config.JobId}...");
+            logger.LogDebug($"Server: { config.ClientMachine }");
+            logger.LogDebug($"Job Properties: {config.JobProperties}");
 
             string[] directoriesToSearch = config.JobProperties["dirs"].ToString().Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
             string[] extensionsToSearch = config.JobProperties["extensions"].ToString().Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
@@ -35,12 +35,11 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
 
             List<string> locations = new List<string>();
 
-            RemoteCertificateStore certificateStore = new RemoteCertificateStore();
+            RemoteCertificateStore certificateStore = new RemoteCertificateStore(config.ClientMachine, config.ServerUsername, config.ServerPassword, directoriesToSearch[0].Substring(0, 1) == "/" ? RemoteCertificateStore.ServerTypeEnum.Linux : RemoteCertificateStore.ServerTypeEnum.Windows);
 
             try
             {
                 ApplicationSettings.Initialize(this.GetType().Assembly.Location);
-                certificateStore = GetRemoteCertificateStore(config);
 
                 if (directoriesToSearch.Length == 0)
                     throw new RemoteFileException("Blank or missing search directories for Discovery.");
@@ -55,6 +54,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             }
             catch (Exception ex)
             {
+                logger.LogDebug($"Exception for {config.Capability}: {RemoteFileException.FlattenExceptionMessages(ex, string.Empty)} for job id {config.JobId}");
                 return new JobResult() { Result = OrchestratorJobStatusJobResult.Failure, JobHistoryId = config.JobHistoryId, FailureMessage = RemoteFileException.FlattenExceptionMessages(ex, $"Server {config.ClientMachine}:") };
             }
             finally
@@ -64,15 +64,21 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
 
             try
             {
+                logger.LogDebug($"Stores returned for {config.Capability}:");
+                foreach (string location in locations)
+                {
+                    logger.LogDebug($"    {location}");
+                }
                 submitDiscovery.Invoke(locations);
+                logger.LogDebug($"...End {config.Capability} job for job id {config.JobId}");
                 return new JobResult() { Result = OrchestratorJobStatusJobResult.Success, JobHistoryId = config.JobHistoryId };
             }
             catch (Exception ex)
             {
-                return new JobResult() { Result = OrchestratorJobStatusJobResult.Failure, JobHistoryId = config.JobHistoryId, FailureMessage = RemoteFileException.FlattenExceptionMessages(ex, $"Server {config.ClientMachine}:") };
+                string errorMessage = RemoteFileException.FlattenExceptionMessages(ex, string.Empty);
+                logger.LogDebug($"Exception returning store locations for {config.Capability}: {errorMessage} for job id {config.JobId}");
+                return new JobResult() { Result = OrchestratorJobStatusJobResult.Failure, JobHistoryId = config.JobHistoryId, FailureMessage = $"Server {config.ClientMachine}: {errorMessage}" };
             }
         }
-
-        internal abstract RemoteCertificateStore GetRemoteCertificateStore(DiscoveryJobConfiguration config);
     }
 }

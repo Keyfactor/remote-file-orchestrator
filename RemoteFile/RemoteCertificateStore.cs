@@ -22,7 +22,7 @@ using Keyfactor.Extensions.Orchestrator.RemoteFile.Models;
 
 namespace Keyfactor.Extensions.Orchestrator.RemoteFile
 {
-    internal class RemoteCertificateStore : Pkcs12Store
+    internal class RemoteCertificateStore
     {
         private const string NO_EXTENSION = "noext";
         private const string FULL_SCAN = "fullscan";
@@ -48,10 +48,9 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
         internal IRemoteHandler SSH { get; set; }
         internal ServerTypeEnum ServerType { get; set; }
         internal List<string> DiscoveredStores { get; set; }
-
         internal string UploadFilePath { get; set; }
-
-        internal Pkcs12Store CertificateStore = new Pkcs12Store();
+        
+        private Pkcs12Store CertificateStore = new Pkcs12Store();
 
         internal RemoteCertificateStore() { }
 
@@ -70,6 +69,8 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
                 string partialMessage = ServerType == ServerTypeEnum.Windows ? @"'\', ':', " : string.Empty;
                 throw new RemoteFileException($"PKCS12 store path {storeFileAndPath} is invalid.  Only alphanumeric, '.', '/', {partialMessage}'-', and '_' characters are allowed in the store path.");
             }
+
+            Initialize();
         }
 
         internal RemoteCertificateStore(string server, string serverId, string serverPassword, ServerTypeEnum serverType)
@@ -78,16 +79,25 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             ServerId = serverId;
             ServerPassword = serverPassword ?? string.Empty;
             ServerType = serverType;
+
+            Initialize();
         }
 
-        internal void Initialize()
+        internal void LoadCertificateStore()
         {
-            if (ServerType == ServerTypeEnum.Linux)
-                SSH = new SSHHandler(Server, ServerId, ServerPassword);
-            else
-                SSH = new WinRMHandler(Server, ServerId, ServerPassword);
+            byte[] byteContents = SSH.DownloadCertificateFile(StorePath + StoreFileName);
+            if (byteContents.Length < 5)
+                return;
 
-            SSH.Initialize();
+            using (MemoryStream stream = new MemoryStream(byteContents))
+            {
+                CertificateStore = new Pkcs12Store(stream, string.IsNullOrEmpty(StorePassword) ? new char[0] : StorePassword.ToCharArray());
+            }
+        }
+
+        internal Pkcs12Store GetCertificateStore()
+        {
+            return CertificateStore;
         }
 
         internal void Terminate()
@@ -107,15 +117,6 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
         internal List<X509Certificate2Collection> GetCertificateChains()
         {
             List<X509Certificate2Collection> certificateChains = new List<X509Certificate2Collection>();
-
-            byte[] byteContents = SSH.DownloadCertificateFile(StorePath + StoreFileName);
-            if (byteContents.Length < 5)
-                return certificateChains;
-            
-            using (MemoryStream stream = new MemoryStream(byteContents))
-            {
-                CertificateStore = new Pkcs12Store(stream, string.IsNullOrEmpty(StorePassword) ? new char[0] : StorePassword.ToCharArray());
-            }
 
             foreach(string alias in CertificateStore.Aliases)
             {
@@ -171,7 +172,6 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
                     using (MemoryStream outStream = new MemoryStream())
                     {
                         CertificateStore.Save(outStream, string.IsNullOrEmpty(StorePassword) ? new char[0] : StorePassword.ToCharArray(), new Org.BouncyCastle.Security.SecureRandom());
-                        SSH.UploadCertificateFile(StorePath, StoreFileName, outStream.ToArray());
                     }
                 }
             }
@@ -197,7 +197,6 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
                 Pkcs12Store certs = new Pkcs12Store();
 
                 mutex.WaitOne();
-                byte[] storeBytes = SSH.DownloadCertificateFile(StorePath + StoreFileName);
                 byte[] newCertBytes = Convert.FromBase64String(certificateEntry);
 
                 Pkcs12Store newEntry = new Pkcs12Store();
@@ -210,43 +209,36 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
                     newEntry = string.IsNullOrEmpty(pfxPassword) ? new Pkcs12Store(ms, new char[0]) : new Pkcs12Store(ms, pfxPassword.ToCharArray());
                 }
 
-                using (MemoryStream stream = new MemoryStream(storeBytes))
+                if (CertificateStore.ContainsAlias(alias) && !overwrite)
                 {
-                    if (stream.Length > 5)
-                        CertificateStore = new Pkcs12Store(stream, string.IsNullOrEmpty(StorePassword) ? new char[0] : StorePassword.ToCharArray());
+                    throw new RemoteFileException($"Alias {alias} already exists in store {StorePath + StoreFileName} and overwrite is set to False.  Please try again with overwrite set to True if you wish to replace this entry.");
+                }
 
-                    if (CertificateStore.ContainsAlias(alias) && !overwrite)
+                string checkAliasExists = string.Empty;
+                foreach (string newEntryAlias in newEntry.Aliases)
+                {
+                    if (!newEntry.IsKeyEntry(newEntryAlias))
+                        continue;
+
+                    checkAliasExists = newEntryAlias;
+
+                    CertificateStore.SetKeyEntry(alias, newEntry.GetKey(newEntryAlias), newEntry.GetCertificateChain(newEntryAlias));
+                }
+
+                if (string.IsNullOrEmpty(checkAliasExists))
+                {
+                    Org.BouncyCastle.X509.X509Certificate bcCert = DotNetUtilities.FromX509Certificate(cert);
+                    X509CertificateEntry bcEntry = new X509CertificateEntry(bcCert);
+                    if (CertificateStore.ContainsAlias(alias))
                     {
-                        throw new RemoteFileException($"Alias {alias} already exists in store {StorePath + StoreFileName} and overwrite is set to False.  Please try again with overwrite set to True if you wish to replace this entry.");
+                        CertificateStore.DeleteEntry(alias);
                     }
+                    CertificateStore.SetCertificateEntry(alias, bcEntry);
+                }
 
-                    string checkAliasExists = string.Empty;
-                    foreach (string newEntryAlias in newEntry.Aliases)
-                    {
-                        if (!newEntry.IsKeyEntry(newEntryAlias))
-                            continue;
-
-                        checkAliasExists = newEntryAlias;
-
-                        CertificateStore.SetKeyEntry(alias, newEntry.GetKey(newEntryAlias), newEntry.GetCertificateChain(newEntryAlias));
-                    }
-
-                    if (string.IsNullOrEmpty(checkAliasExists))
-                    {
-                        Org.BouncyCastle.X509.X509Certificate bcCert = DotNetUtilities.FromX509Certificate(cert);
-                        X509CertificateEntry bcEntry = new X509CertificateEntry(bcCert);
-                        if (CertificateStore.ContainsAlias(alias))
-                        {
-                            CertificateStore.DeleteEntry(alias);
-                        }
-                        CertificateStore.SetCertificateEntry(alias, bcEntry);
-                    }
-
-                    using (MemoryStream outStream = new MemoryStream())
-                    {
-                        CertificateStore.Save(outStream, string.IsNullOrEmpty(StorePassword) ? new char[0] : StorePassword.ToCharArray(), new Org.BouncyCastle.Security.SecureRandom());
-                        SSH.UploadCertificateFile(StorePath, StoreFileName, outStream.ToArray());
-                    }
+                using (MemoryStream outStream = new MemoryStream())
+                {
+                    CertificateStore.Save(outStream, string.IsNullOrEmpty(StorePassword) ? new char[0] : StorePassword.ToCharArray(), new Org.BouncyCastle.Security.SecureRandom());
                 }
             }
             catch (Exception ex)
@@ -259,9 +251,24 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             }
         }
 
+        internal void SaveCertificateStore(byte[] storeContents)
+        {
+            SSH.UploadCertificateFile(StorePath, StoreFileName, storeContents);
+        }
+
         internal bool DoesStoreExist()
         {
             return SSH.DoesFileExist(StorePath + StoreFileName);
+        }
+
+        private void Initialize()
+        {
+            if (ServerType == ServerTypeEnum.Linux)
+                SSH = new SSHHandler(Server, ServerId, ServerPassword);
+            else
+                SSH = new WinRMHandler(Server, ServerId, ServerPassword);
+
+            SSH.Initialize();
         }
 
         private bool IsStorePathValid()

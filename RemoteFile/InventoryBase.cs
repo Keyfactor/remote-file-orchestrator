@@ -23,15 +23,22 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
         {
             ILogger logger = LogHandler.GetClassLogger(this.GetType());
             logger.LogDebug($"Begin {config.Capability} for job id {config.JobId}...");
+            logger.LogDebug($"Server: { config.CertificateStoreDetails.ClientMachine }");
+            logger.LogDebug($"Store Path: { config.CertificateStoreDetails.StorePath }");
+            logger.LogDebug($"Job Properties: {config.JobProperties}");
+
+            ICertificateStoreSerializer certificateStoreSerializer = GetCertificateStoreSerializer();
             List<CurrentInventoryItem> inventoryItems = new List<CurrentInventoryItem>();
 
             try
             {
                 ApplicationSettings.Initialize(this.GetType().Assembly.Location);
-                certificateStore = GetRemoteCertificateStore(config);
+                certificateStore = new RemoteCertificateStore(config.CertificateStoreDetails.ClientMachine, config.ServerUsername, config.ServerPassword, config.CertificateStoreDetails.StorePath, config.CertificateStoreDetails.StorePassword, config.JobProperties);
+                certificateStore.LoadCertificateStore();
 
                 List<X509Certificate2Collection> collections = certificateStore.GetCertificateChains();
 
+                logger.LogDebug($"Format returned certificates BEGIN");
                 foreach (X509Certificate2Collection collection in collections)
                 {
                     if (collection.Count == 0)
@@ -55,9 +62,11 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
                         Certificates = certChain.ToArray()
                     });
                 }
+                logger.LogDebug($"Format returned certificates END");
             }
             catch (Exception ex)
             {
+                logger.LogDebug($"Exception for {config.Capability}: {RemoteFileException.FlattenExceptionMessages(ex, string.Empty)} for job id {config.JobId}");
                 return new JobResult() { Result = OrchestratorJobStatusJobResult.Failure, JobHistoryId = config.JobHistoryId, FailureMessage = RemoteFileException.FlattenExceptionMessages(ex, $"Site {config.CertificateStoreDetails.StorePath} on server {config.CertificateStoreDetails.ClientMachine}:") };
             }
             finally
@@ -68,14 +77,17 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             try
             {
                 submitInventory.Invoke(inventoryItems);
+                logger.LogDebug($"...End {config.Capability} job for job id {config.JobId}");
                 return new JobResult() { Result = OrchestratorJobStatusJobResult.Success, JobHistoryId = config.JobHistoryId };
             }
             catch (Exception ex)
             {
+                string errorMessage = RemoteFileException.FlattenExceptionMessages(ex, string.Empty);
+                logger.LogDebug($"Exception returning certificates for {config.Capability}: {errorMessage} for job id {config.JobId}");
                 return new JobResult() { Result = OrchestratorJobStatusJobResult.Failure, JobHistoryId = config.JobHistoryId, FailureMessage = RemoteFileException.FlattenExceptionMessages(ex, $"Site {config.CertificateStoreDetails.StorePath} on server {config.CertificateStoreDetails.ClientMachine}:") };
             }
         }
 
-        internal abstract RemoteCertificateStore GetRemoteCertificateStore(InventoryJobConfiguration config);
+        internal abstract ICertificateStoreSerializer GetCertificateStoreSerializer();
     }
 }

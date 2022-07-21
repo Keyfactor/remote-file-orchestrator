@@ -6,8 +6,6 @@
 // and limitations under the License.
 
 using System;
-using System.IO;
-using System.Linq;
 
 using Keyfactor.Logging;
 using Keyfactor.Orchestrators.Extensions;
@@ -19,7 +17,7 @@ using Newtonsoft.Json;
 
 namespace Keyfactor.Extensions.Orchestrator.RemoteFile
 {
-    public abstract class ManagementBase : IManagementJobExtension
+    public abstract class ManagemenBaset : IManagementJobExtension
     {
         public string ExtensionName => "";
 
@@ -28,43 +26,52 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
         public JobResult ProcessJob(ManagementJobConfiguration config)
         {
             ILogger logger = LogHandler.GetClassLogger(this.GetType());
-            logger.LogDebug($"Begin {config.Capability} Management-{Enum.GetName(typeof(CertStoreOperationType), config.OperationType)} job for job id {config.JobId}...");
+            logger.LogDebug($"Begin {config.Capability} for job id {config.JobId}...");
+            logger.LogDebug($"Server: { config.CertificateStoreDetails.ClientMachine }");
+            logger.LogDebug($"Store Path: { config.CertificateStoreDetails.StorePath }");
+            logger.LogDebug($"Job Properties: {config.JobProperties}");
+
+            ICertificateStoreSerializer certificateStoreSerializer = GetCertificateStoreSerializer();
 
             try
             {
                 ApplicationSettings.Initialize(this.GetType().Assembly.Location);
-                certificateStore = GetRemoteCertificateStore(config);
+                certificateStore = new RemoteCertificateStore(config.CertificateStoreDetails.ClientMachine, config.ServerUsername, config.ServerPassword, config.CertificateStoreDetails.StorePath, config.CertificateStoreDetails.StorePassword, config.JobProperties);
 
                 switch (config.OperationType)
                 {
                     case CertStoreOperationType.Add:
-                        logger.LogDebug($"Begin Create Operation for {config.CertificateStoreDetails.StorePath} on {config.CertificateStoreDetails.ClientMachine}.");
+                        logger.LogDebug($"BEGIN create Operation for {config.CertificateStoreDetails.StorePath} on {config.CertificateStoreDetails.ClientMachine}.");
                         if (!certificateStore.DoesStoreExist())
                         {
                             throw new RemoteFileException($"Certificate store {config.CertificateStoreDetails.StorePath} does not exist on server {config.CertificateStoreDetails.ClientMachine}.");
                         }
                         else
                         {
+                            certificateStore.LoadCertificateStore();
                             certificateStore.AddCertificate(config.JobCertificate.Alias, config.JobCertificate.Contents, config.Overwrite, config.JobCertificate.PrivateKeyPassword);
-                            SaveRemoteCertificateStore(certificateStore);
+                            certificateStore.SaveCertificateStore(certificateStoreSerializer.SerializeRemoteCertificateStore(certificateStore.GetCertificateStore(), config.CertificateStoreDetails.StorePassword));
                         }
+                        logger.LogDebug($"END create Operation for {config.CertificateStoreDetails.StorePath} on {config.CertificateStoreDetails.ClientMachine}.");
                         break;
 
                     case CertStoreOperationType.Remove:
-                        logger.LogDebug($"Begin Delete Operation for {config.CertificateStoreDetails.StorePath} on {config.CertificateStoreDetails.ClientMachine}.");
+                        logger.LogDebug($"BEGIN Delete Operation for {config.CertificateStoreDetails.StorePath} on {config.CertificateStoreDetails.ClientMachine}.");
                         if (!certificateStore.DoesStoreExist())
                         {
                             throw new RemoteFileException($"Certificate store {config.CertificateStoreDetails.StorePath} does not exist on server {config.CertificateStoreDetails.ClientMachine}.");
                         }
                         else
                         {
+                            certificateStore.LoadCertificateStore();
                             certificateStore.DeleteCertificateByAlias(config.JobCertificate.Alias);
-                            SaveRemoteCertificateStore(certificateStore);
+                            certificateStore.SaveCertificateStore(certificateStoreSerializer.SerializeRemoteCertificateStore(certificateStore.GetCertificateStore(), config.CertificateStoreDetails.StorePassword));
                         }
+                        logger.LogDebug($"END Delete Operation for {config.CertificateStoreDetails.StorePath} on {config.CertificateStoreDetails.ClientMachine}.");
                         break;
 
                     case CertStoreOperationType.Create:
-                        logger.LogDebug($"Begin Create Operation for {config.CertificateStoreDetails.StorePath} on {config.CertificateStoreDetails.ClientMachine}.");
+                        logger.LogDebug($"BEGIN create Operation for {config.CertificateStoreDetails.StorePath} on {config.CertificateStoreDetails.ClientMachine}.");
                         if (certificateStore.DoesStoreExist())
                         {
                             throw new RemoteFileException($"Certificate store {config.CertificateStoreDetails.StorePath} already exists.");
@@ -78,6 +85,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
 
                             certificateStore.CreateCertificateStore(config.CertificateStoreDetails.StorePath, linuxFilePermissions);
                         }
+                        logger.LogDebug($"END create Operation for {config.CertificateStoreDetails.StorePath} on {config.CertificateStoreDetails.ClientMachine}.");
                         break;
 
                     default:
@@ -86,6 +94,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             }
             catch (Exception ex)
             {
+                logger.LogDebug($"Exception for {config.Capability}: {RemoteFileException.FlattenExceptionMessages(ex, string.Empty)} for job id {config.JobId}");
                 return new JobResult() { Result = OrchestratorJobStatusJobResult.Failure, JobHistoryId = config.JobHistoryId, FailureMessage = RemoteFileException.FlattenExceptionMessages(ex, $"Site {config.CertificateStoreDetails.StorePath} on server {config.CertificateStoreDetails.ClientMachine}:") };
             }
             finally
@@ -93,11 +102,10 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
                 certificateStore.Terminate();
             }
 
+            logger.LogDebug($"...End {config.Capability} job for job id {config.JobId}");
             return new JobResult() { Result = OrchestratorJobStatusJobResult.Success, JobHistoryId = config.JobHistoryId };
         }
 
-        internal abstract RemoteCertificateStore GetRemoteCertificateStore(ManagementJobConfiguration config);
-
-        internal abstract void SaveRemoteCertificateStore(RemoteCertificateStore certificateStore);
+        internal abstract ICertificateStoreSerializer GetCertificateStoreSerializer();
     }
 }

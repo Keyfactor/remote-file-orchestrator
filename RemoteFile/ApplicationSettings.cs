@@ -1,5 +1,8 @@
-﻿using Microsoft.Extensions.Configuration;
-using System;
+﻿using System;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+using Keyfactor.Logging;
+
 
 namespace Keyfactor.Extensions.Orchestrator.RemoteFile
 {
@@ -14,7 +17,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
 
         private const string DEFAULT_LINUX_PERMISSION_SETTING = "600";
 
-        private static IConfiguration configuration;
+        private static IConfigurationRoot configuration;
 
         public static bool UseSudo { get { return configuration["UseSudo"]?.ToUpper() == "Y";  } }
         public static bool CreateStoreIfMissing { get { return configuration["CreateStoreIfMissing"]?.ToUpper() == "Y"; } }
@@ -41,8 +44,15 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
 
         public static void Initialize(string configLocation)
         {
+            ILogger logger = LogHandler.GetClassLogger<ApplicationSettings>();
+            logger.MethodEntry(LogLevel.Debug);
+
             ConfigurationBuilder configBuilder = (ConfigurationBuilder)new ConfigurationBuilder().SetBasePath(configLocation).AddJsonFile("config.Json", optional: false, reloadOnChange: true);
             configuration = configBuilder.Build();
+
+            logger.LogDebug("config.json settings:");
+            logger.LogDebug($"    {configuration.GetDebugView()}");
+            logger.MethodExit(LogLevel.Debug);
         }
     }
 }
