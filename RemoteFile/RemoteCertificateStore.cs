@@ -14,11 +14,14 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 
+using Microsoft.Extensions.Logging;
+
 using Org.BouncyCastle.Pkcs;
 using Org.BouncyCastle.Security;
 
 using Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers;
 using Keyfactor.Extensions.Orchestrator.RemoteFile.Models;
+using Keyfactor.Logging;
 
 namespace Keyfactor.Extensions.Orchestrator.RemoteFile
 {
@@ -52,10 +55,16 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
         
         private Pkcs12Store CertificateStore = new Pkcs12Store();
 
+        private ILogger logger;
+
+
         internal RemoteCertificateStore() { }
 
         internal RemoteCertificateStore(string server, string serverId, string serverPassword, string storeFileAndPath, string storePassword, Dictionary<string, object> jobProperties)
         {
+            logger = LogHandler.GetClassLogger(this.GetType());
+            logger.MethodEntry(LogLevel.Debug);
+
             Server = server;
             SplitStorePathFile(storeFileAndPath);
             ServerId = serverId;
@@ -71,51 +80,76 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             }
 
             Initialize();
+
+            logger.MethodExit(LogLevel.Debug);
         }
 
         internal RemoteCertificateStore(string server, string serverId, string serverPassword, ServerTypeEnum serverType)
         {
+            logger = LogHandler.GetClassLogger(this.GetType());
+            logger.MethodEntry(LogLevel.Debug);
+
             Server = server;
             ServerId = serverId;
             ServerPassword = serverPassword ?? string.Empty;
             ServerType = serverType;
 
             Initialize();
+
+            logger.MethodExit(LogLevel.Debug);
         }
 
         internal void LoadCertificateStore()
         {
+            logger.MethodEntry(LogLevel.Debug);
+
             byte[] byteContents = SSH.DownloadCertificateFile(StorePath + StoreFileName);
             if (byteContents.Length < 5)
                 return;
 
             using (MemoryStream stream = new MemoryStream(byteContents))
             {
-                CertificateStore = new Pkcs12Store(stream, string.IsNullOrEmpty(StorePassword) ? new char[0] : StorePassword.ToCharArray());
+                Pkcs12StoreBuilder storeBuilder = new Pkcs12StoreBuilder();
+                CertificateStore = storeBuilder.Build();
+                CertificateStore.Load(stream, string.IsNullOrEmpty(StorePassword) ? new char[0] : StorePassword.ToCharArray());
             }
+
+            logger.MethodExit(LogLevel.Debug);
         }
 
         internal Pkcs12Store GetCertificateStore()
         {
+            logger.MethodEntry(LogLevel.Debug);
+            logger.MethodExit(LogLevel.Debug);
+
             return CertificateStore;
         }
 
         internal void Terminate()
         {
+            logger.MethodEntry(LogLevel.Debug);
+
             if (SSH != null)
                 SSH.Terminate();
+
+            logger.MethodExit(LogLevel.Debug);
         }
 
-        internal List<string> FindStores(string[] paths, string[] extensions, string[] files)
+        internal List<string> FindStores(string[] paths, string[] extensions, string[] files, bool includeSymLinks)
         {
+            logger.MethodEntry(LogLevel.Debug);
+            logger.MethodExit(LogLevel.Debug);
+
             if (DiscoveredStores != null)
                 return DiscoveredStores;
 
-            return ServerType == ServerTypeEnum.Linux ? FindStoresLinux(paths, extensions, files) : FindStoresWindows(paths, extensions, files);
+            return ServerType == ServerTypeEnum.Linux ? FindStoresLinux(paths, extensions, files, includeSymLinks) : FindStoresWindows(paths, extensions, files);
         }
 
         internal List<X509Certificate2Collection> GetCertificateChains()
         {
+            logger.MethodEntry(LogLevel.Debug);
+
             List<X509Certificate2Collection> certificateChains = new List<X509Certificate2Collection>();
 
             foreach(string alias in CertificateStore.Aliases)
@@ -143,11 +177,15 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
                 certificateChains.Add(chain);
             }
 
+            logger.MethodExit(LogLevel.Debug);
+
             return certificateChains;
         }
 
         internal void DeleteCertificateByAlias(string alias)
         {
+            logger.MethodEntry(LogLevel.Debug);
+
             try
             {
                 mutex.WaitOne();
@@ -159,8 +197,6 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
                     {
                         throw new RemoteFileException($"Alias {alias} does not exist in certificate store {StorePath + StoreFileName}.");
                     }
-
-                    CertificateStore = new Pkcs12Store(stream, string.IsNullOrEmpty(StorePassword) ? new char[0] : StorePassword.ToCharArray());
 
                     if (!CertificateStore.ContainsAlias(alias))
                     {
@@ -183,30 +219,39 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             {
                 mutex.ReleaseMutex();
             }
+
+            logger.MethodExit(LogLevel.Debug);
         }
 
         internal void CreateCertificateStore(string storePath, string linuxFilePermissions)
         {
+            logger.MethodEntry(LogLevel.Debug);
+
             SSH.CreateEmptyStoreFile(storePath, linuxFilePermissions);
+
+            logger.MethodExit(LogLevel.Debug);
         }
 
         internal void AddCertificate(string alias, string certificateEntry, bool overwrite, string pfxPassword)
         {
+            logger.MethodEntry(LogLevel.Debug);
+
             try
             {
-                Pkcs12Store certs = new Pkcs12Store();
+                Pkcs12StoreBuilder storeBuilder = new Pkcs12StoreBuilder();
+                Pkcs12Store certs = storeBuilder.Build();
 
                 mutex.WaitOne();
                 byte[] newCertBytes = Convert.FromBase64String(certificateEntry);
 
-                Pkcs12Store newEntry = new Pkcs12Store();
+                Pkcs12Store newEntry = storeBuilder.Build();
 
                 X509Certificate2 cert = new X509Certificate2(newCertBytes, pfxPassword, X509KeyStorageFlags.Exportable);
                 byte[] binaryCert = cert.Export(X509ContentType.Pkcs12, pfxPassword);
 
                 using (MemoryStream ms = new MemoryStream(string.IsNullOrEmpty(pfxPassword) ? binaryCert : newCertBytes))
                 {
-                    newEntry = string.IsNullOrEmpty(pfxPassword) ? new Pkcs12Store(ms, new char[0]) : new Pkcs12Store(ms, pfxPassword.ToCharArray());
+                    newEntry.Load(ms, string.IsNullOrEmpty(pfxPassword) ? new char[0] : pfxPassword.ToCharArray());
                 }
 
                 if (CertificateStore.ContainsAlias(alias) && !overwrite)
@@ -249,40 +294,62 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             {
                 mutex.ReleaseMutex();
             }
+
+            logger.MethodExit(LogLevel.Debug);
         }
 
         internal void SaveCertificateStore(byte[] storeContents)
         {
+            logger.MethodEntry(LogLevel.Debug);
+
             SSH.UploadCertificateFile(StorePath, StoreFileName, storeContents);
+
+            logger.MethodExit(LogLevel.Debug);
         }
 
         internal bool DoesStoreExist()
         {
+            logger.MethodEntry(LogLevel.Debug);
+            logger.MethodExit(LogLevel.Debug);
+
             return SSH.DoesFileExist(StorePath + StoreFileName);
         }
 
         private void Initialize()
         {
+            logger.MethodEntry(LogLevel.Debug);
+
             if (ServerType == ServerTypeEnum.Linux)
                 SSH = new SSHHandler(Server, ServerId, ServerPassword);
             else
                 SSH = new WinRMHandler(Server, ServerId, ServerPassword);
 
             SSH.Initialize();
+
+            logger.MethodExit(LogLevel.Debug);
         }
 
         private bool IsStorePathValid()
         {
+            logger.MethodEntry(LogLevel.Debug);
+
             Regex regex = new Regex(ServerType == ServerTypeEnum.Linux ? $@"^[\d\s\w-_/.]*$" : $@"^[\d\s\w-_/.:\\\\]*$");
+
+            logger.MethodExit(LogLevel.Debug);
+
             return regex.IsMatch(StorePath + StoreFileName);
         }
 
-        private List<string> FindStoresLinux(string[] paths, string[] extensions, string[] fileNames)
+        private List<string> FindStoresLinux(string[] paths, string[] extensions, string[] fileNames, bool includeSymLinks)
         {
+            logger.MethodEntry(LogLevel.Debug);
+
             try
             {
                 string concatPaths = string.Join(" ", paths);
                 string command = $"find {concatPaths} ";
+                if (!includeSymLinks)
+                    command += " -type f ";
 
                 foreach (string extension in extensions)
                 {
@@ -301,6 +368,8 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
                 if (extensions.Any(p => p.ToLower() != NO_EXTENSION))
                     result = SSH.RunCommand(command, null, ApplicationSettings.UseSudo, null);
 
+                logger.MethodExit(LogLevel.Debug);
+
                 return (result.Split(new char[] { '\n' }, StringSplitOptions.RemoveEmptyEntries)).ToList();
             }
             catch (Exception ex)
@@ -311,6 +380,8 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
 
         private List<string> FindStoresWindows(string[] paths, string[] extensions, string[] fileNames)
         {
+            logger.MethodEntry(LogLevel.Debug);
+
             List<string> results = new List<string>();
             StringBuilder concatFileNames = new StringBuilder();
 
@@ -334,18 +405,27 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
                 results.AddRange(result.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries).ToList());
             }
 
+            logger.MethodExit(LogLevel.Debug);
+
             return results;
         }
 
         private string[] GetAvailableDrives()
         {
+            logger.MethodEntry(LogLevel.Debug);
+
             string command = @"Get-WmiObject Win32_Logicaldisk -Filter ""DriveType = '3'"" | % {$_.DeviceId}";
             string result = SSH.RunCommand(command, null, false, null);
+
+            logger.MethodExit(LogLevel.Debug);
+
             return result.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
         }
 
         private void SplitStorePathFile(string pathFileName)
         {
+            logger.MethodEntry(LogLevel.Debug);
+
             try
             {
                 string workingPathFileName = pathFileName.Replace(@"\", @"/");
@@ -357,10 +437,15 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             {
                 throw new RemoteFileException($"Error attempting to parse certficate store path={StorePath}, file name={StoreFileName}.", ex);
             }
+
+            logger.MethodExit(LogLevel.Debug);
         }
 
         private string FormatPath(string path)
         {
+            logger.MethodEntry(LogLevel.Debug);
+            logger.MethodExit(LogLevel.Debug);
+
             return path + (path.Substring(path.Length - 1) == @"\" ? string.Empty : @"\");
         }
     }

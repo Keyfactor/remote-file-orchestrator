@@ -32,6 +32,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             string[] extensionsToSearch = config.JobProperties["extensions"].ToString().Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
             string[] ignoredDirs = config.JobProperties["ignoreddirs"].ToString().Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
             string[] filesTosearch = config.JobProperties["patterns"].ToString().Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+            bool includeSymLinks = Convert.ToBoolean(config.JobProperties["symLinks"]);
 
             List<string> locations = new List<string>();
 
@@ -48,7 +49,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
                 if (filesTosearch.Length == 0)
                     filesTosearch = new string[] { "*" };
 
-                locations = certificateStore.FindStores(directoriesToSearch, extensionsToSearch, filesTosearch);
+                locations = certificateStore.FindStores(directoriesToSearch, extensionsToSearch, filesTosearch, includeSymLinks);
                 foreach (string ignoredDir in ignoredDirs)
                     locations = locations.Where(p => !p.StartsWith(ignoredDir)).ToList();
             }

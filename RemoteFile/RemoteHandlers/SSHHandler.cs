@@ -16,6 +16,7 @@ using Renci.SshNet;
 
 using Microsoft.Extensions.Logging;
 
+using Keyfactor.Logging;
 using Keyfactor.PKI.PrivateKeys;
 using Keyfactor.PKI.PEM;
 
@@ -30,6 +31,8 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
 
         internal SSHHandler(string server, string serverLogin, string serverPassword)
         {
+            _logger.MethodEntry(LogLevel.Debug);
+            
             Server = server;
 
             List<AuthenticationMethod> authenticationMethods = new List<AuthenticationMethod>();
@@ -57,23 +60,34 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
             }
 
             Connection = new ConnectionInfo(server, serverLogin, authenticationMethods.ToArray());
+            
+            _logger.MethodExit(LogLevel.Debug);
         }
 
         public override void Initialize()
         {
+            _logger.MethodEntry(LogLevel.Debug);
+            
             sshClient = new SshClient(Connection);
             sshClient.Connect();
+            
+            _logger.MethodExit(LogLevel.Debug);
         }
 
         public override void Terminate()
         {
+            _logger.MethodEntry(LogLevel.Debug);
+            
             sshClient.Disconnect();
             sshClient.Dispose();
+            
+            _logger.MethodExit(LogLevel.Debug);
         }
 
         public override string RunCommand(string commandText, object[] arguments, bool withSudo, string[] passwordsToMaskInLog)
         {
-            _logger.LogDebug($"RunCommand: {Server}");
+            _logger.MethodEntry(LogLevel.Debug);
+            _logger.LogDebug($"RunCommand: {commandText}");
 
             string sudo = $"sudo -i -S ";
             string echo = $"echo -e '\n' | ";
@@ -101,6 +115,8 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
                     if (command.Result.ToLower().Contains(KEYTOOL_ERROR))
                         throw new ApplicationException(command.Result);
 
+                    _logger.MethodExit(LogLevel.Debug);
+
                     return command.Result;
                 }
             }
@@ -113,7 +129,9 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
 
         public override void UploadCertificateFile(string path, string fileName, byte[] certBytes)
         {
+            _logger.MethodEntry(LogLevel.Debug);
             _logger.LogDebug($"UploadCertificateFile: {path}{fileName}");
+
             string uploadPath = path+fileName;
 
             if (!string.IsNullOrEmpty(ApplicationSettings.SeparateUploadFilePath))
@@ -127,6 +145,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
                 {
                     try
                     {
+                        _logger.LogDebug($"SCP connection attempt to {Connection.Host} using login {Connection.Username} and connection method {Connection.AuthenticationMethods[0].Name}");
                         client.Connect();
 
                         using (MemoryStream stream = new MemoryStream(certBytes))
@@ -156,6 +175,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
                 {
                     try
                     {
+                        _logger.LogDebug($"SFTP connection attempt to {Connection.Host} using login {Connection.Username} and connection method {Connection.AuthenticationMethods[0].Name}");
                         client.Connect();
 
                         using (MemoryStream stream = new MemoryStream(certBytes))
@@ -181,10 +201,13 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
                 RunCommand($"cp -a {uploadPath} {path}", null, ApplicationSettings.UseSudo, null);
                 RunCommand($"rm {uploadPath}", null, ApplicationSettings.UseSudo, null);
             }
+
+            _logger.MethodExit(LogLevel.Debug);
         }
 
         public override byte[] DownloadCertificateFile(string path)
         {
+            _logger.MethodEntry(LogLevel.Debug);
             _logger.LogDebug($"DownloadCertificateFile: {path}");
 
             byte[] rtnStore = new byte[] { };
@@ -207,6 +230,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
                 {
                     try
                     {
+                        _logger.LogDebug($"SCP connection attempt to {Connection.Host} using login {Connection.Username} and connection method {Connection.AuthenticationMethods[0].Name}");
                         client.Connect();
 
                         using (MemoryStream stream = new MemoryStream())
@@ -237,6 +261,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
                 {
                     try
                     {
+                        _logger.LogDebug($"SFTP connection attempt to {Connection.Host} using login {Connection.Username} and connection method {Connection.AuthenticationMethods[0].Name}");
                         client.Connect();
 
                         using (MemoryStream stream = new MemoryStream())
@@ -263,17 +288,24 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
                 RunCommand($"rm {downloadPath}", null, ApplicationSettings.UseSudo, null);
             }
 
+            _logger.MethodExit(LogLevel.Debug);
+
             return rtnStore;
         }
 
         public override void CreateEmptyStoreFile(string path, string linuxFilePermissions)
         {
+            _logger.MethodEntry(LogLevel.Debug);
+
             AreLinuxPermissionsValid(linuxFilePermissions);
             RunCommand($"install -m {linuxFilePermissions} /dev/null {path}", null, false, null);
+
+            _logger.MethodExit(LogLevel.Debug);
         }
 
         public override bool DoesFileExist(string path)
         {
+            _logger.MethodEntry(LogLevel.Debug);
             _logger.LogDebug($"DoesFileExist: {path}");
 
             using (SftpClient client = new SftpClient(Connection))
@@ -283,6 +315,8 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
                     client.Connect();
                     string existsPath = FormatFTPPath(path);
                     bool exists = client.Exists(existsPath);
+
+                    _logger.MethodExit(LogLevel.Debug);
 
                     return exists;
                 }
@@ -302,6 +336,8 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
 
         private void SplitStorePathFile(string pathFileName, out string path, out string fileName)
         {
+            _logger.MethodEntry(LogLevel.Debug);
+
             try
             {
                 int separatorIndex = pathFileName.LastIndexOf(pathFileName.Substring(0, 1) == "/" ? @"/" : @"\");
@@ -312,24 +348,37 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
             {
                 throw new RemoteFileException($"Error attempting to parse certficate store/key path={pathFileName}.", ex);
             }
+
+            _logger.MethodEntry(LogLevel.Debug);
         }
 
         private string FormatRSAPrivateKey(string privateKey)
         {
+            _logger.MethodEntry(LogLevel.Debug);
+            _logger.MethodExit(LogLevel.Debug);
+            
             return privateKey.Replace(" RSA PRIVATE ", "^^^").Replace(" ", System.Environment.NewLine).Replace("^^^", " RSA PRIVATE ");
         }
 
         private string ConvertToPKCS1(string privateKey)
         {
+            _logger.MethodEntry(LogLevel.Debug);
+
             privateKey = privateKey.Replace(System.Environment.NewLine, string.Empty).Replace("-----BEGIN PRIVATE KEY-----", string.Empty).Replace("-----END PRIVATE KEY-----", string.Empty);
             PrivateKeyConverter conv = PrivateKeyConverterFactory.FromPkcs8Blob(Convert.FromBase64String(privateKey), string.Empty);
             RSA alg = (RSA)conv.ToNetPrivateKey();
             string pemString = PemUtilities.DERToPEM(alg.ExportRSAPrivateKey(), PemUtilities.PemObjectType.PrivateKey);
+
+            _logger.MethodExit(LogLevel.Debug);
+
             return pemString.Replace("PRIVATE", "RSA PRIVATE");
         }
 
         private string FormatFTPPath(string path)
         {
+            _logger.MethodEntry(LogLevel.Debug);
+            _logger.MethodExit(LogLevel.Debug);
+
             return path.Substring(0, 1) == @"/" ? path : @"/" + path.Replace("\\", "/");
         }
     }

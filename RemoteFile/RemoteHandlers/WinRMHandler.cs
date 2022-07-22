@@ -14,6 +14,8 @@ using System.Text;
 
 using Microsoft.Extensions.Logging;
 
+using Keyfactor.Logging;
+
 namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
 {
     class WinRMHandler : BaseRemoteHandler
@@ -27,16 +29,22 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
 
         internal WinRMHandler(string server, string serverLogin, string serverPassword)
         {
+            _logger.MethodEntry(LogLevel.Debug);
+
             Server = server;
             connectionInfo = new WSManConnectionInfo(new System.Uri($"{Server}/wsman"));
             if (!string.IsNullOrEmpty(serverLogin))
             {
                 connectionInfo.Credential = new PSCredential(serverLogin, new NetworkCredential(serverLogin, serverPassword).SecurePassword);
             }
+
+            _logger.MethodExit(LogLevel.Debug);
         }
 
         public override void Initialize()
         {
+            _logger.MethodEntry(LogLevel.Debug);
+
             try
             {
                 runspace = RunspaceFactory.CreateRunspace(connectionInfo);
@@ -48,17 +56,24 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
                 _logger.LogDebug($"Exception during Initialize...{RemoteFileException.FlattenExceptionMessages(ex, ex.Message)}");
                 throw ex;
             }
+
+            _logger.MethodExit(LogLevel.Debug);
         }
 
         public override void Terminate()
         {
+            _logger.MethodEntry(LogLevel.Debug);
+
             runspace.Close();
             runspace.Dispose();
+
+            _logger.MethodExit(LogLevel.Debug);
         }
 
         public override string RunCommand(string commandText, object[] parameters, bool withSudo, string[] passwordsToMaskInLog)
         {
-            _logger.LogDebug($"RunCommand: {Server}");
+            _logger.MethodEntry(LogLevel.Debug);
+            _logger.LogDebug($"RunCommand: {commandText}");
 
             try
             {
@@ -116,6 +131,8 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
                     if (result.ToLower().Contains(KEYTOOL_ERROR))
                         throw new ApplicationException(result);
 
+                    _logger.MethodExit(LogLevel.Debug);
+
                     return result;
                 }
             }
@@ -128,7 +145,9 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
 
         private byte[] RunCommandBinary(string commandText)
         {
+            _logger.MethodEntry(LogLevel.Debug);
             _logger.LogDebug($"RunCommandBinary: {Server}");
+
             byte[] rtnBytes = new byte[0];
 
             try
@@ -162,6 +181,8 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
                     }
                 }
 
+                _logger.MethodExit(LogLevel.Debug);
+
                 return rtnBytes;
             }
 
@@ -174,6 +195,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
 
         public override void UploadCertificateFile(string path, string fileName, byte[] certBytes)
         {
+            _logger.MethodEntry(LogLevel.Debug);
             _logger.LogDebug($"UploadCertificateFile: {path} {fileName}");
 
             string scriptBlock = $@"
@@ -185,22 +207,31 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
             object[] arguments = new object[] { certBytes };
 
             RunCommand(scriptBlock, arguments, false, null);
+
+            _logger.MethodEntry(LogLevel.Debug);
         }
 
         public override byte[] DownloadCertificateFile(string path)
         {
+            _logger.MethodEntry(LogLevel.Debug);
             _logger.LogDebug($"DownloadCertificateFile: {path}");
+            _logger.MethodExit(LogLevel.Debug);
+
             return RunCommandBinary($@"Get-Content -Path ""{path}"" -Encoding Byte -Raw");
         }
 
         public override void CreateEmptyStoreFile(string path, string linuxFilePermissions)
         {
+            _logger.MethodEntry(LogLevel.Debug);
             RunCommand($@"Out-File -FilePath ""{path}""", null, false, null);
+            _logger.MethodExit(LogLevel.Debug);
         }
 
         public override bool DoesFileExist(string path)
         {
+            _logger.MethodEntry(LogLevel.Debug);
             _logger.LogDebug($"DoesFileExist: {path}");
+            _logger.MethodExit(LogLevel.Debug);
 
             return Convert.ToBoolean(RunCommand($@"Test-Path -path ""{path}""", null, false, null));
         }
@@ -208,6 +239,8 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
 
         private string FormatResult(ICollection<PSObject> results)
         {
+            _logger.MethodEntry(LogLevel.Debug);
+
             StringBuilder rtn = new StringBuilder();
 
             foreach (PSObject resultLine in results)
@@ -216,11 +249,16 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
                     rtn.Append(resultLine.ToString() + System.Environment.NewLine);
             }
 
+            _logger.MethodExit(LogLevel.Debug);
+
             return rtn.ToString();
         }
 
         private string FormatFTPPath(string path)
         {
+            _logger.MethodEntry(LogLevel.Debug);
+            _logger.MethodExit(LogLevel.Debug);
+
             return path.Substring(0, 1) == @"/" ? path : @"/" + path.Replace("\\", "/");
         }
     }
