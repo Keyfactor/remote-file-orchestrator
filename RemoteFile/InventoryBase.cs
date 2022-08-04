@@ -25,7 +25,11 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             logger.LogDebug($"Begin {config.Capability} for job id {config.JobId}...");
             logger.LogDebug($"Server: { config.CertificateStoreDetails.ClientMachine }");
             logger.LogDebug($"Store Path: { config.CertificateStoreDetails.StorePath }");
-            logger.LogDebug($"Job Properties: {config.JobProperties}");
+            logger.LogDebug($"Job Properties:");
+            foreach (KeyValuePair<string, object> keyValue in config.JobProperties == null ? new Dictionary<string,object>() : config.JobProperties)
+            {
+                logger.LogDebug($"    {keyValue.Key}: {keyValue.Value}");
+            }
 
             ICertificateStoreSerializer certificateStoreSerializer = GetCertificateStoreSerializer();
             List<CurrentInventoryItem> inventoryItems = new List<CurrentInventoryItem>();

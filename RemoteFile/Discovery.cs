@@ -17,7 +17,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Keyfactor.Extensions.Orchestrator.RemoteFile
 {
-    public abstract class Discovery: IDiscoveryJobExtension
+    public class Discovery: IDiscoveryJobExtension
     {
         public string ExtensionName => "";
 
@@ -26,7 +26,11 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             ILogger logger = LogHandler.GetClassLogger(this.GetType());
             logger.LogDebug($"Begin {config.Capability} for job id {config.JobId}...");
             logger.LogDebug($"Server: { config.ClientMachine }");
-            logger.LogDebug($"Job Properties: {config.JobProperties}");
+            logger.LogDebug($"Job Properties:");
+            foreach (KeyValuePair<string, object> keyValue in config.JobProperties)
+            {
+                logger.LogDebug($"    {keyValue.Key}: {keyValue.Value}");
+            }
 
             string[] directoriesToSearch = config.JobProperties["dirs"].ToString().Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
             string[] extensionsToSearch = config.JobProperties["extensions"].ToString().Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);

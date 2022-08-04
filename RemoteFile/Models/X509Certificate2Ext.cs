@@ -6,6 +6,8 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.Models
     {
         public string FriendlyNameExt { get; set; }
 
+        public new bool HasPrivateKey { get; set; }
+
         public X509Certificate2Ext(byte[] bytes): base(bytes) { }
     }
 }

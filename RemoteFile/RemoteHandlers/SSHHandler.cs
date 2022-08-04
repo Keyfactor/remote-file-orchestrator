@@ -139,6 +139,8 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
                 uploadPath = ApplicationSettings.SeparateUploadFilePath + fileName;
             }
 
+            bool scpError = false;
+
             if (ApplicationSettings.FileTransferProtocol == ApplicationSettings.FileTransferProtocolEnum.Both || ApplicationSettings.FileTransferProtocol == ApplicationSettings.FileTransferProtocolEnum.SCP)
             {
                 using (ScpClient client = new ScpClient(Connection))
@@ -155,6 +157,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
                     }
                     catch (Exception ex)
                     {
+                        scpError = true;
                         _logger.LogDebug("Exception during SCP upload...");
                         _logger.LogDebug($"Upload Exception: {RemoteFileException.FlattenExceptionMessages(ex, ex.Message)}");
                         if (ApplicationSettings.FileTransferProtocol == ApplicationSettings.FileTransferProtocolEnum.Both)
@@ -169,7 +172,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
                 }
             }
 
-            if (ApplicationSettings.FileTransferProtocol == ApplicationSettings.FileTransferProtocolEnum.Both || ApplicationSettings.FileTransferProtocol == ApplicationSettings.FileTransferProtocolEnum.SFTP)
+            if ((ApplicationSettings.FileTransferProtocol == ApplicationSettings.FileTransferProtocolEnum.Both && scpError) || ApplicationSettings.FileTransferProtocol == ApplicationSettings.FileTransferProtocolEnum.SFTP)
             {
                 using (SftpClient client = new SftpClient(Connection))
                 {
@@ -224,6 +227,8 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
                 RunCommand($"sudo chown {Connection.Username} {path}", null, ApplicationSettings.UseSudo, null);
             }
 
+            bool scpError = false;
+
             if (ApplicationSettings.FileTransferProtocol == ApplicationSettings.FileTransferProtocolEnum.Both || ApplicationSettings.FileTransferProtocol == ApplicationSettings.FileTransferProtocolEnum.SCP)
             {
                 using (ScpClient client = new ScpClient(Connection))
@@ -241,6 +246,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
                     }
                     catch (Exception ex)
                     {
+                        scpError = true;
                         _logger.LogDebug("Exception during SCP download...");
                         _logger.LogDebug($"Upload Exception: {RemoteFileException.FlattenExceptionMessages(ex, ex.Message)}");
                         if (ApplicationSettings.FileTransferProtocol == ApplicationSettings.FileTransferProtocolEnum.Both)
@@ -255,7 +261,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
                 }
             }
 
-            if (ApplicationSettings.FileTransferProtocol == ApplicationSettings.FileTransferProtocolEnum.Both || ApplicationSettings.FileTransferProtocol == ApplicationSettings.FileTransferProtocolEnum.SFTP)
+            if ((ApplicationSettings.FileTransferProtocol == ApplicationSettings.FileTransferProtocolEnum.Both && scpError) || ApplicationSettings.FileTransferProtocol == ApplicationSettings.FileTransferProtocolEnum.SFTP)
             {
                 using (SftpClient client = new SftpClient(Connection))
                 {

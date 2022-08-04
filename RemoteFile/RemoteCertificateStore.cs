@@ -171,6 +171,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
                 {
                     X509Certificate2Ext cert = new X509Certificate2Ext(entry.Certificate.GetEncoded());
                     cert.FriendlyNameExt = alias;
+                    cert.HasPrivateKey = CertificateStore.IsKeyEntry(alias);
                     chain.Add(cert);
                 }
 
