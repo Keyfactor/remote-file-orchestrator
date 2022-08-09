@@ -100,7 +100,8 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             }
             finally
             {
-                certificateStore.Terminate();
+                if (certificateStore.SSH != null)
+                    certificateStore.Terminate();
             }
 
             logger.LogDebug($"...End {config.Capability} job for job id {config.JobId}");

@@ -47,6 +47,10 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
 
             try
             {
+                if (ApplicationSettings.UseNegotiate)
+                {
+                    connectionInfo.AuthenticationMechanism = AuthenticationMechanism.Negotiate;
+                }
                 runspace = RunspaceFactory.CreateRunspace(connectionInfo);
                 runspace.Open();
             }

@@ -72,12 +72,15 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             StorePassword = storePassword;
             ServerType = StorePath.Substring(0, 1) == "/" ? ServerTypeEnum.Linux : ServerTypeEnum.Windows;
             UploadFilePath = !string.IsNullOrEmpty(ApplicationSettings.SeparateUploadFilePath) && ServerType == ServerTypeEnum.Linux ? ApplicationSettings.SeparateUploadFilePath : StorePath;
+            logger.LogDebug($"UploadFilePath: {UploadFilePath}");
 
             if (!IsStorePathValid())
             {
+                logger.LogDebug("Store path not valid");
                 string partialMessage = ServerType == ServerTypeEnum.Windows ? @"'\', ':', " : string.Empty;
                 throw new RemoteFileException($"PKCS12 store path {storeFileAndPath} is invalid.  Only alphanumeric, '.', '/', {partialMessage}'-', and '_' characters are allowed in the store path.");
             }
+            logger.LogDebug("Store path valid");
 
             Initialize();
 
@@ -366,7 +369,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
                 }
 
                 string result = string.Empty;
-                if (extensions.Any(p => p.ToLower() != NO_EXTENSION))
+                //if (extensions.Any(p => p.ToLower() != NO_EXTENSION))
                     result = SSH.RunCommand(command, null, ApplicationSettings.UseSudo, null);
 
                 logger.MethodExit(LogLevel.Debug);
