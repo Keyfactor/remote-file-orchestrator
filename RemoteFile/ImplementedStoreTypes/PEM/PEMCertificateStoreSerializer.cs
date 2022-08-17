@@ -68,6 +68,8 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.PEM
             using (MemoryStream outStream = new MemoryStream())
             {
                 certificateStore.Save(outStream, string.IsNullOrEmpty(storePassword) ? new char[0] : storePassword.ToCharArray(), new Org.BouncyCastle.Security.SecureRandom());
+
+                logger.MethodExit(LogLevel.Debug);
                 return outStream.ToArray();
             }
         }
