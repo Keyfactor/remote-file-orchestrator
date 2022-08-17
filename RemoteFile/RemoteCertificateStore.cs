@@ -48,7 +48,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
         internal string StorePath { get; set; }
         internal string StoreFileName { get; set; }
         internal string StorePassword { get; set; }
-        internal IRemoteHandler SSH { get; set; }
+        internal IRemoteHandler RemoteHandler { get; set; }
         internal ServerTypeEnum ServerType { get; set; }
         internal List<string> DiscoveredStores { get; set; }
         internal string UploadFilePath { get; set; }
@@ -102,20 +102,15 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             logger.MethodExit(LogLevel.Debug);
         }
 
-        internal void LoadCertificateStore()
+        internal void LoadCertificateStore(ICertificateStoreSerializer certificateStoreSerializer, string jobProperties)
         {
             logger.MethodEntry(LogLevel.Debug);
 
-            byte[] byteContents = SSH.DownloadCertificateFile(StorePath + StoreFileName);
+            byte[] byteContents = RemoteHandler.DownloadCertificateFile(StorePath + StoreFileName);
             if (byteContents.Length < 5)
                 return;
 
-            using (MemoryStream stream = new MemoryStream(byteContents))
-            {
-                Pkcs12StoreBuilder storeBuilder = new Pkcs12StoreBuilder();
-                CertificateStore = storeBuilder.Build();
-                CertificateStore.Load(stream, string.IsNullOrEmpty(StorePassword) ? new char[0] : StorePassword.ToCharArray());
-            }
+            CertificateStore = certificateStoreSerializer.DeserializeRemoteCertificateStore(byteContents, StorePassword, jobProperties, RemoteHandler);
 
             logger.MethodExit(LogLevel.Debug);
         }
@@ -132,8 +127,8 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
         {
             logger.MethodEntry(LogLevel.Debug);
 
-            if (SSH != null)
-                SSH.Terminate();
+            if (RemoteHandler != null)
+                RemoteHandler.Terminate();
 
             logger.MethodExit(LogLevel.Debug);
         }
@@ -193,7 +188,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             try
             {
                 mutex.WaitOne();
-                byte[] byteContents = SSH.DownloadCertificateFile(StorePath + StoreFileName);
+                byte[] byteContents = RemoteHandler.DownloadCertificateFile(StorePath + StoreFileName);
 
                 using (MemoryStream stream = new MemoryStream(byteContents))
                 {
@@ -231,7 +226,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
         {
             logger.MethodEntry(LogLevel.Debug);
 
-            SSH.CreateEmptyStoreFile(storePath, linuxFilePermissions);
+            RemoteHandler.CreateEmptyStoreFile(storePath, linuxFilePermissions);
 
             logger.MethodExit(LogLevel.Debug);
         }
@@ -306,7 +301,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
         {
             logger.MethodEntry(LogLevel.Debug);
 
-            SSH.UploadCertificateFile(StorePath, StoreFileName, storeContents);
+            RemoteHandler.UploadCertificateFile(StorePath, StoreFileName, storeContents);
 
             logger.MethodExit(LogLevel.Debug);
         }
@@ -316,7 +311,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             logger.MethodEntry(LogLevel.Debug);
             logger.MethodExit(LogLevel.Debug);
 
-            return SSH.DoesFileExist(StorePath + StoreFileName);
+            return RemoteHandler.DoesFileExist(StorePath + StoreFileName);
         }
 
         private void Initialize()
@@ -324,11 +319,11 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             logger.MethodEntry(LogLevel.Debug);
 
             if (ServerType == ServerTypeEnum.Linux)
-                SSH = new SSHHandler(Server, ServerId, ServerPassword);
+                RemoteHandler = new SSHHandler(Server, ServerId, ServerPassword);
             else
-                SSH = new WinRMHandler(Server, ServerId, ServerPassword);
+                RemoteHandler = new WinRMHandler(Server, ServerId, ServerPassword);
 
-            SSH.Initialize();
+            RemoteHandler.Initialize();
 
             logger.MethodExit(LogLevel.Debug);
         }
@@ -370,7 +365,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
 
                 string result = string.Empty;
                 //if (extensions.Any(p => p.ToLower() != NO_EXTENSION))
-                    result = SSH.RunCommand(command, null, ApplicationSettings.UseSudo, null);
+                    result = RemoteHandler.RunCommand(command, null, ApplicationSettings.UseSudo, null);
 
                 logger.MethodExit(LogLevel.Debug);
 
@@ -405,7 +400,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
                 }
 
                 string command = $"(Get-ChildItem -Path {FormatPath(path)} -Recurse -ErrorAction SilentlyContinue -Include {concatFileNames.ToString().Substring(1)}).fullname";
-                string result = SSH.RunCommand(command, null, false, null);
+                string result = RemoteHandler.RunCommand(command, null, false, null);
                 results.AddRange(result.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries).ToList());
             }
 
@@ -419,7 +414,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             logger.MethodEntry(LogLevel.Debug);
 
             string command = @"Get-WmiObject Win32_Logicaldisk -Filter ""DriveType = '3'"" | % {$_.DeviceId}";
-            string result = SSH.RunCommand(command, null, false, null);
+            string result = RemoteHandler.RunCommand(command, null, false, null);
 
             logger.MethodExit(LogLevel.Debug);
 

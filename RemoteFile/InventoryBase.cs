@@ -11,7 +11,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Keyfactor.Extensions.Orchestrator.RemoteFile
 {
-    public abstract class InventoryBase : IInventoryJobExtension
+    public abstract class InventoryBase : RemoteFileJobTypeBase, IInventoryJobExtension
     {
         protected ILogger logger;
 
@@ -38,7 +38,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             {
                 ApplicationSettings.Initialize(this.GetType().Assembly.Location);
                 certificateStore = new RemoteCertificateStore(config.CertificateStoreDetails.ClientMachine, config.ServerUsername, config.ServerPassword, config.CertificateStoreDetails.StorePath, config.CertificateStoreDetails.StorePassword, config.JobProperties);
-                certificateStore.LoadCertificateStore();
+                certificateStore.LoadCertificateStore(certificateStoreSerializer, config.JobProperties);
 
                 List<X509Certificate2Collection> collections = certificateStore.GetCertificateChains();
 
@@ -92,7 +92,5 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
                 return new JobResult() { Result = OrchestratorJobStatusJobResult.Failure, JobHistoryId = config.JobHistoryId, FailureMessage = RemoteFileException.FlattenExceptionMessages(ex, $"Site {config.CertificateStoreDetails.StorePath} on server {config.CertificateStoreDetails.ClientMachine}:") };
             }
         }
-
-        internal abstract ICertificateStoreSerializer GetCertificateStoreSerializer();
     }
 }
