@@ -1,5 +1,7 @@
 ﻿using System.IO;
+using System.Collections.Generic;
 using Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers;
+using Keyfactor.Extensions.Orchestrator.RemoteFile.Models;
 
 using Org.BouncyCastle.Pkcs;
 
@@ -20,12 +22,16 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.PKCS12
             return store;
         }
 
-        public byte[] SerializeRemoteCertificateStore(Pkcs12Store certificateStore, string storePassword, string storeProperties, IRemoteHandler remoteHandler)
+        public List<SerializedStoreInfo> SerializeRemoteCertificateStore(Pkcs12Store certificateStore, string storePath, string storePassword, string storeProperties, IRemoteHandler remoteHandler)
         {
             using (MemoryStream outStream = new MemoryStream())
             {
                 certificateStore.Save(outStream, string.IsNullOrEmpty(storePassword) ? new char[0] : storePassword.ToCharArray(), new Org.BouncyCastle.Security.SecureRandom());
-                return outStream.ToArray();
+
+                List<SerializedStoreInfo> storeInfo = new List<SerializedStoreInfo>();
+                storeInfo.Add(new SerializedStoreInfo() { FilePath = storePath, Contents = outStream.ToArray()})
+                
+                return storeInfo;
             }
         }
     }

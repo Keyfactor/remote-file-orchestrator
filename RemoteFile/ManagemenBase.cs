@@ -56,7 +56,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
                         }
                         certificateStore.LoadCertificateStore(certificateStoreSerializer, config.CertificateStoreDetails.Properties);
                         certificateStore.AddCertificate(config.JobCertificate.Alias, config.JobCertificate.Contents, config.Overwrite, config.JobCertificate.PrivateKeyPassword);
-                        certificateStore.SaveCertificateStore(certificateStoreSerializer.SerializeRemoteCertificateStore(certificateStore.GetCertificateStore(), config.CertificateStoreDetails.StorePassword, config.CertificateStoreDetails.Properties, certificateStore.SSH));
+                        certificateStore.SaveCertificateStore(certificateStoreSerializer.SerializeRemoteCertificateStore(certificateStore.GetCertificateStore(), config.CertificateStoreDetails.StorePath, config.CertificateStoreDetails.StorePassword, config.CertificateStoreDetails.Properties, certificateStore.RemoteHandler));
 
                         logger.LogDebug($"END create Operation for {config.CertificateStoreDetails.StorePath} on {config.CertificateStoreDetails.ClientMachine}.");
                         break;
@@ -71,7 +71,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
                         {
                             certificateStore.LoadCertificateStore(certificateStoreSerializer, config.CertificateStoreDetails.Properties);
                             certificateStore.DeleteCertificateByAlias(config.JobCertificate.Alias);
-                            certificateStore.SaveCertificateStore(certificateStoreSerializer.SerializeRemoteCertificateStore(certificateStore.GetCertificateStore(), config.CertificateStoreDetails.StorePassword, config.CertificateStoreDetails.Properties, certificateStore.SSH));
+                            certificateStore.SaveCertificateStore(certificateStoreSerializer.SerializeRemoteCertificateStore(certificateStore.GetCertificateStore(), config.CertificateStoreDetails.StorePath, config.CertificateStoreDetails.StorePassword, config.CertificateStoreDetails.Properties, certificateStore.RemoteHandler));
                         }
                         logger.LogDebug($"END Delete Operation for {config.CertificateStoreDetails.StorePath} on {config.CertificateStoreDetails.ClientMachine}.");
                         break;

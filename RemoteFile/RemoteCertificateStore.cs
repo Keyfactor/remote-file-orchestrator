@@ -66,7 +66,11 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             logger.MethodEntry(LogLevel.Debug);
 
             Server = server;
-            SplitStorePathFile(storeFileAndPath);
+            
+            StorePathFile fullPath = SplitStorePathFile(storeFileAndPath);
+            StorePath = fullPath.StorePath;
+            StoreFileName = fullPath.StoreFile; 
+
             ServerId = serverId;
             ServerPassword = serverPassword ?? string.Empty;
             StorePassword = storePassword;
@@ -102,7 +106,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             logger.MethodExit(LogLevel.Debug);
         }
 
-        internal void LoadCertificateStore(ICertificateStoreSerializer certificateStoreSerializer, string jobProperties)
+        internal void LoadCertificateStore(ICertificateStoreSerializer certificateStoreSerializer, string storeProperties)
         {
             logger.MethodEntry(LogLevel.Debug);
 
@@ -110,7 +114,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             if (byteContents.Length < 5)
                 return;
 
-            CertificateStore = certificateStoreSerializer.DeserializeRemoteCertificateStore(byteContents, StorePassword, jobProperties, RemoteHandler);
+            CertificateStore = certificateStoreSerializer.DeserializeRemoteCertificateStore(byteContents, StorePassword, storeProperties, RemoteHandler);
 
             logger.MethodExit(LogLevel.Debug);
         }
@@ -297,11 +301,15 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             logger.MethodExit(LogLevel.Debug);
         }
 
-        internal void SaveCertificateStore(byte[] storeContents)
+        internal void SaveCertificateStore(List<SerializedStoreInfo> storeInfo)
         {
             logger.MethodEntry(LogLevel.Debug);
 
-            RemoteHandler.UploadCertificateFile(StorePath, StoreFileName, storeContents);
+            foreach(SerializedStoreInfo fileInfo in storeInfo)
+            {
+                PathFile pathFile = SplitStorePathFile(fileInfo.FilePath);
+                RemoteHandler.UploadCertificateFile(pathFile.Path, pathFile.File, fileInfo.Contents);
+            }
 
             logger.MethodExit(LogLevel.Debug);
         }
@@ -421,7 +429,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             return result.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
         }
 
-        private void SplitStorePathFile(string pathFileName)
+        private PathFile SplitStorePathFile(string pathFileName)
         {
             logger.MethodEntry(LogLevel.Debug);
 
@@ -429,15 +437,14 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             {
                 string workingPathFileName = pathFileName.Replace(@"\", @"/");
                 int separatorIndex = workingPathFileName.LastIndexOf(@"/");
-                StoreFileName = pathFileName.Substring(separatorIndex + 1);
-                StorePath = pathFileName.Substring(0, separatorIndex + 1);
+
+                logger.MethodExit(LogLevel.Debug);
+                return new PathFile() { Path = pathFileName.Substring(0, separatorIndex + 1), File = pathFileName.Substring(separatorIndex + 1) };
             }
             catch (Exception ex)
             {
                 throw new RemoteFileException($"Error attempting to parse certficate store path={StorePath}, file name={StoreFileName}.", ex);
             }
-
-            logger.MethodExit(LogLevel.Debug);
         }
 
         private string FormatPath(string path)
@@ -447,5 +454,11 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
 
             return path + (path.Substring(path.Length - 1) == @"\" ? string.Empty : @"\");
         }
+    }
+
+    class PathFile
+    {
+        public string Path { get; set; }
+        public string File { get; set; }
     }
 }

@@ -10,9 +10,11 @@ using Keyfactor.Logging;
 using Keyfactor.PKI.PrivateKeys;
 using Keyfactor.PKI.X509;
 using Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers;
+using Keyfactor.Extensions.Orchestrator.RemoteFile.Models;
 
 using Microsoft.Extensions.Logging;
 
+using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Pkcs;
 using Org.BouncyCastle.X509;
 
@@ -58,12 +60,32 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.PEM
             return store;
         }
 
-        public byte[] SerializeRemoteCertificateStore(Pkcs12Store certificateStore, string storePassword, string storeProperties, IRemoteHandler remoteHandler)
+        public List<SerializedStoreInfo> SerializeRemoteCertificateStore(Pkcs12Store certificateStore, string storePassword, string storeProperties, IRemoteHandler remoteHandler)
         {
             ILogger logger = LogHandler.GetClassLogger(this.GetType());
             logger.MethodEntry(LogLevel.Debug);
 
             LoadCustomProperties(storeProperties);
+
+            if (IsTrustStore)
+            {
+
+            }
+            else
+            {
+                foreach(string alias in certificateStore.Aliases)
+                {
+                    AsymmetricKeyParameter privateKey = certificateStore.GetKey(alias).Key;
+
+                    X509CertificateEntry[] certEntries = certificateStore.GetCertificateChain(alias);].
+                    AsymmetricKeyParameter publicKey = certEntries[0].Certificate.GetPublicKey();
+
+                    PrivateKeyConverter c = PrivateKeyConverterFactory.FromBCKeyPair(privateKey, publicKey, false);
+                    byte[] certKeyBytes = c.ToPkcs8Blob(storePassword);
+                    
+                    break;
+                }
+            }
 
             using (MemoryStream outStream = new MemoryStream())
             {

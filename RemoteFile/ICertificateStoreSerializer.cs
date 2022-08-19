@@ -1,5 +1,7 @@
 ﻿using Org.BouncyCastle.Pkcs;
 using Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers;
+using Keyfactor.Extensions.Orchestrator.RemoteFile.Models;
+using System.Collections.Generic;
 
 namespace Keyfactor.Extensions.Orchestrator.RemoteFile
 {
@@ -7,6 +9,6 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
     {
         Pkcs12Store DeserializeRemoteCertificateStore(byte[] storeContents, string storePassword, string storeProperties, IRemoteHandler remoteHandler);
 
-        byte[] SerializeRemoteCertificateStore(Pkcs12Store certificateStore, string storePassword, string storeProperties, IRemoteHandler remoteHandler);
+        List<SerializedStoreInfo> SerializeRemoteCertificateStore(Pkcs12Store certificateStore, string storePath, string storePassword, string storeProperties, IRemoteHandler remoteHandler);
     }
 }
