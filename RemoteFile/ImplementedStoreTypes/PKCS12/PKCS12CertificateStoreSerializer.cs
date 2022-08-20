@@ -29,7 +29,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.PKCS12
                 certificateStore.Save(outStream, string.IsNullOrEmpty(storePassword) ? new char[0] : storePassword.ToCharArray(), new Org.BouncyCastle.Security.SecureRandom());
 
                 List<SerializedStoreInfo> storeInfo = new List<SerializedStoreInfo>();
-                storeInfo.Add(new SerializedStoreInfo() { FilePath = storePath, Contents = outStream.ToArray()})
+                storeInfo.Add(new SerializedStoreInfo() { FilePath = storePath, Contents = outStream.ToArray() });
                 
                 return storeInfo;
             }

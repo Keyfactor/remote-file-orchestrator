@@ -100,7 +100,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             }
             finally
             {
-                if (certificateStore.SSH != null)
+                if (certificateStore.RemoteHandler != null)
                     certificateStore.Terminate();
             }
 

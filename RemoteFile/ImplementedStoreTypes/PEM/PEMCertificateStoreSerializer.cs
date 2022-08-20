@@ -9,6 +9,7 @@ using Newtonsoft.Json;
 using Keyfactor.Logging;
 using Keyfactor.PKI.PrivateKeys;
 using Keyfactor.PKI.X509;
+using Keyfactor.PKI.PEM;
 using Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers;
 using Keyfactor.Extensions.Orchestrator.RemoteFile.Models;
 
@@ -60,40 +61,62 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.PEM
             return store;
         }
 
-        public List<SerializedStoreInfo> SerializeRemoteCertificateStore(Pkcs12Store certificateStore, string storePassword, string storeProperties, IRemoteHandler remoteHandler)
+        public List<SerializedStoreInfo> SerializeRemoteCertificateStore(Pkcs12Store certificateStore, string storePath, string storePassword, string storeProperties, IRemoteHandler remoteHandler)
         {
             ILogger logger = LogHandler.GetClassLogger(this.GetType());
             logger.MethodEntry(LogLevel.Debug);
 
             LoadCustomProperties(storeProperties);
 
+            string pemString = string.Empty;
+            string keyString = string.Empty;
+            List<SerializedStoreInfo> storeInfo = new List<SerializedStoreInfo>();
+
             if (IsTrustStore)
             {
-
+                foreach (string alias in certificateStore.Aliases)
+                {
+                    CertificateConverter certConverter = CertificateConverterFactory.FromBouncyCastleCertificate(certificateStore.GetCertificate(alias).Certificate);
+                    pemString += certConverter.ToPEM(true);
+                }
             }
             else
             {
-                foreach(string alias in certificateStore.Aliases)
+                foreach (string alias in certificateStore.Aliases)
                 {
                     AsymmetricKeyParameter privateKey = certificateStore.GetKey(alias).Key;
-
-                    X509CertificateEntry[] certEntries = certificateStore.GetCertificateChain(alias);].
+                    X509CertificateEntry[] certEntries = certificateStore.GetCertificateChain(alias);
                     AsymmetricKeyParameter publicKey = certEntries[0].Certificate.GetPublicKey();
+                    PrivateKeyConverter keyConverter = PrivateKeyConverterFactory.FromBCKeyPair(privateKey, publicKey, false);
 
-                    PrivateKeyConverter c = PrivateKeyConverterFactory.FromBCKeyPair(privateKey, publicKey, false);
-                    byte[] certKeyBytes = c.ToPkcs8Blob(storePassword);
-                    
+                    byte[] privateKeyBytes = keyConverter.ToPkcs8Blob(storePassword);
+                    keyString = PemUtilities.DERToPEM(privateKeyBytes, PemUtilities.PemObjectType.EncryptedPrivateKey);
+
+                    X509CertificateEntry[] chainEntries = certificateStore.GetCertificateChain(alias);
+                    CertificateConverter certConverter = CertificateConverterFactory.FromBouncyCastleCertificate(chainEntries[0].Certificate);
+
+                    pemString = certConverter.ToPEM(true);
+                    if (string.IsNullOrEmpty(SeparatePrivateKeyFilePath))
+                        pemString += keyString;
+
+                    if (IncludesChain)
+                    {
+                        for (int i = 1; i < chainEntries.Length; i++)
+                        {
+                            CertificateConverter chainConverter = CertificateConverterFactory.FromBouncyCastleCertificate(chainEntries[i].Certificate);
+                            pemString += chainConverter.ToPEM(true);
+                        }
+                    }
+
                     break;
                 }
             }
 
-            using (MemoryStream outStream = new MemoryStream())
-            {
-                certificateStore.Save(outStream, string.IsNullOrEmpty(storePassword) ? new char[0] : storePassword.ToCharArray(), new Org.BouncyCastle.Security.SecureRandom());
+            storeInfo.Add(new SerializedStoreInfo() { FilePath = storePath, Contents = Encoding.ASCII.GetBytes(pemString) });
+            if (!string.IsNullOrEmpty(SeparatePrivateKeyFilePath))
+                storeInfo.Add(new SerializedStoreInfo() { FilePath = SeparatePrivateKeyFilePath, Contents = Encoding.ASCII.GetBytes(keyString) });
 
-                logger.MethodExit(LogLevel.Debug);
-                return outStream.ToArray();
-            }
+            return storeInfo;
         }
 
         private void LoadCustomProperties(string storeProperties)

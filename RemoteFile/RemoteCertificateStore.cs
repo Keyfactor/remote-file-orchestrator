@@ -67,9 +67,9 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
 
             Server = server;
             
-            StorePathFile fullPath = SplitStorePathFile(storeFileAndPath);
-            StorePath = fullPath.StorePath;
-            StoreFileName = fullPath.StoreFile; 
+            PathFile fullPath = SplitStorePathFile(storeFileAndPath);
+            StorePath = fullPath.Path;
+            StoreFileName = fullPath.File; 
 
             ServerId = serverId;
             ServerPassword = serverPassword ?? string.Empty;
