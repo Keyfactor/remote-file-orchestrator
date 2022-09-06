@@ -38,8 +38,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
                 }
                 protocolNames = protocolNames.Substring(0, protocolNames.Length - 2);
 
-                FileTransferProtocolEnum protocol;
-                if (!Enum.TryParse(configuration["FileTransferProtocol"], out protocol))
+                if (!Enum.TryParse(configuration["FileTransferProtocol"], out FileTransferProtocolEnum protocol))
                     throw new RemoteFileException($"Invalid optional config.json FileTransferProtocol option of {configuration["FileTransferProtocol"]}.  If present, must be one of these values: {protocolNames}.");
                 return protocol; 
             }

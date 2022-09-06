@@ -26,7 +26,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             logger.LogDebug($"Server: { config.CertificateStoreDetails.ClientMachine }");
             logger.LogDebug($"Store Path: { config.CertificateStoreDetails.StorePath }");
             logger.LogDebug($"Job Properties:");
-            foreach (KeyValuePair<string, object> keyValue in config.JobProperties == null ? new Dictionary<string,object>() : config.JobProperties)
+            foreach (KeyValuePair<string, object> keyValue in config.JobProperties ?? new Dictionary<string,object>())
             {
                 logger.LogDebug($"    {keyValue.Key}: {keyValue.Value}");
             }
@@ -70,7 +70,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             }
             catch (Exception ex)
             {
-                logger.LogDebug($"Exception for {config.Capability}: {RemoteFileException.FlattenExceptionMessages(ex, string.Empty)} for job id {config.JobId}");
+                logger.LogError($"Exception for {config.Capability}: {RemoteFileException.FlattenExceptionMessages(ex, string.Empty)} for job id {config.JobId}");
                 return new JobResult() { Result = OrchestratorJobStatusJobResult.Failure, JobHistoryId = config.JobHistoryId, FailureMessage = RemoteFileException.FlattenExceptionMessages(ex, $"Site {config.CertificateStoreDetails.StorePath} on server {config.CertificateStoreDetails.ClientMachine}:") };
             }
             finally
@@ -88,7 +88,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             catch (Exception ex)
             {
                 string errorMessage = RemoteFileException.FlattenExceptionMessages(ex, string.Empty);
-                logger.LogDebug($"Exception returning certificates for {config.Capability}: {errorMessage} for job id {config.JobId}");
+                logger.LogError($"Exception returning certificates for {config.Capability}: {errorMessage} for job id {config.JobId}");
                 return new JobResult() { Result = OrchestratorJobStatusJobResult.Failure, JobHistoryId = config.JobHistoryId, FailureMessage = RemoteFileException.FlattenExceptionMessages(ex, $"Site {config.CertificateStoreDetails.StorePath} on server {config.CertificateStoreDetails.ClientMachine}:") };
             }
         }

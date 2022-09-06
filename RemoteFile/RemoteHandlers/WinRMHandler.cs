@@ -57,7 +57,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
 
             catch (Exception ex)
             {
-                _logger.LogDebug($"Exception during Initialize...{RemoteFileException.FlattenExceptionMessages(ex, ex.Message)}");
+                _logger.LogError($"Exception during Initialize...{RemoteFileException.FlattenExceptionMessages(ex, ex.Message)}");
                 throw ex;
             }
 
@@ -142,7 +142,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
             }
             catch (Exception ex)
             {
-                _logger.LogDebug($"Exception during RunCommand...{RemoteFileException.FlattenExceptionMessages(ex, ex.Message)}");
+                _logger.LogError($"Exception during RunCommand...{RemoteFileException.FlattenExceptionMessages(ex, ex.Message)}");
                 throw ex;
             }
         }
@@ -192,7 +192,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
 
             catch (Exception ex)
             {
-                _logger.LogDebug("Exception during RunCommandBinary...{RemoteFileException.FlattenExceptionMessages(ex, ex.Message)}");
+                _logger.LogError("Exception during RunCommandBinary...{RemoteFileException.FlattenExceptionMessages(ex, ex.Message)}");
                 throw ex;
             }
         }

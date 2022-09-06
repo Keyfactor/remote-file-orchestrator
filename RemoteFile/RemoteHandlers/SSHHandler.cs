@@ -122,7 +122,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
             }
             catch (Exception ex)
             {
-                _logger.LogDebug($"Exception during RunCommand...{RemoteFileException.FlattenExceptionMessages(ex, ex.Message)}");
+                _logger.LogError($"Exception during RunCommand...{RemoteFileException.FlattenExceptionMessages(ex, ex.Message)}");
                 throw ex;
             }
         }
@@ -158,8 +158,8 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
                     catch (Exception ex)
                     {
                         scpError = true;
-                        _logger.LogDebug("Exception during SCP upload...");
-                        _logger.LogDebug($"Upload Exception: {RemoteFileException.FlattenExceptionMessages(ex, ex.Message)}");
+                        _logger.LogError("Exception during SCP upload...");
+                        _logger.LogError($"Upload Exception: {RemoteFileException.FlattenExceptionMessages(ex, ex.Message)}");
                         if (ApplicationSettings.FileTransferProtocol == ApplicationSettings.FileTransferProtocolEnum.Both)
                             _logger.LogDebug($"SCP upload failed.  Attempting with SFTP protocol...");
                         else
@@ -188,8 +188,8 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
                     }
                     catch (Exception ex)
                     {
-                        _logger.LogDebug("Exception during SFTP upload...");
-                        _logger.LogDebug($"Upload Exception: {RemoteFileException.FlattenExceptionMessages(ex, ex.Message)}");
+                        _logger.LogError("Exception during SFTP upload...");
+                        _logger.LogError($"Upload Exception: {RemoteFileException.FlattenExceptionMessages(ex, ex.Message)}");
                         throw ex;
                     }
                     finally
@@ -247,8 +247,8 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
                     catch (Exception ex)
                     {
                         scpError = true;
-                        _logger.LogDebug("Exception during SCP download...");
-                        _logger.LogDebug($"Upload Exception: {RemoteFileException.FlattenExceptionMessages(ex, ex.Message)}");
+                        _logger.LogError("Exception during SCP download...");
+                        _logger.LogError($"Upload Exception: {RemoteFileException.FlattenExceptionMessages(ex, ex.Message)}");
                         if (ApplicationSettings.FileTransferProtocol == ApplicationSettings.FileTransferProtocolEnum.Both)
                             _logger.LogDebug($"SCP download failed.  Attempting with SFTP protocol...");
                         else
@@ -278,8 +278,8 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
                     }
                     catch (Exception ex)
                     {
-                        _logger.LogDebug("Exception during SFTP download...");
-                        _logger.LogDebug($"Download Exception: {RemoteFileException.FlattenExceptionMessages(ex, ex.Message)}");
+                        _logger.LogError("Exception during SFTP download...");
+                        _logger.LogError($"Download Exception: {RemoteFileException.FlattenExceptionMessages(ex, ex.Message)}");
                         throw ex;
                     }
                     finally

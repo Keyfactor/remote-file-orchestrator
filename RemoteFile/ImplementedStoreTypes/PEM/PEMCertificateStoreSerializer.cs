@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Text;
 using System.IO;
-//using System.Security.Cryptography.X509Certificates;
 
 using Newtonsoft.Json;
 
@@ -31,9 +30,15 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.PEM
         private bool IncludesChain { get; set; }
         private string SeparatePrivateKeyFilePath { get; set; }
 
+        private ILogger logger;
+
+        public PEMCertificateStoreSerializer() 
+        {
+            logger = LogHandler.GetClassLogger(this.GetType());
+        }
+
         public Pkcs12Store DeserializeRemoteCertificateStore(byte[] storeContentBytes, string storePassword, string storeProperties, IRemoteHandler remoteHandler)
         {
-            ILogger logger = LogHandler.GetClassLogger(this.GetType());
             logger.MethodEntry(LogLevel.Debug);
 
             LoadCustomProperties(storeProperties);
@@ -57,13 +62,21 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.PEM
                 store.SetKeyEntry(CertificateConverterFactory.FromBouncyCastleCertificate(certificates[0].Certificate).ToX509Certificate2().Thumbprint, keyEntry, certificates);
             }
 
+            // Second Pkcs12Store necessary because of an obscure BC bug where creating a Pkcs12Store without .Load (code above using "Set" methods only) does not set all internal hashtables necessary to avoid an error later
+            //  when processing store.
+            MemoryStream ms = new MemoryStream();
+            store.Save(ms, "123456".ToCharArray(), new Org.BouncyCastle.Security.SecureRandom());
+            ms.Position = 0;
+
+            Pkcs12Store newStore = storeBuilder.Build();
+            newStore.Load(ms, storePassword.ToCharArray());
+
             logger.MethodExit(LogLevel.Debug);
-            return store;
+            return newStore;
         }
 
         public List<SerializedStoreInfo> SerializeRemoteCertificateStore(Pkcs12Store certificateStore, string storePath, string storePassword, string storeProperties, IRemoteHandler remoteHandler)
         {
-            ILogger logger = LogHandler.GetClassLogger(this.GetType());
             logger.MethodEntry(LogLevel.Debug);
 
             LoadCustomProperties(storeProperties);
@@ -76,14 +89,26 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.PEM
             {
                 foreach (string alias in certificateStore.Aliases)
                 {
+                    if (certificateStore.IsKeyEntry(alias))
+                        throw new RemoteFileException("Cannot add a certificate with a private key to a PEM trust store.");
+
                     CertificateConverter certConverter = CertificateConverterFactory.FromBouncyCastleCertificate(certificateStore.GetCertificate(alias).Certificate);
                     pemString += certConverter.ToPEM(true);
                 }
             }
             else
             {
+                bool keyEntryProcessed = false;
                 foreach (string alias in certificateStore.Aliases)
                 {
+                    if (keyEntryProcessed)
+                        throw new RemoteFileException("Cannot add a new certificate to a PEM store that already contains a certificate/key entry.");
+                    else
+                        keyEntryProcessed = true;
+
+                    if (!certificateStore.IsKeyEntry(alias))
+                        throw new RemoteFileException("No private key found.  Private key must be present to add entry to a non-Trust PEM certificate store.");
+
                     AsymmetricKeyParameter privateKey = certificateStore.GetKey(alias).Key;
                     X509CertificateEntry[] certEntries = certificateStore.GetCertificateChain(alias);
                     AsymmetricKeyParameter publicKey = certEntries[0].Certificate.GetPublicKey();
@@ -107,8 +132,6 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.PEM
                             pemString += chainConverter.ToPEM(true);
                         }
                     }
-
-                    break;
                 }
             }
 
@@ -116,18 +139,27 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.PEM
             if (!string.IsNullOrEmpty(SeparatePrivateKeyFilePath))
                 storeInfo.Add(new SerializedStoreInfo() { FilePath = SeparatePrivateKeyFilePath, Contents = Encoding.ASCII.GetBytes(keyString) });
 
+            logger.MethodExit(LogLevel.Debug);
+
             return storeInfo;
         }
 
         private void LoadCustomProperties(string storeProperties)
         {
+            logger.MethodEntry(LogLevel.Debug);
+
             dynamic properties = JsonConvert.DeserializeObject(storeProperties);
             IsTrustStore = properties.IsTrustStore == null || string.IsNullOrEmpty(properties.IsTrustStore.Value) ? false : bool.Parse(properties.IsTrustStore.Value);
             IncludesChain = properties.IncludesChain == null || string.IsNullOrEmpty(properties.IncludesChain.Value) ? false : bool.Parse(properties.IncludesChain.Value);
+            SeparatePrivateKeyFilePath = properties.SeparatePrivateKeyFilePath == null || string.IsNullOrEmpty(properties.SeparatePrivateKeyFilePath.Value) ? String.Empty : properties.SeparatePrivateKeyFilePath.Value;
+
+            logger.MethodExit(LogLevel.Debug);
         }
 
         private X509CertificateEntry[] GetCertificates(string certificates)
         {
+            logger.MethodEntry(LogLevel.Debug);
+
             List<X509CertificateEntry> certificateEntries = new List<X509CertificateEntry>();
 
             try
@@ -141,6 +173,8 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.PEM
                     CertificateConverter c2 = CertificateConverterFactory.FromPEM(Encoding.ASCII.GetBytes(certificate.Replace(CertDelimBeg, string.Empty).Replace(CertDelimEnd, string.Empty)));
                     X509Certificate bcCert = c2.ToBouncyCastleCertificate();
                     certificateEntries.Add(new X509CertificateEntry(bcCert));
+
+                    certificates = certificates.Substring(certStart + certLength - 1);
                 }
             }
             catch (Exception ex)
@@ -148,12 +182,16 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.PEM
                 throw new RemoteFileException($"Error attempting to retrieve certificate chain.", ex);
             }
 
+            logger.MethodExit(LogLevel.Debug);
+
             return certificateEntries.ToArray();
         }
 
         private AsymmetricKeyEntry GetPrivateKey(string storeContents, string storePassword, IRemoteHandler remoteHandler)
         {
-            if (String.IsNullOrEmpty(SeparatePrivateKeyFilePath))
+            logger.MethodEntry(LogLevel.Debug);
+
+            if (!String.IsNullOrEmpty(SeparatePrivateKeyFilePath))
             {
                 storeContents = Encoding.ASCII.GetString(remoteHandler.DownloadCertificateFile(SeparatePrivateKeyFilePath));
             }
@@ -179,6 +217,9 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.PEM
                 throw new RemoteFileException("Invalid private key: No private key found.");
 
             PrivateKeyConverter c = PrivateKeyConverterFactory.FromPkcs8Blob(Convert.FromBase64String(privateKey), storePassword);
+
+            logger.MethodExit(LogLevel.Debug);
+
             return new AsymmetricKeyEntry(c.ToBCPrivateKey());
         }
     }

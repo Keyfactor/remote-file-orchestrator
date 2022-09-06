@@ -30,10 +30,6 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
         private const string NO_EXTENSION = "noext";
         private const string FULL_SCAN = "fullscan";
 
-        const string BEG_DELIM = "-----BEGIN CERTIFICATE-----";
-        const string END_DELIM = "-----END CERTIFICATE-----";
-        const string FILE_NAME_REPL = "||FILE_NAME_HERE||";
-
         static Mutex mutex = new Mutex(false, "ModifyStore");
 
         internal enum ServerTypeEnum
@@ -53,8 +49,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
         internal List<string> DiscoveredStores { get; set; }
         internal string UploadFilePath { get; set; }
         
-        private Pkcs12Store CertificateStore = new Pkcs12Store();
-
+        private Pkcs12Store CertificateStore;
         private ILogger logger;
 
 
@@ -109,6 +104,8 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
         internal void LoadCertificateStore(ICertificateStoreSerializer certificateStoreSerializer, string storeProperties)
         {
             logger.MethodEntry(LogLevel.Debug);
+
+            CertificateStore = new Pkcs12Store();
 
             byte[] byteContents = RemoteHandler.DownloadCertificateFile(StorePath + StoreFileName);
             if (byteContents.Length < 5)
@@ -270,6 +267,10 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
 
                     checkAliasExists = newEntryAlias;
 
+                    if (CertificateStore.ContainsAlias(alias))
+                    {
+                        CertificateStore.DeleteEntry(alias);
+                    }
                     CertificateStore.SetKeyEntry(alias, newEntry.GetKey(newEntryAlias), newEntry.GetCertificateChain(newEntryAlias));
                 }
 

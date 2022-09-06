@@ -59,7 +59,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             }
             catch (Exception ex)
             {
-                logger.LogDebug($"Exception for {config.Capability}: {RemoteFileException.FlattenExceptionMessages(ex, string.Empty)} for job id {config.JobId}");
+                logger.LogError($"Exception for {config.Capability}: {RemoteFileException.FlattenExceptionMessages(ex, string.Empty)} for job id {config.JobId}");
                 return new JobResult() { Result = OrchestratorJobStatusJobResult.Failure, JobHistoryId = config.JobHistoryId, FailureMessage = RemoteFileException.FlattenExceptionMessages(ex, $"Server {config.ClientMachine}:") };
             }
             finally
@@ -81,7 +81,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             catch (Exception ex)
             {
                 string errorMessage = RemoteFileException.FlattenExceptionMessages(ex, string.Empty);
-                logger.LogDebug($"Exception returning store locations for {config.Capability}: {errorMessage} for job id {config.JobId}");
+                logger.LogError($"Exception returning store locations for {config.Capability}: {errorMessage} for job id {config.JobId}");
                 return new JobResult() { Result = OrchestratorJobStatusJobResult.Failure, JobHistoryId = config.JobHistoryId, FailureMessage = $"Server {config.ClientMachine}: {errorMessage}" };
             }
         }
