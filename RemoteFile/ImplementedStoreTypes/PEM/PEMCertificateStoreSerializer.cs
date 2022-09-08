@@ -58,18 +58,18 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.PEM
             }
             else
             {
-                AsymmetricKeyEntry keyEntry = GetPrivateKey(storeContents, storePassword, remoteHandler);
+                AsymmetricKeyEntry keyEntry = GetPrivateKey(storeContents, storePassword ?? string.Empty, remoteHandler);
                 store.SetKeyEntry(CertificateConverterFactory.FromBouncyCastleCertificate(certificates[0].Certificate).ToX509Certificate2().Thumbprint, keyEntry, certificates);
             }
 
             // Second Pkcs12Store necessary because of an obscure BC bug where creating a Pkcs12Store without .Load (code above using "Set" methods only) does not set all internal hashtables necessary to avoid an error later
             //  when processing store.
             MemoryStream ms = new MemoryStream();
-            store.Save(ms, "123456".ToCharArray(), new Org.BouncyCastle.Security.SecureRandom());
+            store.Save(ms, string.IsNullOrEmpty(storePassword) ? new char[0] : storePassword.ToCharArray(), new Org.BouncyCastle.Security.SecureRandom());
             ms.Position = 0;
 
             Pkcs12Store newStore = storeBuilder.Build();
-            newStore.Load(ms, storePassword.ToCharArray());
+            newStore.Load(ms, string.IsNullOrEmpty(storePassword) ? new char[0] : storePassword.ToCharArray());
 
             logger.MethodExit(LogLevel.Debug);
             return newStore;
@@ -114,8 +114,8 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.PEM
                     AsymmetricKeyParameter publicKey = certEntries[0].Certificate.GetPublicKey();
                     PrivateKeyConverter keyConverter = PrivateKeyConverterFactory.FromBCKeyPair(privateKey, publicKey, false);
 
-                    byte[] privateKeyBytes = keyConverter.ToPkcs8Blob(storePassword);
-                    keyString = PemUtilities.DERToPEM(privateKeyBytes, PemUtilities.PemObjectType.EncryptedPrivateKey);
+                    byte[] privateKeyBytes = string.IsNullOrEmpty(storePassword) ? keyConverter.ToPkcs8BlobUnencrypted() : keyConverter.ToPkcs8Blob(storePassword);
+                    keyString = PemUtilities.DERToPEM(privateKeyBytes, string.IsNullOrEmpty(storePassword) ? PemUtilities.PemObjectType.PrivateKey : PemUtilities.PemObjectType.EncryptedPrivateKey);
 
                     X509CertificateEntry[] chainEntries = certificateStore.GetCertificateChain(alias);
                     CertificateConverter certConverter = CertificateConverterFactory.FromBouncyCastleCertificate(chainEntries[0].Certificate);
