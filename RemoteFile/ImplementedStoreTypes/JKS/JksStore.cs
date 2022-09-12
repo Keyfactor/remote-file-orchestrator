@@ -15,6 +15,8 @@ using Org.BouncyCastle.Utilities.Date;
 using Org.BouncyCastle.Utilities.IO;
 using Org.BouncyCastle.X509;
 
+using Keyfactor.PKI.X509;
+
 namespace Keyfactor.Extensions.Orchestrator.RemoteFile.JKS
 {
     public class JksStore
@@ -489,7 +491,8 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.JKS
             byte[] certData = ReadBufferWithLength(br);
             try
             {
-                return new X509Certificate(certData);
+                System.Security.Cryptography.X509Certificates.X509Certificate2 cert = new System.Security.Cryptography.X509Certificates.X509Certificate2(certData);
+                return DotNetUtilities.FromX509Certificate(cert);
             }
             finally
             {

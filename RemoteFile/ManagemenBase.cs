@@ -8,6 +8,7 @@
 using System;
 using System.Collections.Generic;
 using System.Security.Cryptography.X509Certificates;
+using System.Threading;
 
 using Keyfactor.Logging;
 using Keyfactor.Orchestrators.Extensions;
@@ -21,6 +22,8 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
 {
     public abstract class ManagemenBase : RemoteFileJobTypeBase, IManagementJobExtension
     {
+        static Mutex mutex = new Mutex(false, "ModifyStore");
+
         public string ExtensionName => "";
 
         internal RemoteCertificateStore certificateStore = new RemoteCertificateStore();
@@ -41,6 +44,8 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
 
             try
             {
+                mutex.WaitOne();
+
                 ApplicationSettings.Initialize(this.GetType().Assembly.Location);
                 certificateStore = new RemoteCertificateStore(config.CertificateStoreDetails.ClientMachine, config.ServerUsername, config.ServerPassword, config.CertificateStoreDetails.StorePath, config.CertificateStoreDetails.StorePassword, config.JobProperties);
 
@@ -101,6 +106,8 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             }
             finally
             {
+                mutex.ReleaseMutex();
+
                 if (certificateStore.RemoteHandler != null)
                     certificateStore.Terminate();
             }

@@ -30,8 +30,6 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
         private const string NO_EXTENSION = "noext";
         private const string FULL_SCAN = "fullscan";
 
-        static Mutex mutex = new Mutex(false, "ModifyStore");
-
         internal enum ServerTypeEnum
         {
             Linux,
@@ -188,7 +186,6 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
 
             try
             {
-                mutex.WaitOne();
                 byte[] byteContents = RemoteHandler.DownloadCertificateFile(StorePath + StoreFileName);
 
                 using (MemoryStream stream = new MemoryStream(byteContents))
@@ -215,10 +212,6 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             {
                 throw new RemoteFileException($"Error attempting to remove certficate for store path={StorePath}, file name={StoreFileName}.", ex);
             }
-            finally
-            {
-                mutex.ReleaseMutex();
-            }
 
             logger.MethodExit(LogLevel.Debug);
         }
@@ -241,7 +234,6 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
                 Pkcs12StoreBuilder storeBuilder = new Pkcs12StoreBuilder();
                 Pkcs12Store certs = storeBuilder.Build();
 
-                mutex.WaitOne();
                 byte[] newCertBytes = Convert.FromBase64String(certificateEntry);
 
                 Pkcs12Store newEntry = storeBuilder.Build();
@@ -293,10 +285,6 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             catch (Exception ex)
             {
                 throw new RemoteFileException($"Error attempting to add certficate for store path={StorePath}, file name={StoreFileName}.", ex);
-            }
-            finally
-            {
-                mutex.ReleaseMutex();
             }
 
             logger.MethodExit(LogLevel.Debug);
