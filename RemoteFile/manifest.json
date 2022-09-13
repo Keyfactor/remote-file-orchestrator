@@ -12,6 +12,30 @@
       "CertStores.RFPkcs12.Discovery": {
         "assemblypath": "RemoteFile.dll",
         "TypeFullName": "Keyfactor.Extensions.Orchestrator.RemoteFile.Discovery"
+      },
+      "CertStores.RFPEM.Inventory": {
+        "assemblypath": "RemoteFile.dll",
+        "TypeFullName": "Keyfactor.Extensions.Orchestrator.RemoteFile.PEM.Inventory"
+      },
+      "CertStores.RFPEM.Management": {
+        "assemblypath": "RemoteFile.dll",
+        "TypeFullName": "Keyfactor.Extensions.Orchestrator.RemoteFile.PEM.Management"
+      },
+      "CertStores.RFPEM.Discovery": {
+        "assemblypath": "RemoteFile.dll",
+        "TypeFullName": "Keyfactor.Extensions.Orchestrator.RemoteFile.Discovery"
+      },
+      "CertStores.RFJKS.Inventory": {
+        "assemblypath": "RemoteFile.dll",
+        "TypeFullName": "Keyfactor.Extensions.Orchestrator.RemoteFile.JKS.Inventory"
+      },
+      "CertStores.RFJKS.Management": {
+        "assemblypath": "RemoteFile.dll",
+        "TypeFullName": "Keyfactor.Extensions.Orchestrator.RemoteFile.JKS.Management"
+      },
+      "CertStores.RFJKS.Discovery": {
+        "assemblypath": "RemoteFile.dll",
+        "TypeFullName": "Keyfactor.Extensions.Orchestrator.RemoteFile.Discovery"
       }
     }
   }
