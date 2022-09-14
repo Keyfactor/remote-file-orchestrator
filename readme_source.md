@@ -13,6 +13,8 @@ While the Keyfactor Universal Orchestrator (UO) can be installed on either Windo
 |Orchestrated Server on remote Linux server|&check; |&check; |
 |Orchestrated Server on same server as orchestrator service (Agent)|&check; |&check; |
 
+This orchestrator extension makes use of an SSH connection to communicate remotely with certificate stores hosted on Linux servers and WinRM to communicate with certificate stores hosted on Windows servers.
+
 ## Versioning
 
 The version number of a the Remote File Orchestrator Extension can be verified by right clicking on the n the Extensions/RemoteFile installation folder, selecting Properties, and then clicking on the Details tab.
@@ -40,6 +42,7 @@ The Remote File Orchestrator Extension has been tested against Keyfactor Univers
 2. When creating/configuring a certificate store in Keyfactor Command, you will see a "Change Credentials" link after entering in the destination client machine (IP or DNS).  This link **must** be clicked on to present the credentials dialog.  However, WinRM does not require that you enter separate credentials.  Simply click SAVE in the resulting dialog without entering in credentials to use the credentials that the Keyfactor Orchestrator Service is running under.  Alternatively, you may enter separate credentials into this dialog and use those to connect to the orchestrated server.
 
 **SSH Key-Based Authentiation**
+1. When creating a Keyfactor certificate store for the remote file orchestrator extension, you may supply a user id and password for the certificate store credentials (directly or through one of Keyfactor Command's PAM integrations), or you can use a user id and SSH private key.  Both PKCS#1 (BEGIN RSA PRIVATE KEY) and PKCS#8 (BEGIN PRIVATE KEY) formats are SUPPORTED.  If using the normal Keyfactor Command credentials dialog without PAM integration, just copy and paste the full SSH private key into the Password textbox.
 
 ## Remote File Orchestrator Extension Installation
 1. Create the certificate store types you wish to manage.  Please refer to the individual sections devoted to each supported store type later in this README.
@@ -48,7 +51,27 @@ The Remote File Orchestrator Extension has been tested against Keyfactor Univers
 4. Download the latest version of the RemoteFile orchestrator extension from [GitHub](https://github.com/Keyfactor/remote-file-orchestrator).  Click on the "Latest" release link on the right hand side of the main page and download the first zip file.
 5. Copy the contents of the download installation zip file to the folder created in Step 2.
 6. (Optional) If you decide to create one or more certificate store types with short names different than the suggested values (please see the individual certificate store type sections later in this README for more information regarding that), edit the manifest.json file in the ../extensions/RemoteFile folder and modify each "ShortName" in each "Certstores.{ShortName}.{Operation}" line with the ShortName you used to create the respective certificate store type.  If you created it with the suggested values, this step is not necessary.
-7. Start the Keyfactor Universal Orchestrator Service.
+7. Modify the config.json file (See "Configuration File Overview section later in this README)
+8. Start the Keyfactor Universal Orchestrator Service.
+
+## Configuration File Overview 
+
+The Remote File Orchestrator Extension uses a JSON configuration file.  It is located in the {Keyfactor Orchestrator Installation Folder}\Extensions\RemoteFile.  None of the values are required, and a description of each follows below:
+{
+   "UseSudo": "N",
+   "CreateStoreIfMissing": "N",
+   "UseNegotiate": "N",
+   "SeparateUploadFilePath": "",
+   "FileTransferProtocol":  "SCP",
+   "DefaultLinuxPermissionsOnStoreCreation": "600"
+}
+
+**UseSudo** (Applicable for Linux orchestrated servers only) - Y/N - Determines whether to prefix certain Linux command with "sudo". This can be very helpful in ensuring that the user id running commands over an ssh connection uses "least permissions necessary" to process each task. Setting this value to "Y" will prefix all Linux commands with "sudo" with the expectation that the command being executed on the orchestrated Linux server will look in the sudoers file to determine whether the logged in ID has elevated permissions for that specific command. For Windows orchestrated servers, this setting has no effect. Setting this value to "N" will result in "sudo" not being added to Linux commands.  **Default value - N**.
+**CreateStoreOnAddIfMissing** - Y/N - Determines, during a Management-Add job, if a certificate store should be created if it does not already exist.  If set to "N", and the store referenced in the Management-Add job is not found, the job will return an error with a message stating that the store does not exist.  If set to "Y", the store will be created and the certificate added to the certificate store.  **Default value - N**.
+**UseNegotiateAuth** (Applicable for Windows orchestrated servers only) – Y/N - Determines if WinRM should use Negotiate (Y) when connecting to the remote server.  **Default Value - N**. 
+**SeparateUploadFilePath** (Applicable for Linux managed servers only) – Set this to the path you wish to use as the location on the orchestrated server to upload and later remove temporary work files when processing jobs.  If set to "" or not provided, the location of the certificate store itself will be used.  File transfer itself is performed using SCP or SFTP protocols (see FileTransferProtocol setting). **Default Value - blank**.
+**FileTransferProtocol** (Applicable for Linux orchestrated servers only) - SCP/SFTP/Both - Determines the protocol to use when uploading/downloading files while processing a job.  Valid values are: SCP - uses SCP, SFTP - uses SFTP, or Both - will attempt to use SCP first, and if that does not work, will attempt the file transfer via SFTP.  **Default Value - SCP** 
+**DefaultLinuxPermissionsOnStoreCreation** (Applicable for Linux managed servers only) - Value must be 3 digits all between 0-7.  The Linux file permissions that will be set on a new certificate store created via a Management Create job or a Management Add job where CreateStoreOnAddIsMissing is set to "Y".  This value will be used for all certificate stores managed by this orchestrator instance unless overridden by the optional "Linux File Permissions on Store Creation" custom parameter setting on a specific certificate store (See the various certificate store type set up sections later in this README).  **Default Value - 600**.
 
 ## PEMChain Orchestrator Configuration
 
@@ -154,28 +177,6 @@ First, in Keyfactor Command navigate to Certificate Locations =\> Certificate St
 Once the Discovery job has completed, a list of PEMChain store locations should show in the Certificate Stores Discovery tab in Keyfactor Command. Right click on a store and select Approve to bring up a dialog that will ask for the Keystore Password. Enter the store password, click Save, and the Certificate Store should now show up in the list of stores in the Certificate Stores tab.
 
 From the Certificate Store list, edit the newly added store to enter whether the store has a separate private key file, and if necessary, the FULL PATH to that file. **NOTE:** You will not be able to successfully process an Inventory or Management job for this store until this has been completed.
-
-**4. Update Settings in config.json**
-
-The PEMChain Orchestrator uses a JSON config file:
-
-{  
-"UseSudo": "N",  
-"CreateStoreOnAddIfMissing": "N",  
-"UseSeparateUploadFilePath": "N",  
-"SeparateUploadFilePath": "/path/to/upload/folder/",  
-"UseNegotiateAuth": "N",  
-"UseSCP": "N",  
-"DefaultLinuxPermissionsOnStoreCreation": "600"  
-}
-
-**UseSudo** (Applicable for Linux managed servers only) - Y/N - Determines whether to prefix certain Linux command with "sudo". This can be very helpful in ensuring that the user id running commands ssh uses "least permissions necessary" to process each task. Setting this value to "Y" will prefix all Linux commands with "sudo" with the expectation that the command being executed on the orchestrated Linux server will look in the sudoers file to determine whether the logged in ID has elevated permissions for that specific command. For orchestrated Windows servers, this setting has no effect. Setting this value to "N" will result in "sudo" not being added to Linux commands.  
-**CreateStoreOnAddIfMissing** - Y/N - Determines if during a Management-Add job if a certificate store should be created if it does not already exist.  If set to "N", the job will return an error with a message stating that the store does not exist.  
-**UseSeparateUploadFilePath** (Applicable for Linux managed servers only) – When adding a certificate to a PEM or PKCS12 store, the PEMChain Orchestrator must upload the certificate being deployed to the server where the certificate store resides. Setting this value to "Y" looks to the next setting, SeparateUploadFilePath, to determine where this file should be uploaded. Set this value to "N" to use the same path where the certificate store being managed resides.  
-**SeparateUploadFilePath** (Applicable for Linux managed servers only) – Only used when UseSeparateUploadFilePath is set to "Y". Set this to the path you wish to use as the location to upload and later remove PEM/PKCS12 certificate store data before being moved to the final destination.  
-**UseNegotiateAuth** (Applicable for Windows managed servers only) – Y/N - Determines if WinRM should use Negotiate (Y) when connecting to the remote server.  
-**UseSCP** (Optional, Applicable for Linux managed servers only) - Y/N - Detemines if SCP (Y) or SFTP (N) should be used in uploading certificate files during Management-Add jobs.  
-**DefaultLinuxPermissionsOnStoreCreation** (Applicable for Linux managed servers only) - Optional.  Value must be 3 digits all between 0-7.  The Linux file permissions that will be set on a new certificate store created via a Management Create job.  This value will be used for all certificate stores managed by this orchestrator instance unless overridden by the optional "Linux File Permissions on Store Creation" custom parameter setting on a specific certificate store.  If "Linux File Permissions on Store Creation" and DefaultLinuxPermissionsOnStoreCreation are not set, a default permission of 600 will be used.
 
 ***
 
