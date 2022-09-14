@@ -5,6 +5,14 @@ The Remote File Orchestrator Extension is a multi-purpose integration that can r
 - PKCS12 files, including, but not limited to, Java keystores of type PKCS12
 - PEM files
 
+The Keyfactor Universal Orchestrator can be installed on either Windows or Linux.  Likewise, both Windows and Linux servers containing certificate stores can be managed.  The supported configurations of Universal Orchestrator hosts and managed orchestrated servers is shown below:
+
+|| UO Installed on Windows | UO Installed on Linux |
+||-----|------|
+|Orchestrated Server on Windows|&check; ||
+|Orchestrated Server on Linux|&check; |&check; |
+|Orchestrated Server on Same Server (Agent)|&check; |&check; |
+
 ## Versioning
 
 The version number of a the Remote File Orchestrator Extension can be verified by right clicking on the n the Extensions/RemoteFile installation folder, selecting Properties, and then clicking on the Details tab.
@@ -12,15 +20,6 @@ The version number of a the Remote File Orchestrator Extension can be verified b
 ## Keyfactor Version Supported
 
 The Remote File Orchestrator Extension has been tested against Keyfactor Universal Orchestrator version 9.5, but should work against earlier or later versions of the Keyfactor Universal Orchestrator.
-
-## Remote File Orchestrator Extension Installation
-1. Create the certificate store types you wish to manage.  Please refer to the individual sections devoted to each supported store type later in this README.
-2. Stop the Keyfactor Universal Orchestrator Service for the orchestrator you plan to install this extension to run on.
-3. In the Keyfactor Orchestrator installation folder (by convention usually C:\Program Files\Keyfactor\Keyfactor Orchestrator), find the "extensions" folder. Underneath that, create a new folder named "RemoteFile". You may choose to use a different name if you wish.
-4. Download the latest version of the RemoteFile orchestrator extension from [GitHub](https://github.com/Keyfactor/remote-file-orchestrator).  Click on the "Latest" release link on the right hand side of the main page and download the first zip file.
-5. Copy the contents of the download installation zip file to the folder created in Step 2.
-6. (Optional) If you decide to create one or more certificate store types with short names different than the suggested values (please see the individual certificate store type sections later in this README for more information regarding that), edit the manifest.json file in the ../extensions/RemoteFile folder and modify each "ShortName" in each "Certstores.{ShortName}.{Operation}" line with the ShortName you used to create the respective certificate store type.  If you created it with the suggested values, this step is not necessary.
-7. Start the Keyfactor Universal Orchestrator Service.
 
 ## Security Considerations
 
@@ -42,6 +41,14 @@ The Remote File Orchestrator Extension has been tested against Keyfactor Univers
 
 **SSH Key-Based Authentiation**
 
+## Remote File Orchestrator Extension Installation
+1. Create the certificate store types you wish to manage.  Please refer to the individual sections devoted to each supported store type later in this README.
+2. Stop the Keyfactor Universal Orchestrator Service for the orchestrator you plan to install this extension to run on.
+3. In the Keyfactor Orchestrator installation folder (by convention usually C:\Program Files\Keyfactor\Keyfactor Orchestrator), find the "extensions" folder. Underneath that, create a new folder named "RemoteFile". You may choose to use a different name if you wish.
+4. Download the latest version of the RemoteFile orchestrator extension from [GitHub](https://github.com/Keyfactor/remote-file-orchestrator).  Click on the "Latest" release link on the right hand side of the main page and download the first zip file.
+5. Copy the contents of the download installation zip file to the folder created in Step 2.
+6. (Optional) If you decide to create one or more certificate store types with short names different than the suggested values (please see the individual certificate store type sections later in this README for more information regarding that), edit the manifest.json file in the ../extensions/RemoteFile folder and modify each "ShortName" in each "Certstores.{ShortName}.{Operation}" line with the ShortName you used to create the respective certificate store type.  If you created it with the suggested values, this step is not necessary.
+7. Start the Keyfactor Universal Orchestrator Service.
 
 ## PEMChain Orchestrator Configuration
 
