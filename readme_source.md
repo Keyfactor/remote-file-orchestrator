@@ -5,7 +5,7 @@ The Remote File Orchestrator Extension is a multi-purpose integration that can r
 - PKCS12 files, including, but not limited to, Java keystores of type PKCS12
 - PEM files
 
-While the Keyfactor Universal Orchestrator can be installed on either Windows or Linux, likewise, the Remote File Orchestrator Extension can be used to manage certificate stores residing on both Windows and Linux servers.  The supported configurations of Universal Orchestrator hosts and managed orchestrated servers is shown below:
+While the Keyfactor Universal Orchestrator (UO) can be installed on either Windows or Linux, likewise, the Remote File Orchestrator Extension can be used to manage certificate stores residing on both Windows and Linux servers.  The supported configurations of Universal Orchestrator hosts and managed orchestrated servers is shown below:
 
 | | UO Installed on Windows | UO Installed on Linux |
 |-----|-----|------|
