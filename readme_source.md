@@ -25,14 +25,23 @@ The Remote File Orchestrator Extension has been tested against Keyfactor Univers
 ## Security Considerations
 
 **For Linux orchestrated servers:**
-1. The PEMChain Orchestrator Extension makes use of a few common Linux commands when managing stores on Linux servers. If the credentials you will be connecting with will need elevated access to run these commands, you must set the id up as a sudoer with no password necessary and set the config.json "UseSudo" value to "Y" (See Section 4 regarding the config.json file). The full list of these commands below:
+1. The Remote File Orchestrator Extension makes use of a few common Linux commands when managing stores on Linux servers. If the credentials you will be connecting with will need elevated access to run these commands, you must set the id up as a sudoer with no password necessary and set the config.json "UseSudo" value to "Y" (See section "Config File Setup" later in this README regarding the config.json file). The full list of these commands below:
     * echo
-    * grep
     * find
-2. The PEMChain Orchestrator Extension makes use of SFTP or SCP to transfer files to and from the orchestrated server.  SFTP/SCP cannot make use of sudo, so all folders containing certificate stores will need to allow SFTP/SCP file transfer.  If this is not possible, set the values in the config.json apprpriately to use an alternative upload/download folder that does allow SFTP/SCP file transfer (See Section 4 regarding the config.json file).
+    * cp
+    * rm
+    * chown
+    * install
+
+2. The Remote File Orchestrator Extension makes use of SFTP and/or SCP to transfer files to and from the orchestrated server.  SFTP/SCP cannot make use of sudo, so all folders containing certificate stores will need to allow SFTP/SCP file transfer.  If this is not possible, set the values in the config.json apprpriately to use an alternative upload/download folder that does allow SFTP/SCP file transfer (See section "Config File Setup" later in this README regarding the config.json file).
 
 **For Windows orchestrated servers:**
-1. Make sure that WinRM is set up on the orchestrated server and that the WinRM port is part of the certificate store path when setting up your certificate stores (See Section 3a below). 
+1. Make sure that WinRM is set up on the orchestrated server and that the WinRM port is part of the certificate store path when setting up your certificate stores (See "Certificate Store Setup" for each supported certificate store type later in this README). 
+
+2. When creating/configuring a certificate store in Keyfactor Command, you will see a "Change Credentials" link after entering in the destination client machine (IP or DNS).  This link **must** be clicked on to present the credentials dialog.  However, WinRM does not require that you enter separate credentials.  Simply click SAVE in the resulting dialog without entering in credentials to use the credentials that the Keyfactor Orchestrator Service is running under.  Alternatively, you may enter separate credentials into this dialog and use those to connect to the orchestrated server.
+
+**SSH Key-Based Authentiation**
+
 
 ## PEMChain Orchestrator Configuration
 
