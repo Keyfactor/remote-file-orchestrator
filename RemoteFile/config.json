@@ -4,5 +4,5 @@
    "UseNegotiate": "N",
    "SeparateUploadFilePath": "",
    "DefaultLinuxPermissionsOnStoreCreation": "600",
-   "FileTransferProtocolEnum":  "SCP"
+   "FileTransferProtocol":  "SCP"
 }
