@@ -90,15 +90,15 @@ The Remote File Orchestrator Extension has been tested against Keyfactor Univers
 
 ## Configuration File Overview 
 
-The Remote File Orchestrator Extension uses a JSON configuration file.  It is located in the {Keyfactor Orchestrator Installation Folder}\Extensions\RemoteFile.  None of the values are required, and a description of each follows below:
-{
-   "UseSudo": "N",
-   "CreateStoreIfMissing": "N",
-   "UseNegotiate": "N",
-   "SeparateUploadFilePath": "",
-   "FileTransferProtocol":  "SCP",
-   "DefaultLinuxPermissionsOnStoreCreation": "600"
-}
+The Remote File Orchestrator Extension uses a JSON configuration file.  It is located in the {Keyfactor Orchestrator Installation Folder}\Extensions\RemoteFile.  None of the values are required, and a description of each follows below:  
+{  
+   "UseSudo": "N",  
+   "CreateStoreIfMissing": "N",  
+   "UseNegotiate": "N",  
+   "SeparateUploadFilePath": "",  
+   "FileTransferProtocol":  "SCP",  
+   "DefaultLinuxPermissionsOnStoreCreation": "600"  
+}  
 
 **UseSudo** (Applicable for Linux orchestrated servers only) - Y/N - Determines whether to prefix certain Linux command with "sudo". This can be very helpful in ensuring that the user id running commands over an ssh connection uses "least permissions necessary" to process each task. Setting this value to "Y" will prefix all Linux commands with "sudo" with the expectation that the command being executed on the orchestrated Linux server will look in the sudoers file to determine whether the logged in ID has elevated permissions for that specific command. For Windows orchestrated servers, this setting has no effect. Setting this value to "N" will result in "sudo" not being added to Linux commands.  **Default value - N**.  
 **CreateStoreOnAddIfMissing** - Y/N - Determines, during a Management-Add job, if a certificate store should be created if it does not already exist.  If set to "N", and the store referenced in the Management-Add job is not found, the job will return an error with a message stating that the store does not exist.  If set to "Y", the store will be created and the certificate added to the certificate store.  **Default value - N**.  
