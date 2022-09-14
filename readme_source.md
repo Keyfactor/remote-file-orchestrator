@@ -8,7 +8,7 @@ The Remote File Orchestrator Extension is a multi-purpose integration that can r
 The Keyfactor Universal Orchestrator can be installed on either Windows or Linux.  Likewise, both Windows and Linux servers containing certificate stores can be managed.  The supported configurations of Universal Orchestrator hosts and managed orchestrated servers is shown below:
 
 | | UO Installed on Windows | UO Installed on Linux |
-| |-----|------|
+|-----|-----|------|
 |Orchestrated Server on Windows|&check; | |
 |Orchestrated Server on Linux|&check; |&check; |
 |Orchestrated Server on Same Server (Agent)|&check; |&check; |
