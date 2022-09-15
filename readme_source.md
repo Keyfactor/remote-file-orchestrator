@@ -72,7 +72,8 @@ The Remote File Orchestrator Extension uses a JSON configuration file.  It is lo
 **SeparateUploadFilePath**(Applicable for Linux managed servers only) – Set this to the path you wish to use as the location on the orchestrated server to upload and later remove temporary work files when processing jobs.  If set to "" or not provided, the location of the certificate store itself will be used.  File transfer itself is performed using SCP or SFTP protocols (see FileT ransferProtocol setting). **Default Value - blank**.  
 **FileTransferProtocol** (Applicable for Linux orchestrated servers only) - SCP/SFTP/Both - Determines the protocol to use when uploading/downloading files while processing a job.  Valid values are: SCP - uses SCP, SFTP - uses SFTP, or Both - will attempt to use SCP first, and if that does not work, will attempt the file transfer via SFTP.  **Default Value - SCP**.  
 **DefaultLinuxPermissionsOnStoreCreation** (Applicable for Linux managed servers only) - Value must be 3 digits all between 0-7.  The Linux file permissions that will be set on a new certificate store created via a Management Create job or a Management Add job where CreateStoreOnAddIsMissing is set to "Y".  This value will be used for all certificate stores managed by this orchestrator instance unless overridden by the optional "Linux File Permissions on Store Creation" custom parameter setting on a specific certificate store (See the "Certificatee Store Types Supported" secgtion later in this README).  **Default Value - 600**.  
-
+&nbsp;
+&nbsp;
 ## Certificate Store Types
 
 When setting up the certificate store types you wish the Remote File Orchestrator Extension to manage, there are some common settings that will be the same for all supported types.  To create a new Keyfactor Command Certificate Store Type, first click on settings (the gear icon on the top right) => Certificate Store Types => Add.
