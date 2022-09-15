@@ -142,7 +142,6 @@ Entry Parameters Tab:
 - See specific certificate store type instructions below  
 
 &nbsp;  
-&nbsp;  
 **PKCS12 Certificate Store Type**
 
 The PKCS12 store type can be used to manage any PKCS#12 compliant file format.
@@ -151,7 +150,7 @@ Use cases supported:
 1. Trust entries - A single certificate without a private key in a certificate store.  Each certificate identified with a custom alias or certificate thumbprint.
 2. Key entries - One-to-many certificates with private keys and optionally the full certificate chain.  Each certificate identified with a custom alias or certificate thumbprint.
 
-Specific Certificate Store Type Values 
+**Specific Certificate Store Type Values**  
 *Basic Tab:*
 - **Short Name** – Required. Suggested value - **RFPkcs12**.  If you choose to use a different value you must make the corresponding modification to the manifest.json file (see "Remote File Orchestrator Extension Installation", step 6 above).
 
