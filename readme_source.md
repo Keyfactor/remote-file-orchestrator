@@ -77,8 +77,8 @@ The Remote File Orchestrator Extension uses a JSON configuration file.  It is lo
 
 When setting up the certificate store types you wish the Remote File Orchestrator Extension to manage, there are some common settings that will be the same for all supported types.  To create a new Keyfactor Command Certificate Store Type, first click on settings (the gear icon on the top right) => Certificate Store Types => Add.
 
-Common Values:
-Basic Tab:
+**Common Values:**  
+*Basic Tab:*
 - **Name** – Required. The display name you wish to use for the new Certificate Store Type.
 - **ShortName** - Required. See specific certificate store type instructions below.
 - **Custom Capability** - Unchecked
@@ -88,14 +88,12 @@ Basic Tab:
 - **Uses PoserShell** - Unchecked
 - **Requires Store Password** - Checked.  NOTE: This does not require that a certificate store have a password, but merely ensures that a user who creates a Keyfactor Command Certificate Store MUST click the Store Password button and either enter a password or check No Password.  Certificate stores with no passwords are still possible for certain certificate store types when checking this option.
 - **Supports Entry Password** - See specific certificate store type instructions below.
-
-Advanced Tab:
+*Advanced Tab:*
 - **Store Paty Type** - Freeform
 - **Supports Custom Alias** - See specific certificate store type instructions below.
 - **Private Key Handling** - See specific certificate store type instructions below
 - **PFX Password Style** - Default
-
-Custom Fields Tab:
+*Custom Fields Tab:*
 - See specific certificate store type instructions below
 
 Entry Parameters Tab:
