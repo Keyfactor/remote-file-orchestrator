@@ -105,7 +105,7 @@ When setting up the certificate store types you wish the Remote File Orchestrato
 - Name: linuxFilePermissionsOnStoreCreation, Display Name: Linux File Permissions on Store Creation, Type: String, Default Value: none....This custom field is **required**.
 
 Entry Parameters Tab:
-- See specific certificate store type instructions below
+- See specific certificate store type instructions below  
 &nbsp;
 &nbsp;  
 **PKCS12 Certificate Store Type**
