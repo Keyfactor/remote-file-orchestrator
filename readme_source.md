@@ -99,7 +99,7 @@ When setting up the certificate store types you wish the Remote File Orchestrato
 - See specific certificate store type instructions below
 
 Entry Parameters Tab:
-- See specific certificate store type instructions below
+- See specific certificate store type instructions below  
 
 
 
