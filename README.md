@@ -115,7 +115,7 @@ The Remote File Orchestrator Extension uses a JSON configuration file.  It is lo
 &nbsp;  
 ## Certificate Store Types
 
-When setting up the certificate store types you wish the Remote File Orchestrator Extension to manage, there are some common settings that will be the same for all supported types.  To create a new Keyfactor Command Certificate Store Type, first click on settings (the gear icon on the top right) => Certificate Store Types => Add.
+When setting up the certificate store types you wish the Remote File Orchestrator Extension to manage, there are some common settings that will be the same for all supported types.  To create a new Certificate Store Type in Keyfactor Command, first click on settings (the gear icon on the top right) => Certificate Store Types => Add.
 
 **Common Values:**  
 *Basic Tab:*
