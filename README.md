@@ -79,12 +79,12 @@ The Remote File Orchestrator Extension has been tested against Keyfactor Univers
 1. When creating a Keyfactor certificate store for the remote file orchestrator extension, you may supply a user id and password for the certificate store credentials (directly or through one of Keyfactor Command's PAM integrations), or you can use a user id and SSH private key.  Both PKCS#1 (BEGIN RSA PRIVATE KEY) and PKCS#8 (BEGIN PRIVATE KEY) formats are SUPPORTED.  If using the normal Keyfactor Command credentials dialog without PAM integration, just copy and paste the full SSH private key into the Password textbox.
 
 ## Remote File Orchestrator Extension Installation
-1. Create the certificate store types you wish to manage.  Please refer to the individual sections devoted to each supported store type under "Certificate Store Types Supported" later in this README.
+1. Create the certificate store types you wish to manage.  Please refer to the individual sections devoted to each supported store type under "Certificate Store Types" later in this README.
 2. Stop the Keyfactor Universal Orchestrator Service for the orchestrator you plan to install this extension to run on.
 3. In the Keyfactor Orchestrator installation folder (by convention usually C:\Program Files\Keyfactor\Keyfactor Orchestrator), find the "extensions" folder. Underneath that, create a new folder named "RemoteFile". You may choose to use a different name if you wish.
 4. Download the latest version of the RemoteFile orchestrator extension from [GitHub](https://github.com/Keyfactor/remote-file-orchestrator).  Click on the "Latest" release link on the right hand side of the main page and download the first zip file.
 5. Copy the contents of the download installation zip file to the folder created in Step 3.
-6. (Optional) If you decide to create one or more certificate store types with short names different than the suggested values (please see the individual certificate store type sections in "Certificate Store Types Supported" later in this README for more information regarding certificate store types), edit the manifest.json file in the folder you created in step 3, and modify each "ShortName" in each "Certstores.{ShortName}.{Operation}" line with the ShortName you used to create the respective certificate store type.  If you created it with the suggested values, this step can be skipped.
+6. (Optional) If you decide to create one or more certificate store types with short names different than the suggested values (please see the individual certificate store type sections in "Certificate Store Types" later in this README for more information regarding certificate store types), edit the manifest.json file in the folder you created in step 3, and modify each "ShortName" in each "Certstores.{ShortName}.{Operation}" line with the ShortName you used to create the respective certificate store type.  If you created it with the suggested values, this step can be skipped.
 7. Modify the config.json file (See the "Configuration File Setup" section later in this README)
 8. Start the Keyfactor Universal Orchestrator Service.
 
@@ -107,7 +107,35 @@ The Remote File Orchestrator Extension uses a JSON configuration file.  It is lo
 **FileTransferProtocol** (Applicable for Linux orchestrated servers only) - SCP/SFTP/Both - Determines the protocol to use when uploading/downloading files while processing a job.  Valid values are: SCP - uses SCP, SFTP - uses SFTP, or Both - will attempt to use SCP first, and if that does not work, will attempt the file transfer via SFTP.  **Default Value - SCP**.  
 **DefaultLinuxPermissionsOnStoreCreation** (Applicable for Linux managed servers only) - Value must be 3 digits all between 0-7.  The Linux file permissions that will be set on a new certificate store created via a Management Create job or a Management Add job where CreateStoreOnAddIsMissing is set to "Y".  This value will be used for all certificate stores managed by this orchestrator instance unless overridden by the optional "Linux File Permissions on Store Creation" custom parameter setting on a specific certificate store (See the "Certificatee Store Types Supported" secgtion later in this README).  **Default Value - 600**.  
 
-## Certificate Store Types Supported
+## Certificate Store Types
+
+When setting up the certificate store types you wish the Remote File Orchestrator Extension to manage, there are some common settings that will be the same for all supported types.  To create a new Keyfactor Command Certificate Store Type, first click on settings (the gear icon on the top right) => Certificate Store Types => Add.
+
+Common Values:
+Basic Tab:
+- **Name** – Required. The display name you wish to use for the new Certificate Store Type.
+- **ShortName** - Required. See specific certificate store type instructions below.
+- **Custom Capability** - Unchecked
+- **Supported Job Types** - Inventory, Add, Remove, Create, and Discovery should all be checked.
+- **Needs Server** - Checked
+- **Blueprint Allowed** - Checked if you wish to mske use of blueprinting.  Pleaes refer to the Keyfactor Command Reference Guide for more details on this feature.
+- **Uses PoserShell** - Unchecked
+- **Requires Store Password** - Checked.  NOTE: This does not require that a certificate store have a password, but merely ensures that a user who creates a Keyfactor Command Certificate Store MUST click the Store Password button and either enter a password or check No Password.  Certificate stores with no passwords are still possible for certain certificate store types when checking this option.
+- **Supports Entry Password** - See specific certificate store type instructions below.
+
+Advanced Tab:
+- **Store Paty Type** - Freeform
+- **Supports Custom Alias** - See specific certificate store type instructions below.
+- **Private Key Handling** - See specific certificate store type instructions below
+- **PFX Password Style** - Default
+
+Custom Fields Tab:
+- See specific certificate store type instructions below
+
+Entry Parameters Tab:
+- See specific certificate store type instructions below
+
+
 
 **PKCS12 Certificate Store Type**
 
@@ -115,9 +143,8 @@ Use cases supported:
 1. Trust entries - A single certificate without a private key in a certificate store.  Each certificate identified with a custom alias or certificate thumbprint.
 2. Key entries - One-to-many certificates with private keys and optionally the full certificate chain.  Each certificate identified with a custom alias or certificate thumbprint.
 
-Certificate 
-- **Name** – Required. The display name of the new Certificate Store Type
-- **Short Name** – Required. **MUST** match the folder name under Extensions in the installation folder.  Default="**PEMChain**"
+Specific Certificate Store Type Values 
+- **Short Name** – Required. **MUST** match the contents of the manifest.json file (see "Remote File Orchestrator Extension Installation", step 6 above).  Suggested value - RFPkcs12.
 - **Custom Capability** - Unchecked.
 - **Supported Job Types** - Inventory, Add, Remove, Create, and Discovery should all be checked.
 - **Needs Server, Blueprint Allowed, Uses Powershell, Requires Store Password, Supports Entry Password** – All checked/unchecked as shown
