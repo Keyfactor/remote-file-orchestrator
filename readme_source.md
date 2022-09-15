@@ -87,13 +87,13 @@ When setting up the certificate store types you wish the Remote File Orchestrato
 - **Blueprint Allowed** - Checked if you wish to mske use of blueprinting.  Pleaes refer to the Keyfactor Command Reference Guide for more details on this feature.
 - **Uses PoserShell** - Unchecked
 - **Requires Store Password** - Checked.  NOTE: This does not require that a certificate store have a password, but merely ensures that a user who creates a Keyfactor Command Certificate Store MUST click the Store Password button and either enter a password or check No Password.  Certificate stores with no passwords are still possible for certain certificate store types when checking this option.
-- **Supports Entry Password** - See specific certificate store type instructions below.
-*Advanced Tab:*
+- **Supports Entry Password** - See specific certificate store type instructions below.  
+*Advanced Tab:*  
 - **Store Paty Type** - Freeform
 - **Supports Custom Alias** - See specific certificate store type instructions below.
 - **Private Key Handling** - See specific certificate store type instructions below
-- **PFX Password Style** - Default
-*Custom Fields Tab:*
+- **PFX Password Style** - Default  
+*Custom Fields Tab:*  
 - See specific certificate store type instructions below
 
 Entry Parameters Tab:
