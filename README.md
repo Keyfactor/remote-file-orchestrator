@@ -140,7 +140,7 @@ When setting up the certificate store types you wish the Remote File Orchestrato
 
 Entry Parameters Tab:
 - See specific certificate store type instructions below  
-ddd
+
 &nbsp;  
 &nbsp;  
 **PKCS12 Certificate Store Type**
