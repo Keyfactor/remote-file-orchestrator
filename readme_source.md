@@ -102,7 +102,7 @@ When setting up the certificate store types you wish the Remote File Orchestrato
 - **PFX Password Style** - Default  
 
 *Custom Fields Tab:*
-- Name: linuxFilePermissionsOnStoreCreation, Display Name: Linux File Permissions on Store Creation, Type: String, Default Value: none....This custom field is **required**.
+- Name: linuxFilePermissionsOnStoreCreation, Display Name: Linux File Permissions on Store Creation, Type: String, Default Value: none....This custom field is **not required**.  If not present, value reverts back to DefaultLinuxPermissionsOnStoreCreation setting in config.json (see Configuration File Setup section above).  This value, applicable to certificate stores hosted on Linux orchestrated servers only, must be 3 digits all between 0-7.  This represents the Linux file permissions that will be set for this certificate store if created via a Management Create job or a Management Add job where the config.json option CreateStoreOnAddIsMissing is set to "Y".  
 
 Entry Parameters Tab:
 - See specific certificate store type instructions below  
@@ -129,7 +129,7 @@ Use cases supported:
 
 Entry Parameters Tab:
 - no additional entry parameters  
-&nbsp;  
+
 &nbsp;  
 **JKS Certificate Store Type**
 
@@ -139,7 +139,7 @@ Use cases supported:
 1. Trust entries - A single certificate without a private key in a certificate store.  Each certificate identified with a custom alias or certificate thumbprint.
 2. Key entries - One-to-many certificates with private keys and optionally the full certificate chain.  Each certificate identified with a custom alias or certificate thumbprint.
 
-Specific Certificate Store Type Values 
+**Specific Certificate Store Type Values**  
 *Basic Tab:*
 - **Short Name** – Required. Suggested value - **RFJKS**.  If you choose to use a different value you must make the corresponding modification to the manifest.json file (see "Remote File Orchestrator Extension Installation", step 6 above).
 
@@ -151,11 +151,35 @@ Specific Certificate Store Type Values
 - no adittional custom fields/parameters
 
 Entry Parameters Tab:
-- no additional entry parameters
-&nbsp;  
-&nbsp;  
+- no additional entry parameters  
 
-![](Images/image5.png)
+&nbsp;  
+**PEM Certificate Store Type**
+
+The PEM store type can be used to manage PEM encoded files.
+
+Use cases supported:
+1. Trust stores - A file with one-to-many certificates (no private keys, no certificate chains).
+2. Single certificate stores with private key in the file.
+3. Single certificate stores with certificate chain and private key in the file.
+4. Single certificate stores with private key in an external file.
+5. Single certificate stores with certificate chain in the file and private key in an external file 
+
+**Specific Certificate Store Type Values**  
+*Basic Tab:*
+- **Short Name** – Required. Suggested value - **RFPEM**.  If you choose to use a different value you must make the corresponding modification to the manifest.json file (see "Remote File Orchestrator Extension Installation", step 6 above).
+
+*Advanced Tab:*
+- **Supports Custom Alias** - Forbidden.
+- **Private Key Handling** - Optional.  
+
+*Custom Fields Tab:*  
+- Name: IsTrustStore, Display Name: Trust Store, Type: Bool, Default Value: false.   This custom field is **not required**.  Default value if not present is 'false'.  If 'true', this store will be identified as a trust store.  Any certificates attempting to be added via a Management-Add job that contain a private key will raise an error with an accompanying message.  Multiple certificates may be added to the store in this use case.  If set to 'false', this store can only contain a single certificate with chain and private key.  Management-Add jobs attempting to add a certificate without a private key to a store marked as IsTrustStore = 'false' will raise an error with an accompanying message.
+- Name: IncludesChain, Display Name: Store Includes Chain, Type: Bool, Default Value: false.   This custom field is **not required**.  Default value if not present is 'false'.  If 'true' the full certificate chain, if sent by Keyfactor Command, will be stored in the file.  The order of appearance is always assumed to be 1) end entity certificate, 2) issuing CA certificate, and 3) root certificate.  If additional CA tiers are applicable, the order will be end entity certificate up to the root CA certificate.  if set to 'false', only the end entity certificate and private key will be stored in this store.  This setting is only valid when IsTrustStore = false.
+- Name: SeparatePrivateKeyFilePath, Display Name: Separate Private Key File Location, Type: String, Default Value: empty.   This custom field is **not required**. If empty, or not provided, it will be assumed that the private key for the certificate stored in this file will be inside the same file as the certificate.  If the full path AND file name is put here, that location will be used to store the private key as an external file.  This setting is only valid when IsTrustStore = false. 
+
+Entry Parameters Tab:
+- no additional entry parameters
 
   - **Separate Private Key (Name MUST be "separatePrivateKey"):** Select if the store will contain a private key but the private key will reside in an separate file somewhere else on the server
 
