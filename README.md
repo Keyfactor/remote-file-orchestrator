@@ -135,8 +135,8 @@ When setting up the certificate store types you wish the Remote File Orchestrato
 - **Private Key Handling** - See specific certificate store type instructions below
 - **PFX Password Style** - Default  
 
-*Custom Fields Tab:*  
-- See specific certificate store type instructions below
+*Custom Fields Tab:*
+- Name: linuxFilePermissionsOnStoreCreation, Display Name: Linux File Permissions on Store Creation, Type: String, Default Value: none....This custom field is **required**.
 
 Entry Parameters Tab:
 - See specific certificate store type instructions below  
@@ -144,21 +144,50 @@ Entry Parameters Tab:
 &nbsp;  
 **PKCS12 Certificate Store Type**
 
+The PKCS12 store type can be used to manage any PKCS#12 compliant file format.
+
 Use cases supported:
 1. Trust entries - A single certificate without a private key in a certificate store.  Each certificate identified with a custom alias or certificate thumbprint.
 2. Key entries - One-to-many certificates with private keys and optionally the full certificate chain.  Each certificate identified with a custom alias or certificate thumbprint.
 
 Specific Certificate Store Type Values 
-- **Short Name** – Required. **MUST** match the contents of the manifest.json file (see "Remote File Orchestrator Extension Installation", step 6 above).  Suggested value - RFPkcs12.
-- **Custom Capability** - Unchecked.
-- **Supported Job Types** - Inventory, Add, Remove, Create, and Discovery should all be checked.
-- **Needs Server, Blueprint Allowed, Uses Powershell, Requires Store Password, Supports Entry Password** – All checked/unchecked as shown
-- **Store PathType** – Freeform (user will enter the location of the store)
-- **Supports Custom Alias** – Required. Select Forbidden. Aliases are not used for PEMChain stores.
-- **Private Keys** – Required (a certificate in a PEMChain certificate **must** have a private key.  No trust store use case available.)
-- **PFX Password Style** – Select Default.
- 
-- **Custom Parameters** – Three custom parameters are used for this store type. They are:
+*Basic Tab:*
+- **Short Name** – Required. Suggested value - **RFPkcs12**.  If you choose to use a different value you must make the corresponding modification to the manifest.json file (see "Remote File Orchestrator Extension Installation", step 6 above).
+
+*Advanced Tab:*
+- **Supports Custom Alias** - Required.
+- **Private Key Handling** - Optional.  
+
+*Custom Fields Tab:*  
+- no adittional custom fields/parameters
+
+Entry Parameters Tab:
+- no additional entry parameters  
+&nbsp;  
+&nbsp;  
+**JKS Certificate Store Type**
+
+The JKS store type can be used to manage java keystores of type jks.
+
+Use cases supported:
+1. Trust entries - A single certificate without a private key in a certificate store.  Each certificate identified with a custom alias or certificate thumbprint.
+2. Key entries - One-to-many certificates with private keys and optionally the full certificate chain.  Each certificate identified with a custom alias or certificate thumbprint.
+
+Specific Certificate Store Type Values 
+*Basic Tab:*
+- **Short Name** – Required. Suggested value - **RFJKS**.  If you choose to use a different value you must make the corresponding modification to the manifest.json file (see "Remote File Orchestrator Extension Installation", step 6 above).
+
+*Advanced Tab:*
+- **Supports Custom Alias** - Required.
+- **Private Key Handling** - Optional.  
+
+*Custom Fields Tab:*  
+- no adittional custom fields/parameters
+
+Entry Parameters Tab:
+- no additional entry parameters
+&nbsp;  
+&nbsp;  
 
 ![](Images/image5.png)
 
