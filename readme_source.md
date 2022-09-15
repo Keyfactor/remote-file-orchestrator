@@ -14,18 +14,18 @@ While the Keyfactor Universal Orchestrator (UO) can be installed on either Windo
 |Orchestrated Server on same server as orchestrator service (Agent)|&check; |&check; |
 
 This orchestrator extension makes use of an SSH connection to communicate remotely with certificate stores hosted on Linux servers and WinRM to communicate with certificate stores hosted on Windows servers.
-&nbsp;
-&nbsp;
+&nbsp;  
+&nbsp;  
 ## Versioning
 
 The version number of a the Remote File Orchestrator Extension can be verified by right clicking on the n the Extensions/RemoteFile installation folder, selecting Properties, and then clicking on the Details tab.
-&nbsp;
-&nbsp;
+&nbsp;  
+&nbsp;  
 ## Keyfactor Version Supported
 
 The Remote File Orchestrator Extension has been tested against Keyfactor Universal Orchestrator version 9.5, but should work against earlier or later versions of the Keyfactor Universal Orchestrator.
-&nbsp;
-&nbsp;
+&nbsp;  
+&nbsp;  
 ## Security Considerations
 
 **For Linux orchestrated servers:**
@@ -46,8 +46,8 @@ The Remote File Orchestrator Extension has been tested against Keyfactor Univers
 
 **SSH Key-Based Authentiation**
 1. When creating a Keyfactor certificate store for the remote file orchestrator extension, you may supply a user id and password for the certificate store credentials (directly or through one of Keyfactor Command's PAM integrations), or you can use a user id and SSH private key.  Both PKCS#1 (BEGIN RSA PRIVATE KEY) and PKCS#8 (BEGIN PRIVATE KEY) formats are SUPPORTED.  If using the normal Keyfactor Command credentials dialog without PAM integration, just copy and paste the full SSH private key into the Password textbox.
-&nbsp;
-&nbsp;
+&nbsp;  
+&nbsp;  
 ## Remote File Orchestrator Extension Installation
 1. Create the certificate store types you wish to manage.  Please refer to the individual sections devoted to each supported store type under "Certificate Store Types" later in this README.
 2. Stop the Keyfactor Universal Orchestrator Service for the orchestrator you plan to install this extension to run on.
@@ -77,8 +77,8 @@ The Remote File Orchestrator Extension uses a JSON configuration file.  It is lo
 **SeparateUploadFilePath**(Applicable for Linux managed servers only) – Set this to the path you wish to use as the location on the orchestrated server to upload and later remove temporary work files when processing jobs.  If set to "" or not provided, the location of the certificate store itself will be used.  File transfer itself is performed using SCP or SFTP protocols (see FileT ransferProtocol setting). **Default Value - blank**.  
 **FileTransferProtocol** (Applicable for Linux orchestrated servers only) - SCP/SFTP/Both - Determines the protocol to use when uploading/downloading files while processing a job.  Valid values are: SCP - uses SCP, SFTP - uses SFTP, or Both - will attempt to use SCP first, and if that does not work, will attempt the file transfer via SFTP.  **Default Value - SCP**.  
 **DefaultLinuxPermissionsOnStoreCreation** (Applicable for Linux managed servers only) - Value must be 3 digits all between 0-7.  The Linux file permissions that will be set on a new certificate store created via a Management Create job or a Management Add job where CreateStoreOnAddIsMissing is set to "Y".  This value will be used for all certificate stores managed by this orchestrator instance unless overridden by the optional "Linux File Permissions on Store Creation" custom parameter setting on a specific certificate store (See the "Certificatee Store Types Supported" secgtion later in this README).  **Default Value - 600**.  
-&nbsp;
-&nbsp;
+&nbsp;  
+&nbsp;  
 ## Certificate Store Types
 
 When setting up the certificate store types you wish the Remote File Orchestrator Extension to manage, there are some common settings that will be the same for all supported types.  To create a new Keyfactor Command Certificate Store Type, first click on settings (the gear icon on the top right) => Certificate Store Types => Add.
@@ -106,8 +106,8 @@ When setting up the certificate store types you wish the Remote File Orchestrato
 
 Entry Parameters Tab:
 - See specific certificate store type instructions below  
-&nbsp;
-&nbsp;
+&nbsp;  
+&nbsp;  
 **PKCS12 Certificate Store Type**
 
 Use cases supported:
