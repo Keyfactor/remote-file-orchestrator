@@ -14,15 +14,18 @@ While the Keyfactor Universal Orchestrator (UO) can be installed on either Windo
 |Orchestrated Server on same server as orchestrator service (Agent)|&check; |&check; |
 
 This orchestrator extension makes use of an SSH connection to communicate remotely with certificate stores hosted on Linux servers and WinRM to communicate with certificate stores hosted on Windows servers.
-
+&nbsp;
+&nbsp;
 ## Versioning
 
 The version number of a the Remote File Orchestrator Extension can be verified by right clicking on the n the Extensions/RemoteFile installation folder, selecting Properties, and then clicking on the Details tab.
-
+&nbsp;
+&nbsp;
 ## Keyfactor Version Supported
 
 The Remote File Orchestrator Extension has been tested against Keyfactor Universal Orchestrator version 9.5, but should work against earlier or later versions of the Keyfactor Universal Orchestrator.
-
+&nbsp;
+&nbsp;
 ## Security Considerations
 
 **For Linux orchestrated servers:**
@@ -43,7 +46,8 @@ The Remote File Orchestrator Extension has been tested against Keyfactor Univers
 
 **SSH Key-Based Authentiation**
 1. When creating a Keyfactor certificate store for the remote file orchestrator extension, you may supply a user id and password for the certificate store credentials (directly or through one of Keyfactor Command's PAM integrations), or you can use a user id and SSH private key.  Both PKCS#1 (BEGIN RSA PRIVATE KEY) and PKCS#8 (BEGIN PRIVATE KEY) formats are SUPPORTED.  If using the normal Keyfactor Command credentials dialog without PAM integration, just copy and paste the full SSH private key into the Password textbox.
-
+&nbsp;
+&nbsp;
 ## Remote File Orchestrator Extension Installation
 1. Create the certificate store types you wish to manage.  Please refer to the individual sections devoted to each supported store type under "Certificate Store Types" later in this README.
 2. Stop the Keyfactor Universal Orchestrator Service for the orchestrator you plan to install this extension to run on.
@@ -53,7 +57,8 @@ The Remote File Orchestrator Extension has been tested against Keyfactor Univers
 6. (Optional) If you decide to create one or more certificate store types with short names different than the suggested values (please see the individual certificate store type sections in "Certificate Store Types" later in this README for more information regarding certificate store types), edit the manifest.json file in the folder you created in step 3, and modify each "ShortName" in each "Certstores.{ShortName}.{Operation}" line with the ShortName you used to create the respective certificate store type.  If you created it with the suggested values, this step can be skipped.
 7. Modify the config.json file (See the "Configuration File Setup" section later in this README)
 8. Start the Keyfactor Universal Orchestrator Service.
-
+&nbsp;
+&nbsp;
 ## Configuration File Setup 
 
 The Remote File Orchestrator Extension uses a JSON configuration file.  It is located in the {Keyfactor Orchestrator Installation Folder}\Extensions\RemoteFile.  None of the values are required, and a description of each follows below:  
@@ -101,9 +106,8 @@ When setting up the certificate store types you wish the Remote File Orchestrato
 
 Entry Parameters Tab:
 - See specific certificate store type instructions below  
-
-
-
+&nbsp;
+&nbsp;
 **PKCS12 Certificate Store Type**
 
 Use cases supported:
