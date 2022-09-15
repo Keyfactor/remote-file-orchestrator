@@ -108,7 +108,6 @@ Entry Parameters Tab:
 - See specific certificate store type instructions below  
 
 &nbsp;  
-&nbsp;  
 **PKCS12 Certificate Store Type**
 
 The PKCS12 store type can be used to manage any PKCS#12 compliant file format.
