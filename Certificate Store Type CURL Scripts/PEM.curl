@@ -1,3 +1,5 @@
+###CURL script to create PEM certificate store type
+
 ###Replacement Variables - Manually replace these before running###
 # {URL} - Base URL for your Keyfactor deployment
 # {UserName} - User name with access to run Keyfactor APIs
