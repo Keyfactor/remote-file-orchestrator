@@ -96,7 +96,7 @@ When setting up the certificate store types you wish the Remote File Orchestrato
 - **Supports Entry Password** - See specific certificate store type instructions below.  
 
 *Advanced Tab:*  
-- **Store Paty Type** - Freeform
+- **Store Path Type** - Freeform
 - **Supports Custom Alias** - See specific certificate store type instructions below.
 - **Private Key Handling** - See specific certificate store type instructions below
 - **PFX Password Style** - Default  
