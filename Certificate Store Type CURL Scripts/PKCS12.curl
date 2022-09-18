@@ -1,4 +1,4 @@
-﻿###CURL script to create JKS certificate store type
+﻿###CURL script to create PKCS12 certificate store type
 
 ###Replacement Variables - Manually replace these before running###
 # {URL} - Base URL for your Keyfactor deployment
@@ -6,9 +6,9 @@
 # {UserPassword} - Password for the UserName above
 
 curl -X POST {URL}/keyfactorapi/certificatestoretypes -H "Content-Type: application/json" -H "x-keyfactor-requested-with: APIClient" -u {UserName}:{UserPassword} -d '{
-  "Name": "RFJKS",
-  "ShortName": "RFJKS",
-  "Capability": "RFJKS",
+  "Name": "RFPkcs12",
+  "ShortName": "RFPkcs12",
+  "Capability": "RFPkcs12",
   "ServerRequired": true,
   "BlueprintAllowed": false,
   "CustomAliasAllowed": "Required",
