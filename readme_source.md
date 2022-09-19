@@ -108,7 +108,10 @@ Entry Parameters Tab:
 - See specific certificate store type instructions below  
 
 &nbsp;  
+&nbsp;  
+**************************************
 **PKCS12 Certificate Store Type**
+**************************************
 
 The PKCS12 store type can be used to manage any PKCS#12 compliant file format.
 
@@ -131,7 +134,10 @@ Entry Parameters Tab:
 - no additional entry parameters  
 
 &nbsp;  
+&nbsp;  
+**************************************
 **JKS Certificate Store Type**
+**************************************
 
 The JKS store type can be used to manage java keystores of type jks.
 
@@ -154,7 +160,10 @@ Entry Parameters Tab:
 - no additional entry parameters  
 
 &nbsp;  
+&nbsp;  
+**************************************
 **PEM Certificate Store Type**
+**************************************
 
 The PEM store type can be used to manage PEM encoded files.
 
