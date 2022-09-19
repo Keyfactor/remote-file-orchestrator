@@ -160,7 +160,7 @@ Entry Parameters Tab:
 - no additional entry parameters  
 
 
-CURL script to automate certificate store type creation can be found [here)(https://github.com/Keyfactor/remote-file-orchestrator/blob/initial-version/Certificate%20Store%20Type%20CURL%20Scripts/JKS.curl)
+CURL script to automate certificate store type creation can be found [here](https://github.com/Keyfactor/remote-file-orchestrator/blob/initial-version/Certificate%20Store%20Type%20CURL%20Scripts/JKS.curl)
 
 &nbsp;  
 &nbsp;  
