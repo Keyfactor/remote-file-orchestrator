@@ -47,14 +47,19 @@ While the Keyfactor Universal Orchestrator (UO) can be installed on either Windo
 |Orchestrated Server on remote Linux server|&check; |&check; |
 |Orchestrated Server on same server as orchestrator service (Agent)|&check; |&check; |
 
+This orchestrator extension makes use of an SSH connection to communicate remotely with certificate stores hosted on Linux servers and WinRM to communicate with certificate stores hosted on Windows servers.
+&nbsp;  
+&nbsp;  
 ## Versioning
 
 The version number of a the Remote File Orchestrator Extension can be verified by right clicking on the n the Extensions/RemoteFile installation folder, selecting Properties, and then clicking on the Details tab.
-
+&nbsp;  
+&nbsp;  
 ## Keyfactor Version Supported
 
 The Remote File Orchestrator Extension has been tested against Keyfactor Universal Orchestrator version 9.5, but should work against earlier or later versions of the Keyfactor Universal Orchestrator.
-
+&nbsp;  
+&nbsp;  
 ## Security Considerations
 
 **For Linux orchestrated servers:**
@@ -74,145 +79,141 @@ The Remote File Orchestrator Extension has been tested against Keyfactor Univers
 2. When creating/configuring a certificate store in Keyfactor Command, you will see a "Change Credentials" link after entering in the destination client machine (IP or DNS).  This link **must** be clicked on to present the credentials dialog.  However, WinRM does not require that you enter separate credentials.  Simply click SAVE in the resulting dialog without entering in credentials to use the credentials that the Keyfactor Orchestrator Service is running under.  Alternatively, you may enter separate credentials into this dialog and use those to connect to the orchestrated server.
 
 **SSH Key-Based Authentiation**
-
+1. When creating a Keyfactor certificate store for the remote file orchestrator extension, you may supply a user id and password for the certificate store credentials (directly or through one of Keyfactor Command's PAM integrations), or you can use a user id and SSH private key.  Both PKCS#1 (BEGIN RSA PRIVATE KEY) and PKCS#8 (BEGIN PRIVATE KEY) formats are SUPPORTED.  If using the normal Keyfactor Command credentials dialog without PAM integration, just copy and paste the full SSH private key into the Password textbox.
+&nbsp;  
+&nbsp;  
 ## Remote File Orchestrator Extension Installation
-1. Create the certificate store types you wish to manage.  Please refer to the individual sections devoted to each supported store type later in this README.
+1. Create the certificate store types you wish to manage.  Please refer to the individual sections devoted to each supported store type under "Certificate Store Types" later in this README.
 2. Stop the Keyfactor Universal Orchestrator Service for the orchestrator you plan to install this extension to run on.
 3. In the Keyfactor Orchestrator installation folder (by convention usually C:\Program Files\Keyfactor\Keyfactor Orchestrator), find the "extensions" folder. Underneath that, create a new folder named "RemoteFile". You may choose to use a different name if you wish.
 4. Download the latest version of the RemoteFile orchestrator extension from [GitHub](https://github.com/Keyfactor/remote-file-orchestrator).  Click on the "Latest" release link on the right hand side of the main page and download the first zip file.
-5. Copy the contents of the download installation zip file to the folder created in Step 2.
-6. (Optional) If you decide to create one or more certificate store types with short names different than the suggested values (please see the individual certificate store type sections later in this README for more information regarding that), edit the manifest.json file in the ../extensions/RemoteFile folder and modify each "ShortName" in each "Certstores.{ShortName}.{Operation}" line with the ShortName you used to create the respective certificate store type.  If you created it with the suggested values, this step is not necessary.
-7. Start the Keyfactor Universal Orchestrator Service.
+5. Copy the contents of the download installation zip file to the folder created in Step 3.
+6. (Optional) If you decide to create one or more certificate store types with short names different than the suggested values (please see the individual certificate store type sections in "Certificate Store Types" later in this README for more information regarding certificate store types), edit the manifest.json file in the folder you created in step 3, and modify each "ShortName" in each "Certstores.{ShortName}.{Operation}" line with the ShortName you used to create the respective certificate store type.  If you created it with the suggested values, this step can be skipped.
+7. Modify the config.json file (See the "Configuration File Setup" section later in this README)
+8. Start the Keyfactor Universal Orchestrator Service.
+&nbsp;  
+&nbsp;  
+## Configuration File Setup 
 
-## PEMChain Orchestrator Configuration
-
-**1. Create the New Certificate Store Type for the New PEMChain Orchestrator Extension**
-
-In Keyfactor Command create a new Certificate Store Type similar to the one below:
-
-![](Images/image1.png)
-![](Images/image2.png)
-
-- **Name** – Required. The display name of the new Certificate Store Type
-- **Short Name** – Required. **MUST** match the folder name under Extensions in the installation folder.  Default="**PEMChain**"
-- **Custom Capability** - Unchecked.
-- **Supported Job Types** - Inventory, Add, Remove, Create, and Discovery should all be checked.
-- **Needs Server, Blueprint Allowed, Uses Powershell, Requires Store Password, Supports Entry Password** – All checked/unchecked as shown
-- **Store PathType** – Freeform (user will enter the location of the store)
-- **Supports Custom Alias** – Required. Select Forbidden. Aliases are not used for PEMChain stores.
-- **Private Keys** – Required (a certificate in a PEMChain certificate **must** have a private key.  No trust store use case available.)
-- **PFX Password Style** – Select Default.
- 
-- **Custom Parameters** – Three custom parameters are used for this store type. They are:
-
-![](Images/image5.png)
-
-  - **Separate Private Key (Name MUST be "separatePrivateKey"):** Select if the store will contain a private key but the private key will reside in an separate file somewhere else on the server
-
-![](Images/image3.png)
-
-  - **Private Key Path (Name MUST be "pathToPrivateKey"):** If the certificate store has a separate private key file, this is the FULL PATH and file name where the private key resides. File paths on Linux servers will always begin with a "/". Windows servers will always begin with the drive letter, colon, and backslash, such as "c:\\".
-
-![](Images/image4.png)
-
-  - **Linux File Permissions on Store Creation (Name MUST be "linuxFilePermissionsOnStoreCreation"):** - Optional parameter. Overrides the optional config.json DefaultLinuxPermissionsOnStoreCreation setting (see section 4 below) for a specific certificate store. This value will set the file permissions (Linux only) of a new certificate store created via a Management-Create job. If this parameter is not added or added but not set, the permissions used will be derived from the DefaultLinuxPermissionsOnStoreCreation setting.
-
-![](Images/image8.png)
-
-
-**2. Register the PEMChain Orchestrator Extension with Keyfactor**
-
-Follow the instructions in the PEMChain Extension Installation section above.  After, navigate to Keyfactor Command => Orchestrators => Management.  If the orchestrator you just installed the extension for has a status of "New", right click on it and select "Approve">
-
-**3a. (Optional) Create a PEMChain Certificate Store within Keyfactor Command**
-
-If you choose to manually create a PEMChain store In Keyfactor Command rather than running a Discovery job to automatically find the store, you can navigate to Certificate Locations =\> Certificate Stores within Keyfactor Command to add the store. Below are the values that should be entered.
-
-![](Images/image6.png)
-
-- **Category** – Required. The PEMChain type name must be selected.
-- **Container** – Optional. Select a container if utilized.
-- **Client Machine & Credentials** – Required. The server name or IP Address and login credentials for the server where the Certificate Store is located.  The credentials for server login can be any of:
-
-  - UserId/Password
-
-  - UserId/SSH private key.  If using a SSH private key, the following formats are supported:
-    - RSA in OpenSSL PEM and ssh.com format
-    - DSA in OpenSSL PEM and ssh.com format
-    - ECDSA 256/384/521 in OpenSSL PEM format
-    - ECDSA 256/384/521, ED25519 and RSA in OpenSSH key format
-
-  - PAM provider information to pass the UserId/Password or UserId/SSH private key credentials
-
-  If managing a PEMChain certificate store on a Windows server, the format of the machine name must be – http://ServerName:5985, where &quot;5985&quot; is the WinRM port number. 5985 is the standard, but if your organization uses a different port, use that.  The Keyfactor Command service account will be used if the credentials are left blank.  **However, if you choose to not enter credentials and use the Keyfactor Command service account, it is required that the *Change Credentials* link still be clicked on and the resulting dialog closed by clicking OK.**
-- **Store Path** – Required. The FULL PATH and file name of the PEMChain store being managed. File paths on Linux servers will always begin with a "/". Windows servers will always begin with the drive letter, colon, and backslash, such as "c:\\".  Valid characters for Linux store paths include any alphanumeric character, space, forward slash, hyphen, underscore, and period. For Windows servers, the aforementioned characters as well as a colon and backslash.
-- **Separate Private Key File** – Check if the store has a separate private key file.
-- **Path to Private Key File** – If Separate Private Key File is checked, enter the FULL PATH to the private key file. File paths on Linux servers will always begin with a "/". Windows servers will always begin with the drive letter, colon, and backslash, such as "c:".
-- **Linux File Permissions on Store Creation** - Optional (Linux only). Set the Linux file permissions you wish to be set when creating a new physical certificate store via checking Create Certificate Store above.  This value must be 3 digits all betwwen 0-7.  
-- **Orchestrator** – Select the orchestrator you wish to use to manage this store
-- **Store Password** – Required. Set the store password or set no password after clicking the supplied button.  If a store password is entered, this value will be used when encrypting private keys that get written to the certificate store during certificate add operations.  Selecting "No Password" will cause an unencrypted private key to be saved during add operations.
-- **Create Certificate Store** - Check before saving if you wish to schedule a Management-Create job to physically create the certificate store on the target server.
-- **Inventory Schedule** – Set a schedule for running Inventory jobs or none, if you choose not to schedule Inventory at this time.
-
-**3b. (Optional) Schedule a PEMChain Discovery Job**
-
-Rather than manually creating PEMChain certificate stores, you can schedule a Discovery job to search an orchestrated server and find them.
-
-First, in Keyfactor Command navigate to Certificate Locations =\> Certificate Stores. Select the Discover tab and then the Schedule button. Complete the dialog and click Done to schedule.
-
-![](Images/image7.png)
-
-- **Category** – Required. The PEM SSH type name must be selected.
-- **Orchestrator** – Select the orchestrator you wish to use to manage this store
-- **Client Machine & Credentials** – Required. The server name or IP Address and login credentials for the server where the Certificate Store is located.  The credentials for server login can be any of:
-
-  - UserId/Password
-
-  - UserId/SSH private key.  If using a SSH private key, the following formats are supported:
-    - RSA in OpenSSL PEM and ssh.com format
-    - DSA in OpenSSL PEM and ssh.com format
-    - ECDSA 256/384/521 in OpenSSL PEM format
-    - ECDSA 256/384/521, ED25519 and RSA in OpenSSH key format
-
-  - PAM provider information to pass the UserId/Password or UserId/SSH private key credentials
-
-  When setting up a Windows server, the format of the machine name must be – http://ServerName:5985, where &quot;5985&quot; is the WinRM port number. 5985 is the standard, but if your organization uses a different port, use that.  The Keyfactor Command service account will be used if the credentials are left blank.  **However, if you choose to not enter credentials and use the Keyfactor Command service account, it is required that the *Change Credentials* link still be clicked on and the resulting dialog closed by clicking OK.**
-- **When** – Required. The date and time when you would like this to execute.
-- **Directories to search** – Required. A comma delimited list of the FULL PATHs and file names where you would like to recursively search for PEMChain stores. File paths on Linux servers will always begin with a "/". Windows servers will always begin with the drive letter, colon, and backslash, such as "c:\\".  Entering the string "fullscan" when Discovering against a Windows server will automatically do a recursive search on ALL local drives on the server.
-- **Directories to ignore** – Optional. A comma delimited list of the FULL PATHs that should be recursively ignored when searching for PEMChain stores. Linux file paths will always begin with a "/". Windows servers will always begin with the drive letter, colon, and backslash, such as "c:\\".
-- **Extensions** – Optional but suggested. A comma delimited list of the file extensions (no leading "." should be included) the job should search for. If not included, only files in the searched paths that have **no file extension** will be returned. If providing a list of extensions, using "noext" as one of the extensions will also return files with no file extension. For example, providing an Extensions list of "pem, noext" would return all file locations within the paths being searched with a file extension of "pem" and files with no extensions.
-- **File name patterns to match** – Optional. A comma delimited list of full or partial file names (NOT including extension) to match on.  Use "\*" as a wildcard for begins with or ends with.  Example: entering "ab\*, \*cd\*, \*ef, ghij" will return all stores with names that _**begin with**_ "ab" AND stores with names that _**contain**_ "cd" AND stores with names _**ending in**_ "ef" AND stores with the _**exact name**_ of "ghij".
-- **Follow SymLinks** – NOT IMPLEMENTED. Leave unchecked.
-- **Include PKCS12 Files** – NOT IMPLEMENTED. Leave unchecked.
-
-Once the Discovery job has completed, a list of PEMChain store locations should show in the Certificate Stores Discovery tab in Keyfactor Command. Right click on a store and select Approve to bring up a dialog that will ask for the Keystore Password. Enter the store password, click Save, and the Certificate Store should now show up in the list of stores in the Certificate Stores tab.
-
-From the Certificate Store list, edit the newly added store to enter whether the store has a separate private key file, and if necessary, the FULL PATH to that file. **NOTE:** You will not be able to successfully process an Inventory or Management job for this store until this has been completed.
-
-**4. Update Settings in config.json**
-
-The PEMChain Orchestrator uses a JSON config file:
-
+The Remote File Orchestrator Extension uses a JSON configuration file.  It is located in the {Keyfactor Orchestrator Installation Folder}\Extensions\RemoteFile.  None of the values are required, and a description of each follows below:  
 {  
-"UseSudo": "N",  
-"CreateStoreOnAddIfMissing": "N",  
-"UseSeparateUploadFilePath": "N",  
-"SeparateUploadFilePath": "/path/to/upload/folder/",  
-"UseNegotiateAuth": "N",  
-"UseSCP": "N",  
-"DefaultLinuxPermissionsOnStoreCreation": "600"  
-}
+   "UseSudo": "N",  
+   "CreateStoreIfMissing": "N",  
+   "UseNegotiate": "N",  
+   "SeparateUploadFilePath": "",  
+   "FileTransferProtocol":  "SCP",  
+   "DefaultLinuxPermissionsOnStoreCreation": "600"  
+}  
 
-**UseSudo** (Applicable for Linux managed servers only) - Y/N - Determines whether to prefix certain Linux command with "sudo". This can be very helpful in ensuring that the user id running commands ssh uses "least permissions necessary" to process each task. Setting this value to "Y" will prefix all Linux commands with "sudo" with the expectation that the command being executed on the orchestrated Linux server will look in the sudoers file to determine whether the logged in ID has elevated permissions for that specific command. For orchestrated Windows servers, this setting has no effect. Setting this value to "N" will result in "sudo" not being added to Linux commands.  
-**CreateStoreOnAddIfMissing** - Y/N - Determines if during a Management-Add job if a certificate store should be created if it does not already exist.  If set to "N", the job will return an error with a message stating that the store does not exist.  
-**UseSeparateUploadFilePath** (Applicable for Linux managed servers only) – When adding a certificate to a PEM or PKCS12 store, the PEMChain Orchestrator must upload the certificate being deployed to the server where the certificate store resides. Setting this value to "Y" looks to the next setting, SeparateUploadFilePath, to determine where this file should be uploaded. Set this value to "N" to use the same path where the certificate store being managed resides.  
-**SeparateUploadFilePath** (Applicable for Linux managed servers only) – Only used when UseSeparateUploadFilePath is set to "Y". Set this to the path you wish to use as the location to upload and later remove PEM/PKCS12 certificate store data before being moved to the final destination.  
-**UseNegotiateAuth** (Applicable for Windows managed servers only) – Y/N - Determines if WinRM should use Negotiate (Y) when connecting to the remote server.  
-**UseSCP** (Optional, Applicable for Linux managed servers only) - Y/N - Detemines if SCP (Y) or SFTP (N) should be used in uploading certificate files during Management-Add jobs.  
-**DefaultLinuxPermissionsOnStoreCreation** (Applicable for Linux managed servers only) - Optional.  Value must be 3 digits all between 0-7.  The Linux file permissions that will be set on a new certificate store created via a Management Create job.  This value will be used for all certificate stores managed by this orchestrator instance unless overridden by the optional "Linux File Permissions on Store Creation" custom parameter setting on a specific certificate store.  If "Linux File Permissions on Store Creation" and DefaultLinuxPermissionsOnStoreCreation are not set, a default permission of 600 will be used.
+**UseSudo** (Applicable for Linux orchestrated servers only) - Y/N - Determines whether to prefix certain Linux command with "sudo". This can be very helpful in ensuring that the user id running commands over an ssh connection uses "least permissions necessary" to process each task. Setting this value to "Y" will prefix all Linux commands with "sudo" with the expectation that the command being executed on the orchestrated Linux server will look in the sudoers file to determine whether the logged in ID has elevated permissions for that specific command. For Windows orchestrated servers, this setting has no effect. Setting this value to "N" will result in "sudo" not being added to Linux commands.  **Default value - N**.  
+**CreateStoreOnAddIfMissing** - Y/N - Determines, during a Management-Add job, if a certificate store should be created if it does not already exist.  If set to "N", and the store referenced in the Management-Add job is not found, the job will return an error with a message stating that the store does not exist.  If set to "Y", the store will be created and the certificate added to the certificate store.  **Default value - N**.  
+<span style="color:red">**UseNegotiateAuth**</span> (Applicable for Windows orchestrated servers only) – Y/N - Determines if WinRM should use Negotiate (Y) when connecting to the remote server.  **Default Value - N**.  
+**SeparateUploadFilePath**(Applicable for Linux managed servers only) – Set this to the path you wish to use as the location on the orchestrated server to upload and later remove temporary work files when processing jobs.  If set to "" or not provided, the location of the certificate store itself will be used.  File transfer itself is performed using SCP or SFTP protocols (see FileT ransferProtocol setting). **Default Value - blank**.  
+**FileTransferProtocol** (Applicable for Linux orchestrated servers only) - SCP/SFTP/Both - Determines the protocol to use when uploading/downloading files while processing a job.  Valid values are: SCP - uses SCP, SFTP - uses SFTP, or Both - will attempt to use SCP first, and if that does not work, will attempt the file transfer via SFTP.  **Default Value - SCP**.  
+**DefaultLinuxPermissionsOnStoreCreation** (Applicable for Linux managed servers only) - Value must be 3 digits all between 0-7.  The Linux file permissions that will be set on a new certificate store created via a Management Create job or a Management Add job where CreateStoreOnAddIsMissing is set to "Y".  This value will be used for all certificate stores managed by this orchestrator instance unless overridden by the optional "Linux File Permissions on Store Creation" custom parameter setting on a specific certificate store (See the "Certificatee Store Types Supported" secgtion later in this README).  **Default Value - 600**.
+&nbsp;  
+&nbsp;  
+## Certificate Store Types
 
-***
+When setting up the certificate store types you wish the Remote File Orchestrator Extension to manage, there are some common settings that will be the same for all supported types.  To create a new Certificate Store Type in Keyfactor Command, first click on settings (the gear icon on the top right) => Certificate Store Types => Add.
 
+**Common Values:**  
+*Basic Tab:*
+- **Name** – Required. The display name you wish to use for the new Certificate Store Type.
+- **ShortName** - Required. See specific certificate store type instructions below.
+- **Custom Capability** - Unchecked
+- **Supported Job Types** - Inventory, Add, Remove, Create, and Discovery should all be checked.
+- **Needs Server** - Checked
+- **Blueprint Allowed** - Checked if you wish to mske use of blueprinting.  Pleaes refer to the Keyfactor Command Reference Guide for more details on this feature.
+- **Uses PoserShell** - Unchecked
+- **Requires Store Password** - Checked.  NOTE: This does not require that a certificate store have a password, but merely ensures that a user who creates a Keyfactor Command Certificate Store MUST click the Store Password button and either enter a password or check No Password.  Certificate stores with no passwords are still possible for certain certificate store types when checking this option.
+- **Supports Entry Password** - Unchecked.  
+
+*Advanced Tab:*  
+- **Store Path Type** - Freeform
+- **Supports Custom Alias** - See specific certificate store type instructions below.
+- **Private Key Handling** - See specific certificate store type instructions below
+- **PFX Password Style** - Default  
+
+*Custom Fields Tab:*
+- **Name:** linuxFilePermissionsOnStoreCreation, **Display Name:** Linux File Permissions on Store Creation, **Type:** String, **Default Value:** none.  This custom field is **not required**.  If not present, value reverts back to DefaultLinuxPermissionsOnStoreCreation setting in config.json (see Configuration File Setup section above).  This value, applicable to certificate stores hosted on Linux orchestrated servers only, must be 3 digits all between 0-7.  This represents the Linux file permissions that will be set for this certificate store if created via a Management Create job or a Management Add job where the config.json option CreateStoreOnAddIsMissing is set to "Y".  
+
+Entry Parameters Tab:
+- See specific certificate store type instructions below  
+
+&nbsp;  
+**PKCS12 Certificate Store Type**
+
+The PKCS12 store type can be used to manage any PKCS#12 compliant file format.
+
+Use cases supported:
+1. Trust entries - A single certificate without a private key in a certificate store.  Each certificate identified with a custom alias or certificate thumbprint.
+2. Key entries - One-to-many certificates with private keys and optionally the full certificate chain.  Each certificate identified with a custom alias or certificate thumbprint.
+
+**Specific Certificate Store Type Values**  
+*Basic Tab:*
+- **Short Name** – Required. Suggested value - **RFPkcs12**.  If you choose to use a different value you must make the corresponding modification to the manifest.json file (see "Remote File Orchestrator Extension Installation", step 6 above).
+
+*Advanced Tab:*
+- **Supports Custom Alias** - Required.
+- **Private Key Handling** - Optional.  
+
+*Custom Fields Tab:*  
+- no adittional custom fields/parameters
+
+Entry Parameters Tab:
+- no additional entry parameters  
+
+&nbsp;  
+**JKS Certificate Store Type**
+
+The JKS store type can be used to manage java keystores of type jks.
+
+Use cases supported:
+1. Trust entries - A single certificate without a private key in a certificate store.  Each certificate identified with a custom alias or certificate thumbprint.
+2. Key entries - One-to-many certificates with private keys and optionally the full certificate chain.  Each certificate identified with a custom alias or certificate thumbprint.
+
+**Specific Certificate Store Type Values**  
+*Basic Tab:*
+- **Short Name** – Required. Suggested value - **RFJKS**.  If you choose to use a different value you must make the corresponding modification to the manifest.json file (see "Remote File Orchestrator Extension Installation", step 6 above).
+
+*Advanced Tab:*
+- **Supports Custom Alias** - Required.
+- **Private Key Handling** - Optional.  
+
+*Custom Fields Tab:*  
+- no adittional custom fields/parameters
+
+Entry Parameters Tab:
+- no additional entry parameters  
+
+&nbsp;  
+**PEM Certificate Store Type**
+
+The PEM store type can be used to manage PEM encoded files.
+
+Use cases supported:
+1. Trust stores - A file with one-to-many certificates (no private keys, no certificate chains).
+2. Single certificate stores with private key in the file.
+3. Single certificate stores with certificate chain and private key in the file.
+4. Single certificate stores with private key in an external file.
+5. Single certificate stores with certificate chain in the file and private key in an external file 
+
+**Specific Certificate Store Type Values**  
+*Basic Tab:*
+- **Short Name** – Required. Suggested value - **RFPEM**.  If you choose to use a different value you must make the corresponding modification to the manifest.json file (see "Remote File Orchestrator Extension Installation", step 6 above).
+
+*Advanced Tab:*
+- **Supports Custom Alias** - Forbidden.
+- **Private Key Handling** - Optional.  
+
+*Custom Fields Tab:*  
+- **Name:** IsTrustStore, **Display Name:** Trust Store, **Type:** Bool, **Default Value:** false.   This custom field is **not required**.  Default value if not present is 'false'.  If 'true', this store will be identified as a trust store.  Any certificates attempting to be added via a Management-Add job that contain a private key will raise an error with an accompanying message.  Multiple certificates may be added to the store in this use case.  If set to 'false', this store can only contain a single certificate with chain and private key.  Management-Add jobs attempting to add a certificate without a private key to a store marked as IsTrustStore = 'false' will raise an error with an accompanying message.
+- **Name:** IncludesChain, **Display Name:** Store Includes Chain, **Type:** Bool, **Default Value:** false.   This custom field is **not required**.  Default value if not present is 'false'.  If 'true' the full certificate chain, if sent by Keyfactor Command, will be stored in the file.  The order of appearance is always assumed to be 1) end entity certificate, 2) issuing CA certificate, and 3) root certificate.  If additional CA tiers are applicable, the order will be end entity certificate up to the root CA certificate.  if set to 'false', only the end entity certificate and private key will be stored in this store.  This setting is only valid when IsTrustStore = false.
+- **Name:** SeparatePrivateKeyFilePath, **Display Name:** Separate Private Key File Location, **Type:** String, **Default Value:** empty.   This custom field is **not required**. If empty, or not provided, it will be assumed that the private key for the certificate stored in this file will be inside the same file as the certificate.  If the full path AND file name is put here, that location will be used to store the private key as an external file.  This setting is only valid when IsTrustStore = false. 
+
+Entry Parameters Tab:
+- no additional entry parameters
 ### License
 [Apache](https://apache.org/licenses/LICENSE-2.0)
 

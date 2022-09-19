@@ -1,0 +1,64 @@
+###CURL script to create PEM certificate store type
+
+###Replacement Variables - Manually replace these before running###
+# {URL} - Base URL for your Keyfactor deployment
+# {UserName} - User name with access to run Keyfactor APIs
+# {UserPassword} - Password for the UserName above
+
+curl -X POST {URL}/keyfactorapi/certificatestoretypes -H "Content-Type: application/json" -H "x-keyfactor-requested-with: APIClient" -u {UserName}:{UserPassword} -d '{
+  "Name": "RFPEM",
+  "ShortName": "RFPEM",
+  "Capability": "RFPEM",
+  "ServerRequired": true,
+  "BlueprintAllowed": false,
+  "CustomAliasAllowed": "Forbidden",
+  "PowerShell": false,
+  "PrivateKeyAllowed": "Optional",
+  "SupportedOperations": {
+    "Add": true,
+    "Create": true,
+    "Discovery": true,
+    "Enrollment": false,
+    "Remove": true
+  },
+  "PasswordOptions": {
+    "Style": "Default",
+    "EntrySupported": false,
+    "StoreRequired": true
+  },
+  "Properties": [
+    {
+      "Name": "linuxFilePermissionsOnStoreCreation",
+      "DisplayName": "Linux File Permissions on Store Creation",
+      "Required": false,
+      "DependsOn": "",
+      "Type": "String",
+      "DefaultValue": ""
+    },
+    {
+      "Name": "IsTrustStore",
+      "DisplayName": "Trust Store",
+      "Required": false,
+      "DependsOn": "",
+      "Type": "Bool",
+      "DefaultValue": false
+    },
+    {
+      "Name": "IncludesChain",
+      "DisplayName": "Store Includes Chain",
+      "Required": false,
+      "DependsOn": "",
+      "Type": "Bool",
+      "DefaultValue": false
+    },
+    {
+      "Name": "SeparatePrivateKeyFilePath",
+      "DisplayName": "Separate Private Key File Location",
+      "Required": false,
+      "DependsOn": "",
+      "Type": "String",
+      "DefaultValue": ""
+    }
+  ],
+  "EntryParameters": []
+}'
