@@ -134,6 +134,9 @@ Entry Parameters Tab:
 - no additional entry parameters  
 
 &nbsp;  
+CURL script to automate certificate store type creation can be found [here](https://github.com/Keyfactor/remote-file-orchestrator/blob/initial-version/Certificate%20Store%20Type%20CURL%20Scripts/PKCS12.curl)  
+
+&nbsp;  
 &nbsp;  
 **************************************
 **JKS Certificate Store Type**
@@ -159,7 +162,7 @@ Use cases supported:
 Entry Parameters Tab:
 - no additional entry parameters  
 
-
+&nbsp;  
 CURL script to automate certificate store type creation can be found [here](https://github.com/Keyfactor/remote-file-orchestrator/blob/initial-version/Certificate%20Store%20Type%20CURL%20Scripts/JKS.curl)
 
 &nbsp;  
@@ -192,6 +195,12 @@ Use cases supported:
 
 Entry Parameters Tab:
 - no additional entry parameters
-### License
+
+&nbsp;  
+CURL script to automate certificate store type creation can be found [here](https://github.com/Keyfactor/remote-file-orchestrator/blob/initial-version/Certificate%20Store%20Type%20CURL%20Scripts/PEM.curl)  
+
+&nbsp;  
+&nbsp;  
+## License
 [Apache](https://apache.org/licenses/LICENSE-2.0)
 
