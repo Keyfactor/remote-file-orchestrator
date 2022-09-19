@@ -198,6 +198,11 @@ Entry Parameters Tab:
 
 &nbsp;  
 CURL script to automate certificate store type creation can be found [here](https://github.com/Keyfactor/remote-file-orchestrator/blob/initial-version/Certificate%20Store%20Type%20CURL%20Scripts/PEM.curl)  
+&nbsp;
+&nbsp;
+##Creating Certificate Stores
+
+Please refer to the Keyfactor Command Reference Guide for information on creating certificate stores in Keyfactor Command.  However, there are two fields that are important to highlight here - Client Machine and Store Path.  For Linux orchestrated servers, "Client Machine" should be the DNS or IP address of the remote orchestrated server while "Store Path" is the full path and file name of the file based store, beginning with a forward slash (/).  For Windows orchestrated servers, "Client Machine" should be of the format {protocol}://{dns-or-ip}:{port} where {protocol} is either http or https, {dns-or-ip} is the DNS or IP address of the remote orchestrated server, and {port} is the port where WinRM is listening, by convention usually 5985 for http and 5986 for https.  "Store Path" is the full path and file name of the file based store, beginning with a drive letter (i.e. c:\).  
 &nbsp;  
 &nbsp;  
 ## Developer Notes
