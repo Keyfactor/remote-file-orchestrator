@@ -20,7 +20,7 @@ using Newtonsoft.Json;
 
 namespace Keyfactor.Extensions.Orchestrator.RemoteFile
 {
-    public abstract class ManagemenBase : RemoteFileJobTypeBase, IManagementJobExtension
+    public abstract class ManagementBase : RemoteFileJobTypeBase, IManagementJobExtension
     {
         static Mutex mutex = new Mutex(false, "ModifyStore");
 

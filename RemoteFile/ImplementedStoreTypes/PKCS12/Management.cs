@@ -1,7 +1,7 @@
 ﻿
 namespace Keyfactor.Extensions.Orchestrator.RemoteFile.PKCS12
 {
-    public class Management : ManagemenBase
+    public class Management : ManagementBase
     {
         internal override ICertificateStoreSerializer GetCertificateStoreSerializer()
         {
