@@ -74,9 +74,9 @@ The Remote File Orchestrator Extension has been tested against Keyfactor Univers
 2. The Remote File Orchestrator Extension makes use of SFTP and/or SCP to transfer files to and from the orchestrated server.  SFTP/SCP cannot make use of sudo, so all folders containing certificate stores will need to allow SFTP/SCP file transfer.  If this is not possible, set the values in the config.json apprpriately to use an alternative upload/download folder that does allow SFTP/SCP file transfer (See "Config File Setup" later in this README regarding the config.json file).
 
 **For Windows orchestrated servers:**
-1. Make sure that WinRM is set up on the orchestrated server and that the WinRM port is part of the certificate store path when setting up your certificate stores (See "Certificate Store Setup" for each supported certificate store type later in this README). 
+1. Make sure that WinRM is set up on the orchestrated server and that the WinRM port is part of the certificate store path when setting up your certificate stores When creating a new certificate store in Keyfactor Command (See "Creating Certificate Stores" later in this README).
 
-2. When creating/configuring a certificate store in Keyfactor Command, you will see a "Change Credentials" link after entering in the destination client machine (IP or DNS).  This link **must** be clicked on to present the credentials dialog.  However, WinRM does not require that you enter separate credentials.  Simply click SAVE in the resulting dialog without entering in credentials to use the credentials that the Keyfactor Orchestrator Service is running under.  Alternatively, you may enter separate credentials into this dialog and use those to connect to the orchestrated server.
+2. When creating/configuring a certificate store in Keyfactor Command, you will see a "Change Credentials" link after entering in the destination client machine (IP or DNS).  This link **must** be clicked on to present the credentials dialog.  However, it is not required that you enter separate credentials.  Simply click SAVE in the resulting dialog without entering in credentials to use the credentials that the Keyfactor Orchestrator Service is running under.  Alternatively, you may enter separate credentials into this dialog and use those to connect to the orchestrated server.
 
 **SSH Key-Based Authentiation**
 1. When creating a Keyfactor certificate store for the remote file orchestrator extension, you may supply a user id and password for the certificate store credentials (directly or through one of Keyfactor Command's PAM integrations), or you can use a user id and SSH private key.  Both PKCS#1 (BEGIN RSA PRIVATE KEY) and PKCS#8 (BEGIN PRIVATE KEY) formats are SUPPORTED.  If using the normal Keyfactor Command credentials dialog without PAM integration, just copy and paste the full SSH private key into the Password textbox.
@@ -252,6 +252,11 @@ Steps to create a new supported file based certificate store type:
 10. Add a new CURL script to build the proper Keyfactor Command certificate store type and place it under "Certificate Store Type CURL Scripts".  The name of the file should match the ShortName you are using for the new store type.
 11. Update the documenation in readme_source.md by adding a new section under "Certificate Store Types" for this new supported file based store type.  Include a pointer to the CURL script created in step 10.
 
+&nbsp;  
+&nbsp;  
+## Creating Certificate Stores
+   
+To create a new Certificate store in Keyfactor Command Reference Guide.  However, two fields to take note of as they pertain to the Remote File Orchestrator Extension are Client Machine and Store Path.  For orchestrated servers, residing on Linux, "Client Machine" should contain the IP or DNS of the remote orchestrated server where the file based certificate store resides.  For Windows orchestrated servers, you must use the following format: {protocol}://{dns-or-ip}:{port}, where {protocol} is either http or https (usually https), {dns-or-ip} is the dns or ip address of the server, and {port} is the port where the WinRM service is listening, usually 5985 for http and 5986 for https.  Store Path is the full path and file name of the file based certificate store.  On Linux servers this begins with a forwars slash (/), and for Windows servers this begins with a drive letter (c:\).  This needs to be the full path AND file name of the store.
 &nbsp;  
 &nbsp;  
 ## License
