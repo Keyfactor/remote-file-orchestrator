@@ -198,6 +198,25 @@ Entry Parameters Tab:
 
 &nbsp;  
 CURL script to automate certificate store type creation can be found [here](https://github.com/Keyfactor/remote-file-orchestrator/blob/initial-version/Certificate%20Store%20Type%20CURL%20Scripts/PEM.curl)  
+&nbsp;  
+&nbsp;  
+## Developer Notes
+
+The Remote File Orchestrator Extension is meant to be extended to be used for other file based certificate store types than the ones referenced above.  The advantage to extending this integration rather than creating a new one is that the configuration, remoting, and Inventory/Management/Discovery logic is already written.  The developer needs to only implement a few classes and write code to convert the destired file based store to a common format.  This section describes the steps necessary to add additional store/file types.  Please note that familiarity with the [.Net Core BouncyCastle cryptography library](https://github.com/bcgit/bc-csharp) is a prerequisite for adding additional supported file/store types.  
+
+Steps to create a new supported file based certificate store type:
+
+1. Clone this repository from GitHub
+2. Open the .net core solution in the IDE of your choice
+3. Under the ImplementationStoreTypes folder, create a new folder named for the new certificate store type
+4. Create a new class (with namespace of Keyfactor.Extensions.Orchestrator.RemoteFile.{NewType}) in the new folder that will implement ICertificateStoreSerializer.  By convention, {StoreTypeName}CertificateSerializer would be a good choice for the class name.  This interface requires you to implement two methods: DesrializeRemoteCertificateStore and SerializeRemoteCertificateStore.  The first method will be called passing in a byte array containing the contents of file based store you are managing.  The developer will need to convert that to an Org.BouncyCastle.Pkcs.Pkcs12Store class and return it.  The second method takes in an Org.BouncyCastle.Pkcs.Pkcs12Store and converts it to a collection of custom file representations, List<SerializedStoreInfo>.  This is where the majority of the development will be done.
+5. Create an Inventory.cs class (with namespace of Keyfactor.Extensions.Orchestrator.RemoteFile.{NewType}) under the new folder and have it inherit InventoryBase.  Override the internal GetCertificateStoreSerializer() method with a one line implementation returning a new instantiation of the class created in step 4.
+6. Create a Management.cs class (with namespace of Keyfactor.Extensions.Orchestrator.RemoteFile.{NewType}) under the new folder and have it inherit ManagementBase.  Override the internal GetCertificateStoreSerializer() method with a one line implementation returning a new instantiation of the class created in step 4.
+7. Modify the manifest.json file to add three new sections (for Inventory, Management, and Discovery).  Make sure for each, the "NewType" in Certstores.{NewType}.{Operation}, matches what you will use for the certificate store type short name in Keyfactor Command.  On the "TypeFullName" line for all three sections, make sure the namespace matches what you used for your new classes.  Note that the namespace for Discovery uses a common class for all supported types.  Discovery is a common implementation for all supported store types.
+8. After compiling, move all compiled files, including the config.json and manifest.json to {Keyfactor Orchestrator Installation Folder}\Extensions\RemoteFile.
+9. Create the certificate store type in Keyfactor Command
+10. Add a new CURL script to build the proper Keyfactor Command certificate store type and place it under "Certificate Store Type CURL Scripts".  The name of the file should match the ShortName you are using for the new store type.
+11. Update the documenation in readme_source.md by adding a new section under "Certificate Store Types" for this new supported file based store type.  Include a pointer to the CURL script created in step 10.
 
 &nbsp;  
 &nbsp;  
