@@ -235,7 +235,7 @@ Entry Parameters Tab:
 &nbsp;  
 CURL script to automate certificate store type creation can be found [here](https://github.com/Keyfactor/remote-file-orchestrator/blob/initial-version/Certificate%20Store%20Type%20CURL%20Scripts/PEM.curl)  
 &nbsp;
-&nbsp;
+&nbsp;  
 ##Creating Certificate Stores
 
 Please refer to the Keyfactor Command Reference Guide for information on creating certificate stores in Keyfactor Command.  However, there are two fields that are important to highlight here - Client Machine and Store Path.  For Linux orchestrated servers, "Client Machine" should be the DNS or IP address of the remote orchestrated server while "Store Path" is the full path and file name of the file based store, beginning with a forward slash (/).  For Windows orchestrated servers, "Client Machine" should be of the format {protocol}://{dns-or-ip}:{port} where {protocol} is either http or https, {dns-or-ip} is the DNS or IP address of the remote orchestrated server, and {port} is the port where WinRM is listening, by convention usually 5985 for http and 5986 for https.  "Store Path" is the full path and file name of the file based store, beginning with a drive letter (i.e. c:\).  
@@ -258,12 +258,6 @@ Steps to create a new supported file based certificate store type:
 9. Create the certificate store type in Keyfactor Command
 10. Add a new CURL script to build the proper Keyfactor Command certificate store type and place it under "Certificate Store Type CURL Scripts".  The name of the file should match the ShortName you are using for the new store type.
 11. Update the documenation in readme_source.md by adding a new section under "Certificate Store Types" for this new supported file based store type.  Include a pointer to the CURL script created in step 10.
-
-&nbsp;  
-&nbsp;  
-## Creating Certificate Stores
-   
-To create a new Certificate store in Keyfactor Command Reference Guide.  However, two fields to take note of as they pertain to the Remote File Orchestrator Extension are Client Machine and Store Path.  For orchestrated servers, residing on Linux, "Client Machine" should contain the IP or DNS of the remote orchestrated server where the file based certificate store resides.  For Windows orchestrated servers, you must use the following format: {protocol}://{dns-or-ip}:{port}, where {protocol} is either http or https (usually https), {dns-or-ip} is the dns or ip address of the server, and {port} is the port where the WinRM service is listening, usually 5985 for http and 5986 for https.  Store Path is the full path and file name of the file based certificate store.  On Linux servers this begins with a forwars slash (/), and for Windows servers this begins with a drive letter (c:\).  This needs to be the full path AND file name of the store.
 &nbsp;  
 &nbsp;  
 ## License
