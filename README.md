@@ -150,8 +150,9 @@ Entry Parameters Tab:
 The PKCS12 store type can be used to manage any PKCS#12 compliant file format.
 
 Use cases supported:
-1. Trust entries - A single certificate without a private key in a certificate store.  Each certificate identified with a custom alias or certificate thumbprint.
-2. Key entries - One-to-many certificates with private keys and optionally the full certificate chain.  Each certificate identified with a custom alias or certificate thumbprint.
+1. One-to-many trust entries - A single certificate without a private key in a certificate store.  Each certificate identified with a custom alias or certificate thumbprint.
+2. One-to-many key entries - One-to-many certificates with private keys and optionally the full certificate chain.  Each certificate identified with a custom alias or certificate thumbprint.
+3. A mix of trust and key entries.
 
 **Specific Certificate Store Type Values**  
 *Basic Tab:*
@@ -179,8 +180,9 @@ CURL script to automate certificate store type creation can be found [here](http
 The JKS store type can be used to manage java keystores of type jks.
 
 Use cases supported:
-1. Trust entries - A single certificate without a private key in a certificate store.  Each certificate identified with a custom alias or certificate thumbprint.
-2. Key entries - One-to-many certificates with private keys and optionally the full certificate chain.  Each certificate identified with a custom alias or certificate thumbprint.
+1. One-to-many trust entries - A single certificate without a private key in a certificate store.  Each certificate identified with a custom alias or certificate thumbprint.
+2. One-to-many key entries - One-to-many certificates with private keys and optionally the full certificate chain.  Each certificate identified with a custom alias or certificate thumbprint.
+3. A mix of trust and key entries.
 
 **Specific Certificate Store Type Values**  
 *Basic Tab:*
