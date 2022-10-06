@@ -1,0 +1,8 @@
+﻿{
+  "UseSudo": "N",
+  "CreateStoreIfMissing": "N",
+  "UseNegotiate": "N",
+  "SeparateUploadFilePath": "",
+  "FileTransferProtocol": "SCP",
+  "DefaultLinuxPermissionsOnStoreCreation": "600"
+}
