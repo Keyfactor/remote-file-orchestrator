@@ -28,7 +28,7 @@ curl -X POST {URL}/keyfactorapi/certificatestoretypes -H "Content-Type: applicat
   },
   "Properties": [
     {
-      "Name": "linuxFilePermissionsOnStoreCreation",
+      "Name": "LinuxFilePermissionsOnStoreCreation",
       "DisplayName": "Linux File Permissions on Store Creation",
       "Required": false,
       "DependsOn": "",
