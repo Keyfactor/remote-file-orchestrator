@@ -119,9 +119,9 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
         private void CreateStore(ManagementJobConfiguration config)
         {
             dynamic properties = JsonConvert.DeserializeObject(config.CertificateStoreDetails.Properties.ToString());
-            string linuxFilePermissions = properties.linuxFilePermissionsOnStoreCreation == null || string.IsNullOrEmpty(properties.linuxFilePermissionsOnStoreCreation.Value) ?
+            string linuxFilePermissions = properties.LinuxFilePermissionsOnStoreCreation == null || string.IsNullOrEmpty(properties.LinuxFilePermissionsOnStoreCreation.Value) ?
                 ApplicationSettings.DefaultLinuxPermissionsOnStoreCreation :
-                properties.linuxFilePermissionsOnStoreCreation.Value;
+                properties.LinuxFilePermissionsOnStoreCreation.Value;
 
             certificateStore.CreateCertificateStore(config.CertificateStoreDetails.StorePath, linuxFilePermissions);
         }
