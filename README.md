@@ -178,7 +178,7 @@ CURL script to automate certificate store type creation can be found [here](http
 **RFJKS Certificate Store Type**
 **************************************
 
-The RFJKS store type can be used to manage java keystores of type JKS.  **PLEASE NOTE:** Java keystores of type PKCS12 **_must_** cannot be managed by the RFJKS type.  You **_must_** use RFPkcs12.
+The RFJKS store type can be used to manage java keystores of type JKS.  **PLEASE NOTE:** Java keystores of type PKCS12 **_cannot_** be managed by the RFJKS type.  You **_must_** use RFPkcs12.
 
 Use cases supported:
 1. One-to-many trust entries - A single certificate without a private key in a certificate store.  Each certificate identified with a custom alias or certificate thumbprint.
