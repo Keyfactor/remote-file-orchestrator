@@ -145,10 +145,10 @@ Entry Parameters Tab:
 &nbsp;  
 &nbsp;  
 **************************************
-**PKCS12 Certificate Store Type**
+**RFPkcs12 Certificate Store Type**
 **************************************
 
-The PKCS12 store type can be used to manage any PKCS#12 compliant file format.
+The RFPkcs12 store type can be used to manage any PKCS#12 compliant file format INCLUDING java keystores of type PKCS12.
 
 Use cases supported:
 1. One-to-many trust entries - A single certificate without a private key in a certificate store.  Each certificate identified with a custom alias or certificate thumbprint.
@@ -175,10 +175,10 @@ CURL script to automate certificate store type creation can be found [here](http
 &nbsp;  
 &nbsp;  
 **************************************
-**JKS Certificate Store Type**
+**RFJKS Certificate Store Type**
 **************************************
 
-The JKS store type can be used to manage java keystores of type jks.
+The RFJKS store type can be used to manage java keystores of type JKS.  **PLEASE NOTE:** Java keystores of type PKCS12 **_must_** cannot be managed by the RFJKS type.  You **_must_** use RFPkcs12.
 
 Use cases supported:
 1. One-to-many trust entries - A single certificate without a private key in a certificate store.  Each certificate identified with a custom alias or certificate thumbprint.
@@ -205,10 +205,10 @@ CURL script to automate certificate store type creation can be found [here](http
 &nbsp;  
 &nbsp;  
 **************************************
-**PEM Certificate Store Type**
+**RFPEM Certificate Store Type**
 **************************************
 
-The PEM store type can be used to manage PEM encoded files.
+The RFPEM store type can be used to manage PEM encoded files.
 
 Use cases supported:
 1. Trust stores - A file with one-to-many certificates (no private keys, no certificate chains).
