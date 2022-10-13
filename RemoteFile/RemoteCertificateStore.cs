@@ -109,7 +109,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             if (byteContents.Length < 5)
                 return;
 
-            CertificateStore = certificateStoreSerializer.DeserializeRemoteCertificateStore(byteContents, StorePassword, storeProperties, RemoteHandler);
+            CertificateStore = certificateStoreSerializer.DeserializeRemoteCertificateStore(byteContents, StorePath, StorePassword, storeProperties, RemoteHandler);
 
             logger.MethodExit(LogLevel.Debug);
         }
@@ -424,8 +424,8 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
 
             try
             {
-                string workingPathFileName = pathFileName.Replace(@"\", @"/");
-                int separatorIndex = workingPathFileName.LastIndexOf(@"/");
+                string storePathFileName = pathFileName.Replace(@"\", @"/");
+                int separatorIndex = storePathFileName.LastIndexOf(@"/");
 
                 logger.MethodExit(LogLevel.Debug);
                 return new PathFile() { Path = pathFileName.Substring(0, separatorIndex + 1), File = pathFileName.Substring(separatorIndex + 1) };

@@ -22,7 +22,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.JKS
             logger = LogHandler.GetClassLogger(this.GetType());
         }
 
-        public Pkcs12Store DeserializeRemoteCertificateStore(byte[] storeContents, string storePassword, string storeProperties, IRemoteHandler remoteHandler)
+        public Pkcs12Store DeserializeRemoteCertificateStore(byte[] storeContents, string storePath, string storePassword, string storeProperties, IRemoteHandler remoteHandler)
         {
             logger.MethodEntry(LogLevel.Debug);
 

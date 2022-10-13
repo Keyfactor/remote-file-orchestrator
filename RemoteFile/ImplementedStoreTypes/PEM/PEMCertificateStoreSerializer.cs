@@ -37,7 +37,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.PEM
             logger = LogHandler.GetClassLogger(this.GetType());
         }
 
-        public Pkcs12Store DeserializeRemoteCertificateStore(byte[] storeContentBytes, string storePassword, string storeProperties, IRemoteHandler remoteHandler)
+        public Pkcs12Store DeserializeRemoteCertificateStore(byte[] storeContentBytes, string storePath, string storePassword, string storeProperties, IRemoteHandler remoteHandler)
         {
             logger.MethodEntry(LogLevel.Debug);
 

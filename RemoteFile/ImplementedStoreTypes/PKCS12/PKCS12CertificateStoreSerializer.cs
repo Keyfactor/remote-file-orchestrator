@@ -9,7 +9,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.PKCS12
 {
     class PKCS12CertificateStoreSerializer : ICertificateStoreSerializer
     {
-        public Pkcs12Store DeserializeRemoteCertificateStore(byte[] storeContents, string storePassword, string storeProperties, IRemoteHandler remoteHandler)
+        public Pkcs12Store DeserializeRemoteCertificateStore(byte[] storeContents, string storePath, string storePassword, string storeProperties, IRemoteHandler remoteHandler)
         {
             Pkcs12StoreBuilder storeBuilder = new Pkcs12StoreBuilder();
             Pkcs12Store store = storeBuilder.Build();

@@ -132,9 +132,6 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
                     else
                         _logger.LogDebug($"WinRM Results: {displayCommand}::: {result}");
 
-                    if (result.ToLower().Contains(KEYTOOL_ERROR))
-                        throw new ApplicationException(result);
-
                     _logger.MethodExit(LogLevel.Debug);
 
                     return result;
@@ -238,6 +235,13 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
             _logger.MethodExit(LogLevel.Debug);
 
             return Convert.ToBoolean(RunCommand($@"Test-Path -path ""{path}""", null, false, null));
+        }
+
+        public override void RemoveCertificateFile(string path, string fileName)
+        {
+            _logger.LogDebug($"RemoveCertificateFile: {path} {fileName}");
+
+            RunCommand($"rm {path}{fileName}", null, false, null);
         }
 
 

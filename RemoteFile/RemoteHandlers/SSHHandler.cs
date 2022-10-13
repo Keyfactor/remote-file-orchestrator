@@ -112,8 +112,8 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
                     command.Execute();
                     _logger.LogDebug($"SSH Results: {displayCommand}::: {command.Result}::: {command.Error}");
 
-                    if (command.Result.ToLower().Contains(KEYTOOL_ERROR))
-                        throw new ApplicationException(command.Result);
+                    if (!String.IsNullOrEmpty(command.Error))
+                        throw new ApplicationException(command.Error);
 
                     _logger.MethodExit(LogLevel.Debug);
 
@@ -224,7 +224,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
                 SplitStorePathFile(path, out altPathOnly, out altFileNameOnly);
                 downloadPath = ApplicationSettings.SeparateUploadFilePath + altFileNameOnly;
                 RunCommand($"cp {path} {downloadPath}", null, ApplicationSettings.UseSudo, null);
-                RunCommand($"sudo chown {Connection.Username} {path}", null, ApplicationSettings.UseSudo, null);
+                RunCommand($"sudo chown {Connection.Username} {downloadPath}", null, ApplicationSettings.UseSudo, null);
             }
 
             bool scpError = false;
@@ -338,6 +338,13 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
             Regex regex = new Regex(LINUX_PERMISSION_REGEXP);
             if (!regex.IsMatch(permissions))
                 throw new RemoteFileException($"Invalid format for Linux file permissions.  This value must be exactly 3 digits long with each digit between 0-7 but found {permissions} instead.");
+        }
+
+        public override void RemoveCertificateFile(string path, string fileName)
+        {
+            _logger.LogDebug($"RemoveCertificateFile: {path} {fileName}");
+
+            RunCommand($"rm {path}{fileName}", null, ApplicationSettings.UseSudo, null);
         }
 
         private void SplitStorePathFile(string pathFileName, out string path, out string fileName)
