@@ -9,6 +9,6 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
     {
         Pkcs12Store DeserializeRemoteCertificateStore(byte[] storeContents, string storePath, string storePassword, string storeProperties, IRemoteHandler remoteHandler);
 
-        List<SerializedStoreInfo> SerializeRemoteCertificateStore(Pkcs12Store certificateStore, string storePath, string storePassword, string storeProperties, IRemoteHandler remoteHandler);
+        List<SerializedStoreInfo> SerializeRemoteCertificateStore(Pkcs12Store certificateStore, string storePath, string storeFileName, string storePassword, string storeProperties, IRemoteHandler remoteHandler);
     }
 }

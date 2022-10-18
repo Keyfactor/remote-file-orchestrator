@@ -71,7 +71,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.JKS
             return pkcs12StoreNew;
         }
 
-        public List<SerializedStoreInfo> SerializeRemoteCertificateStore(Pkcs12Store certificateStore, string storePath, string storePassword, string storeProperties, IRemoteHandler remoteHandler)
+        public List<SerializedStoreInfo> SerializeRemoteCertificateStore(Pkcs12Store certificateStore, string storePath, string storeFileName, string storePassword, string storeProperties, IRemoteHandler remoteHandler)
         {
             logger.MethodEntry(LogLevel.Debug);
 
@@ -103,7 +103,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.JKS
                 jksStore.Save(outStream, string.IsNullOrEmpty(storePassword) ? new char[0] : storePassword.ToCharArray());
 
                 List<SerializedStoreInfo> storeInfo = new List<SerializedStoreInfo>();
-                storeInfo.Add(new SerializedStoreInfo() { FilePath = storePath, Contents = outStream.ToArray() });
+                storeInfo.Add(new SerializedStoreInfo() { FilePath = storePath+storeFileName, Contents = outStream.ToArray() });
 
                 logger.MethodExit(LogLevel.Debug);
                 return storeInfo;

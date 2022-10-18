@@ -311,6 +311,21 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             return RemoteHandler.DoesFileExist(StorePath + StoreFileName);
         }
 
+        internal static PathFile SplitStorePathFile(string pathFileName)
+        {
+            try
+            {
+                string storePathFileName = pathFileName.Replace(@"\", @"/");
+                int separatorIndex = storePathFileName.LastIndexOf(@"/");
+
+                return new PathFile() { Path = pathFileName.Substring(0, separatorIndex + 1), File = pathFileName.Substring(separatorIndex + 1) };
+            }
+            catch (Exception ex)
+            {
+                throw new RemoteFileException($"Error attempting to parse certficate store path={pathFileName}.", ex);
+            }
+        }
+
         private void Initialize()
         {
             logger.MethodEntry(LogLevel.Debug);
@@ -416,24 +431,6 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             logger.MethodExit(LogLevel.Debug);
 
             return result.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
-        }
-
-        private PathFile SplitStorePathFile(string pathFileName)
-        {
-            logger.MethodEntry(LogLevel.Debug);
-
-            try
-            {
-                string storePathFileName = pathFileName.Replace(@"\", @"/");
-                int separatorIndex = storePathFileName.LastIndexOf(@"/");
-
-                logger.MethodExit(LogLevel.Debug);
-                return new PathFile() { Path = pathFileName.Substring(0, separatorIndex + 1), File = pathFileName.Substring(separatorIndex + 1) };
-            }
-            catch (Exception ex)
-            {
-                throw new RemoteFileException($"Error attempting to parse certficate store path={StorePath}, file name={StoreFileName}.", ex);
-            }
         }
 
         private string FormatPath(string path)
