@@ -25,7 +25,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.KDB
         {
             logger.MethodEntry(LogLevel.Debug);
 
-            string kdbCommand = storePath.Substring(0, 1) == "/" ? "gskcapicmd" : "gsk8capicmd";
+            string bashCommand = storePath.Substring(0, 1) == "/" ? "bash " : string.Empty;
 
             Pkcs12StoreBuilder storeBuilder = new Pkcs12StoreBuilder();
             Pkcs12Store store = storeBuilder.Build();
@@ -35,7 +35,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.KDB
 
             remoteHandler.UploadCertificateFile(storePath, tempStoreFile, storeContentBytes);
             
-            string command = $"bash {kdbCommand} -keydb -convert -db '{storePath}{tempStoreFile}' -pw '{storePassword}' -type kdb -new_db '{storePath}{tempCertFile}' -new_pw '{storePassword}' -new_format p12";
+            string command = $"{bashCommand}gskcapicmd -keydb -convert -db \"{storePath}{tempStoreFile}\" -pw \"{storePassword}\" -type kdb -new_db \"{storePath}{tempCertFile}\" -new_pw \"{storePassword}\" -new_format p12";
 
             try
             {
@@ -63,12 +63,12 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.KDB
             logger.MethodEntry(LogLevel.Debug);
 
             List<SerializedStoreInfo> storeInfo = new List<SerializedStoreInfo>();
-            string kdbCommand = storePath.Substring(0, 1) == "/" ? "gskcapicmd" : "gsk8capicmd";
+            string bashCommand = storePath.Substring(0, 1) == "/" ? "bash " : string.Empty;
 
             string tempStoreFile = Guid.NewGuid().ToString().Replace("-", string.Empty) + ".kdb";
             string tempCertFile = Guid.NewGuid().ToString().Replace("-", string.Empty) + ".p12";
 
-            string command = $"bash {kdbCommand} -keydb -convert -db '{storePath}{tempCertFile}' -pw '{storePassword}' -type p12 -new_db '{storePath}{tempStoreFile}' -new_pw '{storePassword}' -new_format kdb";
+            string command = $"{bashCommand}gskcapicmd -keydb -convert -db \"{storePath}{tempCertFile}\" -pw \"{storePassword}\" -type p12 -new_db \"{storePath}{tempStoreFile}\" -new_pw \"{storePassword}\" -new_format kdb";
             
             try
             {

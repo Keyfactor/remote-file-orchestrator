@@ -20,9 +20,8 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
 {
     class WinRMHandler : BaseRemoteHandler
     {
-        private const string IGNORED_ERROR1 = "importing keystore";
-        private const string IGNORED_ERROR2 = "warning:";
-        private const string IGNORED_ERROR3 = "certificate was added to keystore";
+        private const string IGNORED_ERROR1 = "setupcmdline.bat";
+        private const string IGNORED_ERROR2 = "operable program or batch file";
 
         private Runspace runspace { get; set; }
         private WSManConnectionInfo connectionInfo { get; set; }
@@ -115,9 +114,8 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
                         foreach (ErrorRecord errorRecord in errorRecords)
                         {
                             string error = errorRecord.ToString();
-                            if (error.ToLower().StartsWith(IGNORED_ERROR1) ||
-                                error.ToLower().Contains(IGNORED_ERROR2) ||
-                                error.ToLower().Contains(IGNORED_ERROR3))
+                            if (error.ToLower().Contains(IGNORED_ERROR1)
+                             || error.ToLower().Contains(IGNORED_ERROR2))
                             {
                                 errors = null;
                                 break;
