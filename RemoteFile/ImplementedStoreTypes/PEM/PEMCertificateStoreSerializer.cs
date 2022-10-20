@@ -37,7 +37,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.PEM
             logger = LogHandler.GetClassLogger(this.GetType());
         }
 
-        public Pkcs12Store DeserializeRemoteCertificateStore(byte[] storeContentBytes, string storePassword, string storeProperties, IRemoteHandler remoteHandler)
+        public Pkcs12Store DeserializeRemoteCertificateStore(byte[] storeContentBytes, string storePath, string storePassword, string storeProperties, IRemoteHandler remoteHandler)
         {
             logger.MethodEntry(LogLevel.Debug);
 
@@ -75,7 +75,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.PEM
             return newStore;
         }
 
-        public List<SerializedStoreInfo> SerializeRemoteCertificateStore(Pkcs12Store certificateStore, string storePath, string storePassword, string storeProperties, IRemoteHandler remoteHandler)
+        public List<SerializedStoreInfo> SerializeRemoteCertificateStore(Pkcs12Store certificateStore, string storePath, string storeFileName, string storePassword, string storeProperties, IRemoteHandler remoteHandler)
         {
             logger.MethodEntry(LogLevel.Debug);
 
@@ -135,7 +135,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.PEM
                 }
             }
 
-            storeInfo.Add(new SerializedStoreInfo() { FilePath = storePath, Contents = Encoding.ASCII.GetBytes(pemString) });
+            storeInfo.Add(new SerializedStoreInfo() { FilePath = storePath+storeFileName, Contents = Encoding.ASCII.GetBytes(pemString) });
             if (!string.IsNullOrEmpty(SeparatePrivateKeyFilePath))
                 storeInfo.Add(new SerializedStoreInfo() { FilePath = SeparatePrivateKeyFilePath, Contents = Encoding.ASCII.GetBytes(keyString) });
 

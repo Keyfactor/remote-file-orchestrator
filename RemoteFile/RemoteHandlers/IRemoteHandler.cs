@@ -26,5 +26,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
         void CreateEmptyStoreFile(string path, string linuxFilePermissions);
 
         bool DoesFileExist(string path);
+
+        void RemoveCertificateFile(string path, string fileName);
     }
 }

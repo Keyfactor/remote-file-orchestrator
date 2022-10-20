@@ -4,6 +4,7 @@ The Remote File Orchestrator Extension is a multi-purpose integration that can r
 - Java Keystores of type JKS
 - PKCS12 files, including, but not limited to, Java keystores of type PKCS12
 - PEM files
+- IBM Key Database files (KDB)
 
 While the Keyfactor Universal Orchestrator (UO) can be installed on either Windows or Linux; likewise, the Remote File Orchestrator Extension can be used to manage certificate stores residing on both Windows and Linux servers.  The supported configurations of Universal Orchestrator hosts and managed orchestrated servers are shown below:
 
@@ -199,7 +200,38 @@ Entry Parameters Tab:
 - no additional entry parameters
 
 &nbsp;  
-CURL script to automate certificate store type creation can be found [here](https://github.com/Keyfactor/remote-file-orchestrator/blob/initial-version/Certificate%20Store%20Type%20CURL%20Scripts/PEM.curl)  
+CURL script to automate certificate store type creation can be found [here](https://github.com/Keyfactor/remote-file-orchestrator/blob/initial-version/Certificate%20Store%20Type%20CURL%20Scripts/PEM.curl)
+
+&nbsp;  
+&nbsp;  
+**************************************
+**RFKDB Certificate Store Type**
+**************************************
+
+The RFKDB store type can be used to manage IBM Key Database Files (KDB) files.  The IBM utility, GSKCAPICMD, is used to read and write certificates from and to the target store and is therefore required to be installed on the server where the Keyfactor Orchestrator Service is installed, and its location MUST be in the system $Path.
+
+Use cases supported:
+1. One-to-many trust entries - A single certificate without a private key in a certificate store.  Each certificate identified with a custom alias or certificate thumbprint.
+2. One-to-many key entries - One-to-many certificates with private keys and optionally the full certificate chain.  Each certificate identified with a custom alias or certificate thumbprint.
+3. A mix of trust and key entries.
+
+**Specific Certificate Store Type Values**  
+*Basic Tab:*
+- **Short Name** – Required. Suggested value - **RFKDB**.  If you choose to use a different value you must make the corresponding modification to the manifest.json file (see "Remote File Orchestrator Extension Installation", step 6 above).
+
+*Advanced Tab:*
+- **Supports Custom Alias** - Required.
+- **Private Key Handling** - Optional.  
+
+*Custom Fields Tab:*  
+- no adittional custom fields/parameters
+
+Entry Parameters Tab:
+- no additional entry parameters  
+
+&nbsp;  
+CURL script to automate certificate store type creation can be found [here](https://github.com/Keyfactor/remote-file-orchestrator/blob/initial-version/Certificate%20Store%20Type%20CURL%20Scripts/KDB.curl)  
+
 &nbsp;  
 &nbsp;  
 ## Creating Certificate Stores

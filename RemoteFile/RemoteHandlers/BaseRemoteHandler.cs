@@ -14,7 +14,6 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
     abstract class BaseRemoteHandler : IRemoteHandler
     {
         internal ILogger _logger;
-        internal const string KEYTOOL_ERROR = "password was incorrect";
         internal const string PASSWORD_MASK_VALUE = "[PASSWORD]";
         internal const int PASSWORD_LENGTH_MAX = 100;
 
@@ -38,5 +37,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
         public abstract void CreateEmptyStoreFile(string path, string linuxFilePermissions);
 
         public abstract bool DoesFileExist(string path);
+
+        public abstract void RemoveCertificateFile(string path, string fileName);
     }
 }

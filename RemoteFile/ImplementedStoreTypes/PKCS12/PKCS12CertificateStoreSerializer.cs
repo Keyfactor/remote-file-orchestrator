@@ -9,7 +9,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.PKCS12
 {
     class PKCS12CertificateStoreSerializer : ICertificateStoreSerializer
     {
-        public Pkcs12Store DeserializeRemoteCertificateStore(byte[] storeContents, string storePassword, string storeProperties, IRemoteHandler remoteHandler)
+        public Pkcs12Store DeserializeRemoteCertificateStore(byte[] storeContents, string storePath, string storePassword, string storeProperties, IRemoteHandler remoteHandler)
         {
             Pkcs12StoreBuilder storeBuilder = new Pkcs12StoreBuilder();
             Pkcs12Store store = storeBuilder.Build();
@@ -22,14 +22,14 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.PKCS12
             return store;
         }
 
-        public List<SerializedStoreInfo> SerializeRemoteCertificateStore(Pkcs12Store certificateStore, string storePath, string storePassword, string storeProperties, IRemoteHandler remoteHandler)
+        public List<SerializedStoreInfo> SerializeRemoteCertificateStore(Pkcs12Store certificateStore, string storePath, string storeFileName, string storePassword, string storeProperties, IRemoteHandler remoteHandler)
         {
             using (MemoryStream outStream = new MemoryStream())
             {
                 certificateStore.Save(outStream, string.IsNullOrEmpty(storePassword) ? new char[0] : storePassword.ToCharArray(), new Org.BouncyCastle.Security.SecureRandom());
 
                 List<SerializedStoreInfo> storeInfo = new List<SerializedStoreInfo>();
-                storeInfo.Add(new SerializedStoreInfo() { FilePath = storePath, Contents = outStream.ToArray() });
+                storeInfo.Add(new SerializedStoreInfo() { FilePath = storePath+storeFileName, Contents = outStream.ToArray() });
                 
                 return storeInfo;
             }
