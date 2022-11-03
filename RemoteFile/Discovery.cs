@@ -44,6 +44,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
 
             try
             {
+                certificateStore.Initialize();
                 ApplicationSettings.Initialize(this.GetType().Assembly.Location);
 
                 if (directoriesToSearch.Length == 0)
