@@ -7,7 +7,7 @@ using Microsoft.Extensions.Logging;
 using Keyfactor.Logging;
 
 
-namespace Keyfactor.Extensions.Orchestrator.RemoteFile
+namespace Keyfactor.Extensions.Orchestrator.RemoteFile 
 {
     class ApplicationSettings
     {
