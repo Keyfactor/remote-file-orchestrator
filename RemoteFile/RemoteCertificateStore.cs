@@ -79,8 +79,6 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             }
             logger.LogDebug("Store path valid");
 
-            Initialize();
-
             logger.MethodExit(LogLevel.Debug);
         }
 
@@ -93,8 +91,6 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             ServerId = serverId;
             ServerPassword = serverPassword ?? string.Empty;
             ServerType = serverType;
-
-            Initialize();
 
             logger.MethodExit(LogLevel.Debug);
         }
@@ -326,7 +322,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             }
         }
 
-        private void Initialize()
+        internal void Initialize()
         {
             logger.MethodEntry(LogLevel.Debug);
 

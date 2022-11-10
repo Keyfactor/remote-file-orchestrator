@@ -38,6 +38,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             {
                 ApplicationSettings.Initialize(this.GetType().Assembly.Location);
                 certificateStore = new RemoteCertificateStore(config.CertificateStoreDetails.ClientMachine, config.ServerUsername, config.ServerPassword, config.CertificateStoreDetails.StorePath, config.CertificateStoreDetails.StorePassword, config.JobProperties);
+                certificateStore.Initialize();
                 certificateStore.LoadCertificateStore(certificateStoreSerializer, config.CertificateStoreDetails.Properties);
 
                 List<X509Certificate2Collection> collections = certificateStore.GetCertificateChains();
