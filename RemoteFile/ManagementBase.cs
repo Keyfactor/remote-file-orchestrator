@@ -52,6 +52,8 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
 
                 PathFile storePathFile = RemoteCertificateStore.SplitStorePathFile(config.CertificateStoreDetails.StorePath);
 
+                PathFile storePathFile = RemoteCertificateStore.SplitStorePathFile(config.CertificateStoreDetails.StorePath);
+
                 switch (config.OperationType)
                 {
                     case CertStoreOperationType.Add:
