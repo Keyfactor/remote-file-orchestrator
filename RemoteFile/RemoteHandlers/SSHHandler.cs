@@ -67,9 +67,16 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
         public override void Initialize()
         {
             _logger.MethodEntry(LogLevel.Debug);
-            
-            sshClient = new SshClient(Connection);
-            sshClient.Connect();
+
+            try
+            {
+                sshClient = new SshClient(Connection);
+                sshClient.Connect();
+            }
+            catch (Exception ex)
+            {
+                throw new RemoteFileException($"Error making a SSH connection to remote server {Connection.Host}, for user {Connection.Username}.  Please contact your company's system administrator to verify connection and permission settings.", ex);
+            }
             
             _logger.MethodExit(LogLevel.Debug);
         }
@@ -163,7 +170,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
                         if (ApplicationSettings.FileTransferProtocol == ApplicationSettings.FileTransferProtocolEnum.Both)
                             _logger.LogDebug($"SCP upload failed.  Attempting with SFTP protocol...");
                         else
-                            throw ex;
+                            throw new RemoteFileException("Error attempting SCP file transfer to {Connection.Host} using login {Connection.Username} and connection method {Connection.AuthenticationMethods[0].Name}.  Please contact your company's system administrator to verify connection and permission settings.", ex);
                     }
                     finally
                     {
@@ -190,7 +197,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
                     {
                         _logger.LogError("Exception during SFTP upload...");
                         _logger.LogError($"Upload Exception: {RemoteFileException.FlattenExceptionMessages(ex, ex.Message)}");
-                        throw ex;
+                        throw new RemoteFileException("Error attempting SFTP file transfer to {Connection.Host} using login {Connection.Username} and connection method {Connection.AuthenticationMethods[0].Name}.  Please contact your company's system administrator to verify connection and permission settings.", ex);
                     }
                     finally
                     {
@@ -235,7 +242,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
                 {
                     try
                     {
-                        _logger.LogDebug($"SCP connection attempt to {Connection.Host} using login {Connection.Username} and connection method {Connection.AuthenticationMethods[0].Name}");
+                        _logger.LogDebug($"SCP connection attempt from {Connection.Host} using login {Connection.Username} and connection method {Connection.AuthenticationMethods[0].Name}");
                         client.Connect();
 
                         using (MemoryStream stream = new MemoryStream())
@@ -252,7 +259,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
                         if (ApplicationSettings.FileTransferProtocol == ApplicationSettings.FileTransferProtocolEnum.Both)
                             _logger.LogDebug($"SCP download failed.  Attempting with SFTP protocol...");
                         else
-                            throw ex;
+                            throw new RemoteFileException($"Error attempting SCP file transfer from {Connection.Host} using login {Connection.Username} and connection method {Connection.AuthenticationMethods[0].Name}.  Please contact your company's system administrator to verify connection and permission settings.", ex);
                     }
                     finally
                     {
@@ -267,7 +274,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
                 {
                     try
                     {
-                        _logger.LogDebug($"SFTP connection attempt to {Connection.Host} using login {Connection.Username} and connection method {Connection.AuthenticationMethods[0].Name}");
+                        _logger.LogDebug($"SFTP connection attempt from {Connection.Host} using login {Connection.Username} and connection method {Connection.AuthenticationMethods[0].Name}");
                         client.Connect();
 
                         using (MemoryStream stream = new MemoryStream())
@@ -280,7 +287,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
                     {
                         _logger.LogError("Exception during SFTP download...");
                         _logger.LogError($"Download Exception: {RemoteFileException.FlattenExceptionMessages(ex, ex.Message)}");
-                        throw ex;
+                        throw new RemoteFileException($"Error attempting SFTP file transfer from {Connection.Host} using login {Connection.Username} and connection method {Connection.AuthenticationMethods[0].Name}.  Please contact your company's system administrator to verify connection and permission settings.", ex);
                     }
                     finally
                     {
