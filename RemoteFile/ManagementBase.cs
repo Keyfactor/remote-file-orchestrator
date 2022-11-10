@@ -48,6 +48,9 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
 
                 ApplicationSettings.Initialize(this.GetType().Assembly.Location);
                 certificateStore = new RemoteCertificateStore(config.CertificateStoreDetails.ClientMachine, config.ServerUsername, config.ServerPassword, config.CertificateStoreDetails.StorePath, config.CertificateStoreDetails.StorePassword, config.JobProperties);
+                certificateStore.Initialize();
+
+                PathFile storePathFile = RemoteCertificateStore.SplitStorePathFile(config.CertificateStoreDetails.StorePath);
 
                 PathFile storePathFile = RemoteCertificateStore.SplitStorePathFile(config.CertificateStoreDetails.StorePath);
 
