@@ -1,4 +1,4 @@
-<!-- add integration specific information below -->
+﻿<!-- add integration specific information below -->
 ## Overview
 The Remote File Orchestrator Extension is a multi-purpose integration that can remotely manage a variety of file-based certificate stores and can easily be extended to manage others.  The certificate store types that can be managed in the current version are:
 - Java Keystores of type JKS
@@ -19,12 +19,12 @@ This orchestrator extension makes use of an SSH connection to communicate remote
 &nbsp;  
 ## Versioning
 
-The version number of a the Remote File Orchestrator Extension can be verified by right clicking on the n the Extensions/RemoteFile installation folder, selecting Properties, and then clicking on the Details tab.
+The version number of a the Remote File Orchestrator Extension can be verified by right clicking on the RemoteFile.dll file in the Extensions/RemoteFile installation folder, selecting Properties, and then clicking on the Details tab.
 &nbsp;  
 &nbsp;  
 ## Keyfactor Version Supported
 
-The Remote File Orchestrator Extension has been tested against Keyfactor Universal Orchestrator version 9.5, but should work against earlier or later versions of the Keyfactor Universal Orchestrator.
+The Remote File Orchestrator Extension has been tested against Keyfactor Universal Orchestrator version 9.9, but should work against earlier or later versions of the Keyfactor Universal Orchestrator.
 &nbsp;  
 &nbsp;  
 ## Security Considerations
@@ -44,6 +44,8 @@ The Remote File Orchestrator Extension has been tested against Keyfactor Univers
 1. Make sure that WinRM is set up on the orchestrated server and that the WinRM port is part of the certificate store path when setting up your certificate stores When creating a new certificate store in Keyfactor Command (See "Creating Certificate Stores" later in this README).
 
 2. When creating/configuring a certificate store in Keyfactor Command, you will see a "Change Credentials" link after entering in the destination client machine (IP or DNS).  This link **must** be clicked on to present the credentials dialog.  However, it is not required that you enter separate credentials.  Simply click SAVE in the resulting dialog without entering in credentials to use the credentials that the Keyfactor Orchestrator Service is running under.  Alternatively, you may enter separate credentials into this dialog and use those to connect to the orchestrated server.
+
+Please consult with your company's system administrator for more information on configuring SSH/SFTP/SCP or WinRM in your environment.
 
 **SSH Key-Based Authentiation**
 1. When creating a Keyfactor certificate store for the remote file orchestrator extension (see "Creating Certificate Stores" later in this README, you may supply either a user id and password for the certificate store credentials (directly or through one of Keyfactor Command's PAM integrations), or a user id and SSH private key.  Both PKCS#1 (BEGIN RSA PRIVATE KEY) and PKCS#8 (BEGIN PRIVATE KEY) formats are supported for the SSH private key.  If using the normal Keyfactor Command credentials dialog without PAM integration, just copy and paste the full SSH private key into the Password textbox.
@@ -136,7 +138,7 @@ Entry Parameters Tab:
 - no additional entry parameters  
 
 &nbsp;  
-CURL script to automate certificate store type creation can be found [here](https://github.com/Keyfactor/remote-file-orchestrator/blob/initial-version/Certificate%20Store%20Type%20CURL%20Scripts/PKCS12.curl)  
+CURL script to automate certificate store type creation can be found [here](Certificate%20Store%20Type%20CURL%20Scripts/PKCS12.curl)  
 
 &nbsp;  
 &nbsp;  
@@ -166,7 +168,7 @@ Entry Parameters Tab:
 - no additional entry parameters  
 
 &nbsp;  
-CURL script to automate certificate store type creation can be found [here](https://github.com/Keyfactor/remote-file-orchestrator/blob/initial-version/Certificate%20Store%20Type%20CURL%20Scripts/JKS.curl)
+CURL script to automate certificate store type creation can be found [here](Certificate%20Store%20Type%20CURL%20Scripts/JKS.curl)
 
 &nbsp;  
 &nbsp;  
@@ -200,7 +202,7 @@ Entry Parameters Tab:
 - no additional entry parameters
 
 &nbsp;  
-CURL script to automate certificate store type creation can be found [here](https://github.com/Keyfactor/remote-file-orchestrator/blob/initial-version/Certificate%20Store%20Type%20CURL%20Scripts/PEM.curl)
+CURL script to automate certificate store type creation can be found [here](Certificate%20Store%20Type%20CURL%20Scripts/PEM.curl)
 
 &nbsp;  
 &nbsp;  
@@ -230,7 +232,7 @@ Entry Parameters Tab:
 - no additional entry parameters  
 
 &nbsp;  
-CURL script to automate certificate store type creation can be found [here](https://github.com/Keyfactor/remote-file-orchestrator/blob/initial-version/Certificate%20Store%20Type%20CURL%20Scripts/KDB.curl)  
+CURL script to automate certificate store type creation can be found [here](Certificate%20Store%20Type%20CURL%20Scripts/KDB.curl)  
 
 &nbsp;  
 &nbsp;  

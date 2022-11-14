@@ -32,7 +32,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
                 logger.LogDebug($"    {keyValue.Key}: {keyValue.Value}");
             }
 
-            string[] directoriesToSearch = config.JobProperties["dirs"].ToString().Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+            string[] directoriesToSearch = config.JobProperties["dirs"].ToString().Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries); 
             string[] extensionsToSearch = config.JobProperties["extensions"].ToString().Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
             string[] ignoredDirs = config.JobProperties["ignoreddirs"].ToString().Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
             string[] filesTosearch = config.JobProperties["patterns"].ToString().Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
@@ -44,6 +44,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
 
             try
             {
+                certificateStore.Initialize();
                 ApplicationSettings.Initialize(this.GetType().Assembly.Location);
 
                 if (directoriesToSearch.Length == 0)
