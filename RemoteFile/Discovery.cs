@@ -11,6 +11,7 @@ using System.Linq;
 
 using Keyfactor.Logging;
 using Keyfactor.Orchestrators.Extensions;
+using Keyfactor.Orchestrators.Extensions.Interfaces;
 using Keyfactor.Orchestrators.Common.Enums;
 
 using Microsoft.Extensions.Logging;
@@ -19,7 +20,13 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
 {
     public class Discovery: IDiscoveryJobExtension
     {
+        public IPAMSecretResolver _resolver;
         public string ExtensionName => "";
+
+        public Discovery(IPAMSecretResolver resolver)
+        {
+            _resolver = resolver;
+        }
 
         public JobResult ProcessJob(DiscoveryJobConfiguration config, SubmitDiscoveryUpdate submitDiscovery)
         {
@@ -40,10 +47,15 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
 
             List<string> locations = new List<string>();
 
-            RemoteCertificateStore certificateStore = new RemoteCertificateStore(config.ClientMachine, config.ServerUsername, config.ServerPassword, directoriesToSearch[0].Substring(0, 1) == "/" ? RemoteCertificateStore.ServerTypeEnum.Linux : RemoteCertificateStore.ServerTypeEnum.Windows);
+            RemoteCertificateStore certificateStore = new RemoteCertificateStore();
 
             try
             {
+                string userName = PAMUtilities.ResolvePAMField(_resolver, logger, "Server User Name", config.ServerUsername);
+                string userPassword = PAMUtilities.ResolvePAMField(_resolver, logger, "Server Password", config.ServerPassword);
+                
+                certificateStore = new RemoteCertificateStore(config.ClientMachine, userName, userPassword, directoriesToSearch[0].Substring(0, 1) == "/" ? RemoteCertificateStore.ServerTypeEnum.Linux : RemoteCertificateStore.ServerTypeEnum.Windows);
+
                 certificateStore.Initialize();
                 ApplicationSettings.Initialize(this.GetType().Assembly.Location);
 

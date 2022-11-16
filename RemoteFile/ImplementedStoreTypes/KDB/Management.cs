@@ -1,4 +1,5 @@
-﻿
+﻿using Keyfactor.Orchestrators.Extensions.Interfaces;
+
 namespace Keyfactor.Extensions.Orchestrator.RemoteFile.KDB
 {
     public class Management : ManagementBase
@@ -6,6 +7,11 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.KDB
         internal override ICertificateStoreSerializer GetCertificateStoreSerializer()
         {
             return new KDBCertificateStoreSerializer();
+        }
+
+        public Management(IPAMSecretResolver resolver)
+        {
+            _resolver = resolver;
         }
     }
 }

@@ -14,12 +14,20 @@
 
   <ItemGroup>
     <PackageReference Include="Keyfactor.Logging" Version="1.1.1" />
-    <PackageReference Include="Keyfactor.Orchestrators.IOrchestratorJobExtensions" Version="0.6.0" />
     <PackageReference Include="Keyfactor.PKI" Version="4.0.1" />
     <PackageReference Include="Microsoft.PowerShell.SDK" Version="7.0.7" />
     <PackageReference Include="Neon.SSH.NET" Version="2.11.1" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="Portable.BouncyCastle" Version="1.9.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Keyfactor.Orchestrators.Common">
+      <HintPath>..\..\..\..\..\..\..\Program Files\Keyfactor\Keyfactor Orchestrator\Keyfactor.Orchestrators.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="Keyfactor.Orchestrators.IOrchestratorJobExtensions">
+      <HintPath>..\..\..\..\..\..\..\Program Files\Keyfactor\Keyfactor Orchestrator\Keyfactor.Orchestrators.IOrchestratorJobExtensions.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
