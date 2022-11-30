@@ -24,7 +24,7 @@ The version number of a the Remote File Orchestrator Extension can be verified b
 &nbsp;  
 ## Keyfactor Version Supported
 
-The Remote File Orchestrator Extension has been tested against Keyfactor Universal Orchestrator version 9.9, but should work against earlier or later versions of the Keyfactor Universal Orchestrator.
+The Remote File Orchestrator Extension has been tested against Keyfactor Universal Orchestrator version 10.1.  This is the earliest version of the Keyfactor Orchestrator that this will work with, but it should work against later versions as well.
 &nbsp;  
 &nbsp;  
 ## Security Considerations
