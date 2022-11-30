@@ -22,11 +22,7 @@ This orchestrator extension makes use of an SSH connection to communicate remote
 The version number of a the Remote File Orchestrator Extension can be verified by right clicking on the RemoteFile.dll file in the Extensions/RemoteFile installation folder, selecting Properties, and then clicking on the Details tab.
 &nbsp;  
 &nbsp;  
-## Keyfactor Version Supported
 
-The Remote File Orchestrator Extension has been tested against Keyfactor Universal Orchestrator version 9.9, but should work against earlier or later versions of the Keyfactor Universal Orchestrator.
-&nbsp;  
-&nbsp;  
 ## Security Considerations
 
 **For Linux orchestrated servers:**

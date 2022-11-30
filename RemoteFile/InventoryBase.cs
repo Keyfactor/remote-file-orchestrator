@@ -13,8 +13,6 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
 {
     public abstract class InventoryBase : RemoteFileJobTypeBase, IInventoryJobExtension
     {
-        protected ILogger logger;
-
         public string ExtensionName => string.Empty;
 
         RemoteCertificateStore certificateStore = new RemoteCertificateStore();
@@ -36,8 +34,12 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
 
             try
             {
+                string userName = PAMUtilities.ResolvePAMField(_resolver, logger, "Server User Name", config.ServerUsername);
+                string userPassword = PAMUtilities.ResolvePAMField(_resolver, logger, "Server Password", config.ServerPassword);
+                string storePassword = PAMUtilities.ResolvePAMField(_resolver, logger, "Store Password", config.CertificateStoreDetails.StorePassword);
+
                 ApplicationSettings.Initialize(this.GetType().Assembly.Location);
-                certificateStore = new RemoteCertificateStore(config.CertificateStoreDetails.ClientMachine, config.ServerUsername, config.ServerPassword, config.CertificateStoreDetails.StorePath, config.CertificateStoreDetails.StorePassword, config.JobProperties);
+                certificateStore = new RemoteCertificateStore(config.CertificateStoreDetails.ClientMachine, userName, userPassword, config.CertificateStoreDetails.StorePath, storePassword, config.JobProperties);
                 certificateStore.Initialize();
                 certificateStore.LoadCertificateStore(certificateStoreSerializer, config.CertificateStoreDetails.Properties);
 
