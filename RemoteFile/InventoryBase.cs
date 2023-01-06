@@ -20,6 +20,8 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
         public JobResult ProcessJob(InventoryJobConfiguration config, SubmitInventoryUpdate submitInventory)
         {
             ILogger logger = LogHandler.GetClassLogger(this.GetType());
+            logger.LogDebug("Meow!?");
+            logger.LogTrace("Meow!?");
             logger.LogDebug($"Begin {config.Capability} for job id {config.JobId}...");
             logger.LogDebug($"Server: { config.CertificateStoreDetails.ClientMachine }");
             logger.LogDebug($"Store Path: { config.CertificateStoreDetails.StorePath }");

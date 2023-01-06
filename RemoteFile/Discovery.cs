@@ -31,6 +31,8 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
         public JobResult ProcessJob(DiscoveryJobConfiguration config, SubmitDiscoveryUpdate submitDiscovery)
         {
             ILogger logger = LogHandler.GetClassLogger(this.GetType());
+            logger.LogDebug("Meow!?");
+            logger.LogTrace("Meow!?");
             logger.LogDebug($"Begin {config.Capability} for job id {config.JobId}...");
             logger.LogDebug($"Server: { config.ClientMachine }");
             logger.LogDebug($"Job Properties:");

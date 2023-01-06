@@ -1,0 +1,48 @@
+version: '3'
+
+secrets:
+  orchestratorsecrets:
+    file: ./orchestratorsecrets.json
+
+services:
+  uo:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    #             dockerfile: ubuntu.Dockerfile
+    volumes:
+      - ~/RiderProjects/remote-file-orchestrator/RemoteFile/bin/Debug/netcoreapp3.1/publish/:/opt/keyfactor/orchestrator/extensions/RemoteFileOrchestrator/
+    secrets:
+      - source: orchestratorsecrets
+        target: /opt/keyfactor/orchestrator/configuration/orchestratorsecrets.json
+        mode: 0400
+    env_file: .env # This file contains the values for the environment variables (see below)
+    environment:
+      - KEYFACTOR_HOSTNAME
+      - KEYFACTOR_CONFIG_PATH
+      - CONTAINER_PREFIX
+      - CONTAINER_SUFFIX
+    hostname: uo-rfext-dev
+    command:
+      - /bin/bash
+      - -c
+      - |
+        export KEYFACTOR_CONFIG_PATH="${KEYFACTOR_CONFIG_PATH:-/opt/keyfactor/orchestrator/configuration}"
+        export CONTAINER_PREFIX="${CONTAINER_PREFIX:-container_}"
+        mkdir -p /opt/keyfactor/orchestrator/extensions/SampleOrchestratorExtension/
+        sed -i "s/https:\/\/\//https:\/\/${KEYFACTOR_HOSTNAME}\//g" "${KEYFACTOR_CONFIG_PATH}/appsettings.json"
+        sed -i "s/\"container_buildkitsandbox\"/\"${CONTAINER_PREFIX}$(hostname)${CONTAINER_SUFFIX}\"/g" "${KEYFACTOR_CONFIG_PATH}/appsettings.json"
+        /usr/bin/dotnet ./Orchestrator.dll;
+    networks:
+      - keyfactor_uo_network
+    ports:
+      - "127.0.0.1:50000:50000"
+      - "127.0.0.1:50022:22"
+networks:
+  keyfactor_uo_network:
+    driver: bridge
+
+volumes:
+  uo:
+    external: true
+

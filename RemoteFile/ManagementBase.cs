@@ -20,6 +20,7 @@ using Newtonsoft.Json;
 
 namespace Keyfactor.Extensions.Orchestrator.RemoteFile
 {
+    
     public abstract class ManagementBase : RemoteFileJobTypeBase, IManagementJobExtension
     {
         static Mutex mutex = new Mutex(false, "ModifyStore");
@@ -30,7 +31,10 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
 
         public JobResult ProcessJob(ManagementJobConfiguration config)
         {
+            // meow
             ILogger logger = LogHandler.GetClassLogger(this.GetType());
+            logger.LogDebug("Meow!?");
+            logger.LogTrace("Meow!?");
             logger.LogDebug($"Begin {config.Capability} for job id {config.JobId}...");
             logger.LogDebug($"Server: { config.CertificateStoreDetails.ClientMachine }");
             logger.LogDebug($"Store Path: { config.CertificateStoreDetails.StorePath }");
