@@ -107,11 +107,11 @@ Please consult with your company's system administrator for more information on 
 **SSH Key-Based Authentiation**
 1. When creating a Keyfactor certificate store for the remote file orchestrator extension (see "Creating Certificate Stores" later in this README, you may supply either a user id and password for the certificate store credentials (directly or through one of Keyfactor Command's PAM integrations), or a user id and SSH private key.  Both PKCS#1 (BEGIN RSA PRIVATE KEY) and PKCS#8 (BEGIN PRIVATE KEY) formats are supported for the SSH private key.  If using the normal Keyfactor Command credentials dialog without PAM integration, just copy and paste the full SSH private key into the Password textbox.
 2. For clients with OpenSSH 8.8 or later installed on their target Linux server (the server containing the certificate stores to be managed), there is are two additional steps that need to be performed if authenticating by SSH private key.  This is due to OpenSSH no longer natively supporting RSA-SSH (SHA1) as a HostKeyAlgorithm.  The library that this integration uses to communicate with the target server does require this.  We are currently working on a modification to use the more advanced RSA-SHA2-256 algorithm, but until that is complete, the following is necessary:
-    a. Edit the /etc/ssh/sshd_config file
-    b. Add the following two lines and save the file:
-        i.  HostKeyAlgorithms=ssh-rsa,ssh-rsa-cert-v01@openssh.com
-        ii. PubkeyAcceptedAlgorithms=+ssh-rsa,ssh-rsa-cert-v01@openssh.com
-    c. Restart the sshd serice - systemctl restart sshd.service  
+    * Edit the /etc/ssh/sshd_config file
+    * Add the following two lines and save the file:
+        * HostKeyAlgorithms=ssh-rsa,ssh-rsa-cert-v01@openssh.com
+        * PubkeyAcceptedAlgorithms=+ssh-rsa,ssh-rsa-cert-v01@openssh.com
+    * Restart the sshd serice - systemctl restart sshd.service  
 &nbsp;  
 &nbsp;  
 ## Remote File Orchestrator Extension Installation
