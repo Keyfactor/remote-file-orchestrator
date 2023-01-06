@@ -48,8 +48,8 @@ Please consult with your company's system administrator for more information on 
 2. For clients with OpenSSH 8.8 or later installed on their target Linux server (the server containing the certificate stores to be managed), there is are two additional steps that need to be performed if authenticating by SSH private key.  This is due to OpenSSH no longer natively supporting RSA-SSH (SHA1) as a HostKeyAlgorithm.  The library that this integration uses to communicate with the target server does require this.  We are currently working on a modification to use the more advanced RSA-SHA2-256 algorithm, but until that is complete, the following is necessary:
     * Edit the /etc/ssh/sshd_config file
     * Add the following two lines and save the file:
-        * HostKeyAlgorithms=ssh-rsa,ssh-rsa-cert-v01@openssh.com
-        * PubkeyAcceptedAlgorithms=+ssh-rsa,ssh-rsa-cert-v01@openssh.com
+        * HostKeyAlgorithms=ssh-rsa,ssh-rsa-cert-v01<span>@</span>openssh.com
+        * PubkeyAcceptedAlgorithms=+ssh-rsa,ssh-rsa-cert-v01<span>@</span>openssh.com
     * Restart the sshd serice - systemctl restart sshd.service  
 &nbsp;  
 &nbsp;  
