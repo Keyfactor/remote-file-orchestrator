@@ -5,6 +5,7 @@ using Keyfactor.Extensions.Orchestrator.RemoteFile.Models;
 
 using Keyfactor.Logging;
 
+using Org.BouncyCastle.Security;
 using Org.BouncyCastle.Pkcs;
 using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.X509;
@@ -16,7 +17,6 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.JKS
     class JKSCertificateStoreSerializer : ICertificateStoreSerializer
     {
         private ILogger logger;
-
         public JKSCertificateStoreSerializer()
         {
             logger = LogHandler.GetClassLogger(this.GetType());

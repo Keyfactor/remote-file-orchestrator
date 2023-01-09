@@ -23,7 +23,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
 
         byte[] DownloadCertificateFile(string path);
 
-        void CreateEmptyStoreFile(string path, string linuxFilePermissions);
+        void CreateEmptyStoreFile(string path, string linuxFilePermissions, string linuxFileOwner);
 
         bool DoesFileExist(string path);
 

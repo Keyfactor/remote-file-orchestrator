@@ -34,7 +34,15 @@ curl -X POST {URL}/keyfactorapi/certificatestoretypes -H "Content-Type: applicat
       "DependsOn": "",
       "Type": "String",
       "DefaultValue": ""
-    }
+    },
+    {
+      "Name": "LinuxFileOwnerOnStoreCreation",
+      "DisplayName": "Linux File Owner on Store Creation",
+      "Required": false,
+      "DependsOn": "",
+      "Type": "String",
+      "DefaultValue": ""
+    }  
   ],
   "EntryParameters": []
 }'

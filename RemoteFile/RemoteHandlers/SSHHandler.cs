@@ -311,12 +311,13 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
             return rtnStore;
         }
 
-        public override void CreateEmptyStoreFile(string path, string linuxFilePermissions)
+        public override void CreateEmptyStoreFile(string path, string linuxFilePermissions, string linuxFileOwner)
         {
             _logger.MethodEntry(LogLevel.Debug);
 
+            linuxFileOwner = string.IsNullOrEmpty(linuxFileOwner) ? linuxFileOwner : $"-o {linuxFileOwner}";
             AreLinuxPermissionsValid(linuxFilePermissions);
-            RunCommand($"install -m {linuxFilePermissions} /dev/null {path}", null, false, null);
+            RunCommand($"install -m {linuxFilePermissions} {linuxFileOwner} /dev/null {path}", null, false, null);
 
             _logger.MethodExit(LogLevel.Debug);
         }

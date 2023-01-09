@@ -19,6 +19,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
         }
 
         private const string DEFAULT_LINUX_PERMISSION_SETTING = "600";
+        private const string DEFAULT_OWNER_SETTING = "";
 
         private static Dictionary<string,string> configuration;
 
@@ -27,6 +28,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
         public static bool UseNegotiate { get { return configuration.ContainsKey("UseNegotiate") ? configuration["UseNegotiate"]?.ToUpper() == "Y" : false; } }
         public static string SeparateUploadFilePath { get { return configuration.ContainsKey("SeparateUploadFilePath") ? AddTrailingSlash(configuration["SeparateUploadFilePath"]) : string.Empty; } }
         public static string DefaultLinuxPermissionsOnStoreCreation { get { return configuration.ContainsKey("DefaultLinuxPermissionsOnStoreCreation") ? configuration["DefaultLinuxPermissionsOnStoreCreation"] : DEFAULT_LINUX_PERMISSION_SETTING; } }
+        public static string DefaultOwnerOnStoreCreation { get { return configuration.ContainsKey("DefaultOwnerOnStoreCreation") ? configuration["DefaultOwnerOnStoreCreation"] : DEFAULT_OWNER_SETTING; } }
         public static FileTransferProtocolEnum FileTransferProtocol 
         { 
             get 
@@ -95,6 +97,8 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
                 logger.LogDebug($"Missing configuration parameter - SeparateUploadFilePath.  Will set to default value of ''");
             if (!configuration.ContainsKey("DefaultLinuxPermissionsOnStoreCreation"))
                 logger.LogDebug($"Missing configuration parameter - DefaultLinuxPermissionsOnStoreCreation.  Will set to default value of '{DEFAULT_LINUX_PERMISSION_SETTING}'");
+            if (!configuration.ContainsKey("DefaultOwnerOnStoreCreation"))
+                logger.LogDebug($"Missing configuration parameter - DefaultOwnerOnStoreCreation.  Will set to default value of '{DEFAULT_OWNER_SETTING}'");
             if (!configuration.ContainsKey("FileTransferProtocol"))
                 logger.LogDebug($"Missing configuration parameter - FileTransferProtocol.  Will set to default value of 'SCP'");
         }

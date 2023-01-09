@@ -7,16 +7,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="ImplementedStoreTypes\JKS\JksStore.cs" />
     <Compile Remove="RemoteHandlers\SSHHelper.cs" />
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="BouncyCastle.Cryptography" Version="2.0.0" />
     <PackageReference Include="Keyfactor.Logging" Version="1.1.1" />
     <PackageReference Include="Keyfactor.Orchestrators.IOrchestratorJobExtensions" Version="0.7.0" />
-    <PackageReference Include="Keyfactor.PKI" Version="4.0.1" />
+    <PackageReference Include="Keyfactor.PKI" Version="5.0.0" />
     <PackageReference Include="Microsoft.PowerShell.SDK" Version="7.0.7" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-    <PackageReference Include="Portable.BouncyCastle" Version="1.9.0" />
   </ItemGroup>
 
   <ItemGroup>

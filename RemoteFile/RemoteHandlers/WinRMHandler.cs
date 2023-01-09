@@ -219,7 +219,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
             return RunCommandBinary($@"Get-Content -Path ""{path}"" -Encoding Byte -Raw");
         }
 
-        public override void CreateEmptyStoreFile(string path, string linuxFilePermissions)
+        public override void CreateEmptyStoreFile(string path, string linuxFilePermissions, string linuxFileOwner)
         {
             _logger.MethodEntry(LogLevel.Debug);
             RunCommand($@"Out-File -FilePath ""{path}""", null, false, null);
