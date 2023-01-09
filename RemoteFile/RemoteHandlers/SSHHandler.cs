@@ -42,24 +42,29 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
             }
             else
             {
+                PrivateKeyFile privateKeyFile;
+
                 try
                 {
                     using (MemoryStream ms = new MemoryStream(Encoding.ASCII.GetBytes(FormatRSAPrivateKey(serverPassword))))
                     {
-                        authenticationMethods.Add(new PrivateKeyAuthenticationMethod(serverLogin, new PrivateKeyFile[] { new PrivateKeyFile(ms) }));
+                        privateKeyFile = new PrivateKeyFile(ms);
                     }
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
                     using (MemoryStream ms = new MemoryStream(Encoding.ASCII.GetBytes(ConvertToPKCS1(serverPassword))))
                     {
-                        authenticationMethods.Add(new PrivateKeyAuthenticationMethod(serverLogin, new PrivateKeyFile[] { new PrivateKeyFile(ms) }));
+                        privateKeyFile = new PrivateKeyFile(ms);
                     }
                 }
 
+                //RsaSha256Util.ConvertToKeyWithSha256Signature(privateKeyFile);
+                authenticationMethods.Add(new PrivateKeyAuthenticationMethod(serverLogin, privateKeyFile));
             }
 
             Connection = new ConnectionInfo(server, serverLogin, authenticationMethods.ToArray());
+            //RsaSha256Util.SetupConnection(Connection);
             
             _logger.MethodExit(LogLevel.Debug);
         }
@@ -377,7 +382,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
             _logger.MethodEntry(LogLevel.Debug);
             _logger.MethodExit(LogLevel.Debug);
             
-            return privateKey.Replace(" RSA PRIVATE ", "^^^").Replace(" ", System.Environment.NewLine).Replace("^^^", " RSA PRIVATE ");
+            return privateKey.Replace(" RSA PRIVATE ", "^^^").Replace(" ", System.Environment.NewLine).Replace("^^^", " RSA PRIVATE ") + System.Environment.NewLine;
         }
 
         private string ConvertToPKCS1(string privateKey)
