@@ -26,10 +26,10 @@
 
   <ItemGroup>
     <Reference Include="Renci.SshNet">
-      <HintPath>..\..\..\ssh\src\Renci.SshNet\bin\Debug\netstandard2.0\Renci.SshNet.dll</HintPath>
+      <HintPath>External References\Renci.SshNet.dll</HintPath>
     </Reference>
     <Reference Include="SshNet.Security.Cryptography">
-      <HintPath>..\..\..\ssh\src\Renci.SshNet\bin\Debug\netcoreapp3.1\SshNet.Security.Cryptography.dll</HintPath>
+      <HintPath>External References\SshNet.Security.Cryptography.dll</HintPath>
     </Reference>
   </ItemGroup>
 
