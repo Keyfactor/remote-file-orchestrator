@@ -317,7 +317,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
 
             linuxFileOwner = string.IsNullOrEmpty(linuxFileOwner) ? linuxFileOwner : $"-o {linuxFileOwner}";
             AreLinuxPermissionsValid(linuxFilePermissions);
-            RunCommand($"install -m {linuxFilePermissions} {linuxFileOwner} /dev/null {path}", null, false, null);
+            RunCommand($"install -m {linuxFilePermissions} {linuxFileOwner} /dev/null {path}", null, ApplicationSettings.UseSudo, null);
 
             _logger.MethodExit(LogLevel.Debug);
         }
