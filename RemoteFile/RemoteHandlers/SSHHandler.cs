@@ -236,7 +236,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
                 SplitStorePathFile(path, out altPathOnly, out altFileNameOnly);
                 downloadPath = ApplicationSettings.SeparateUploadFilePath + altFileNameOnly;
                 RunCommand($"cp {path} {downloadPath}", null, ApplicationSettings.UseSudo, null);
-                RunCommand($"sudo chown {Connection.Username} {downloadPath}", null, ApplicationSettings.UseSudo, null);
+                RunCommand($"chown {Connection.Username} {downloadPath}", null, ApplicationSettings.UseSudo, null);
             }
 
             bool scpError = false;
@@ -315,9 +315,8 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
         {
             _logger.MethodEntry(LogLevel.Debug);
 
-            linuxFileOwner = string.IsNullOrEmpty(linuxFileOwner) ? linuxFileOwner : $"-o {linuxFileOwner}";
             AreLinuxPermissionsValid(linuxFilePermissions);
-            RunCommand($"install -m {linuxFilePermissions} {linuxFileOwner} /dev/null {path}", null, ApplicationSettings.UseSudo, null);
+            RunCommand($"install -m {linuxFilePermissions} -o {linuxFileOwner} -g {linuxFileOwner} /dev/null {path}", null, ApplicationSettings.UseSudo, null);
 
             _logger.MethodExit(LogLevel.Debug);
         }

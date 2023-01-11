@@ -134,7 +134,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
                 ApplicationSettings.DefaultOwnerOnStoreCreation :
                 properties.LinuxFileOwnerOnStoreCreation.Value;
 
-            certificateStore.CreateCertificateStore(config.CertificateStoreDetails.StorePath, linuxFilePermissions, linuxFileOwner);
+            certificateStore.CreateCertificateStore(config.CertificateStoreDetails.StorePath, linuxFilePermissions, string.IsNullOrEmpty(linuxFileOwner) ? config.ServerUsername : linuxFileOwner);
         }
     }
 }
