@@ -32,16 +32,15 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.PEM
 
         private ILogger logger;
 
-        public PEMCertificateStoreSerializer() 
+        public PEMCertificateStoreSerializer(string storeProperties) 
         {
             logger = LogHandler.GetClassLogger(this.GetType());
+            LoadCustomProperties(storeProperties);
         }
 
-        public Pkcs12Store DeserializeRemoteCertificateStore(byte[] storeContentBytes, string storePath, string storePassword, string storeProperties, IRemoteHandler remoteHandler)
+        public Pkcs12Store DeserializeRemoteCertificateStore(byte[] storeContentBytes, string storePath, string storePassword, IRemoteHandler remoteHandler)
         {
             logger.MethodEntry(LogLevel.Debug);
-
-            LoadCustomProperties(storeProperties);
 
             Pkcs12StoreBuilder storeBuilder = new Pkcs12StoreBuilder();
             Pkcs12Store store = storeBuilder.Build();
@@ -75,11 +74,9 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.PEM
             return newStore;
         }
 
-        public List<SerializedStoreInfo> SerializeRemoteCertificateStore(Pkcs12Store certificateStore, string storePath, string storeFileName, string storePassword, string storeProperties, IRemoteHandler remoteHandler)
+        public List<SerializedStoreInfo> SerializeRemoteCertificateStore(Pkcs12Store certificateStore, string storePath, string storeFileName, string storePassword, IRemoteHandler remoteHandler)
         {
             logger.MethodEntry(LogLevel.Debug);
-
-            LoadCustomProperties(storeProperties);
 
             string pemString = string.Empty;
             string keyString = string.Empty;
@@ -142,6 +139,11 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.PEM
             logger.MethodExit(LogLevel.Debug);
 
             return storeInfo;
+        }
+
+        public string GetPrivateKeyPath()
+        {
+            return SeparatePrivateKeyFilePath;
         }
 
         private void LoadCustomProperties(string storeProperties)

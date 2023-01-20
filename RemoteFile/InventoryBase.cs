@@ -29,7 +29,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
                 logger.LogDebug($"    {keyValue.Key}: {keyValue.Value}");
             }
 
-            ICertificateStoreSerializer certificateStoreSerializer = GetCertificateStoreSerializer();
+            ICertificateStoreSerializer certificateStoreSerializer = GetCertificateStoreSerializer(config.CertificateStoreDetails.Properties);
             List<CurrentInventoryItem> inventoryItems = new List<CurrentInventoryItem>();
 
             try

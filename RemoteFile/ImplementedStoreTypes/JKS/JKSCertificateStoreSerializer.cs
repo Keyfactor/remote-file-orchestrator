@@ -17,12 +17,12 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.JKS
     class JKSCertificateStoreSerializer : ICertificateStoreSerializer
     {
         private ILogger logger;
-        public JKSCertificateStoreSerializer()
+        public JKSCertificateStoreSerializer(string storeProperties)
         {
             logger = LogHandler.GetClassLogger(this.GetType());
         }
 
-        public Pkcs12Store DeserializeRemoteCertificateStore(byte[] storeContents, string storePath, string storePassword, string storeProperties, IRemoteHandler remoteHandler)
+        public Pkcs12Store DeserializeRemoteCertificateStore(byte[] storeContents, string storePath, string storePassword, IRemoteHandler remoteHandler)
         {
             logger.MethodEntry(LogLevel.Debug);
 
@@ -71,7 +71,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.JKS
             return pkcs12StoreNew;
         }
 
-        public List<SerializedStoreInfo> SerializeRemoteCertificateStore(Pkcs12Store certificateStore, string storePath, string storeFileName, string storePassword, string storeProperties, IRemoteHandler remoteHandler)
+        public List<SerializedStoreInfo> SerializeRemoteCertificateStore(Pkcs12Store certificateStore, string storePath, string storeFileName, string storePassword, IRemoteHandler remoteHandler)
         {
             logger.MethodEntry(LogLevel.Debug);
 
@@ -108,6 +108,11 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.JKS
                 logger.MethodExit(LogLevel.Debug);
                 return storeInfo;
             }
+        }
+
+        public string GetPrivateKeyPath()
+        {
+            return null;
         }
     }
 }

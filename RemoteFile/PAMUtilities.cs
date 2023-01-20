@@ -7,8 +7,8 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
     {
         internal static string ResolvePAMField(IPAMSecretResolver resolver, ILogger logger, string name, string key)
         {
-            logger.LogDebug($"Attempting to resolve PAM eligible field {name} with key {key}");
-            return resolver.Resolve(key);
+            logger.LogDebug($"Attempting to resolve PAM eligible field {name}");
+            return string.IsNullOrEmpty(key) ? key : resolver.Resolve(key);
         }
     }
 }

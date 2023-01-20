@@ -4,9 +4,9 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.PKCS12
 {
     public class Management : ManagementBase
     {
-        internal override ICertificateStoreSerializer GetCertificateStoreSerializer()
+        internal override ICertificateStoreSerializer GetCertificateStoreSerializer(string storeProperties)
         {
-            return new PKCS12CertificateStoreSerializer();
+            return new PKCS12CertificateStoreSerializer(storeProperties);
         }
 
         public Management(IPAMSecretResolver resolver)

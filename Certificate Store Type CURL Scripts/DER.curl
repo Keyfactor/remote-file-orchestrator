@@ -1,0 +1,56 @@
+###CURL script to create DER certificate store type
+
+###Replacement Variables - Manually replace these before running###
+# {URL} - Base URL for your Keyfactor deployment
+# {UserName} - User name with access to run Keyfactor APIs
+# {UserPassword} - Password for the UserName above
+
+curl -X POST {URL}/keyfactorapi/certificatestoretypes -H "Content-Type: application/json" -H "x-keyfactor-requested-with: APIClient" -u {UserName}:{UserPassword} -d '{
+  "Name": "RFDER",
+  "ShortName": "RFDER",
+  "Capability": "RFDER",
+  "ServerRequired": true,
+  "BlueprintAllowed": false,
+  "CustomAliasAllowed": "Forbidden",
+  "PowerShell": false,
+  "PrivateKeyAllowed": "Optional",
+  "SupportedOperations": {
+    "Add": true,
+    "Create": true,
+    "Discovery": true,
+    "Enrollment": false,
+    "Remove": true
+  },
+  "PasswordOptions": {
+    "Style": "Default",
+    "EntrySupported": false,
+    "StoreRequired": true
+  },
+  "Properties": [
+    {
+      "Name": "LinuxFilePermissionsOnStoreCreation",
+      "DisplayName": "Linux File Permissions on Store Creation",
+      "Required": false,
+      "DependsOn": "",
+      "Type": "String",
+      "DefaultValue": ""
+    },
+    {
+      "Name": "LinuxFileOwnerOnStoreCreation",
+      "DisplayName": "Linux File Owner on Store Creation",
+      "Required": false,
+      "DependsOn": "",
+      "Type": "String",
+      "DefaultValue": ""
+    },
+    {
+      "Name": "SeparatePrivateKeyFilePath",
+      "DisplayName": "Separate Private Key File Location",
+      "Required": false,
+      "DependsOn": "",
+      "Type": "String",
+      "DefaultValue": ""
+    }
+  ],
+  "EntryParameters": []
+}'

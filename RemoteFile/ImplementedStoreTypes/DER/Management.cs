@@ -1,12 +1,12 @@
 ﻿using Keyfactor.Orchestrators.Extensions.Interfaces;
 
-namespace Keyfactor.Extensions.Orchestrator.RemoteFile.PEM
+namespace Keyfactor.Extensions.Orchestrator.RemoteFile.DER
 {
     public class Management : ManagementBase
     {
-        internal override ICertificateStoreSerializer GetCertificateStoreSerializer()
+        internal override ICertificateStoreSerializer GetCertificateStoreSerializer(string storeProperties)
         {
-            return new PEMCertificateStoreSerializer();
+            return new DERCertificateStoreSerializer(storeProperties);
         }
 
         public Management(IPAMSecretResolver resolver)

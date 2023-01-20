@@ -4,9 +4,9 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.PEM
 {
     public class Inventory : InventoryBase
     {
-        internal override ICertificateStoreSerializer GetCertificateStoreSerializer()
+        internal override ICertificateStoreSerializer GetCertificateStoreSerializer(string storeProperties)
         {
-            return new PEMCertificateStoreSerializer();
+            return new PEMCertificateStoreSerializer(storeProperties);
         }
 
         public Inventory(IPAMSecretResolver resolver)

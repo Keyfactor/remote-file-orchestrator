@@ -16,12 +16,12 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.KDB
     {
         private ILogger logger;
 
-        public KDBCertificateStoreSerializer() 
+        public KDBCertificateStoreSerializer(string storeProperties) 
         {
             logger = LogHandler.GetClassLogger(this.GetType());
         }
 
-        public Pkcs12Store DeserializeRemoteCertificateStore(byte[] storeContentBytes, string storePath, string storePassword, string storeProperties, IRemoteHandler remoteHandler)
+        public Pkcs12Store DeserializeRemoteCertificateStore(byte[] storeContentBytes, string storePath, string storePassword, IRemoteHandler remoteHandler)
         {
             logger.MethodEntry(LogLevel.Debug);
 
@@ -58,7 +58,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.KDB
             return store;
         }
 
-        public List<SerializedStoreInfo> SerializeRemoteCertificateStore(Pkcs12Store certificateStore, string storePath, string storeFileName, string storePassword, string storeProperties, IRemoteHandler remoteHandler)
+        public List<SerializedStoreInfo> SerializeRemoteCertificateStore(Pkcs12Store certificateStore, string storePath, string storeFileName, string storePassword, IRemoteHandler remoteHandler)
         {
             logger.MethodEntry(LogLevel.Debug);
 
@@ -92,6 +92,11 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.KDB
                 try { remoteHandler.RemoveCertificateFile(storePath, tempStoreFile); } catch (Exception) { };
                 try { remoteHandler.RemoveCertificateFile(storePath, tempCertFile); } catch (Exception) { };
             }
+        }
+
+        public string GetPrivateKeyPath()
+        {
+            return null;
         }
     }
 }

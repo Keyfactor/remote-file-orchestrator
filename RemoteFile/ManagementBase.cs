@@ -40,7 +40,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
                 logger.LogDebug($"    {keyValue.Key}: {keyValue.Value}");
             }
 
-            ICertificateStoreSerializer certificateStoreSerializer = GetCertificateStoreSerializer();
+            ICertificateStoreSerializer certificateStoreSerializer = GetCertificateStoreSerializer(config.CertificateStoreDetails.Properties);
 
             try
             {
@@ -63,13 +63,13 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
                         if (!certificateStore.DoesStoreExist())
                         {
                             if (ApplicationSettings.CreateStoreIfMissing)
-                                CreateStore(config);
+                                CreateStore(certificateStoreSerializer, config);
                             else
                                 throw new RemoteFileException($"Certificate store {config.CertificateStoreDetails.StorePath} does not exist on server {config.CertificateStoreDetails.ClientMachine}.");
                         }
                         certificateStore.LoadCertificateStore(certificateStoreSerializer, config.CertificateStoreDetails.Properties);
                         certificateStore.AddCertificate((config.JobCertificate.Alias ?? new X509Certificate2(Convert.FromBase64String(config.JobCertificate.Contents), config.JobCertificate.PrivateKeyPassword).Thumbprint), config.JobCertificate.Contents, config.Overwrite, config.JobCertificate.PrivateKeyPassword);
-                        certificateStore.SaveCertificateStore(certificateStoreSerializer.SerializeRemoteCertificateStore(certificateStore.GetCertificateStore(), storePathFile.Path, storePathFile.File, storePassword, config.CertificateStoreDetails.Properties, certificateStore.RemoteHandler));
+                        certificateStore.SaveCertificateStore(certificateStoreSerializer.SerializeRemoteCertificateStore(certificateStore.GetCertificateStore(), storePathFile.Path, storePathFile.File, storePassword, certificateStore.RemoteHandler));
 
                         logger.LogDebug($"END create Operation for {config.CertificateStoreDetails.StorePath} on {config.CertificateStoreDetails.ClientMachine}.");
                         break;
@@ -84,7 +84,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
                         {
                             certificateStore.LoadCertificateStore(certificateStoreSerializer, config.CertificateStoreDetails.Properties);
                             certificateStore.DeleteCertificateByAlias(config.JobCertificate.Alias);
-                            certificateStore.SaveCertificateStore(certificateStoreSerializer.SerializeRemoteCertificateStore(certificateStore.GetCertificateStore(), storePathFile.Path, storePathFile.File, storePassword, config.CertificateStoreDetails.Properties, certificateStore.RemoteHandler));
+                            certificateStore.SaveCertificateStore(certificateStoreSerializer.SerializeRemoteCertificateStore(certificateStore.GetCertificateStore(), storePathFile.Path, storePathFile.File, storePassword, certificateStore.RemoteHandler));
                         }
                         logger.LogDebug($"END Delete Operation for {config.CertificateStoreDetails.StorePath} on {config.CertificateStoreDetails.ClientMachine}.");
                         break;
@@ -97,7 +97,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
                         }
                         else
                         {
-                            CreateStore(config);
+                            CreateStore(certificateStoreSerializer, config);
                         }
                         logger.LogDebug($"END create Operation for {config.CertificateStoreDetails.StorePath} on {config.CertificateStoreDetails.ClientMachine}.");
                         break;
@@ -123,7 +123,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             return new JobResult() { Result = OrchestratorJobStatusJobResult.Success, JobHistoryId = config.JobHistoryId };
         }
 
-        private void CreateStore(ManagementJobConfiguration config)
+        private void CreateStore(ICertificateStoreSerializer certificateStoreSerializer, ManagementJobConfiguration config)
         {
             dynamic properties = JsonConvert.DeserializeObject(config.CertificateStoreDetails.Properties.ToString());
             string linuxFilePermissions = properties.LinuxFilePermissionsOnStoreCreation == null || string.IsNullOrEmpty(properties.LinuxFilePermissionsOnStoreCreation.Value) ?
@@ -134,7 +134,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
                 ApplicationSettings.DefaultOwnerOnStoreCreation :
                 properties.LinuxFileOwnerOnStoreCreation.Value;
 
-            certificateStore.CreateCertificateStore(config.CertificateStoreDetails.StorePath, linuxFilePermissions, string.IsNullOrEmpty(linuxFileOwner) ? config.ServerUsername : linuxFileOwner);
+            certificateStore.CreateCertificateStore(certificateStoreSerializer, config.CertificateStoreDetails.StorePath, linuxFilePermissions, string.IsNullOrEmpty(linuxFileOwner) ? config.ServerUsername : linuxFileOwner);
         }
     }
 }
