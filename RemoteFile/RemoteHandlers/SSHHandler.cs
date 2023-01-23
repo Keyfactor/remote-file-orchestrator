@@ -59,12 +59,10 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
                     }
                 }
 
-                //RsaSha256Util.ConvertToKeyWithSha256Signature(privateKeyFile);
                 authenticationMethods.Add(new PrivateKeyAuthenticationMethod(serverLogin, privateKeyFile));
             }
 
             Connection = new ConnectionInfo(server, serverLogin, authenticationMethods.ToArray());
-            //RsaSha256Util.SetupConnection(Connection);
             
             _logger.MethodExit(LogLevel.Debug);
         }
@@ -393,7 +391,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
             PrivateKeyConverter conv = PrivateKeyConverterFactory.FromPkcs8Blob(Convert.FromBase64String(privateKey), string.Empty);
             RSA alg = (RSA)conv.ToNetPrivateKey();
             string pemString = PemUtilities.DERToPEM(alg.ExportRSAPrivateKey(), PemUtilities.PemObjectType.PrivateKey);
-
+            
             _logger.MethodExit(LogLevel.Debug);
 
             return pemString.Replace("PRIVATE", "RSA PRIVATE");
