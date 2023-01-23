@@ -1,3 +1,11 @@
+v2.1
+- New RFDER certificate store type added
+- RFPEM modified to now support PKCS#1 private key formats (BEGIN RSA PRIVATE KEY)
+- Added support for rsa-sha2-256 HostKeyAlgorithm for SSH "handshake" when connecting to Linux managed servers
+- Added new optional certificate store type custom field to specify separate file owner when creating certificate stores during Management-Create jobs
+- Bug fix: Java-based applications were not recognizing trust entries added to java keystores of type PKCS12
+- Bug fix: File download operations for Windows managed servers were still using the credentials from the orchestrator service instead of from the certificate store
+
 v2.0
 - Added PAM support
 
