@@ -155,7 +155,6 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.DER
         {
             logger.MethodEntry(LogLevel.Debug);
 
-            //string privateKeyContents = Encoding.ASCII.GetString(remoteHandler.DownloadCertificateFile(SeparatePrivateKeyFilePath));
             byte[] privateKeyContents = remoteHandler.DownloadCertificateFile(SeparatePrivateKeyFilePath);
 
             if (privateKeyContents.Length == 0)

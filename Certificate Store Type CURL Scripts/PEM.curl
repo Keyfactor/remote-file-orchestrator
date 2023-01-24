@@ -66,6 +66,14 @@ curl -X POST {URL}/keyfactorapi/certificatestoretypes -H "Content-Type: applicat
       "DependsOn": "",
       "Type": "String",
       "DefaultValue": ""
+    },
+    {
+      "Name": "IsRSAPrivateKey"
+      "DisplayName": "Is RSA Private Key",
+      "Required": false,
+      "DependsOn": "",
+      "Type": "Bool",
+      "DefaultValue": false
     }
   ],
   "EntryParameters": []
