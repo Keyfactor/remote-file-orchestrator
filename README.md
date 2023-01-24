@@ -64,7 +64,8 @@ Setting up a PAM provider for use involves adding an additional section to the m
 The Remote File Orchestrator Extension is a multi-purpose integration that can remotely manage a variety of file-based certificate stores and can easily be extended to manage others.  The certificate store types that can be managed in the current version are:
 - Java Keystores of type JKS
 - PKCS12 files, including, but not limited to, Java keystores of type PKCS12
-- PEM files
+- PEM formatted files
+- DER formatted files
 - IBM Key Database files (KDB)
 
 While the Keyfactor Universal Orchestrator (UO) can be installed on either Windows or Linux; likewise, the Remote File Orchestrator Extension can be used to manage certificate stores residing on both Windows and Linux servers.  The supported configurations of Universal Orchestrator hosts and managed orchestrated servers are shown below:
@@ -264,6 +265,35 @@ Entry Parameters Tab:
 
 &nbsp;  
 CURL script to automate certificate store type creation can be found [here](Certificate%20Store%20Type%20CURL%20Scripts/PEM.curl)
+
+&nbsp;  
+&nbsp;  
+**************************************
+**RFDER Certificate Store Type**
+**************************************
+
+The RFDER store type can be used to manage DER encoded files.
+
+Use cases supported:
+1. Single certificate stores with private key in an external file.
+5. Single certificate stores with no private key. 
+
+**Specific Certificate Store Type Values**  
+*Basic Tab:*
+- **Short Name** – Required. Suggested value - **RFDER**.  If you choose to use a different value you must make the corresponding modification to the manifest.json file (see "Remote File Orchestrator Extension Installation", step 6 above).
+
+*Advanced Tab:*
+- **Supports Custom Alias** - Forbidden.
+- **Private Key Handling** - Optional.  
+
+*Custom Fields Tab:*  
+- **Name:** SeparatePrivateKeyFilePath, **Display Name:** Separate Private Key File Location, **Type:** String, **Default Value:** empty.   This custom field is **not required**. If empty, or not provided, it will be assumed that there is no private key associated with this DER store.  If the full path AND file name is entered here, that location will be used to store the private key as an external file in DER format. 
+
+Entry Parameters Tab:
+- no additional entry parameters
+
+&nbsp;  
+CURL script to automate certificate store type creation can be found [here](Certificate%20Store%20Type%20CURL%20Scripts/DER.curl)
 
 &nbsp;  
 &nbsp;  
