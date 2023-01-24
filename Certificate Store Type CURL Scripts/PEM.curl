@@ -36,6 +36,14 @@ curl -X POST {URL}/keyfactorapi/certificatestoretypes -H "Content-Type: applicat
       "DefaultValue": ""
     },
     {
+      "Name": "LinuxFileOwnerOnStoreCreation",
+      "DisplayName": "Linux File Owner on Store Creation",
+      "Required": false,
+      "DependsOn": "",
+      "Type": "String",
+      "DefaultValue": ""
+    },
+    {
       "Name": "IsTrustStore",
       "DisplayName": "Trust Store",
       "Required": false,
@@ -58,6 +66,14 @@ curl -X POST {URL}/keyfactorapi/certificatestoretypes -H "Content-Type: applicat
       "DependsOn": "",
       "Type": "String",
       "DefaultValue": ""
+    },
+    {
+      "Name": "IsRSAPrivateKey"
+      "DisplayName": "Is RSA Private Key",
+      "Required": false,
+      "DependsOn": "",
+      "Type": "Bool",
+      "DefaultValue": false
     }
   ],
   "EntryParameters": []

@@ -48,6 +48,18 @@
       "CertStores.RFKDB.Discovery": {
         "assemblypath": "RemoteFile.dll",
         "TypeFullName": "Keyfactor.Extensions.Orchestrator.RemoteFile.Discovery"
+      },
+      "CertStores.RFDER.Inventory": {
+        "assemblypath": "RemoteFile.dll",
+        "TypeFullName": "Keyfactor.Extensions.Orchestrator.RemoteFile.DER.Inventory"
+      },
+      "CertStores.RFDER.Management": {
+        "assemblypath": "RemoteFile.dll",
+        "TypeFullName": "Keyfactor.Extensions.Orchestrator.RemoteFile.DER.Management"
+      },
+      "CertStores.RFDER.Discovery": {
+        "assemblypath": "RemoteFile.dll",
+        "TypeFullName": "Keyfactor.Extensions.Orchestrator.RemoteFile.Discovery"
       }
     }
   }

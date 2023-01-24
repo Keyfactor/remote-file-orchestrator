@@ -145,38 +145,33 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
         private byte[] RunCommandBinary(string commandText)
         {
             _logger.MethodEntry(LogLevel.Debug);
-            _logger.LogDebug($"RunCommandBinary: {Server}");
+            _logger.LogDebug($"RunCommandBinary: {commandText}");
 
             byte[] rtnBytes = new byte[0];
 
             try
             {
-                using (Runspace runspace = RunspaceFactory.CreateRunspace(new WSManConnectionInfo(new System.Uri($"{Server}/wsman"))))
+                using (PowerShell ps = PowerShell.Create())
                 {
-                    runspace.Open();
-                    using (PowerShell ps = PowerShell.Create())
+                    ps.Runspace = runspace;
+                    ps.AddScript(commandText);
+
+                    System.Collections.ObjectModel.Collection<PSObject> psResult = ps.Invoke();
+
+                    if (ps.HadErrors)
                     {
-                        ps.Runspace = runspace;
-                        ps.AddScript(commandText);
+                        string errors = string.Empty;
+                        System.Collections.ObjectModel.Collection<ErrorRecord> errorRecords = ps.Streams.Error.ReadAll();
+                        foreach (ErrorRecord errorRecord in errorRecords)
+                            errors += (errorRecord.ToString() + "   ");
 
-                        _logger.LogDebug($"RunCommandBinary: {commandText}");
-                        System.Collections.ObjectModel.Collection<PSObject> psResult = ps.Invoke();
-
-                        if (ps.HadErrors)
-                        {
-                            string errors = string.Empty;
-                            System.Collections.ObjectModel.Collection<ErrorRecord> errorRecords = ps.Streams.Error.ReadAll();
-                            foreach (ErrorRecord errorRecord in errorRecords)
-                                errors += (errorRecord.ToString() + "   ");
-
-                            throw new ApplicationException(errors);
-                        }
-                        else
-                        {
-                            if (psResult.Count > 0)
-                                rtnBytes = (byte[])psResult[0].BaseObject;
-                            _logger.LogDebug($"WinRM Results: {commandText}::: binary results.");
-                        }
+                        throw new ApplicationException(errors);
+                    }
+                    else
+                    {
+                        if (psResult.Count > 0)
+                            rtnBytes = (byte[])psResult[0].BaseObject;
+                        _logger.LogDebug($"WinRM Results: {commandText}::: binary results.");
                     }
                 }
 
@@ -219,7 +214,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
             return RunCommandBinary($@"Get-Content -Path ""{path}"" -Encoding Byte -Raw");
         }
 
-        public override void CreateEmptyStoreFile(string path, string linuxFilePermissions)
+        public override void CreateEmptyStoreFile(string path, string linuxFilePermissions, string linuxFileOwner)
         {
             _logger.MethodEntry(LogLevel.Debug);
             RunCommand($@"Out-File -FilePath ""{path}""", null, false, null);

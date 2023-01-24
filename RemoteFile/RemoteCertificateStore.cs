@@ -99,13 +99,14 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
         {
             logger.MethodEntry(LogLevel.Debug);
 
-            CertificateStore = new Pkcs12Store();
+            Pkcs12StoreBuilder storeBuilder = new Pkcs12StoreBuilder();
+            CertificateStore = storeBuilder.Build();
 
             byte[] byteContents = RemoteHandler.DownloadCertificateFile(StorePath + StoreFileName);
             if (byteContents.Length < 5)
                 return;
 
-            CertificateStore = certificateStoreSerializer.DeserializeRemoteCertificateStore(byteContents, StorePath, StorePassword, storeProperties, RemoteHandler);
+            CertificateStore = certificateStoreSerializer.DeserializeRemoteCertificateStore(byteContents, StorePath, StorePassword, RemoteHandler);
 
             logger.MethodExit(LogLevel.Debug);
         }
@@ -212,11 +213,15 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             logger.MethodExit(LogLevel.Debug);
         }
 
-        internal void CreateCertificateStore(string storePath, string linuxFilePermissions)
+        internal void CreateCertificateStore(ICertificateStoreSerializer certificateStoreSerializer, string storePath, string linuxFilePermissions, string linuxFileOwner)
         {
             logger.MethodEntry(LogLevel.Debug);
 
-            RemoteHandler.CreateEmptyStoreFile(storePath, linuxFilePermissions);
+            RemoteHandler.CreateEmptyStoreFile(storePath, linuxFilePermissions, linuxFileOwner);
+            string privateKeyPath = certificateStoreSerializer.GetPrivateKeyPath();
+            if (!string.IsNullOrEmpty(privateKeyPath))
+                RemoteHandler.CreateEmptyStoreFile(privateKeyPath, linuxFilePermissions, linuxFileOwner);
+
 
             logger.MethodExit(LogLevel.Debug);
         }

@@ -1,4 +1,11 @@
-﻿using System;
+﻿// Copyright 2021 Keyfactor
+// Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+// Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions
+// and limitations under the License.
+
+using System;
 using System.Collections.Generic;
 using System.IO;
 
@@ -19,6 +26,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
         }
 
         private const string DEFAULT_LINUX_PERMISSION_SETTING = "600";
+        private const string DEFAULT_OWNER_SETTING = "";
 
         private static Dictionary<string,string> configuration;
 
@@ -27,6 +35,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
         public static bool UseNegotiate { get { return configuration.ContainsKey("UseNegotiate") ? configuration["UseNegotiate"]?.ToUpper() == "Y" : false; } }
         public static string SeparateUploadFilePath { get { return configuration.ContainsKey("SeparateUploadFilePath") ? AddTrailingSlash(configuration["SeparateUploadFilePath"]) : string.Empty; } }
         public static string DefaultLinuxPermissionsOnStoreCreation { get { return configuration.ContainsKey("DefaultLinuxPermissionsOnStoreCreation") ? configuration["DefaultLinuxPermissionsOnStoreCreation"] : DEFAULT_LINUX_PERMISSION_SETTING; } }
+        public static string DefaultOwnerOnStoreCreation { get { return configuration.ContainsKey("DefaultOwnerOnStoreCreation") ? configuration["DefaultOwnerOnStoreCreation"] : DEFAULT_OWNER_SETTING; } }
         public static FileTransferProtocolEnum FileTransferProtocol 
         { 
             get 
@@ -95,6 +104,8 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
                 logger.LogDebug($"Missing configuration parameter - SeparateUploadFilePath.  Will set to default value of ''");
             if (!configuration.ContainsKey("DefaultLinuxPermissionsOnStoreCreation"))
                 logger.LogDebug($"Missing configuration parameter - DefaultLinuxPermissionsOnStoreCreation.  Will set to default value of '{DEFAULT_LINUX_PERMISSION_SETTING}'");
+            if (!configuration.ContainsKey("DefaultOwnerOnStoreCreation"))
+                logger.LogDebug($"Missing configuration parameter - DefaultOwnerOnStoreCreation.  Will set to default value of '{DEFAULT_OWNER_SETTING}'");
             if (!configuration.ContainsKey("FileTransferProtocol"))
                 logger.LogDebug($"Missing configuration parameter - FileTransferProtocol.  Will set to default value of 'SCP'");
         }

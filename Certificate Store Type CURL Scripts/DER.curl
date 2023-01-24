@@ -1,4 +1,4 @@
-﻿###CURL script to create KDB certificate store type
+###CURL script to create DER certificate store type
 
 ###Replacement Variables - Manually replace these before running###
 # {URL} - Base URL for your Keyfactor deployment
@@ -6,12 +6,12 @@
 # {UserPassword} - Password for the UserName above
 
 curl -X POST {URL}/keyfactorapi/certificatestoretypes -H "Content-Type: application/json" -H "x-keyfactor-requested-with: APIClient" -u {UserName}:{UserPassword} -d '{
-  "Name": "RFKDB",
-  "ShortName": "RFKDB",
-  "Capability": "RFKDB",
+  "Name": "RFDER",
+  "ShortName": "RFDER",
+  "Capability": "RFDER",
   "ServerRequired": true,
   "BlueprintAllowed": false,
-  "CustomAliasAllowed": "Required",
+  "CustomAliasAllowed": "Forbidden",
   "PowerShell": false,
   "PrivateKeyAllowed": "Optional",
   "SupportedOperations": {
@@ -42,7 +42,15 @@ curl -X POST {URL}/keyfactorapi/certificatestoretypes -H "Content-Type: applicat
       "DependsOn": "",
       "Type": "String",
       "DefaultValue": ""
-    }  
+    },
+    {
+      "Name": "SeparatePrivateKeyFilePath",
+      "DisplayName": "Separate Private Key File Location",
+      "Required": false,
+      "DependsOn": "",
+      "Type": "String",
+      "DefaultValue": ""
+    }
   ],
   "EntryParameters": []
 }'

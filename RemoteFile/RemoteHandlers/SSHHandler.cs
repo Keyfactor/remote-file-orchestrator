@@ -42,21 +42,24 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
             }
             else
             {
+                PrivateKeyFile privateKeyFile;
+
                 try
                 {
                     using (MemoryStream ms = new MemoryStream(Encoding.ASCII.GetBytes(FormatRSAPrivateKey(serverPassword))))
                     {
-                        authenticationMethods.Add(new PrivateKeyAuthenticationMethod(serverLogin, new PrivateKeyFile[] { new PrivateKeyFile(ms) }));
+                        privateKeyFile = new PrivateKeyFile(ms);
                     }
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
                     using (MemoryStream ms = new MemoryStream(Encoding.ASCII.GetBytes(ConvertToPKCS1(serverPassword))))
                     {
-                        authenticationMethods.Add(new PrivateKeyAuthenticationMethod(serverLogin, new PrivateKeyFile[] { new PrivateKeyFile(ms) }));
+                        privateKeyFile = new PrivateKeyFile(ms);
                     }
                 }
 
+                authenticationMethods.Add(new PrivateKeyAuthenticationMethod(serverLogin, privateKeyFile));
             }
 
             Connection = new ConnectionInfo(server, serverLogin, authenticationMethods.ToArray());
@@ -231,7 +234,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
                 SplitStorePathFile(path, out altPathOnly, out altFileNameOnly);
                 downloadPath = ApplicationSettings.SeparateUploadFilePath + altFileNameOnly;
                 RunCommand($"cp {path} {downloadPath}", null, ApplicationSettings.UseSudo, null);
-                RunCommand($"sudo chown {Connection.Username} {downloadPath}", null, ApplicationSettings.UseSudo, null);
+                RunCommand($"chown {Connection.Username} {downloadPath}", null, ApplicationSettings.UseSudo, null);
             }
 
             bool scpError = false;
@@ -306,12 +309,12 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
             return rtnStore;
         }
 
-        public override void CreateEmptyStoreFile(string path, string linuxFilePermissions)
+        public override void CreateEmptyStoreFile(string path, string linuxFilePermissions, string linuxFileOwner)
         {
             _logger.MethodEntry(LogLevel.Debug);
 
             AreLinuxPermissionsValid(linuxFilePermissions);
-            RunCommand($"install -m {linuxFilePermissions} /dev/null {path}", null, false, null);
+            RunCommand($"install -m {linuxFilePermissions} -o {linuxFileOwner} -g {linuxFileOwner} /dev/null {path}", null, ApplicationSettings.UseSudo, null);
 
             _logger.MethodExit(LogLevel.Debug);
         }
@@ -377,7 +380,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
             _logger.MethodEntry(LogLevel.Debug);
             _logger.MethodExit(LogLevel.Debug);
             
-            return privateKey.Replace(" RSA PRIVATE ", "^^^").Replace(" ", System.Environment.NewLine).Replace("^^^", " RSA PRIVATE ");
+            return privateKey.Replace(" RSA PRIVATE ", "^^^").Replace(" ", System.Environment.NewLine).Replace("^^^", " RSA PRIVATE ") + System.Environment.NewLine;
         }
 
         private string ConvertToPKCS1(string privateKey)
@@ -388,7 +391,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
             PrivateKeyConverter conv = PrivateKeyConverterFactory.FromPkcs8Blob(Convert.FromBase64String(privateKey), string.Empty);
             RSA alg = (RSA)conv.ToNetPrivateKey();
             string pemString = PemUtilities.DERToPEM(alg.ExportRSAPrivateKey(), PemUtilities.PemObjectType.PrivateKey);
-
+            
             _logger.MethodExit(LogLevel.Debug);
 
             return pemString.Replace("PRIVATE", "RSA PRIVATE");

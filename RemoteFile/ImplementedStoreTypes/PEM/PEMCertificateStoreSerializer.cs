@@ -1,4 +1,11 @@
-﻿using System;
+﻿// Copyright 2021 Keyfactor
+// Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+// Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions
+// and limitations under the License.
+
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.IO;
@@ -17,32 +24,38 @@ using Microsoft.Extensions.Logging;
 using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Pkcs;
 using Org.BouncyCastle.X509;
+using System.Security.Cryptography;
+using Org.BouncyCastle.OpenSsl;
 
 namespace Keyfactor.Extensions.Orchestrator.RemoteFile.PEM
 {
     class PEMCertificateStoreSerializer : ICertificateStoreSerializer
     {
-        string[] PrivateKeyDelimeters = new string[] { "-----BEGIN PRIVATE KEY-----", "-----BEGIN ENCRYPTED PRIVATE KEY-----", "-----BEGIN RSA PRIVATE KEY-----" };
+        string[] PrivateKeyDelimetersPkcs8 = new string[] { "-----BEGIN PRIVATE KEY-----", "-----BEGIN ENCRYPTED PRIVATE KEY-----" };
+        string[] PrivateKeyDelimetersPkcs1 = new string[] { "-----BEGIN RSA PRIVATE KEY-----" };
         string CertDelimBeg = "-----BEGIN CERTIFICATE-----";
         string CertDelimEnd = "-----END CERTIFICATE-----";
 
         private bool IsTrustStore { get; set; }
         private bool IncludesChain { get; set; }
         private string SeparatePrivateKeyFilePath { get; set; }
+        private bool IsRSAPrivateKey { get; set; }
 
         private ILogger logger;
 
-        public PEMCertificateStoreSerializer() 
+        public PEMCertificateStoreSerializer(string storeProperties) 
         {
             logger = LogHandler.GetClassLogger(this.GetType());
+            LoadCustomProperties(storeProperties);
         }
 
-        public Pkcs12Store DeserializeRemoteCertificateStore(byte[] storeContentBytes, string storePath, string storePassword, string storeProperties, IRemoteHandler remoteHandler)
+        public Pkcs12Store DeserializeRemoteCertificateStore(byte[] storeContentBytes, string storePath, string storePassword, IRemoteHandler remoteHandler)
         {
             logger.MethodEntry(LogLevel.Debug);
 
-            LoadCustomProperties(storeProperties);
-
+            if (IsRSAPrivateKey && !string.IsNullOrEmpty(storePassword))
+                throw new RemoteFileException($"Certificate store with an RSA Private Key cannot contain a store password.  Invalid store format not supported.");
+           
             Pkcs12StoreBuilder storeBuilder = new Pkcs12StoreBuilder();
             Pkcs12Store store = storeBuilder.Build();
 
@@ -75,11 +88,12 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.PEM
             return newStore;
         }
 
-        public List<SerializedStoreInfo> SerializeRemoteCertificateStore(Pkcs12Store certificateStore, string storePath, string storeFileName, string storePassword, string storeProperties, IRemoteHandler remoteHandler)
+        public List<SerializedStoreInfo> SerializeRemoteCertificateStore(Pkcs12Store certificateStore, string storePath, string storeFileName, string storePassword, IRemoteHandler remoteHandler)
         {
             logger.MethodEntry(LogLevel.Debug);
 
-            LoadCustomProperties(storeProperties);
+            if (IsRSAPrivateKey && !string.IsNullOrEmpty(storePassword))
+                throw new RemoteFileException($"Certificate store with an RSA Private Key cannot contain a store password.  Invalid store format not supported.");
 
             string pemString = string.Empty;
             string keyString = string.Empty;
@@ -109,16 +123,29 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.PEM
                     if (!certificateStore.IsKeyEntry(alias))
                         throw new RemoteFileException("No private key found.  Private key must be present to add entry to a non-Trust PEM certificate store.");
 
+                    X509CertificateEntry[] chainEntries = certificateStore.GetCertificateChain(alias);
+                    CertificateConverter certConverter = CertificateConverterFactory.FromBouncyCastleCertificate(chainEntries[0].Certificate);
+
                     AsymmetricKeyParameter privateKey = certificateStore.GetKey(alias).Key;
                     X509CertificateEntry[] certEntries = certificateStore.GetCertificateChain(alias);
                     AsymmetricKeyParameter publicKey = certEntries[0].Certificate.GetPublicKey();
-                    PrivateKeyConverter keyConverter = PrivateKeyConverterFactory.FromBCKeyPair(privateKey, publicKey, false);
 
-                    byte[] privateKeyBytes = string.IsNullOrEmpty(storePassword) ? keyConverter.ToPkcs8BlobUnencrypted() : keyConverter.ToPkcs8Blob(storePassword);
-                    keyString = PemUtilities.DERToPEM(privateKeyBytes, string.IsNullOrEmpty(storePassword) ? PemUtilities.PemObjectType.PrivateKey : PemUtilities.PemObjectType.EncryptedPrivateKey);
+                    if (IsRSAPrivateKey)
+                    {
+                        TextWriter textWriter = new StringWriter();
+                        PemWriter pemWriter = new PemWriter(textWriter);
+                        pemWriter.WriteObject(privateKey);
+                        pemWriter.Writer.Flush();
 
-                    X509CertificateEntry[] chainEntries = certificateStore.GetCertificateChain(alias);
-                    CertificateConverter certConverter = CertificateConverterFactory.FromBouncyCastleCertificate(chainEntries[0].Certificate);
+                        keyString = textWriter.ToString();
+                    }
+                    else
+                    {
+                        PrivateKeyConverter keyConverter = PrivateKeyConverterFactory.FromBCKeyPair(privateKey, publicKey, false);
+
+                        byte[] privateKeyBytes = string.IsNullOrEmpty(storePassword) ? keyConverter.ToPkcs8BlobUnencrypted() : keyConverter.ToPkcs8Blob(storePassword);
+                        keyString = PemUtilities.DERToPEM(privateKeyBytes, string.IsNullOrEmpty(storePassword) ? PemUtilities.PemObjectType.PrivateKey : PemUtilities.PemObjectType.EncryptedPrivateKey);
+                    }
 
                     pemString = certConverter.ToPEM(true);
                     if (string.IsNullOrEmpty(SeparatePrivateKeyFilePath))
@@ -144,6 +171,11 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.PEM
             return storeInfo;
         }
 
+        public string GetPrivateKeyPath()
+        {
+            return SeparatePrivateKeyFilePath;
+        }
+
         private void LoadCustomProperties(string storeProperties)
         {
             logger.MethodEntry(LogLevel.Debug);
@@ -152,6 +184,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.PEM
             IsTrustStore = properties.IsTrustStore == null || string.IsNullOrEmpty(properties.IsTrustStore.Value) ? false : bool.Parse(properties.IsTrustStore.Value);
             IncludesChain = properties.IncludesChain == null || string.IsNullOrEmpty(properties.IncludesChain.Value) ? false : bool.Parse(properties.IncludesChain.Value);
             SeparatePrivateKeyFilePath = properties.SeparatePrivateKeyFilePath == null || string.IsNullOrEmpty(properties.SeparatePrivateKeyFilePath.Value) ? String.Empty : properties.SeparatePrivateKeyFilePath.Value;
+            IsRSAPrivateKey = properties.IsRSAPrivateKey == null || string.IsNullOrEmpty(properties.IsRSAPrivateKey.Value) ? false : bool.Parse(properties.IsRSAPrivateKey.Value);
 
             logger.MethodExit(LogLevel.Debug);
         }
@@ -197,7 +230,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.PEM
             }
 
             string privateKey = string.Empty;
-            foreach (string begDelim in PrivateKeyDelimeters)
+            foreach (string begDelim in IsRSAPrivateKey ? PrivateKeyDelimetersPkcs1 : PrivateKeyDelimetersPkcs8)
             {
                 string endDelim = begDelim.Replace("BEGIN", "END");
 
@@ -214,9 +247,20 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.PEM
             }
 
             if (string.IsNullOrEmpty(privateKey))
-                throw new RemoteFileException("Invalid private key: No private key found.");
+                throw new RemoteFileException("Invalid private key: No private key or invalid private key format found.");
 
-            PrivateKeyConverter c = PrivateKeyConverterFactory.FromPkcs8Blob(Convert.FromBase64String(privateKey), storePassword);
+            PrivateKeyConverter c;
+            if (IsRSAPrivateKey)
+            {
+                RSA rsa = RSA.Create();
+                int bytesRead;
+                rsa.ImportRSAPrivateKey(Convert.FromBase64String(privateKey), out bytesRead);
+                c = PrivateKeyConverterFactory.FromNetPrivateKey(rsa, false);
+            }
+            else
+            {
+                c = PrivateKeyConverterFactory.FromPkcs8Blob(Convert.FromBase64String(privateKey), storePassword);
+            }
 
             logger.MethodExit(LogLevel.Debug);
 
