@@ -397,7 +397,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             List<string> results = new List<string>();
             StringBuilder concatFileNames = new StringBuilder();
 
-            if (paths[0] == FULL_SCAN)
+            if (paths[0].ToLower() == FULL_SCAN)
             {
                 paths = GetAvailableDrives();
                 for (int i = 0; i < paths.Length; i++)
@@ -439,7 +439,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             logger.MethodEntry(LogLevel.Debug);
             logger.MethodExit(LogLevel.Debug);
 
-            return path + (path.Substring(path.Length - 1) == @"\" ? string.Empty : @"\");
+            return "'" + path + (path.Substring(path.Length - 1) == @"\" ? string.Empty : @"\") + "'";
         }
     }
 
