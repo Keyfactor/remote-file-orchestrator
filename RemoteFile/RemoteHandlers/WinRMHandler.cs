@@ -254,13 +254,5 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
 
             return rtn.ToString();
         }
-
-        private string FormatFTPPath(string path)
-        {
-            _logger.MethodEntry(LogLevel.Debug);
-            _logger.MethodExit(LogLevel.Debug);
-
-            return path.Substring(0, 1) == @"/" ? path : @"/" + path.Replace("\\", "/");
-        }
     }
 }

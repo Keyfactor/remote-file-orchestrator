@@ -53,11 +53,11 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             {
                 string userName = PAMUtilities.ResolvePAMField(_resolver, logger, "Server User Name", config.ServerUsername);
                 string userPassword = PAMUtilities.ResolvePAMField(_resolver, logger, "Server Password", config.ServerPassword);
-                
-                certificateStore = new RemoteCertificateStore(config.ClientMachine, userName, userPassword, directoriesToSearch[0].Substring(0, 1) == "/" ? RemoteCertificateStore.ServerTypeEnum.Linux : RemoteCertificateStore.ServerTypeEnum.Windows);
 
-                certificateStore.Initialize();
                 ApplicationSettings.Initialize(this.GetType().Assembly.Location);
+
+                certificateStore = new RemoteCertificateStore(config.ClientMachine, userName, userPassword, directoriesToSearch[0].Substring(0, 1) == "/" ? RemoteCertificateStore.ServerTypeEnum.Linux : RemoteCertificateStore.ServerTypeEnum.Windows);
+                certificateStore.Initialize();
 
                 if (directoriesToSearch.Length == 0)
                     throw new RemoteFileException("Blank or missing search directories for Discovery.");
