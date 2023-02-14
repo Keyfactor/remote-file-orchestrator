@@ -1,3 +1,7 @@
+v2.1.2
+- Bug fix: Discovery not working against Windows servers
+- Bug fix: Issue running Discovery on Windows servers with one or more spaces in the path
+
 v2.1
 - New RFDER certificate store type added
 - RFPEM modified to now support PKCS#1 private key formats (BEGIN RSA PRIVATE KEY)
