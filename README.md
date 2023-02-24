@@ -55,6 +55,32 @@ It is not necessary to implement all of the secrets available to be managed by a
 Setting up a PAM provider for use involves adding an additional section to the manifest.json file for this extension as well as setting up the PAM provider you will be using.  Each of these steps is specific to the PAM provider you will use and are documented in the specific GitHub repo for that provider.  For a list of Keyfactor supported PAM providers, please reference the [Keyfactor Integration Catalog](https://keyfactor.github.io/integrations-catalog/content/pam).
 
 
+### Register the PAM Provider
+
+A PAM Provider needs to be registered on the Universal Orchestrator in the same way other extensions are. Create a folder for the specific PAM Provider to be added, and place the contents of the PAM Provider into the folder. There needs to be a manifest.json with the PAM Provider.
+
+After a manifest.json is added, the final step for configuration is setting the "provider-level" parameters for the PAM Provider. These are also known as the "initialization-level" parameters. These need to be placed in a json file that gets loaded by the Orchestrator by default. 
+
+example manifest.json for MY-PROVIDER-NAME
+```
+{
+    "extensions": {
+        "Keyfactor.Platform.Extensions.IPAMProvider": {
+            "PAMProviders.MY-PROVIDER-NAME.PAMProvider": {
+                "assemblyPath": "my-pam-provider.dll",
+                "TypeFullName": "Keyfactor.Extensions.Pam.MyPamProviderClass"
+            }
+        }
+    },
+    "Keyfactor:PAMProviders:MY-PROVIDER-NAME:InitializationInfo": {
+        "InitParam1": "InitValue1",
+        "InitParam2": "InitValue2"
+    }
+}
+```
+
+
+
 
 ---
 
@@ -301,7 +327,7 @@ CURL script to automate certificate store type creation can be found [here](Cert
 **RFKDB Certificate Store Type**
 **************************************
 
-The RFKDB store type can be used to manage IBM Key Database Files (KDB) files.  The IBM utility, GSKCAPICMD, is used to read and write certificates from and to the target store and is therefore required to be installed on the server where the Keyfactor Orchestrator Service is installed, and its location MUST be in the system $Path.
+The RFKDB store type can be used to manage IBM Key Database Files (KDB) files.  The IBM utility, GSKCAPICMD, is used to read and write certificates from and to the target store and is therefore required to be installed on the server where each KDB certificate store being managed resides, and its location MUST be in the system $Path.
 
 Use cases supported:
 1. One-to-many trust entries - A single certificate without a private key in a certificate store.  Each certificate identified with a custom alias or certificate thumbprint.
