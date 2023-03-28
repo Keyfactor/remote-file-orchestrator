@@ -27,6 +27,253 @@
         "supportsReenrollment": false,
         "supportsInventory": true,
         "platformSupport": "Unused"
+      },
+      "store_types": {
+        "RFJKS": {
+          "Name": "RFJKS",
+          "ShortName": "RFJKS",
+          "Capability": "RFJKS",
+          "ServerRequired": true,
+          "BlueprintAllowed": false,
+          "CustomAliasAllowed": "Required",
+          "PowerShell": false,
+          "PrivateKeyAllowed": "Optional",
+          "SupportedOperations": {
+            "Add": true,
+            "Create": true,
+            "Discovery": true,
+            "Enrollment": false,
+            "Remove": true
+          },
+          "PasswordOptions": {
+            "Style": "Default",
+            "EntrySupported": false,
+            "StoreRequired": true
+          },
+          "Properties": [
+            {
+              "Name": "LinuxFilePermissionsOnStoreCreation",
+              "DisplayName": "Linux File Permissions on Store Creation",
+              "Required": false,
+              "DependsOn": "",
+              "Type": "String",
+              "DefaultValue": ""
+            },
+            {
+              "Name": "LinuxFileOwnerOnStoreCreation",
+              "DisplayName": "Linux File Owner on Store Creation",
+              "Required": false,
+              "DependsOn": "",
+              "Type": "String",
+              "DefaultValue": ""
+            }  
+          ],
+          "EntryParameters": []        
+        },
+        "RFPEM": {
+          "Name": "RFPEM",
+          "ShortName": "RFPEM",
+          "Capability": "RFPEM",
+          "ServerRequired": true,
+          "BlueprintAllowed": false,
+          "CustomAliasAllowed": "Forbidden",
+          "PowerShell": false,
+          "PrivateKeyAllowed": "Optional",
+          "SupportedOperations": {
+            "Add": true,
+            "Create": true,
+            "Discovery": true,
+            "Enrollment": false,
+            "Remove": true
+          },
+          "PasswordOptions": {
+            "Style": "Default",
+            "EntrySupported": false,
+            "StoreRequired": true
+          },
+          "Properties": [
+            {
+              "Name": "LinuxFilePermissionsOnStoreCreation",
+              "DisplayName": "Linux File Permissions on Store Creation",
+              "Required": false,
+              "DependsOn": "",
+              "Type": "String",
+              "DefaultValue": ""
+            },
+            {
+              "Name": "LinuxFileOwnerOnStoreCreation",
+              "DisplayName": "Linux File Owner on Store Creation",
+              "Required": false,
+              "DependsOn": "",
+              "Type": "String",
+              "DefaultValue": ""
+            },
+            {
+              "Name": "IsTrustStore",
+              "DisplayName": "Trust Store",
+              "Required": false,
+              "DependsOn": "",
+              "Type": "Bool",
+              "DefaultValue": false
+            },
+            {
+              "Name": "IncludesChain",
+              "DisplayName": "Store Includes Chain",
+              "Required": false,
+              "DependsOn": "",
+              "Type": "Bool",
+              "DefaultValue": false
+            },
+            {
+              "Name": "SeparatePrivateKeyFilePath",
+              "DisplayName": "Separate Private Key File Location",
+              "Required": false,
+              "DependsOn": "",
+              "Type": "String",
+              "DefaultValue": ""
+            },
+            {
+              "Name": "IsRSAPrivateKey"
+              "DisplayName": "Is RSA Private Key",
+              "Required": false,
+              "DependsOn": "",
+              "Type": "Bool",
+              "DefaultValue": false
+            }
+          ],
+          "EntryParameters": []
+        },
+        "RFPkcs12": {
+          "Name": "RFPkcs12",
+          "ShortName": "RFPkcs12",
+          "Capability": "RFPkcs12",
+          "ServerRequired": true,
+          "BlueprintAllowed": false,
+          "CustomAliasAllowed": "Required",
+          "PowerShell": false,
+          "PrivateKeyAllowed": "Optional",
+          "SupportedOperations": {
+            "Add": true,
+            "Create": true,
+            "Discovery": true,
+            "Enrollment": false,
+            "Remove": true
+          },
+          "PasswordOptions": {
+            "Style": "Default",
+            "EntrySupported": false,
+            "StoreRequired": true
+          },
+          "Properties": [
+            {
+              "Name": "LinuxFilePermissionsOnStoreCreation",
+              "DisplayName": "Linux File Permissions on Store Creation",
+              "Required": false,
+              "DependsOn": "",
+              "Type": "String",
+              "DefaultValue": ""
+            },
+            {
+              "Name": "LinuxFileOwnerOnStoreCreation",
+              "DisplayName": "Linux File Owner on Store Creation",
+              "Required": false,
+              "DependsOn": "",
+              "Type": "String",
+              "DefaultValue": ""
+            }    
+          ],
+          "EntryParameters": []        
+        },
+        "RFDER": {
+          "Name": "RFDER",
+          "ShortName": "RFDER",
+          "Capability": "RFDER",
+          "ServerRequired": true,
+          "BlueprintAllowed": false,
+          "CustomAliasAllowed": "Forbidden",
+          "PowerShell": false,
+          "PrivateKeyAllowed": "Optional",
+          "SupportedOperations": {
+            "Add": true,
+            "Create": true,
+            "Discovery": true,
+            "Enrollment": false,
+            "Remove": true
+          },
+          "PasswordOptions": {
+            "Style": "Default",
+            "EntrySupported": false,
+            "StoreRequired": true
+          },
+          "Properties": [
+            {
+              "Name": "LinuxFilePermissionsOnStoreCreation",
+              "DisplayName": "Linux File Permissions on Store Creation",
+              "Required": false,
+              "DependsOn": "",
+              "Type": "String",
+              "DefaultValue": ""
+            },
+            {
+              "Name": "LinuxFileOwnerOnStoreCreation",
+              "DisplayName": "Linux File Owner on Store Creation",
+              "Required": false,
+              "DependsOn": "",
+              "Type": "String",
+              "DefaultValue": ""
+            },
+            {
+              "Name": "SeparatePrivateKeyFilePath",
+              "DisplayName": "Separate Private Key File Location",
+              "Required": false,
+              "DependsOn": "",
+              "Type": "String",
+              "DefaultValue": ""
+            }
+          ],
+          "EntryParameters": []    
+        }
+        "RFKDB": {
+          "Name": "RFKDB",
+          "ShortName": "RFKDB",
+          "Capability": "RFKDB",
+          "ServerRequired": true,
+          "BlueprintAllowed": false,
+          "CustomAliasAllowed": "Required",
+          "PowerShell": false,
+          "PrivateKeyAllowed": "Optional",
+          "SupportedOperations": {
+            "Add": true,
+            "Create": true,
+            "Discovery": true,
+            "Enrollment": false,
+            "Remove": true
+          },
+          "PasswordOptions": {
+            "Style": "Default",
+            "EntrySupported": false,
+            "StoreRequired": true
+          },
+          "Properties": [
+            {
+              "Name": "LinuxFilePermissionsOnStoreCreation",
+              "DisplayName": "Linux File Permissions on Store Creation",
+              "Required": false,
+              "DependsOn": "",
+              "Type": "String",
+              "DefaultValue": ""
+            },
+            {
+              "Name": "LinuxFileOwnerOnStoreCreation",
+              "DisplayName": "Linux File Owner on Store Creation",
+              "Required": false,
+              "DependsOn": "",
+              "Type": "String",
+              "DefaultValue": ""
+            }  
+          ],
+          "EntryParameters": []        
+        }
       }
     }
   }
