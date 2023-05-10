@@ -334,7 +334,12 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             if (ServerType == ServerTypeEnum.Linux)
                 RemoteHandler = new SSHHandler(Server, ServerId, ServerPassword);
             else
-                RemoteHandler = new WinRMHandler(Server, ServerId, ServerPassword);
+            {
+                if (Server.ToLower() == "localhost")
+                    RemoteHandler = new LocalWinHandler(Server, ServerId, ServerPassword);
+                else
+                    RemoteHandler = new WinRMHandler(Server, ServerId, ServerPassword);
+            }
 
             RemoteHandler.Initialize();
 
