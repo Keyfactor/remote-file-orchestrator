@@ -37,15 +37,12 @@ The version number of a the Remote File Orchestrator Extension can be verified b
 
 2. The Remote File Orchestrator Extension makes use of SFTP and/or SCP to transfer files to and from the orchestrated server.  SFTP/SCP cannot make use of sudo, so all folders containing certificate stores will need to allow SFTP/SCP file transfer.  If this is not possible, set the values in the config.json apprpriately to use an alternative upload/download folder that does allow SFTP/SCP file transfer (See "Config File Setup" later in this README regarding the config.json file).
 
+3. SSH Key Authentication: When creating a Keyfactor certificate store for the remote file orchestrator extension (see "Creating Certificate Stores" later in this README, you may supply either a user id and password for the certificate store credentials (directly or through one of Keyfactor Command's PAM integrations), or a user id and SSH private key.  Both PKCS#1 (BEGIN RSA PRIVATE KEY) and PKCS#8 (BEGIN PRIVATE KEY) formats are supported for the SSH private key.  If using the normal Keyfactor Command credentials dialog without PAM integration, just copy and paste the full SSH private key into the Password textbox.  
+
 **For Windows orchestrated servers:**
 1. Make sure that WinRM is set up on the orchestrated server and that the WinRM port is part of the certificate store path when setting up your certificate stores When creating a new certificate store in Keyfactor Command (See "Creating Certificate Stores" later in this README).
 
-2. When creating/configuring a certificate store in Keyfactor Command, you will see a "Change Credentials" link after entering in the destination client machine (IP or DNS).  This link **must** be clicked on to present the credentials dialog.  However, it is not required that you enter separate credentials.  Simply click SAVE in the resulting dialog without entering in credentials to use the credentials that the Keyfactor Orchestrator Service is running under.  Alternatively, you may enter separate credentials into this dialog and use those to connect to the orchestrated server.
-
 Please consult with your company's system administrator for more information on configuring SSH/SFTP/SCP or WinRM in your environment.
-
-**SSH Key-Based Authentiation**
-When creating a Keyfactor certificate store for the remote file orchestrator extension (see "Creating Certificate Stores" later in this README, you may supply either a user id and password for the certificate store credentials (directly or through one of Keyfactor Command's PAM integrations), or a user id and SSH private key.  Both PKCS#1 (BEGIN RSA PRIVATE KEY) and PKCS#8 (BEGIN PRIVATE KEY) formats are supported for the SSH private key.  If using the normal Keyfactor Command credentials dialog without PAM integration, just copy and paste the full SSH private key into the Password textbox.
 &nbsp;  
 &nbsp;  
 ## Remote File Orchestrator Extension Installation
@@ -272,6 +269,8 @@ Please refer to the Keyfactor Command Reference Guide for information on creatin
 
 Linux: Client Machine - 127.0.0.1 or MyLinuxServerName; Store Path - /home/folder/path/storename.ext  
 Windows: Client Machine - http<span>s://My.Server.Domain:59</span>86; Store Path - c:\folder\path\storename.ext  
+
+Credentials **must** be entered: a user id and either a password or valid PAM key if the password is stored in a KF Command configured PAM integration.  Alternatively, this password can be an SSH private key if connecting to a Linux server using SSH private key authentication.
 
 For "Directories to search", you can chain paths with a comma delimiter as documented in the Keyfactor Command Reference Guide, but there is also a special value that can be used instead - fullscan.  Entering fullscan in this field will tell the RemoteFile discovery job to search all available drive letters and recursively search all of them for files matching the other search criteria.  
 

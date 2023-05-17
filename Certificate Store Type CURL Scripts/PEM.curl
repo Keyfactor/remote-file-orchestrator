@@ -68,7 +68,7 @@ curl -X POST {URL}/keyfactorapi/certificatestoretypes -H "Content-Type: applicat
       "DefaultValue": ""
     },
     {
-      "Name": "IsRSAPrivateKey"
+      "Name": "IsRSAPrivateKey",
       "DisplayName": "Is RSA Private Key",
       "Required": false,
       "DependsOn": "",
