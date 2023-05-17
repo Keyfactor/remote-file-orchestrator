@@ -4,13 +4,13 @@ The Remote File Orchestrator allows for the remote management of file-based cert
 
 #### Integration status: Production - Ready for use in production environments.
 
-## About the Keyfactor Universal Orchestrator Capability
+## About the Keyfactor Universal Orchestrator Extension
 
-This repository contains a Universal Orchestrator Capability which is a plugin to the Keyfactor Universal Orchestrator. Within the Keyfactor Platform, Orchestrators are used to manage “certificate stores” &mdash; collections of certificates and roots of trust that are found within and used by various applications.
+This repository contains a Universal Orchestrator Extension which is a plugin to the Keyfactor Universal Orchestrator. Within the Keyfactor Platform, Orchestrators are used to manage “certificate stores” &mdash; collections of certificates and roots of trust that are found within and used by various applications.
 
-The Universal Orchestrator is part of the Keyfactor software distribution and is available via the Keyfactor customer portal. For general instructions on installing Capabilities, see the “Keyfactor Command Orchestrator Installation and Configuration Guide” section of the Keyfactor documentation. For configuration details of this specific Capability, see below in this readme.
+The Universal Orchestrator is part of the Keyfactor software distribution and is available via the Keyfactor customer portal. For general instructions on installing Extensions, see the “Keyfactor Command Orchestrator Installation and Configuration Guide” section of the Keyfactor documentation. For configuration details of this specific Extension see below in this readme.
 
-The Universal Orchestrator is the successor to the Windows Orchestrator. This Capability plugin only works with the Universal Orchestrator and does not work with the Windows Orchestrator.
+The Universal Orchestrator is the successor to the Windows Orchestrator. This Orchestrator Extension plugin only works with the Universal Orchestrator and does not work with the Windows Orchestrator.
 
 
 
@@ -50,34 +50,43 @@ The secrets that this orchestrator extension supports for use with a PAM Provide
 |StorePassword|The optional password used to secure the certificate store being managed|
   
 
-It is not necessary to implement all of the secrets available to be managed by a PAM provider.  For each value that you want managed by a PAM provider, simply enter the key value inside your specific PAM provider that will hold this value into the corresponding field when setting up the certificate store, discovery job, or API call.
+It is not necessary to use a PAM Provider for all of the secrets available above. If a PAM Provider should not be used, simply enter in the actual value to be used, as normal.
 
-Setting up a PAM provider for use involves adding an additional section to the manifest.json file for this extension as well as setting up the PAM provider you will be using.  Each of these steps is specific to the PAM provider you will use and are documented in the specific GitHub repo for that provider.  For a list of Keyfactor supported PAM providers, please reference the [Keyfactor Integration Catalog](https://keyfactor.github.io/integrations-catalog/content/pam).
+If a PAM Provider will be used for one of the fields above, start by referencing the [Keyfactor Integration Catalog](https://keyfactor.github.io/integrations-catalog/content/pam). The GitHub repo for the PAM Provider to be used contains important information such as the format of the `json` needed. What follows is an example but does not reflect the `json` values for all PAM Providers as they have different "instance" and "initialization" parameter names and values.
+
+<details><summary>General PAM Provider Configuration</summary>
+<p>
 
 
-### Register the PAM Provider
 
-A PAM Provider needs to be registered on the Universal Orchestrator in the same way other extensions are. Create a folder for the specific PAM Provider to be added, and place the contents of the PAM Provider into the folder. There needs to be a manifest.json with the PAM Provider.
+### Example PAM Provider Setup
 
-After a manifest.json is added, the final step for configuration is setting the "provider-level" parameters for the PAM Provider. These are also known as the "initialization-level" parameters. These need to be placed in a json file that gets loaded by the Orchestrator by default. 
+To use a PAM Provider to resolve a field, in this example the __Server Password__ will be resolved by the `Hashicorp-Vault` provider, first install the PAM Provider extension from the [Keyfactor Integration Catalog](https://keyfactor.github.io/integrations-catalog/content/pam) on the Universal Orchestrator.
 
-example manifest.json for MY-PROVIDER-NAME
-```
-{
-    "extensions": {
-        "Keyfactor.Platform.Extensions.IPAMProvider": {
-            "PAMProviders.MY-PROVIDER-NAME.PAMProvider": {
-                "assemblyPath": "my-pam-provider.dll",
-                "TypeFullName": "Keyfactor.Extensions.Pam.MyPamProviderClass"
-            }
-        }
-    },
-    "Keyfactor:PAMProviders:MY-PROVIDER-NAME:InitializationInfo": {
-        "InitParam1": "InitValue1",
-        "InitParam2": "InitValue2"
-    }
-}
-```
+Next, complete configuration of the PAM Provider on the UO by editing the `manifest.json` of the __PAM Provider__ (e.g. located at extensions/Hashicorp-Vault/manifest.json). The "initialization" parameters need to be entered here:
+
+~~~ json
+  "Keyfactor:PAMProviders:Hashicorp-Vault:InitializationInfo": {
+    "Host": "http://127.0.0.1:8200",
+    "Path": "v1/secret/data",
+    "Token": "xxxxxx"
+  }
+~~~
+
+After these values are entered, the Orchestrator needs to be restarted to pick up the configuration. Now the PAM Provider can be used on other Orchestrator Extensions.
+
+### Use the PAM Provider
+With the PAM Provider configured as an extenion on the UO, a `json` object can be passed instead of an actual value to resolve the field with a PAM Provider. Consult the [Keyfactor Integration Catalog](https://keyfactor.github.io/integrations-catalog/content/pam) for the specific format of the `json` object.
+
+To have the __Server Password__ field resolved by the `Hashicorp-Vault` provider, the corresponding `json` object from the `Hashicorp-Vault` extension needs to be copied and filed in with the correct information:
+
+~~~ json
+{"Secret":"my-kv-secret","Key":"myServerPassword"}
+~~~
+
+This text would be entered in as the value for the __Server Password__, instead of entering in the actual password. The Orchestrator will attempt to use the PAM Provider to retrieve the __Server Password__. If PAM should not be used, just directly enter in the value for the field.
+</p>
+</details> 
 
 
 
@@ -124,15 +133,12 @@ The version number of a the Remote File Orchestrator Extension can be verified b
 
 2. The Remote File Orchestrator Extension makes use of SFTP and/or SCP to transfer files to and from the orchestrated server.  SFTP/SCP cannot make use of sudo, so all folders containing certificate stores will need to allow SFTP/SCP file transfer.  If this is not possible, set the values in the config.json apprpriately to use an alternative upload/download folder that does allow SFTP/SCP file transfer (See "Config File Setup" later in this README regarding the config.json file).
 
+3. SSH Key Authentication: When creating a Keyfactor certificate store for the remote file orchestrator extension (see "Creating Certificate Stores" later in this README, you may supply either a user id and password for the certificate store credentials (directly or through one of Keyfactor Command's PAM integrations), or a user id and SSH private key.  Both PKCS#1 (BEGIN RSA PRIVATE KEY) and PKCS#8 (BEGIN PRIVATE KEY) formats are supported for the SSH private key.  If using the normal Keyfactor Command credentials dialog without PAM integration, just copy and paste the full SSH private key into the Password textbox.  
+
 **For Windows orchestrated servers:**
 1. Make sure that WinRM is set up on the orchestrated server and that the WinRM port is part of the certificate store path when setting up your certificate stores When creating a new certificate store in Keyfactor Command (See "Creating Certificate Stores" later in this README).
 
-2. When creating/configuring a certificate store in Keyfactor Command, you will see a "Change Credentials" link after entering in the destination client machine (IP or DNS).  This link **must** be clicked on to present the credentials dialog.  However, it is not required that you enter separate credentials.  Simply click SAVE in the resulting dialog without entering in credentials to use the credentials that the Keyfactor Orchestrator Service is running under.  Alternatively, you may enter separate credentials into this dialog and use those to connect to the orchestrated server.
-
 Please consult with your company's system administrator for more information on configuring SSH/SFTP/SCP or WinRM in your environment.
-
-**SSH Key-Based Authentiation**
-When creating a Keyfactor certificate store for the remote file orchestrator extension (see "Creating Certificate Stores" later in this README, you may supply either a user id and password for the certificate store credentials (directly or through one of Keyfactor Command's PAM integrations), or a user id and SSH private key.  Both PKCS#1 (BEGIN RSA PRIVATE KEY) and PKCS#8 (BEGIN PRIVATE KEY) formats are supported for the SSH private key.  If using the normal Keyfactor Command credentials dialog without PAM integration, just copy and paste the full SSH private key into the Password textbox.
 &nbsp;  
 &nbsp;  
 ## Remote File Orchestrator Extension Installation
@@ -355,10 +361,12 @@ CURL script to automate certificate store type creation can be found [here](Cert
 &nbsp;  
 ## Creating Certificate Stores and Scheduling Discovery Jobs
 
-Please refer to the Keyfactor Command Reference Guide for information on creating certificate stores and scheduling Discovery jobs in Keyfactor Command.  However, there are a few fields that are important to highlight here - Client Machine, Store Path (Creating Certificate Stores), and Directories to search (Discovery jobs) and Extensions (Discovery jobs).  For Linux orchestrated servers, "Client Machine" should be the DNS or IP address of the remote orchestrated server while "Store Path" is the full path and file name of the file based store, beginning with a forward slash (/).  For Windows orchestrated servers, "Client Machine" should be of the format {protocol}://{dns-or-ip}:{port} where {protocol} is either http or https, {dns-or-ip} is the DNS or IP address of the remote orchestrated server, and {port} is the port where WinRM is listening, by convention usually 5985 for http and 5986 for https.  "Store Path" is the full path and file name of the file based store, beginning with a drive letter (i.e. c:\).  For example valid values for Client Machine and Store Path for Linux and Windows managed servers may look something like:  
+Please refer to the Keyfactor Command Reference Guide for information on creating certificate stores and scheduling Discovery jobs in Keyfactor Command.  However, there are a few fields that are important to highlight here - Client Machine, Store Path (Creating Certificate Stores), Directories to search (Discovery jobs) and Extensions (Discovery jobs).  For Linux orchestrated servers, "Client Machine" should be the DNS or IP address of the remote orchestrated server while "Store Path" is the full path and file name of the file based store, beginning with a forward slash (/).  For Windows orchestrated servers, "Client Machine" should be of the format {protocol}://{dns-or-ip}:{port} where {protocol} is either http or https, {dns-or-ip} is the DNS or IP address of the remote orchestrated server, and {port} is the port where WinRM is listening, by convention usually 5985 for http and 5986 for https.  "Store Path" is the full path and file name of the file based store, beginning with a drive letter (i.e. c:\).  For example valid values for Client Machine and Store Path for Linux and Windows managed servers may look something like:  
 
 Linux: Client Machine - 127.0.0.1 or MyLinuxServerName; Store Path - /home/folder/path/storename.ext  
 Windows: Client Machine - http<span>s://My.Server.Domain:59</span>86; Store Path - c:\folder\path\storename.ext  
+
+Credentials **must** be entered: a user id and either a password or valid PAM key if the password is stored in a KF Command configured PAM integration.  Alternatively, this password can be an SSH private key if connecting to a Linux server using SSH private key authentication.
 
 For "Directories to search", you can chain paths with a comma delimiter as documented in the Keyfactor Command Reference Guide, but there is also a special value that can be used instead - fullscan.  Entering fullscan in this field will tell the RemoteFile discovery job to search all available drive letters and recursively search all of them for files matching the other search criteria.  
 
