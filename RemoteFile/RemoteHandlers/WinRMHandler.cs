@@ -202,7 +202,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
             string scriptBlock = $@"
                                     param($contents)
                                 
-                                    Set-Content {path + fileName} -{cmdOption} -Value $contents
+                                    Set-Content ""{path + fileName}"" -{cmdOption} -Value $contents
                                 ";
 
             object[] arguments = new object[] { certBytes };

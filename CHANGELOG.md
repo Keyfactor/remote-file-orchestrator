@@ -2,6 +2,7 @@ v2.2.0
 - Add ability to manage same windows server as installed without using WinRM
 - Check for "core" version of PowerShell for command tweaks
 - Bug fix: Preserve store permissions and file ownership when using separate upload file path
+- Bug fix: Fixed issue adding certificates to stores with embedded spaces in path (Windows managed stores only)
 
 v2.1.2
 - Bug fix: Discovery not working against Windows servers
