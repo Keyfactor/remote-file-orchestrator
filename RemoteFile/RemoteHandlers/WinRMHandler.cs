@@ -8,6 +8,7 @@
 using System;
 using System.Collections.Generic;
 using System.Management.Automation;
+using System.Management.Automation.Remoting;
 using System.Management.Automation.Runspaces;
 using System.Net;
 using System.Text;
@@ -31,10 +32,13 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
             _logger.MethodEntry(LogLevel.Debug);
 
             Server = server;
-            connectionInfo = new WSManConnectionInfo(new System.Uri($"{Server}/wsman"));
-            if (!string.IsNullOrEmpty(serverLogin))
+            if (Server.ToLower() != "localhost")
             {
-                connectionInfo.Credential = new PSCredential(serverLogin, new NetworkCredential(serverLogin, serverPassword).SecurePassword);
+                connectionInfo = new WSManConnectionInfo(new System.Uri($"{Server}/wsman"));
+                if (!string.IsNullOrEmpty(serverLogin))
+                {
+                    connectionInfo.Credential = new PSCredential(serverLogin, new NetworkCredential(serverLogin, serverPassword).SecurePassword);
+                }
             }
 
             _logger.MethodExit(LogLevel.Debug);
@@ -46,11 +50,18 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
 
             try
             {
-                if (ApplicationSettings.UseNegotiate)
+                if (Server.ToLower() == "localhost")
                 {
-                    connectionInfo.AuthenticationMechanism = AuthenticationMechanism.Negotiate;
+                    runspace = RunspaceFactory.CreateRunspace();
                 }
-                runspace = RunspaceFactory.CreateRunspace(connectionInfo);
+                else
+                {
+                    if (ApplicationSettings.UseNegotiate)
+                    {
+                        connectionInfo.AuthenticationMechanism = AuthenticationMechanism.Negotiate;
+                    }
+                    runspace = RunspaceFactory.CreateRunspace(connectionInfo);
+                }
                 runspace.Open();
             }
 
@@ -83,12 +94,6 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
                 using (PowerShell ps = PowerShell.Create())
                 {
                     ps.Runspace = runspace;
-
-                    if (commandText.ToLower().IndexOf("keytool ") > -1)
-                    {
-                        commandText = ($"& '{commandText}").Replace("keytool", "keytool'");
-                        commandText = "echo '' | " + commandText;
-                    }
                     ps.AddScript(commandText);
 
                     string displayCommand = commandText;
@@ -100,7 +105,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
 
                     if (parameters != null)
                     {
-                        foreach(object parameter in parameters)
+                        foreach (object parameter in parameters)
                             ps.AddArgument(parameter);
                     }
 
@@ -120,7 +125,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
                                 errors = null;
                                 break;
                             }
-                                    
+
                             errors += (error + "   ");
                         }
 
@@ -192,10 +197,12 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
             _logger.MethodEntry(LogLevel.Debug);
             _logger.LogDebug($"UploadCertificateFile: {path} {fileName}");
 
+            string cmdOption = RunCommand($@"$PSVersionTable.PSEdition", null, false, null).ToLower().Contains("core") ? "AsByteStream" : "Encoding Byte";
+
             string scriptBlock = $@"
                                     param($contents)
                                 
-                                    Set-Content {path + fileName} -Encoding Byte -Value $contents
+                                    Set-Content ""{path + fileName}"" -{cmdOption} -Value $contents
                                 ";
 
             object[] arguments = new object[] { certBytes };
@@ -211,7 +218,9 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
             _logger.LogDebug($"DownloadCertificateFile: {path}");
             _logger.MethodExit(LogLevel.Debug);
 
-            return RunCommandBinary($@"Get-Content -Path ""{path}"" -Encoding Byte -Raw");
+            string cmdOption = RunCommand($@"$PSVersionTable.PSEdition", null, false, null).ToLower().Contains("core") ? "AsByteStream" : "Encoding Byte";
+
+            return RunCommandBinary($@"Get-Content -Path ""{path}"" -{cmdOption} -Raw");
         }
 
         public override void CreateEmptyStoreFile(string path, string linuxFilePermissions, string linuxFileOwner)
