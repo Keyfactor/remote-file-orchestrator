@@ -133,7 +133,7 @@
               "DefaultValue": ""
             },
             {
-              "Name": "IsRSAPrivateKey"
+              "Name": "IsRSAPrivateKey",
               "DisplayName": "Is RSA Private Key",
               "Required": false,
               "DependsOn": "",
@@ -232,7 +232,7 @@
             }
           ],
           "EntryParameters": []    
-        }
+        },
         "RFKDB": {
           "Name": "RFKDB",
           "ShortName": "RFKDB",
