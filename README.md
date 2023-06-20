@@ -128,7 +128,7 @@ The version number of a the Remote File Orchestrator Extension can be verified b
 1. The Remote File Orchestrator Extension makes use of a few common Linux commands when managing stores on Linux servers. If the credentials you will be connecting with need elevated access to run these commands, you must set up the user id as a sudoer with no password necessary and set the config.json "UseSudo" value to "Y" (See "Config File Setup" later in this README for more information on setting up the config.json file). The full list of these commands below:
     * echo
     * find
-    * cp
+    * tee
     * rm
     * chown
     * install
