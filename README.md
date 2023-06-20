@@ -56,11 +56,6 @@ It is not necessary to use a PAM Provider for all of the secrets available above
 
 If a PAM Provider will be used for one of the fields above, start by referencing the [Keyfactor Integration Catalog](https://keyfactor.github.io/integrations-catalog/content/pam). The GitHub repo for the PAM Provider to be used contains important information such as the format of the `json` needed. What follows is an example but does not reflect the `json` values for all PAM Providers as they have different "instance" and "initialization" parameter names and values.
 
-<details><summary>General PAM Provider Configuration</summary>
-<p>
-
-
-
 ### Example PAM Provider Setup
 
 To use a PAM Provider to resolve a field, in this example the __Server Password__ will be resolved by the `Hashicorp-Vault` provider, first install the PAM Provider extension from the [Keyfactor Integration Catalog](https://keyfactor.github.io/integrations-catalog/content/pam) on the Universal Orchestrator.
@@ -91,12 +86,10 @@ This text would be entered in as the value for the __Server Password__, instead 
 </details> 
 
 
-
-
 ---
 
 
-﻿<!-- add integration specific information below -->
+<!-- add integration specific information below -->
 ## Overview
 The Remote File Orchestrator Extension is a multi-purpose integration that can remotely manage a variety of file-based certificate stores and can easily be extended to manage others.  The certificate store types that can be managed in the current version are:
 - Java Keystores of type JKS
