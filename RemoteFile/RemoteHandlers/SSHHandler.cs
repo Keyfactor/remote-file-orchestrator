@@ -211,7 +211,8 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
 
             if (!string.IsNullOrEmpty(ApplicationSettings.SeparateUploadFilePath))
             {
-                RunCommand($"cp -a {uploadPath} {path}", null, ApplicationSettings.UseSudo, null);
+                //RunCommand($"cat {uploadPath} > {path}/{fileName}", null, ApplicationSettings.UseSudo, null);
+                RunCommand($"tee {path}/{fileName} < {uploadPath} > /dev/null", null, ApplicationSettings.UseSudo, null);
                 RunCommand($"rm {uploadPath}", null, ApplicationSettings.UseSudo, null);
             }
 
