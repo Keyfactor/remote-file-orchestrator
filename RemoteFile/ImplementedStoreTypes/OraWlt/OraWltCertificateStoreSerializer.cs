@@ -12,12 +12,14 @@ using System.IO;
 using Keyfactor.Logging;
 using Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers;
 using Keyfactor.Extensions.Orchestrator.RemoteFile.Models;
+using Keyfactor.Extensions.Orchestrator.RemoteFile.JKS;
 
 using Microsoft.Extensions.Logging;
 
 using Org.BouncyCastle.Pkcs;
+using Org.BouncyCastle.Security;
 
-namespace Keyfactor.Extensions.Orchestrator.RemoteFile.KDB
+namespace Keyfactor.Extensions.Orchestrator.RemoteFile.OraWlt
 {
     class OraWltCertificateStoreSerializer : ICertificateStoreSerializer
     {
@@ -33,23 +35,25 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.KDB
             logger.MethodEntry(LogLevel.Debug);
 
             string bashCommand = storePath.Substring(0, 1) == "/" ? "bash " : string.Empty;
-
+            
             Pkcs12StoreBuilder storeBuilder = new Pkcs12StoreBuilder();
             Pkcs12Store store = storeBuilder.Build();
+            JksStore jksStore = new JksStore();
 
-            string tempStoreFile = Guid.NewGuid().ToString().Replace("-", string.Empty) + ".kdb";
-            string tempCertFile = Guid.NewGuid().ToString().Replace("-", string.Empty) + ".p12";
+            string tempStoreFile = Guid.NewGuid().ToString().Replace("-", string.Empty) + ".p12";
+            string tempStoreFileJKS = Guid.NewGuid().ToString().Replace("-", string.Empty) + ".jks";
 
             remoteHandler.UploadCertificateFile(storePath, tempStoreFile, storeContentBytes);
             
-            string command = $"{bashCommand}gskcapicmd -keydb -convert -db \"{storePath}{tempStoreFile}\" -pw \"{storePassword}\" -type kdb -new_db \"{storePath}{tempCertFile}\" -new_pw \"{storePassword}\" -new_format p12";
-
+            string command = $"orapki wallet pkcs12_to_jks -wallet \"{storePath}{tempStoreFile}\" -pwd \"{storePassword}\" -jksKeyStoreLoc \"{storePath}{tempStoreFileJKS}\" -jksKeyStorepwd \"{storePassword}\"";
+            
             try
             {
                 remoteHandler.RunCommand(command, null, ApplicationSettings.UseSudo, null);
 
-                byte[] storeBytes = remoteHandler.DownloadCertificateFile($"{storePath}{tempCertFile}");
-                store.Load(new MemoryStream(storeBytes), string.IsNullOrEmpty(storePassword) ? new char[0] : storePassword.ToCharArray());
+                byte[] storeBytes = remoteHandler.DownloadCertificateFile($"{storePath}{tempStoreFileJKS}");
+                jksStore.Load(new MemoryStream(storeBytes), string.IsNullOrEmpty(storePassword) ? new char[0] : storePassword.ToCharArray());
+                JKSCertificateStoreSerializer.ConvertToPkcs12Store(jksStore, store, storePassword);
             }
             catch (Exception ex)
             {
@@ -58,7 +62,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.KDB
             finally
             {
                 try { remoteHandler.RemoveCertificateFile(storePath, tempStoreFile); } catch (Exception) { };
-                try { remoteHandler.RemoveCertificateFile(storePath, tempCertFile); } catch (Exception) { };
+                try { remoteHandler.RemoveCertificateFile(storePath, tempStoreFileJKS); } catch (Exception) { };
             }
 
             logger.MethodExit(LogLevel.Debug);

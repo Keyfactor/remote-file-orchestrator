@@ -44,27 +44,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.JKS
                 jksStore.Load(ms, string.IsNullOrEmpty(storePassword) ? new char[0] : storePassword.ToCharArray());
             }
 
-            foreach(string alias in jksStore.Aliases)
-            {
-                if (jksStore.IsKeyEntry(alias))
-                {
-                    AsymmetricKeyParameter keyParam = jksStore.GetKey(alias, string.IsNullOrEmpty(storePassword) ? new char[0] : storePassword.ToCharArray());
-                    AsymmetricKeyEntry keyEntry = new AsymmetricKeyEntry(keyParam);
-
-                    X509Certificate[] certificateChain = jksStore.GetCertificateChain(alias);
-                    List<X509CertificateEntry> certificateChainEntries = new List<X509CertificateEntry>();
-                    foreach (X509Certificate certificate in certificateChain)
-                    {
-                        certificateChainEntries.Add(new X509CertificateEntry(certificate));
-                    }
-
-                    pkcs12Store.SetKeyEntry(alias, keyEntry, certificateChainEntries.ToArray());
-                }
-                else
-                {
-                    pkcs12Store.SetCertificateEntry(alias, new X509CertificateEntry(jksStore.GetCertificate(alias)));
-                }
-            }
+            ConvertToPkcs12Store(jksStore, pkcs12Store, storePassword);
 
             // Second Pkcs12Store necessary because of an obscure BC bug where creating a Pkcs12Store without .Load (code above using "Set" methods only) does not set all internal hashtables necessary to avoid an error later
             //  when processing store.
@@ -120,6 +100,32 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.JKS
         public string GetPrivateKeyPath()
         {
             return null;
+        }
+
+        internal static void ConvertToPkcs12Store(JksStore jksStore, Pkcs12Store pkcs12Store, string storePassword)
+        {
+            foreach (string alias in jksStore.Aliases)
+            {
+                if (jksStore.IsKeyEntry(alias))
+                {
+                    AsymmetricKeyParameter keyParam = jksStore.GetKey(alias, string.IsNullOrEmpty(storePassword) ? new char[0] : storePassword.ToCharArray());
+                    AsymmetricKeyEntry keyEntry = new AsymmetricKeyEntry(keyParam);
+
+                    X509Certificate[] certificateChain = jksStore.GetCertificateChain(alias);
+                    List<X509CertificateEntry> certificateChainEntries = new List<X509CertificateEntry>();
+                    foreach (X509Certificate certificate in certificateChain)
+                    {
+                        certificateChainEntries.Add(new X509CertificateEntry(certificate));
+                    }
+
+                    pkcs12Store.SetKeyEntry(alias, keyEntry, certificateChainEntries.ToArray());
+                }
+                else
+                {
+                    pkcs12Store.SetCertificateEntry(alias, new X509CertificateEntry(jksStore.GetCertificate(alias)));
+                }
+            }
+
         }
     }
 }
