@@ -18,6 +18,7 @@ using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.X509;
 
 using Microsoft.Extensions.Logging;
+using Keyfactor.Orchestrators.Extensions;
 
 namespace Keyfactor.Extensions.Orchestrator.RemoteFile.JKS
 {
@@ -64,33 +65,14 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.JKS
 
             JksStore jksStore = new JksStore();
 
-            foreach(string alias in certificateStore.Aliases)
-            {
-                if (certificateStore.IsKeyEntry(alias))
-                {
-                    AsymmetricKeyEntry keyEntry = certificateStore.GetKey(alias);
-                    X509CertificateEntry[] certificateChain = certificateStore.GetCertificateChain(alias);
-
-                    List<X509Certificate> certificates = new List<X509Certificate>();
-                    foreach(X509CertificateEntry certificateEntry in certificateChain)
-                    {
-                        certificates.Add(certificateEntry.Certificate);
-                    }
-
-                    jksStore.SetKeyEntry(alias, keyEntry.Key, string.IsNullOrEmpty(storePassword) ? new char[0] : storePassword.ToCharArray(), certificates.ToArray());
-                }
-                else
-                {
-                    jksStore.SetCertificateEntry(alias, certificateStore.GetCertificate(alias).Certificate);
-                }
-            }
+            ConvertToJKSStore(certificateStore, jksStore, storePassword);
 
             using (MemoryStream outStream = new MemoryStream())
             {
                 jksStore.Save(outStream, string.IsNullOrEmpty(storePassword) ? new char[0] : storePassword.ToCharArray());
 
                 List<SerializedStoreInfo> storeInfo = new List<SerializedStoreInfo>();
-                storeInfo.Add(new SerializedStoreInfo() { FilePath = storePath+storeFileName, Contents = outStream.ToArray() });
+                storeInfo.Add(new SerializedStoreInfo() { FilePath = storePath + storeFileName, Contents = outStream.ToArray() });
 
                 logger.MethodExit(LogLevel.Debug);
                 return storeInfo;
@@ -125,7 +107,30 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.JKS
                     pkcs12Store.SetCertificateEntry(alias, new X509CertificateEntry(jksStore.GetCertificate(alias)));
                 }
             }
+        }
 
+        internal static void ConvertToJKSStore(Pkcs12Store pkcs12Store, JksStore jksStore, string storePassword)
+        {
+            foreach (string alias in pkcs12Store.Aliases)
+            {
+                if (pkcs12Store.IsKeyEntry(alias))
+                {
+                    AsymmetricKeyEntry keyEntry = pkcs12Store.GetKey(alias);
+                    X509CertificateEntry[] certificateChain = pkcs12Store.GetCertificateChain(alias);
+
+                    List<X509Certificate> certificates = new List<X509Certificate>();
+                    foreach (X509CertificateEntry certificateEntry in certificateChain)
+                    {
+                        certificates.Add(certificateEntry.Certificate);
+                    }
+
+                    jksStore.SetKeyEntry(alias, keyEntry.Key, string.IsNullOrEmpty(storePassword) ? new char[0] : storePassword.ToCharArray(), certificates.ToArray());
+                }
+                else
+                {
+                    jksStore.SetCertificateEntry(alias, pkcs12Store.GetCertificate(alias).Certificate);
+                }
+            }
         }
     }
 }

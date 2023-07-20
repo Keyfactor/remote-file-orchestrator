@@ -76,11 +76,15 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.OraWlt
             List<SerializedStoreInfo> storeInfo = new List<SerializedStoreInfo>();
             string bashCommand = storePath.Substring(0, 1) == "/" ? "bash " : string.Empty;
 
-            string tempStoreFile = Guid.NewGuid().ToString().Replace("-", string.Empty) + ".kdb";
-            string tempCertFile = Guid.NewGuid().ToString().Replace("-", string.Empty) + ".p12";
+            string tempStoreFile = Guid.NewGuid().ToString().Replace("-", string.Empty) + ".p12";
+            string tempStoreFileJKS = Guid.NewGuid().ToString().Replace("-", string.Empty) + ".jks";
 
-            string command = $"{bashCommand}gskcapicmd -keydb -convert -db \"{storePath}{tempCertFile}\" -pw \"{storePassword}\" -type p12 -new_db \"{storePath}{tempStoreFile}\" -new_pw \"{storePassword}\" -new_format kdb";
-            
+            JksStore jksStore = new JksStore();
+
+            JKSCertificateStoreSerializer.ConvertToJKSStore(certificateStore, jksStore, storePassword);
+
+            string command = $"orapki wallet jks_to_pkcs12 -wallet \"{storePath}{tempStoreFile}\" -pwd \"{storePassword}\" -keystore \"{storePath}{tempStoreFileJKS}\" -jkspwd \"{storePassword}\"";
+
             try
             {
                 using (MemoryStream ms = new MemoryStream())
