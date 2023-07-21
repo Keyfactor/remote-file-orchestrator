@@ -18,6 +18,7 @@ using Microsoft.Extensions.Logging;
 
 using Org.BouncyCastle.Pkcs;
 using Org.BouncyCastle.Security;
+using Newtonsoft.Json;
 
 namespace Keyfactor.Extensions.Orchestrator.RemoteFile.OraWlt
 {
@@ -25,9 +26,12 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.OraWlt
     {
         private ILogger logger;
 
+        public string WorkFolder { get; set; }
+
         public OraWltCertificateStoreSerializer(string storeProperties) 
         {
             logger = LogHandler.GetClassLogger(this.GetType());
+            LoadCustomProperties(storeProperties);
         }
 
         public Pkcs12Store DeserializeRemoteCertificateStore(byte[] storeContentBytes, string storePath, string storePassword, IRemoteHandler remoteHandler)
@@ -38,7 +42,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.OraWlt
             string tempStoreFileJKS = Guid.NewGuid().ToString().Replace("-", string.Empty) + ".jks";
 
             string bashCommand = storePath.Substring(0, 1) == "/" ? "bash " : string.Empty;
-            string orapkiCommand = $"orapki wallet pkcs12_to_jks -wallet \"{storePath}{tempStoreFile}\" -pwd \"{storePassword}\" -jksKeyStoreLoc \"{storePath}{tempStoreFileJKS}\" -jksKeyStorepwd \"{storePassword}\"";
+            string orapkiCommand = $"orapki wallet pkcs12_to_jks -wallet \"{WorkFolder}{tempStoreFile}\" -pwd \"{storePassword}\" -jksKeyStoreLoc \"{WorkFolder}{tempStoreFileJKS}\" -jksKeyStorepwd \"{storePassword}\"";
 
             JksStore jksStore = new JksStore();
             Pkcs12StoreBuilder storeBuilder = new Pkcs12StoreBuilder();
@@ -46,11 +50,11 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.OraWlt
 
             try
             {
-                remoteHandler.UploadCertificateFile(storePath, tempStoreFile, storeContentBytes);
+                remoteHandler.UploadCertificateFile(WorkFolder, tempStoreFile, storeContentBytes);
 
                 remoteHandler.RunCommand(orapkiCommand, null, ApplicationSettings.UseSudo, null);
 
-                byte[] storeBytes = remoteHandler.DownloadCertificateFile($"{storePath}{tempStoreFileJKS}");
+                byte[] storeBytes = remoteHandler.DownloadCertificateFile($"{WorkFolder}{tempStoreFileJKS}");
                 jksStore.Load(new MemoryStream(storeBytes), string.IsNullOrEmpty(storePassword) ? new char[0] : storePassword.ToCharArray());
 
                 JKSCertificateStoreSerializer serializer = new JKSCertificateStoreSerializer(String.Empty);
@@ -62,8 +66,8 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.OraWlt
             }
             finally
             {
-                try { remoteHandler.RemoveCertificateFile(storePath, tempStoreFile); } catch (Exception) { };
-                try { remoteHandler.RemoveCertificateFile(storePath, tempStoreFileJKS); } catch (Exception) { };
+                try { remoteHandler.RemoveCertificateFile(WorkFolder, tempStoreFile); } catch (Exception) { };
+                try { remoteHandler.RemoveCertificateFile(WorkFolder, tempStoreFileJKS); } catch (Exception) { };
             }
 
             logger.MethodExit(LogLevel.Debug);
@@ -112,5 +116,22 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.OraWlt
         {
             return null;
         }
+        private void LoadCustomProperties(string storeProperties)
+        {
+            logger.MethodEntry(LogLevel.Debug);
+
+            dynamic properties = JsonConvert.DeserializeObject(storeProperties);
+            WorkFolder = properties.WorkFolder == null || string.IsNullOrEmpty(properties.WorkFolder.Value) ? String.Empty : properties.WorkFolder.Value;
+
+            string pathDelimiter = @"\";
+            if (WorkFolder.Substring(0, 1) == @"/")
+                pathDelimiter = @"/";
+
+            if (WorkFolder.Substring(WorkFolder.Length - 1, 1) != pathDelimiter)
+                WorkFolder += pathDelimiter;
+
+            logger.MethodExit(LogLevel.Debug);
+        }
+
     }
 }
