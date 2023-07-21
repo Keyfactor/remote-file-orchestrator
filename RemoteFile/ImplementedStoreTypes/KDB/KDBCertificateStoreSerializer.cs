@@ -19,11 +19,11 @@ using Org.BouncyCastle.Pkcs;
 
 namespace Keyfactor.Extensions.Orchestrator.RemoteFile.KDB
 {
-    class OraWltCertificateStoreSerializer : ICertificateStoreSerializer
+    class KDBCertificateStoreSerializer : ICertificateStoreSerializer
     {
         private ILogger logger;
 
-        public OraWltCertificateStoreSerializer(string storeProperties) 
+        public KDBCertificateStoreSerializer(string storeProperties) 
         {
             logger = LogHandler.GetClassLogger(this.GetType());
         }
