@@ -82,7 +82,8 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.OraWlt
             string tempStoreFile = Guid.NewGuid().ToString().Replace("-", string.Empty) + ".p12";
             string tempStoreFileJKS = Guid.NewGuid().ToString().Replace("-", string.Empty) + ".jks";
 
-            string orapkiCommand = $"orapki wallet jks_to_pkcs12 -wallet \"{WorkFolder}{tempStoreFile}\" -pwd \"{storePassword}\" -keystore \"{WorkFolder}{tempStoreFileJKS}\" -jkspwd \"{storePassword}\"";
+            string orapkiCommand1 = $"orapki wallet create -wallet \"{WorkFolder}{tempStoreFile}\" -pwd \"{storePassword}\" -jkspwd \"{storePassword}\"";
+            string orapkiCommand2 = $"orapki wallet jks_to_pkcs12 -wallet \"{WorkFolder}{tempStoreFile}\" -pwd \"{storePassword}\" -keystore \"{WorkFolder}{tempStoreFileJKS}\" -jkspwd \"{storePassword}\"";
 
             JksStore jksStore = new JksStore();
 
@@ -92,7 +93,8 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.OraWlt
             try
             {
                 remoteHandler.UploadCertificateFile($"{WorkFolder}", $"{tempStoreFileJKS}", jksStoreInfo[0].Contents);
-                remoteHandler.RunCommand(orapkiCommand, null, ApplicationSettings.UseSudo, null);
+                remoteHandler.RunCommand(orapkiCommand1, null, ApplicationSettings.UseSudo, null);
+                remoteHandler.RunCommand(orapkiCommand2, null, ApplicationSettings.UseSudo, null);
 
                 byte[] storeContents = remoteHandler.DownloadCertificateFile($"{storePath}{tempStoreFile}");
 
@@ -105,8 +107,8 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.OraWlt
             }
             finally
             {
-                try { remoteHandler.RemoveCertificateFile(storePath, tempStoreFile); } catch (Exception) { };
-                try { remoteHandler.RemoveCertificateFile(storePath, tempStoreFileJKS); } catch (Exception) { };
+                try { remoteHandler.RemoveCertificateFile(WorkFolder, tempStoreFile); } catch (Exception) { };
+                try { remoteHandler.RemoveCertificateFile(WorkFolder, tempStoreFileJKS); } catch (Exception) { };
             }
         }
 
