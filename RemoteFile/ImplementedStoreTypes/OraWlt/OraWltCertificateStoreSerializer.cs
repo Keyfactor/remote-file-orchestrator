@@ -41,7 +41,6 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.OraWlt
             string tempStoreFile = Guid.NewGuid().ToString().Replace("-", string.Empty) + ".p12";
             string tempStoreFileJKS = Guid.NewGuid().ToString().Replace("-", string.Empty) + ".jks";
 
-            string bashCommand = storePath.Substring(0, 1) == "/" ? "bash " : string.Empty;
             string orapkiCommand = $"orapki wallet pkcs12_to_jks -wallet \"{WorkFolder}{tempStoreFile}\" -pwd \"{storePassword}\" -jksKeyStoreLoc \"{WorkFolder}{tempStoreFileJKS}\" -jksKeyStorepwd \"{storePassword}\"";
 
             JksStore jksStore = new JksStore();
@@ -58,7 +57,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.OraWlt
                 jksStore.Load(new MemoryStream(storeBytes), string.IsNullOrEmpty(storePassword) ? new char[0] : storePassword.ToCharArray());
 
                 JKSCertificateStoreSerializer serializer = new JKSCertificateStoreSerializer(String.Empty);
-                store = serializer.DeserializeRemoteCertificateStore(storeBytes, $"{storePath}{tempStoreFileJKS}", storePassword, remoteHandler);
+                store = serializer.DeserializeRemoteCertificateStore(storeBytes, $"{WorkFolder}{tempStoreFileJKS}", storePassword, remoteHandler);
             }
             catch (Exception ex)
             {
@@ -79,21 +78,20 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.OraWlt
             logger.MethodEntry(LogLevel.Debug);
 
             List<SerializedStoreInfo> storeInfo = new List<SerializedStoreInfo>();
-            string bashCommand = storePath.Substring(0, 1) == "/" ? "bash " : string.Empty;
 
             string tempStoreFile = Guid.NewGuid().ToString().Replace("-", string.Empty) + ".p12";
             string tempStoreFileJKS = Guid.NewGuid().ToString().Replace("-", string.Empty) + ".jks";
 
-            string orapkiCommand = $"orapki wallet jks_to_pkcs12 -wallet \"{storePath}{tempStoreFile}\" -pwd \"{storePassword}\" -keystore \"{storePath}{tempStoreFileJKS}\" -jkspwd \"{storePassword}\"";
+            string orapkiCommand = $"orapki wallet jks_to_pkcs12 -wallet \"{WorkFolder}{tempStoreFile}\" -pwd \"{storePassword}\" -keystore \"{WorkFolder}{tempStoreFileJKS}\" -jkspwd \"{storePassword}\"";
 
             JksStore jksStore = new JksStore();
 
             JKSCertificateStoreSerializer serializer = new JKSCertificateStoreSerializer(string.Empty);
-            List<SerializedStoreInfo> jksStoreInfo = serializer.SerializeRemoteCertificateStore(certificateStore, storePath, storeFileName, storePassword, remoteHandler);
+            List<SerializedStoreInfo> jksStoreInfo = serializer.SerializeRemoteCertificateStore(certificateStore, WorkFolder, storeFileName, storePassword, remoteHandler);
 
             try
             {
-                remoteHandler.UploadCertificateFile($"{storePath}", $"{tempStoreFileJKS}", jksStoreInfo[0].Contents);
+                remoteHandler.UploadCertificateFile($"{WorkFolder}", $"{tempStoreFileJKS}", jksStoreInfo[0].Contents);
                 remoteHandler.RunCommand(orapkiCommand, null, ApplicationSettings.UseSudo, null);
 
                 byte[] storeContents = remoteHandler.DownloadCertificateFile($"{storePath}{tempStoreFile}");
