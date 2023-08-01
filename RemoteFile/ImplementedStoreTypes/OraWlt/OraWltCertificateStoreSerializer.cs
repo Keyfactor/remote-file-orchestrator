@@ -66,6 +66,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.OraWlt
             finally
             {
                 try { remoteHandler.RemoveCertificateFile(WorkFolder, tempStoreFile); } catch (Exception) { };
+                try { remoteHandler.RemoveCertificateFile(WorkFolder, tempStoreFile+".lck"); } catch (Exception) { };
                 try { remoteHandler.RemoveCertificateFile(WorkFolder, tempStoreFileJKS); } catch (Exception) { };
             }
 
@@ -79,11 +80,10 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.OraWlt
 
             List<SerializedStoreInfo> storeInfo = new List<SerializedStoreInfo>();
 
-            string tempStoreFile = Guid.NewGuid().ToString().Replace("-", string.Empty) + ".p12";
             string tempStoreFileJKS = Guid.NewGuid().ToString().Replace("-", string.Empty) + ".jks";
 
-            string orapkiCommand1 = $"orapki wallet create -wallet \"{WorkFolder}{tempStoreFile}\" -pwd \"{storePassword}\" -jkspwd \"{storePassword}\"";
-            string orapkiCommand2 = $"orapki wallet jks_to_pkcs12 -wallet \"{WorkFolder}{tempStoreFile}\" -pwd \"{storePassword}\" -keystore \"{WorkFolder}{tempStoreFileJKS}\" -jkspwd \"{storePassword}\"";
+            string orapkiCommand1 = $"orapki wallet create -wallet \"{WorkFolder}\" -pwd \"{storePassword}\"";
+            string orapkiCommand2 = $"orapki wallet jks_to_pkcs12 -wallet \"{WorkFolder}\" -pwd \"{storePassword}\" -keystore \"{WorkFolder}{tempStoreFileJKS}\" -jkspwd \"{storePassword}\"";
 
             JksStore jksStore = new JksStore();
 
@@ -96,7 +96,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.OraWlt
                 remoteHandler.RunCommand(orapkiCommand1, null, ApplicationSettings.UseSudo, null);
                 remoteHandler.RunCommand(orapkiCommand2, null, ApplicationSettings.UseSudo, null);
 
-                byte[] storeContents = remoteHandler.DownloadCertificateFile($"{storePath}{tempStoreFile}");
+                byte[] storeContents = remoteHandler.DownloadCertificateFile($"{WorkFolder}ewallet.p12");
 
                 storeInfo.Add(new SerializedStoreInfo() { Contents = storeContents, FilePath = storePath+storeFileName });
                 return storeInfo;
@@ -107,7 +107,8 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.OraWlt
             }
             finally
             {
-                try { remoteHandler.RemoveCertificateFile(WorkFolder, tempStoreFile); } catch (Exception) { };
+                try { remoteHandler.RemoveCertificateFile(WorkFolder, "ewallet.p12"); } catch (Exception) { };
+                try { remoteHandler.RemoveCertificateFile(WorkFolder, "ewallet.p12.lck"); } catch (Exception) { };
                 try { remoteHandler.RemoveCertificateFile(WorkFolder, tempStoreFileJKS); } catch (Exception) { };
             }
         }

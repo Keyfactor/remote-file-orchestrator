@@ -63,11 +63,11 @@
       },
       "CertStores.RFORA.Inventory": {
         "assemblypath": "RemoteFile.dll",
-        "TypeFullName": "Keyfactor.Extensions.Orchestrator.RemoteFile.ORA.Inventory"
+        "TypeFullName": "Keyfactor.Extensions.Orchestrator.RemoteFile.OraWlt.Inventory"
       },
       "CertStores.RFORA.Management": {
         "assemblypath": "RemoteFile.dll",
-        "TypeFullName": "Keyfactor.Extensions.Orchestrator.RemoteFile.ORA.Management"
+        "TypeFullName": "Keyfactor.Extensions.Orchestrator.RemoteFile.OraWlt.Management"
       },
       "CertStores.RFORA.Discovery": {
         "assemblypath": "RemoteFile.dll",
