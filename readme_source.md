@@ -136,9 +136,6 @@ Entry Parameters Tab:
 - no additional entry parameters  
 
 &nbsp;  
-CURL script to automate certificate store type creation can be found [here](Certificate%20Store%20Type%20CURL%20Scripts/PKCS12.curl)  
-
-&nbsp;  
 &nbsp;  
 **************************************
 **RFJKS Certificate Store Type**
@@ -164,9 +161,6 @@ Use cases supported:
 
 Entry Parameters Tab:
 - no additional entry parameters  
-
-&nbsp;  
-CURL script to automate certificate store type creation can be found [here](Certificate%20Store%20Type%20CURL%20Scripts/JKS.curl)
 
 &nbsp;  
 &nbsp;  
@@ -201,9 +195,6 @@ Entry Parameters Tab:
 - no additional entry parameters
 
 &nbsp;  
-CURL script to automate certificate store type creation can be found [here](Certificate%20Store%20Type%20CURL%20Scripts/PEM.curl)
-
-&nbsp;  
 &nbsp;  
 **************************************
 **RFDER Certificate Store Type**
@@ -228,9 +219,6 @@ Use cases supported:
 
 Entry Parameters Tab:
 - no additional entry parameters
-
-&nbsp;  
-CURL script to automate certificate store type creation can be found [here](Certificate%20Store%20Type%20CURL%20Scripts/DER.curl)
 
 &nbsp;  
 &nbsp;  
@@ -260,15 +248,12 @@ Entry Parameters Tab:
 - no additional entry parameters  
 
 &nbsp;  
-CURL script to automate certificate store type creation can be found [here](Certificate%20Store%20Type%20CURL%20Scripts/KDB.curl)  
-
-&nbsp;  
 &nbsp;  
 **************************************
 **RFORA Certificate Store Type**
 **************************************
 
-The RFORA store type can be used to manage Pkcs2 Oracle Wallets.  Please note that while this should work for Pkcs12 Oracle Wallets installed on both Windows and Linux servers, this has only been tested on wallets installed on Windows.
+The RFORA store type can be used to manage Pkcs2 Oracle Wallets.  Please note that while this should work for Pkcs12 Oracle Wallets installed on both Windows and Linux servers, this has only been tested on wallets installed on Windows.  Please note, when entering the Store Path for an Oracle Wallet in Keyfactor Command, make sure to INCLUDE the eWallet.p12 file name that by convention is the name of the Pkcs12 wallet file that gets created.
 
 Use cases supported:
 1. One-to-many trust entries - A single certificate without a private key in a certificate store.  Each certificate identified with a custom alias or certificate thumbprint.
@@ -288,9 +273,6 @@ Use cases supported:
 
 Entry Parameters Tab:
 - no additional entry parameters  
-
-&nbsp;  
-CURL script to automate certificate store type creation can be found [here](Certificate%20Store%20Type%20CURL%20Scripts/JKS.curl)
 
 &nbsp;  
 &nbsp;  
