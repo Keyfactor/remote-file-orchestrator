@@ -104,6 +104,7 @@ The Remote File Orchestrator Extension is a multi-purpose integration that can r
 - PEM formatted files
 - DER formatted files
 - IBM Key Database files (KDB)
+- Oracle Wallet Pkcs12 files
 
 While the Keyfactor Universal Orchestrator (UO) can be installed on either Windows or Linux; likewise, the Remote File Orchestrator Extension can be used to manage certificate stores residing on both Windows and Linux servers.  The supported configurations of Universal Orchestrator hosts and managed orchestrated servers are shown below:
 
@@ -173,7 +174,7 @@ The Remote File Orchestrator Extension uses a JSON configuration file.  It is lo
 **SeparateUploadFilePath**(Applicable for Linux managed servers only) – Set this to the path you wish to use as the location on the orchestrated server to upload/download and later remove temporary work files when processing jobs.  If set to "" or not provided, the location of the certificate store itself will be used.  File transfer itself is performed using SCP or SFTP protocols (see FileT ransferProtocol setting). **Default Value if missing - blank**.  
 **FileTransferProtocol** (Applicable for Linux orchestrated servers only) - SCP/SFTP/Both - Determines the protocol to use when uploading/downloading files while processing a job.  Valid values are: SCP - uses SCP, SFTP - uses SFTP, or Both - will attempt to use SCP first, and if that does not work, will attempt the file transfer via SFTP.  **Default Value if missing - SCP**.  
 **DefaultLinuxPermissionsOnStoreCreation** (Applicable for Linux managed servers only) - Value must be 3 digits all between 0-7.  The Linux file permissions that will be set on a new certificate store created via a Management Create job or a Management Add job where CreateStoreOnAddIsMissing is set to "Y".  This value will be used for all certificate stores managed by this orchestrator instance unless overridden by the optional "Linux File Permissions on Store Creation" custom parameter setting on a specific certificate store (See the "Certificatee Store Types Supported" section later in this README).  **Default Value if missing - 600**.  
-**DefaultOwnerOnStoreCreation** (Applicable for Linux managed servers only) - When a Management job is run to remotely create the physical certificate store on a remote server, by default the file owner will be set to the user name associated with the Keyfactor certificate store.  Setting DefaultOwnerOnStoreCreation to an alternative valid Linux user name will set that as the owner instead.  Please make sure that the user associated with the certificate store will have valid permissions to chown the certificate store file to this alernative owner.  The optional "Linux File Owner on Store Creation" custom parameter setting for a specific certificate store (See the "Certificatee Store Types Supported" section later in this README) can override this value for a specific store. **Default Value if missing - blank**.  
+**DefaultOwnerOnStoreCreation** (Applicable for Linux managed servers only) - When a Management job is run to remotely create the physical certificate store on a remote server, by default the file owner and group will be set to the user name associated with the Keyfactor certificate store.  Setting DefaultOwnerOnStoreCreation to an alternative valid Linux user name will set that as the owner/group instead.  If the group and owner need to be different values, use a ":" as a delimitter between the owner and group values, such as ownerId:groupId.  Please make sure that the user associated with the certificate store will have valid permissions to chown the certificate store file to this alernative owner.  The optional "Linux File Owner on Store Creation" custom parameter setting for a specific certificate store (See the "Certificatee Store Types Supported" section later in this README) can override this value for a specific store. **Default Value if missing - blank**.  
 &nbsp;  
 &nbsp;  
 ## Certificate Store Types
@@ -188,7 +189,7 @@ When setting up the certificate store types you wish the Remote File Orchestrato
 - **Supported Job Types** - Inventory, Add, Remove, Create, and Discovery should all be checked.
 - **Needs Server** - Checked
 - **Blueprint Allowed** - Checked if you wish to make use of blueprinting.  Please refer to the Keyfactor Command Reference Guide for more details on this feature.
-- **Uses PoserShell** - Unchecked
+- **Uses PowerShell** - Unchecked
 - **Requires Store Password** - Checked.  NOTE: This does not require that a certificate store have a password, but merely ensures that a user who creates a Keyfactor Command Certificate Store MUST click the Store Password button and either enter a password or check No Password.  Certificate stores with no passwords are still possible for certain certificate store types when checking this option.
 - **Supports Entry Password** - Unchecked.  
 
@@ -200,7 +201,7 @@ When setting up the certificate store types you wish the Remote File Orchestrato
 
 *Custom Fields Tab:*
 - **Name:** LinuxFilePermissionsOnStoreCreation, **Display Name:** Linux File Permissions on Store Creation, **Type:** String, **Default Value:** none.  This custom field is **not required**.  If not present, value reverts back to the DefaultLinuxPermissionsOnStoreCreation setting in config.json (see Configuration File Setup section above).  This value, applicable to certificate stores hosted on Linux orchestrated servers only, must be 3 digits all between 0-7.  This represents the Linux file permissions that will be set for this certificate store if created via a Management Create job or a Management Add job where the config.json option CreateStoreOnAddIsMissing is set to "Y".  
-- **Name:** LinuxFileOwnerOnStoreCreation, **Display Name:** Linux File Owner on Store Creation, **Type:** String, **Default Value:** none.  This custom field is **not required**.  If not present, value reverts back to the DefaultOwnerOnStoreCreation setting in config.json (see Configuration File Setup section above).  This value, applicable to certificate stores hosted on Linux orchestrated servers only, represents the alternate Linux file owner that will be set for this certificate store if created via a Management Create job or a Management Add job where the config.json option CreateStoreOnAddIsMissing is set to "Y".  Please confirm that the user name associated with this Keyfactor certificate store has valid permissions to chown the certificate file to this owner.
+- **Name:** LinuxFileOwnerOnStoreCreation, **Display Name:** Linux File Owner on Store Creation, **Type:** String, **Default Value:** none.  This custom field is **not required**.  If not present, value reverts back to the DefaultOwnerOnStoreCreation setting in config.json (see Configuration File Setup section above).  This value, applicable to certificate stores hosted on Linux orchestrated servers only, represents the alternate Linux file owner/group that will be set for this certificate store if created via a Management Create job or a Management Add job where the config.json option CreateStoreOnAddIsMissing is set to "Y".  If the group and owner need to be different values, use a ":" as a delimitter between the owner and group values, such as ownerId:groupId.  Please confirm that the user name associated with this Keyfactor certificate store has valid permissions to chown the certificate file to this owner.
 
 Entry Parameters Tab:
 - See specific certificate store type instructions below  
@@ -233,9 +234,6 @@ Entry Parameters Tab:
 - no additional entry parameters  
 
 &nbsp;  
-CURL script to automate certificate store type creation can be found [here](Certificate%20Store%20Type%20CURL%20Scripts/PKCS12.curl)  
-
-&nbsp;  
 &nbsp;  
 **************************************
 **RFJKS Certificate Store Type**
@@ -261,9 +259,6 @@ Use cases supported:
 
 Entry Parameters Tab:
 - no additional entry parameters  
-
-&nbsp;  
-CURL script to automate certificate store type creation can be found [here](Certificate%20Store%20Type%20CURL%20Scripts/JKS.curl)
 
 &nbsp;  
 &nbsp;  
@@ -298,9 +293,6 @@ Entry Parameters Tab:
 - no additional entry parameters
 
 &nbsp;  
-CURL script to automate certificate store type creation can be found [here](Certificate%20Store%20Type%20CURL%20Scripts/PEM.curl)
-
-&nbsp;  
 &nbsp;  
 **************************************
 **RFDER Certificate Store Type**
@@ -325,9 +317,6 @@ Use cases supported:
 
 Entry Parameters Tab:
 - no additional entry parameters
-
-&nbsp;  
-CURL script to automate certificate store type creation can be found [here](Certificate%20Store%20Type%20CURL%20Scripts/DER.curl)
 
 &nbsp;  
 &nbsp;  
@@ -357,7 +346,31 @@ Entry Parameters Tab:
 - no additional entry parameters  
 
 &nbsp;  
-CURL script to automate certificate store type creation can be found [here](Certificate%20Store%20Type%20CURL%20Scripts/KDB.curl)  
+&nbsp;  
+**************************************
+**RFORA Certificate Store Type**
+**************************************
+
+The RFORA store type can be used to manage Pkcs2 Oracle Wallets.  Please note that while this should work for Pkcs12 Oracle Wallets installed on both Windows and Linux servers, this has only been tested on wallets installed on Windows.  Please note, when entering the Store Path for an Oracle Wallet in Keyfactor Command, make sure to INCLUDE the eWallet.p12 file name that by convention is the name of the Pkcs12 wallet file that gets created.
+
+Use cases supported:
+1. One-to-many trust entries - A single certificate without a private key in a certificate store.  Each certificate identified with a custom alias or certificate thumbprint.
+2. One-to-many key entries - One-to-many certificates with private keys and optionally the full certificate chain.  Each certificate identified with a custom alias or certificate thumbprint.
+3. A mix of trust and key entries.
+
+**Specific Certificate Store Type Values**  
+*Basic Tab:*
+- **Short Name** – Required. Suggested value - **RFORA**.  If you choose to use a different value you must make the corresponding modification to the manifest.json file (see "Remote File Orchestrator Extension Installation", step 6 above).
+
+*Advanced Tab:*
+- **Supports Custom Alias** - Required.
+- **Private Key Handling** - Optional.  
+
+*Custom Fields Tab:*  
+- **Name:** WorkFolder, **Display Name:** Work Folder, **Type:** String, **Default Value:** empty.   This custom field is **required**. This required field should contain the path on the managed server where temporary work files can be created during Inventory and Management jobs.  These files will be removed at the end of each job  Please make sure that user id you have assigned to this certificate store will have access to create, modify, and delete files from this folder. 
+
+Entry Parameters Tab:
+- no additional entry parameters  
 
 &nbsp;  
 &nbsp;  
