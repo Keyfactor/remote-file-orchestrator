@@ -273,6 +273,55 @@
             }  
           ],
           "EntryParameters": []        
+        },
+        "RFORA": {
+          "Name": "RFORA",
+          "ShortName": "RFORA",
+          "Capability": "RFORA",
+          "ServerRequired": true,
+          "BlueprintAllowed": false,
+          "CustomAliasAllowed": "Required",
+          "PowerShell": false,
+          "PrivateKeyAllowed": "Optional",
+          "SupportedOperations": {
+            "Add": true,
+            "Create": true,
+            "Discovery": true,
+            "Enrollment": false,
+            "Remove": true
+          },
+          "PasswordOptions": {
+            "Style": "Default",
+            "EntrySupported": false,
+            "StoreRequired": true
+          },
+          "Properties": [
+            {
+              "Name": "LinuxFilePermissionsOnStoreCreation",
+              "DisplayName": "Linux File Permissions on Store Creation",
+              "Required": false,
+              "DependsOn": "",
+              "Type": "String",
+              "DefaultValue": ""
+            },
+            {
+              "Name": "LinuxFileOwnerOnStoreCreation",
+              "DisplayName": "Linux File Owner on Store Creation",
+              "Required": false,
+              "DependsOn": "",
+              "Type": "String",
+              "DefaultValue": ""
+            },
+            {
+              "Name": "WorkFolder",
+              "DisplayName": "Location to use for creation/removal of work files",
+              "Required": true,
+              "DependsOn": "",
+              "Type": "String",
+              "DefaultValue": ""
+            }
+          ],
+          "EntryParameters": []        
         }
       }
     }
