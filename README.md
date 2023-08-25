@@ -189,7 +189,7 @@ When setting up the certificate store types you wish the Remote File Orchestrato
 - **Supported Job Types** - Inventory, Add, Remove, Create, and Discovery should all be checked.
 - **Needs Server** - Checked
 - **Blueprint Allowed** - Checked if you wish to make use of blueprinting.  Please refer to the Keyfactor Command Reference Guide for more details on this feature.
-- **Uses PoserShell** - Unchecked
+- **Uses PowerShell** - Unchecked
 - **Requires Store Password** - Checked.  NOTE: This does not require that a certificate store have a password, but merely ensures that a user who creates a Keyfactor Command Certificate Store MUST click the Store Password button and either enter a password or check No Password.  Certificate stores with no passwords are still possible for certain certificate store types when checking this option.
 - **Supports Entry Password** - Unchecked.  
 
@@ -234,9 +234,6 @@ Entry Parameters Tab:
 - no additional entry parameters  
 
 &nbsp;  
-CURL script to automate certificate store type creation can be found [here](Certificate%20Store%20Type%20CURL%20Scripts/PKCS12.curl)  
-
-&nbsp;  
 &nbsp;  
 **************************************
 **RFJKS Certificate Store Type**
@@ -262,9 +259,6 @@ Use cases supported:
 
 Entry Parameters Tab:
 - no additional entry parameters  
-
-&nbsp;  
-CURL script to automate certificate store type creation can be found [here](Certificate%20Store%20Type%20CURL%20Scripts/JKS.curl)
 
 &nbsp;  
 &nbsp;  
@@ -299,9 +293,6 @@ Entry Parameters Tab:
 - no additional entry parameters
 
 &nbsp;  
-CURL script to automate certificate store type creation can be found [here](Certificate%20Store%20Type%20CURL%20Scripts/PEM.curl)
-
-&nbsp;  
 &nbsp;  
 **************************************
 **RFDER Certificate Store Type**
@@ -326,9 +317,6 @@ Use cases supported:
 
 Entry Parameters Tab:
 - no additional entry parameters
-
-&nbsp;  
-CURL script to automate certificate store type creation can be found [here](Certificate%20Store%20Type%20CURL%20Scripts/DER.curl)
 
 &nbsp;  
 &nbsp;  
@@ -358,15 +346,12 @@ Entry Parameters Tab:
 - no additional entry parameters  
 
 &nbsp;  
-CURL script to automate certificate store type creation can be found [here](Certificate%20Store%20Type%20CURL%20Scripts/KDB.curl)  
-
-&nbsp;  
 &nbsp;  
 **************************************
 **RFORA Certificate Store Type**
 **************************************
 
-The RFORA store type can be used to manage Pkcs2 Oracle Wallets.  Please note that while this should work for Pkcs12 Oracle Wallets installed on both Windows and Linux servers, this has only been tested on wallets installed on Windows.
+The RFORA store type can be used to manage Pkcs2 Oracle Wallets.  Please note that while this should work for Pkcs12 Oracle Wallets installed on both Windows and Linux servers, this has only been tested on wallets installed on Windows.  Please note, when entering the Store Path for an Oracle Wallet in Keyfactor Command, make sure to INCLUDE the eWallet.p12 file name that by convention is the name of the Pkcs12 wallet file that gets created.
 
 Use cases supported:
 1. One-to-many trust entries - A single certificate without a private key in a certificate store.  Each certificate identified with a custom alias or certificate thumbprint.
@@ -386,9 +371,6 @@ Use cases supported:
 
 Entry Parameters Tab:
 - no additional entry parameters  
-
-&nbsp;  
-CURL script to automate certificate store type creation can be found [here](Certificate%20Store%20Type%20CURL%20Scripts/JKS.curl)
 
 &nbsp;  
 &nbsp;  
