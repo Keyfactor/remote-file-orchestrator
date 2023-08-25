@@ -313,9 +313,17 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
         public override void CreateEmptyStoreFile(string path, string linuxFilePermissions, string linuxFileOwner)
         {
             _logger.MethodEntry(LogLevel.Debug);
+            string[] linuxGroupOwner = linuxFileOwner.Split(":");
+            string linuxFileGroup = linuxFileOwner;
+
+            if (linuxGroupOwner.Length == 2)
+            {
+                linuxFileOwner = linuxGroupOwner[0];
+                linuxFileGroup = linuxGroupOwner[1];
+            }
 
             AreLinuxPermissionsValid(linuxFilePermissions);
-            RunCommand($"install -m {linuxFilePermissions} -o {linuxFileOwner} -g {linuxFileOwner} /dev/null {path}", null, ApplicationSettings.UseSudo, null);
+            RunCommand($"install -m {linuxFilePermissions} -o {linuxFileOwner} -g {linuxFileGroup} /dev/null {path}", null, ApplicationSettings.UseSudo, null);
 
             _logger.MethodExit(LogLevel.Debug);
         }
