@@ -22,6 +22,7 @@ using Org.BouncyCastle.Security;
 using Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers;
 using Keyfactor.Extensions.Orchestrator.RemoteFile.Models;
 using Keyfactor.Logging;
+using System.Management.Automation;
 
 namespace Keyfactor.Extensions.Orchestrator.RemoteFile
 {
@@ -345,7 +346,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
         {
             logger.MethodEntry(LogLevel.Debug);
 
-            Regex regex = new Regex(ServerType == ServerTypeEnum.Linux ? $@"^[\d\s\w-_/.]*$" : $@"^[\d\s\w-_/.:\\\\]*$");
+            Regex regex = new Regex(ServerType == ServerTypeEnum.Linux ? $@"^[\d\s\w-_/.]*$" : $@"^[\d\s\w-_/.:)(\\\\]*$");
 
             logger.MethodExit(LogLevel.Debug);
 
@@ -395,7 +396,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             logger.MethodEntry(LogLevel.Debug);
 
             List<string> results = new List<string>();
-            StringBuilder concatFileNames = new StringBuilder();
+            bool hasNoExt = false;
 
             if (paths[0].ToLower() == FULL_SCAN)
             {
@@ -406,18 +407,39 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
 
             foreach (string path in paths)
             {
+                StringBuilder concatFileNames = new StringBuilder();
+
                 foreach (string extension in extensions)
                 {
-                    foreach (string fileName in fileNames)
-                        concatFileNames.Append($",{fileName}.{extension}");
+                    if (extension.ToLower() == NO_EXTENSION)
+                    {
+                        hasNoExt = true;
+                    }
+                    else
+                    {
+                        foreach (string fileName in fileNames)
+                            concatFileNames.Append($",{fileName}.{extension}");
+                    }
                 }
 
-                string command = $"(Get-ChildItem -Path {FormatPath(path)} -Recurse -ErrorAction SilentlyContinue -Include {concatFileNames.ToString().Substring(1)}).fullname";
+                string command = $"(Get-ChildItem -Path {FormatPath(path)} -File -Recurse -ErrorAction SilentlyContinue -Include {concatFileNames.ToString().Substring(1)}).fullname";
                 string result = RemoteHandler.RunCommand(command, null, false, null);
                 results.AddRange(result.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries).ToList());
-            }
 
-            logger.MethodExit(LogLevel.Debug);
+                if (hasNoExt)
+                {
+                    concatFileNames = new StringBuilder();
+
+                    foreach (string fileName in fileNames)
+                        concatFileNames.Append($",{fileName}");
+
+                    command = $"(Get-ChildItem -Path {FormatPath(path)} -File -Recurse -ErrorAction SilentlyContinue -Include {concatFileNames.ToString().Substring(1)} -Filter *.).fullname";
+                    result = RemoteHandler.RunCommand(command, null, false, null);
+                    results.AddRange(result.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries).ToList());
+                }
+
+                logger.MethodExit(LogLevel.Debug);
+            }
 
             return results;
         }
