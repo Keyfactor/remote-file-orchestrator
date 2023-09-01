@@ -1,6 +1,8 @@
 v2.3.0
 - New RFORA store type for Oracle Wallet support
 - Add ability to set separate owner and group id's when creating certificate stores.
+- Bug fix: "noext" extension option for Discovery on Windows servers
+- Bug fix: Added parentheses as valid characters for store path on Windows servers.
 
 v2.2.0
 - Add ability to manage same windows server as installed without using WinRM

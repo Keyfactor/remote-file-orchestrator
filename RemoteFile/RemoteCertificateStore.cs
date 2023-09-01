@@ -346,7 +346,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
         {
             logger.MethodEntry(LogLevel.Debug);
 
-            Regex regex = new Regex(ServerType == ServerTypeEnum.Linux ? $@"^[\d\s\w-_/.]*$" : $@"^[\d\s\w-_/.:\\\\]*$");
+            Regex regex = new Regex(ServerType == ServerTypeEnum.Linux ? $@"^[\d\s\w-_/.]*$" : $@"^[\d\s\w-_/.:)(\\\\]*$");
 
             logger.MethodExit(LogLevel.Debug);
 
