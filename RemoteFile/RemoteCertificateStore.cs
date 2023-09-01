@@ -422,9 +422,12 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
                     }
                 }
 
-                string command = $"(Get-ChildItem -Path {FormatPath(path)} -File -Recurse -ErrorAction SilentlyContinue -Include {concatFileNames.ToString().Substring(1)}).fullname";
-                string result = RemoteHandler.RunCommand(command, null, false, null);
-                results.AddRange(result.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries).ToList());
+                if (concatFileNames.Length > 0)
+                {
+                    string command = $"(Get-ChildItem -Path {FormatPath(path)} -File -Recurse -ErrorAction SilentlyContinue -Include {concatFileNames.ToString().Substring(1)}).fullname";
+                    string result = RemoteHandler.RunCommand(command, null, false, null);
+                    results.AddRange(result.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries).ToList());
+                }
 
                 if (hasNoExt)
                 {
@@ -433,9 +436,12 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
                     foreach (string fileName in fileNames)
                         concatFileNames.Append($",{fileName}");
 
-                    command = $"(Get-ChildItem -Path {FormatPath(path)} -File -Recurse -ErrorAction SilentlyContinue -Include {concatFileNames.ToString().Substring(1)} -Filter *.).fullname";
-                    result = RemoteHandler.RunCommand(command, null, false, null);
-                    results.AddRange(result.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries).ToList());
+                    if (concatFileNames.Length > 0)
+                    {
+                        string command = $"(Get-ChildItem -Path {FormatPath(path)} -File -Recurse -ErrorAction SilentlyContinue -Include {concatFileNames.ToString().Substring(1)} -Filter *.).fullname";
+                        string result = RemoteHandler.RunCommand(command, null, false, null);
+                        results.AddRange(result.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries).ToList());
+                    }
                 }
 
                 logger.MethodExit(LogLevel.Debug);
