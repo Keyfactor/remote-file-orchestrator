@@ -68,7 +68,9 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
 
                 locations = certificateStore.FindStores(directoriesToSearch, extensionsToSearch, filesTosearch, includeSymLinks);
                 foreach (string ignoredDir in ignoredDirs)
-                    locations = locations.Where(p => !p.StartsWith(ignoredDir)).ToList();
+                {
+                    locations = locations.Where(p => !p.StartsWith(ignoredDir) || !p.ToLower().StartsWith("find:")).ToList();
+                }
             }
             catch (Exception ex)
             {
