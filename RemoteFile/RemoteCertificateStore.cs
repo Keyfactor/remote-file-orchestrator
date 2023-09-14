@@ -356,11 +356,11 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
         private List<string> FindStoresLinux(string[] paths, string[] extensions, string[] fileNames, bool includeSymLinks)
         {
             logger.MethodEntry(LogLevel.Debug);
-
+            
             try
             {
                 string concatPaths = string.Join(" ", paths);
-                string command = $"find {concatPaths} ";
+                string command = $"find {concatPaths} -path /proc -prune -o ";
                 if (!includeSymLinks)
                     command += " -type f ";
 
@@ -376,6 +376,8 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
                             command += $".{extension.Trim()}' ";
                     }
                 }
+
+                command += " -print";
 
                 string result = string.Empty;
                 //if (extensions.Any(p => p.ToLower() != NO_EXTENSION))
