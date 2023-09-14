@@ -1,3 +1,6 @@
+v2.3.1
+- Bug fix: Discovery - ignore /proc folder for Linux servers
+
 v2.3.0
 - New RFORA store type for Oracle Wallet support
 - Add ability to set separate owner and group id's when creating certificate stores.
