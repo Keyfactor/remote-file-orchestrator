@@ -364,6 +364,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
                 if (!includeSymLinks)
                     command += " -type f ";
 
+                command += "\\( ";
                 foreach (string extension in extensions)
                 {
                     foreach (string fileName in fileNames)
@@ -377,7 +378,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
                     }
                 }
 
-                command += " -print";
+                command += " \\) -print";
 
                 string result = string.Empty;
                 //if (extensions.Any(p => p.ToLower() != NO_EXTENSION))
