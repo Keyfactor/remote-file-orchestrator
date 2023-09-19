@@ -49,7 +49,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.PEM
             LoadCustomProperties(storeProperties);
         }
 
-        public Pkcs12Store DeserializeRemoteCertificateStore(byte[] storeContentBytes, string storePath, string storePassword, IRemoteHandler remoteHandler)
+        public Pkcs12Store DeserializeRemoteCertificateStore(byte[] storeContentBytes, string storePath, string storePassword, IRemoteHandler remoteHandler, bool includePrivateKey)
         {
             logger.MethodEntry(LogLevel.Debug);
 
@@ -62,7 +62,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.PEM
             string storeContents = Encoding.ASCII.GetString(storeContentBytes);
             X509CertificateEntry[] certificates = GetCertificates(storeContents);
 
-            if (IsTrustStore)
+            if (IsTrustStore || !includePrivateKey)
             {
                 foreach(X509CertificateEntry certificate in certificates)
                 {

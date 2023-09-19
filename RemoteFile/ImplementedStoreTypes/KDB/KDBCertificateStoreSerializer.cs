@@ -28,7 +28,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.KDB
             logger = LogHandler.GetClassLogger(this.GetType());
         }
 
-        public Pkcs12Store DeserializeRemoteCertificateStore(byte[] storeContentBytes, string storePath, string storePassword, IRemoteHandler remoteHandler)
+        public Pkcs12Store DeserializeRemoteCertificateStore(byte[] storeContentBytes, string storePath, string storePassword, IRemoteHandler remoteHandler, bool includePrivateKey)
         {
             logger.MethodEntry(LogLevel.Debug);
 
