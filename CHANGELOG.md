@@ -1,3 +1,6 @@
+v2.4.0
+- Do not require store password for PEM inventory
+
 v2.3.1
 - Bug fix: Discovery - ignore /proc folder for Linux servers
 

@@ -34,7 +34,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.OraWlt
             LoadCustomProperties(storeProperties);
         }
 
-        public Pkcs12Store DeserializeRemoteCertificateStore(byte[] storeContentBytes, string storePath, string storePassword, IRemoteHandler remoteHandler)
+        public Pkcs12Store DeserializeRemoteCertificateStore(byte[] storeContentBytes, string storePath, string storePassword, IRemoteHandler remoteHandler, bool includePrivateKey)
         {
             logger.MethodEntry(LogLevel.Debug);
 
@@ -57,7 +57,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.OraWlt
                 jksStore.Load(new MemoryStream(storeBytes), string.IsNullOrEmpty(storePassword) ? new char[0] : storePassword.ToCharArray());
 
                 JKSCertificateStoreSerializer serializer = new JKSCertificateStoreSerializer(String.Empty);
-                store = serializer.DeserializeRemoteCertificateStore(storeBytes, $"{WorkFolder}{tempStoreFileJKS}", storePassword, remoteHandler);
+                store = serializer.DeserializeRemoteCertificateStore(storeBytes, $"{WorkFolder}{tempStoreFileJKS}", storePassword, remoteHandler, includePrivateKey);
             }
             catch (Exception ex)
             {
