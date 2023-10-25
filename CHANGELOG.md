@@ -1,3 +1,6 @@
+v2.4.1
+- Bug fix: Discovery "Directories to Ignore" field not being used to filter results
+
 v2.4.0
 - Do not require store password for PEM inventory
 
