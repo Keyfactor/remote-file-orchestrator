@@ -171,6 +171,11 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.PEM
             return storeInfo;
         }
 
+        public bool HasPrivateKeyOverride()
+        {
+            return !IsTrustStore;
+        }
+
         public string GetPrivateKeyPath()
         {
             return SeparatePrivateKeyFilePath;

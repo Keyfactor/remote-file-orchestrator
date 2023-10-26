@@ -101,6 +101,11 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.KDB
             }
         }
 
+        public bool HasPrivateKeyOverride()
+        {
+            return false;
+        }
+
         public string GetPrivateKeyPath()
         {
             return null;

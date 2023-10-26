@@ -23,6 +23,7 @@ using Microsoft.Extensions.Logging;
 using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Pkcs;
 using Org.BouncyCastle.X509;
+using System.Management.Automation;
 
 namespace Keyfactor.Extensions.Orchestrator.RemoteFile.DER
 {
@@ -115,6 +116,11 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.DER
             logger.MethodExit(LogLevel.Debug);
 
             return storeInfo;
+        }
+
+        public bool HasPrivateKeyOverride()
+        {
+            return false;
         }
 
         public string GetPrivateKeyPath()

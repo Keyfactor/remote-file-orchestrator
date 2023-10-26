@@ -117,6 +117,12 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.OraWlt
         {
             return null;
         }
+
+        public bool HasPrivateKeyOverride()
+        {
+            return false;
+        }
+
         private void LoadCustomProperties(string storeProperties)
         {
             logger.MethodEntry(LogLevel.Debug);

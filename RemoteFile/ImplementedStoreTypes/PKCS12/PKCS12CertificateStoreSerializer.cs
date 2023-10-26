@@ -51,6 +51,11 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.PKCS12
             }
         }
 
+        public bool HasPrivateKeyOverride()
+        {
+            return false;
+        }
+
         public string GetPrivateKeyPath()
         {
             return null;

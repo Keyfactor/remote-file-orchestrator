@@ -50,7 +50,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
                 certificateStore.Initialize();
                 certificateStore.LoadCertificateStore(certificateStoreSerializer, config.CertificateStoreDetails.Properties, false);
 
-                List<X509Certificate2Collection> collections = certificateStore.GetCertificateChains();
+                List<X509Certificate2Collection> collections = certificateStore.GetCertificateChains(certificateStoreSerializer);
 
                 logger.LogDebug($"Format returned certificates BEGIN");
                 foreach (X509Certificate2Collection collection in collections)

@@ -141,7 +141,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             return ServerType == ServerTypeEnum.Linux ? FindStoresLinux(paths, extensions, files, includeSymLinks) : FindStoresWindows(paths, extensions, files);
         }
 
-        internal List<X509Certificate2Collection> GetCertificateChains()
+        internal List<X509Certificate2Collection> GetCertificateChains(ICertificateStoreSerializer certificateStoreSerializer)
         {
             logger.MethodEntry(LogLevel.Debug);
 
@@ -166,7 +166,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
                 {
                     X509Certificate2Ext cert = new X509Certificate2Ext(entry.Certificate.GetEncoded());
                     cert.FriendlyNameExt = alias;
-                    cert.HasPrivateKey = CertificateStore.IsKeyEntry(alias);
+                    cert.HasPrivateKey = CertificateStore.IsKeyEntry(alias) || certificateStoreSerializer.HasPrivateKeyOverride();
                     chain.Add(cert);
                 }
 

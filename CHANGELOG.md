@@ -1,3 +1,6 @@
+v2.4.2
+- Bug fix: Fix private key entry setting returned during inventory for RFPEM
+
 v2.4.1
 - Bug fix: Discovery "Directories to Ignore" field not being used to filter results
 

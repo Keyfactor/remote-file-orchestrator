@@ -118,6 +118,11 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.JKS
             }
         }
 
+        public bool HasPrivateKeyOverride()
+        {
+            return false;
+        }
+
         public string GetPrivateKeyPath()
         {
             return null;
