@@ -25,7 +25,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.PKCS12
             logger = LogHandler.GetClassLogger(this.GetType());
         }
 
-        public Pkcs12Store DeserializeRemoteCertificateStore(byte[] storeContents, string storePath, string storePassword, IRemoteHandler remoteHandler, bool includePrivateKey)
+        public Pkcs12Store DeserializeRemoteCertificateStore(byte[] storeContents, string storePath, string storePassword, IRemoteHandler remoteHandler, bool isInventory)
         {
             Pkcs12StoreBuilder storeBuilder = new Pkcs12StoreBuilder();
             Pkcs12Store store = storeBuilder.Build();

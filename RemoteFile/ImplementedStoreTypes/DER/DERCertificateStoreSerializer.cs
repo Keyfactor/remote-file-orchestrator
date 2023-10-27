@@ -38,7 +38,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.DER
             LoadCustomProperties(storeProperties);
         }
 
-        public Pkcs12Store DeserializeRemoteCertificateStore(byte[] storeContentBytes, string storePath, string storePassword, IRemoteHandler remoteHandler, bool includePrivateKey)
+        public Pkcs12Store DeserializeRemoteCertificateStore(byte[] storeContentBytes, string storePath, string storePassword, IRemoteHandler remoteHandler, bool isInventory)
         {
             logger.MethodEntry(LogLevel.Debug);
 

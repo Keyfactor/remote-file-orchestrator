@@ -40,6 +40,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.PEM
         private bool IncludesChain { get; set; }
         private string SeparatePrivateKeyFilePath { get; set; }
         private bool IsRSAPrivateKey { get; set; }
+        private bool IgnorePrivateKeyOnInventory { get; set; }
 
         private ILogger logger;
 
@@ -49,7 +50,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.PEM
             LoadCustomProperties(storeProperties);
         }
 
-        public Pkcs12Store DeserializeRemoteCertificateStore(byte[] storeContentBytes, string storePath, string storePassword, IRemoteHandler remoteHandler, bool includePrivateKey)
+        public Pkcs12Store DeserializeRemoteCertificateStore(byte[] storeContentBytes, string storePath, string storePassword, IRemoteHandler remoteHandler, bool isInventory)
         {
             logger.MethodEntry(LogLevel.Debug);
 
@@ -62,7 +63,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.PEM
             string storeContents = Encoding.ASCII.GetString(storeContentBytes);
             X509CertificateEntry[] certificates = GetCertificates(storeContents);
 
-            if (IsTrustStore || !includePrivateKey)
+            if (IsTrustStore || (isInventory && IgnorePrivateKeyOnInventory))
             {
                 foreach(X509CertificateEntry certificate in certificates)
                 {
@@ -185,6 +186,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.PEM
             IncludesChain = properties.IncludesChain == null || string.IsNullOrEmpty(properties.IncludesChain.Value) ? false : bool.Parse(properties.IncludesChain.Value);
             SeparatePrivateKeyFilePath = properties.SeparatePrivateKeyFilePath == null || string.IsNullOrEmpty(properties.SeparatePrivateKeyFilePath.Value) ? String.Empty : properties.SeparatePrivateKeyFilePath.Value;
             IsRSAPrivateKey = properties.IsRSAPrivateKey == null || string.IsNullOrEmpty(properties.IsRSAPrivateKey.Value) ? false : bool.Parse(properties.IsRSAPrivateKey.Value);
+            IgnorePrivateKeyOnInventory = properties.IgnorePrivateKeyOnInventory == null || string.IsNullOrEmpty(properties.IgnorePrivateKeyOnInventory.Value) ? false : bool.Parse(properties.IgnorePrivateKeyOnInventory.Value);
 
             logger.MethodExit(LogLevel.Debug);
         }
