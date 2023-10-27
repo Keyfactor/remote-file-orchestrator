@@ -139,6 +139,14 @@
               "DependsOn": "",
               "Type": "Bool",
               "DefaultValue": false
+            },
+            {
+              "Name": "IgnorePrivateKeyOnInventory",
+              "DisplayName": "Ignore Private Key On Inventory",
+              "Required": false,
+              "DependsOn": "",
+              "Type": "Bool",
+              "DefaultValue": false
             }
           ],
           "EntryParameters": []
