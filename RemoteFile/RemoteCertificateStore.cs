@@ -96,7 +96,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             logger.MethodExit(LogLevel.Debug);
         }
 
-        internal void LoadCertificateStore(ICertificateStoreSerializer certificateStoreSerializer, string storeProperties, bool includePrivateKey)
+        internal void LoadCertificateStore(ICertificateStoreSerializer certificateStoreSerializer, string storeProperties, bool isInventory)
         {
             logger.MethodEntry(LogLevel.Debug);
 
@@ -107,7 +107,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             if (byteContents.Length < 5)
                 return;
 
-            CertificateStore = certificateStoreSerializer.DeserializeRemoteCertificateStore(byteContents, StorePath, StorePassword, RemoteHandler, includePrivateKey);
+            CertificateStore = certificateStoreSerializer.DeserializeRemoteCertificateStore(byteContents, StorePath, StorePassword, RemoteHandler, isInventory);
 
             logger.MethodExit(LogLevel.Debug);
         }
