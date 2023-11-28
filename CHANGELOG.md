@@ -1,3 +1,6 @@
+v2.4.1
+- Fix logging issue for RFKDB
+
 v2.4.0
 - Add new optional custom parameter, IgnorePrivateKeyOnInventory, for RFPEM, which will allow inventorying RFPEM certificate stores where the store password is unknown.  This will make the store INVENTORY ONLY.  Once the store password is added, this option can be de-selected (set to False), inventory can be run again, and then renewing/removing the certificate will be allowed.
 - Bug fix: Discovery "Directories to Ignore" field not being used to filter results
