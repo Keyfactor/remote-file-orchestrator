@@ -46,7 +46,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.KDB
 
             try
             {
-                remoteHandler.RunCommand(command, null, ApplicationSettings.UseSudo, null);
+                remoteHandler.RunCommand(command, null, ApplicationSettings.UseSudo, new string[] { storePassword });
 
                 byte[] storeBytes = remoteHandler.DownloadCertificateFile($"{storePath}{tempCertFile}");
                 store.Load(new MemoryStream(storeBytes), string.IsNullOrEmpty(storePassword) ? new char[0] : storePassword.ToCharArray());
@@ -84,7 +84,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.KDB
                     certificateStore.Save(ms, string.IsNullOrEmpty(storePassword) ? new char[0] : storePassword.ToCharArray(), new Org.BouncyCastle.Security.SecureRandom());
                     remoteHandler.UploadCertificateFile(storePath, tempCertFile, ms.ToArray());
                 }
-                remoteHandler.RunCommand(command, null, ApplicationSettings.UseSudo, null);
+                remoteHandler.RunCommand(command, null, ApplicationSettings.UseSudo, new string[] { storePassword });
                 byte[] storeContents = remoteHandler.DownloadCertificateFile($"{storePath}{tempStoreFile}");
 
                 storeInfo.Add(new SerializedStoreInfo() { Contents = storeContents, FilePath = storePath+storeFileName });
