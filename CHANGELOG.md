@@ -1,3 +1,6 @@
+v2.4.2
+- Bug fix: Upgrade BouncyCastle.Cryptography to version 2.3.0 to allow for RFKDB HMAC-SHA-384 support
+
 v2.4.1
 - Fix logging issue for RFKDB
 
