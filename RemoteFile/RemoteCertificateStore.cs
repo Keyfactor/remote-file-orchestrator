@@ -336,12 +336,12 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             }
         }
 
-        internal void Initialize()
+        internal void Initialize(string sudoImpersonatedUser)
         {
             logger.MethodEntry(LogLevel.Debug);
 
             if (ServerType == ServerTypeEnum.Linux)
-                RemoteHandler = new SSHHandler(Server, ServerId, ServerPassword);
+                RemoteHandler = new SSHHandler(Server, ServerId, ServerPassword, sudoImpersonatedUser);
             else
                 RemoteHandler = new WinRMHandler(Server, ServerId, ServerPassword);
 

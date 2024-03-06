@@ -26,14 +26,16 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
     {
         private const string LINUX_PERMISSION_REGEXP = "^[0-7]{3}$";
         private ConnectionInfo Connection { get; set; }
+        private string SudoImpersonatedUser { get; set; }
 
         private SshClient sshClient;
 
-        internal SSHHandler(string server, string serverLogin, string serverPassword)
+        internal SSHHandler(string server, string serverLogin, string serverPassword, string sudoImpersonatedUser)
         {
             _logger.MethodEntry(LogLevel.Debug);
             
             Server = server;
+            SudoImpersonatedUser = sudoImpersonatedUser;
 
             List<AuthenticationMethod> authenticationMethods = new List<AuthenticationMethod>();
             if (serverPassword.Length < PASSWORD_LENGTH_MAX)
@@ -105,7 +107,12 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
             try
             {
                 if (withSudo)
-                    commandText = sudo + commandText;
+                {
+                    if (string.IsNullOrEmpty(SudoImpersonatedUser))
+                        commandText = sudo + commandText;
+                    else
+                        commandText = sudo + $"-u {SudoImpersonatedUser}" + commandText;
+                }
 
                 commandText = echo + commandText;
 
