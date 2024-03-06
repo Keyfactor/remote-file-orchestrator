@@ -99,7 +99,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
             _logger.MethodEntry(LogLevel.Debug);
             _logger.LogDebug($"RunCommand: {commandText}");
 
-            string sudo = $"sudo -i -S ";
+            string sudo = $"sudo -S ";
             string echo = $"echo -e '\n' | ";
 
             try

@@ -27,6 +27,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
 
         private const string DEFAULT_LINUX_PERMISSION_SETTING = "600";
         private const string DEFAULT_OWNER_SETTING = "";
+        private const string DEFAULT_SUDO_IMPERSONATION_SETTING = "";
 
         private static Dictionary<string,string> configuration;
 
@@ -36,6 +37,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
         public static string SeparateUploadFilePath { get { return configuration.ContainsKey("SeparateUploadFilePath") ? AddTrailingSlash(configuration["SeparateUploadFilePath"]) : string.Empty; } }
         public static string DefaultLinuxPermissionsOnStoreCreation { get { return configuration.ContainsKey("DefaultLinuxPermissionsOnStoreCreation") ? configuration["DefaultLinuxPermissionsOnStoreCreation"] : DEFAULT_LINUX_PERMISSION_SETTING; } }
         public static string DefaultOwnerOnStoreCreation { get { return configuration.ContainsKey("DefaultOwnerOnStoreCreation") ? configuration["DefaultOwnerOnStoreCreation"] : DEFAULT_OWNER_SETTING; } }
+        public static string DefaultSudoImpersonatedOwner { get { return configuration.ContainsKey("DefaultSudoImpersonatedOwner") ? configuration["DefaultSudoImpersonatedOwner"] : DEFAULT_SUDO_IMPERSONATION_SETTING; } }
         public static FileTransferProtocolEnum FileTransferProtocol 
         { 
             get 
