@@ -111,7 +111,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
                     if (string.IsNullOrEmpty(SudoImpersonatedUser))
                         commandText = sudo + commandText;
                     else
-                        commandText = sudo + $"-u {SudoImpersonatedUser}" + commandText;
+                        commandText = sudo + $"-u {SudoImpersonatedUser}" + " " + commandText;
                 }
 
                 commandText = echo + commandText;

@@ -135,11 +135,11 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             logger.MethodEntry(LogLevel.Debug);
 
             if (!AreValuesSafeRegex(paths))
-                throw new RemoteFileException("Invalid/unsafe directories to search value supplied.");
+                throw new RemoteFileException(@"Invalid/unsafe directories to search value supplied.  Only alphanumeric, /, and \ characters are allowed.");
             if (!AreValuesSafeRegex(extensions))
-                throw new RemoteFileException("Invalid/unsafe file extension value supplied.");
+                throw new RemoteFileException(@"Invalid/unsafe file extension value supplied.  Only alphanumeric, /, and \ characters are allowed.");
             if (!AreValuesSafeRegex(files))
-                throw new RemoteFileException("Invalid/unsafe file name value supplied.");
+                throw new RemoteFileException(@"Invalid/unsafe file name value supplied.  Only alphanumeric, /, and \ characters are allowed.");
 
             logger.MethodExit(LogLevel.Debug);
 
@@ -355,7 +355,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             bool valueIsSafe = true;
             foreach(string value in values)
             {
-                valueIsSafe = IsValueSafeRegex(value);
+                valueIsSafe = IsValueSafeRegex(value.Replace("*",String.Empty));
                 if (!valueIsSafe)
                     break;
             }

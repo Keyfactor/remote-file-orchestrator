@@ -15,6 +15,7 @@ using Keyfactor.Orchestrators.Extensions.Interfaces;
 using Keyfactor.Orchestrators.Common.Enums;
 
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 
 namespace Keyfactor.Extensions.Orchestrator.RemoteFile
 {
@@ -57,7 +58,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
                 ApplicationSettings.Initialize(this.GetType().Assembly.Location);
 
                 certificateStore = new RemoteCertificateStore(config.ClientMachine, userName, userPassword, directoriesToSearch[0].Substring(0, 1) == "/" ? RemoteCertificateStore.ServerTypeEnum.Linux : RemoteCertificateStore.ServerTypeEnum.Windows);
-                certificateStore.Initialize();
+                certificateStore.Initialize(ApplicationSettings.DefaultSudoImpersonatedOwner);
 
                 if (directoriesToSearch.Length == 0)
                     throw new RemoteFileException("Blank or missing search directories for Discovery.");
