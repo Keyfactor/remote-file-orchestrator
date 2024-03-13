@@ -58,7 +58,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
                 ApplicationSettings.Initialize(this.GetType().Assembly.Location);
 
                 certificateStore = new RemoteCertificateStore(config.ClientMachine, userName, userPassword, directoriesToSearch[0].Substring(0, 1) == "/" ? RemoteCertificateStore.ServerTypeEnum.Linux : RemoteCertificateStore.ServerTypeEnum.Windows);
-                certificateStore.Initialize(ApplicationSettings.DefaultSudoImpersonatedOwner);
+                certificateStore.Initialize(ApplicationSettings.DefaultSudoImpersonatedUser);
 
                 if (directoriesToSearch.Length == 0)
                     throw new RemoteFileException("Blank or missing search directories for Discovery.");

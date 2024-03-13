@@ -48,12 +48,12 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
 
                 ApplicationSettings.Initialize(this.GetType().Assembly.Location);
                 dynamic properties = JsonConvert.DeserializeObject(config.CertificateStoreDetails.Properties.ToString());
-                string sudoImpersonatingUser = properties.SudoImpersonatingUser == null || string.IsNullOrEmpty(properties.SudoImpersonatingUser.Value) ?
-                    ApplicationSettings.DefaultSudoImpersonatedOwner :
-                    properties.SudoImpersonatingUser.Value;
+                string sudoImpersonatedUser = properties.SudoImpersonatedUser == null || string.IsNullOrEmpty(properties.SudoImpersonatedUser.Value) ?
+                    ApplicationSettings.DefaultSudoImpersonatedUser :
+                    properties.SudoImpersonatedUser.Value;
 
                 certificateStore = new RemoteCertificateStore(config.CertificateStoreDetails.ClientMachine, userName, userPassword, config.CertificateStoreDetails.StorePath, storePassword, config.JobProperties);
-                certificateStore.Initialize(sudoImpersonatingUser);
+                certificateStore.Initialize(sudoImpersonatedUser);
                 certificateStore.LoadCertificateStore(certificateStoreSerializer, config.CertificateStoreDetails.Properties, true);
 
                 List<X509Certificate2Collection> collections = certificateStore.GetCertificateChains();

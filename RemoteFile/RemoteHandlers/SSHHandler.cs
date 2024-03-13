@@ -218,7 +218,6 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
 
             if (!string.IsNullOrEmpty(ApplicationSettings.SeparateUploadFilePath))
             {
-                //RunCommand($"cat {uploadPath} > {path}/{fileName}", null, ApplicationSettings.UseSudo, null);
                 RunCommand($"tee {path}/{fileName} < {uploadPath} > /dev/null", null, ApplicationSettings.UseSudo, null);
                 RunCommand($"rm {uploadPath}", null, ApplicationSettings.UseSudo, null);
             }
@@ -242,7 +241,8 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
                 SplitStorePathFile(path, out altPathOnly, out altFileNameOnly);
                 downloadPath = ApplicationSettings.SeparateUploadFilePath + altFileNameOnly;
                 RunCommand($"cp {path} {downloadPath}", null, ApplicationSettings.UseSudo, null);
-                RunCommand($"chown {Connection.Username} {downloadPath}", null, ApplicationSettings.UseSudo, null);
+                if (string.IsNullOrEmpty(SudoImpersonatedUser))
+                    RunCommand($"chown {Connection.Username} {downloadPath}", null, ApplicationSettings.UseSudo, null);
             }
 
             bool scpError = false;

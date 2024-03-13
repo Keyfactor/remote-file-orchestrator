@@ -1,6 +1,6 @@
 ﻿{
   "UseSudo": "N",
-  "SudoImpersonatingUser":  "",
+  "SudoImpersonatedUser":  "",
   "CreateStoreIfMissing": "N",
   "UseNegotiate": "N",
   "SeparateUploadFilePath": "",
