@@ -1,3 +1,8 @@
+v2.5.0
+- Add new optional custom field and config.json entries to supply a user id other than "root" for the user to "sudo into" when UseSudo = "Y".  There is an optional config.json DefaultSudoImpersonatedUser that will be used at the orchestrator level, and an optional new store type custom field, SudoImpersonatedUser, that overrides the config.json setting for each certificate store.
+- Modified the optional sudo command prefix to remove the "-i" option which was creating a new shell for the impersonated id (always root up until this release).  Without this option the profile for the logged in user and not the impersonated user will be used when running commands.
+- Added Regex checks for Discovery fields (file names, file extensions, and file paths) to enhance security.  Only alpha numeric, "/", and "\" characters are allowed for these values.
+
 v2.4.2
 - Bug fix: Upgrade BouncyCastle.Cryptography to version 2.3.0 to allow for RFKDB HMAC-SHA-384 support
 
