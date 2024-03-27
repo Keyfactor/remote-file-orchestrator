@@ -369,10 +369,10 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
                 {
                     foreach (string fileName in fileNames)
                     {
-                        command += (command.IndexOf("-iname") == -1 ? string.Empty : "-or ");
-                        command += $"-iname '{fileName.Trim()}";
+                        command += (command.IndexOf("-name") == -1 ? string.Empty : "-or ");
+                        command += $"-name '{fileName.Trim()}";
                         if (extension.ToLower() == NO_EXTENSION)
-                            command += $"' ! -iname '*.*' ";
+                            command += $"' ! -name '*.*' ";
                         else
                             command += $".{extension.Trim()}' ";
                     }
