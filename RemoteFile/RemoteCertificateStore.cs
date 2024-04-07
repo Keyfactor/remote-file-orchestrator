@@ -23,6 +23,7 @@ using Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers;
 using Keyfactor.Extensions.Orchestrator.RemoteFile.Models;
 using Keyfactor.Logging;
 using System.Management.Automation;
+using System.Runtime.InteropServices;
 
 namespace Keyfactor.Extensions.Orchestrator.RemoteFile
 {
@@ -332,8 +333,8 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
         {
             logger.MethodEntry(LogLevel.Debug);
 
-            if (ServerType == ServerTypeEnum.Linux)
-                RemoteHandler = new SSHHandler(Server, ServerId, ServerPassword);
+            if (ServerType == ServerTypeEnum.Linux || RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+                RemoteHandler = new SSHHandler(Server, ServerId, ServerPassword, ServerType == ServerTypeEnum.Linux);
             else
                 RemoteHandler = new WinRMHandler(Server, ServerId, ServerPassword);
 
