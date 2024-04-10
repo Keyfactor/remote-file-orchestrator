@@ -166,9 +166,10 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
 
             string uploadPath = path+fileName;
 
-            if (!string.IsNullOrEmpty(ApplicationSettings.SeparateUploadFilePath))
+            if (!string.IsNullOrEmpty(ApplicationSettings.SeparateUploadFilePath) && IsStoreServerLinux)
             {
                 uploadPath = ApplicationSettings.SeparateUploadFilePath + fileName;
+                _logger.LogDebug($"uploadPath: {uploadPath}");
             }
 
             bool scpError = false;
@@ -365,7 +366,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
                 try
                 {
                     client.Connect();
-                    string existsPath = FormatFTPPath(path, false);
+                    string existsPath = FormatFTPPath(path, !IsStoreServerLinux);
                     bool exists = client.Exists(existsPath);
                     _logger.LogDebug(existsPath);
 
@@ -437,11 +438,14 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
         private string FormatFTPPath(string path, bool addLeadingSlashForWindows)
         {
             _logger.MethodEntry(LogLevel.Debug);
-            _logger.MethodExit(LogLevel.Debug);
 
             string rtnPath = IsStoreServerLinux ? path : path.Replace("\\", "/");
+            rtnPath = addLeadingSlashForWindows ? "/" + rtnPath : rtnPath;
+
             _logger.LogTrace($"Formatted path: {rtnPath}");
-            return addLeadingSlashForWindows ? rtnPath : "/" + rtnPath;
+            _logger.MethodExit(LogLevel.Debug);
+
+            return rtnPath;
         }
     }
 }
