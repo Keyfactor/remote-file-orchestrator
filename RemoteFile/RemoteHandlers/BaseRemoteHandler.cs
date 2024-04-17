@@ -8,6 +8,7 @@
 using Keyfactor.Logging;
 
 using Microsoft.Extensions.Logging;
+using System.Text.RegularExpressions;
 
 namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
 {
@@ -16,12 +17,20 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
         internal ILogger _logger;
         internal const string PASSWORD_MASK_VALUE = "[PASSWORD]";
         internal const int PASSWORD_LENGTH_MAX = 100;
+        internal const string LINUX_PERMISSION_REGEXP = "^[0-7]{3}$";
 
         public string Server { get; set; }
 
         public BaseRemoteHandler()
         {
             _logger = LogHandler.GetClassLogger(this.GetType());
+        }
+
+        public static void AreLinuxPermissionsValid(string permissions)
+        {
+            Regex regex = new Regex(LINUX_PERMISSION_REGEXP);
+            if (!regex.IsMatch(permissions))
+                throw new RemoteFileException($"Invalid format for Linux file permissions.  This value must be exactly 3 digits long with each digit between 0-7 but found {permissions} instead.");
         }
 
         public abstract void Initialize();

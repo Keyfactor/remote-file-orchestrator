@@ -9,7 +9,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Security.Cryptography;
-using System.Text.RegularExpressions;
 using System.Text;
 
 using Renci.SshNet;
@@ -19,15 +18,12 @@ using Microsoft.Extensions.Logging;
 using Keyfactor.Logging;
 using Keyfactor.PKI.PrivateKeys;
 using Keyfactor.PKI.PEM;
-using System.Runtime.InteropServices;
 
 namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
 {
     class SSHHandler : BaseRemoteHandler
     {
-        private const string LINUX_PERMISSION_REGEXP = "^[0-7]{3}$";
         private ConnectionInfo Connection { get; set; }
-        private bool RunLocal { get; set; }
         private bool IsStoreServerLinux { get; set; }
 
         private SshClient sshClient;
@@ -37,40 +33,36 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
             _logger.MethodEntry(LogLevel.Debug);
             
             Server = server;
-            RunLocal = Server.ToLower() == "localhost" || Server.ToLower().EndsWith("|localmachine");
             IsStoreServerLinux = isStoreServerLinux;
 
-            if (!RunLocal)
+            List<AuthenticationMethod> authenticationMethods = new List<AuthenticationMethod>();
+            if (serverPassword.Length < PASSWORD_LENGTH_MAX)
             {
-                List<AuthenticationMethod> authenticationMethods = new List<AuthenticationMethod>();
-                if (serverPassword.Length < PASSWORD_LENGTH_MAX)
-                {
-                    authenticationMethods.Add(new PasswordAuthenticationMethod(serverLogin, serverPassword));
-                }
-                else
-                {
-                    PrivateKeyFile privateKeyFile;
-
-                    try
-                    {
-                        using (MemoryStream ms = new MemoryStream(Encoding.ASCII.GetBytes(FormatRSAPrivateKey(serverPassword))))
-                        {
-                            privateKeyFile = new PrivateKeyFile(ms);
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        using (MemoryStream ms = new MemoryStream(Encoding.ASCII.GetBytes(ConvertToPKCS1(serverPassword))))
-                        {
-                            privateKeyFile = new PrivateKeyFile(ms);
-                        }
-                    }
-
-                    authenticationMethods.Add(new PrivateKeyAuthenticationMethod(serverLogin, privateKeyFile));
-                }
-
-                Connection = new ConnectionInfo(server, serverLogin, authenticationMethods.ToArray());
+                authenticationMethods.Add(new PasswordAuthenticationMethod(serverLogin, serverPassword));
             }
+            else
+            {
+                PrivateKeyFile privateKeyFile;
+
+                try
+                {
+                    using (MemoryStream ms = new MemoryStream(Encoding.ASCII.GetBytes(FormatRSAPrivateKey(serverPassword))))
+                    {
+                        privateKeyFile = new PrivateKeyFile(ms);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    using (MemoryStream ms = new MemoryStream(Encoding.ASCII.GetBytes(ConvertToPKCS1(serverPassword))))
+                    {
+                        privateKeyFile = new PrivateKeyFile(ms);
+                    }
+                }
+
+                authenticationMethods.Add(new PrivateKeyAuthenticationMethod(serverLogin, privateKeyFile));
+            }
+
+            Connection = new ConnectionInfo(server, serverLogin, authenticationMethods.ToArray());
 
             _logger.MethodExit(LogLevel.Debug);
         }
@@ -79,17 +71,14 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
         {
             _logger.MethodEntry(LogLevel.Debug);
 
-            if (!RunLocal)
+            try
             {
-                try
-                {
-                    sshClient = new SshClient(Connection);
-                    sshClient.Connect();
-                }
-                catch (Exception ex)
-                {
-                    throw new RemoteFileException($"Error making a SSH connection to remote server {Connection.Host}, for user {Connection.Username}.  Please contact your company's system administrator to verify connection and permission settings.", ex);
-                }
+                sshClient = new SshClient(Connection);
+                sshClient.Connect();
+            }
+            catch (Exception ex)
+            {
+                throw new RemoteFileException($"Error making a SSH connection to remote server {Connection.Host}, for user {Connection.Username}.  Please contact your company's system administrator to verify connection and permission settings.", ex);
             }
 
             _logger.MethodExit(LogLevel.Debug);
@@ -99,11 +88,8 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
         {
             _logger.MethodEntry(LogLevel.Debug);
 
-            if (!RunLocal)
-            {
-                sshClient.Disconnect();
-                sshClient.Dispose();
-            }
+            sshClient.Disconnect();
+            sshClient.Dispose();
             
             _logger.MethodExit(LogLevel.Debug);
         }
@@ -111,7 +97,6 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
         public override string RunCommand(string commandText, object[] arguments, bool withSudo, string[] passwordsToMaskInLog)
         {
             _logger.MethodEntry(LogLevel.Debug);
-            _logger.LogDebug($"RunCommand: {commandText}");
 
             string sudo = $"sudo -i -S ";
             string echo = $"echo -e '\n' | ";
@@ -379,13 +364,6 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
                     client.Disconnect();
                 }
             }
-        }
-
-        public static void AreLinuxPermissionsValid(string permissions)
-        {
-            Regex regex = new Regex(LINUX_PERMISSION_REGEXP);
-            if (!regex.IsMatch(permissions))
-                throw new RemoteFileException($"Invalid format for Linux file permissions.  This value must be exactly 3 digits long with each digit between 0-7 but found {permissions} instead.");
         }
 
         public override void RemoveCertificateFile(string path, string fileName)

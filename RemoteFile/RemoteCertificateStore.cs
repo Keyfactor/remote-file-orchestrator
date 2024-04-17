@@ -24,6 +24,7 @@ using Keyfactor.Extensions.Orchestrator.RemoteFile.Models;
 using Keyfactor.Logging;
 using System.Management.Automation;
 using System.Runtime.InteropServices;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Keyfactor.Extensions.Orchestrator.RemoteFile
 {
@@ -31,6 +32,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
     {
         private const string NO_EXTENSION = "noext";
         private const string FULL_SCAN = "fullscan";
+        private const string LOCAL_MACHINE_SUFFIX = "|localmachine";
 
         internal enum ServerTypeEnum
         {
@@ -333,10 +335,12 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
         {
             logger.MethodEntry(LogLevel.Debug);
 
+            bool treatAsLocal = Server.ToLower().EndsWith(LOCAL_MACHINE_SUFFIX);
+
             if (ServerType == ServerTypeEnum.Linux || RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
-                RemoteHandler = new SSHHandler(Server, ServerId, ServerPassword, ServerType == ServerTypeEnum.Linux);
+                RemoteHandler = treatAsLocal ? new LinuxLocalHandler() as IRemoteHandler : new SSHHandler(Server, ServerId, ServerPassword, ServerType == ServerTypeEnum.Linux) as IRemoteHandler;
             else
-                RemoteHandler = new WinRMHandler(Server, ServerId, ServerPassword);
+                RemoteHandler = new WinRMHandler(Server, ServerId, ServerPassword, treatAsLocal);
 
             RemoteHandler.Initialize();
 

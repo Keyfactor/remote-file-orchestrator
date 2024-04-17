@@ -28,12 +28,12 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
         private WSManConnectionInfo connectionInfo { get; set; }
         private bool RunLocal { get; set; }
 
-        internal WinRMHandler(string server, string serverLogin, string serverPassword)
+        internal WinRMHandler(string server, string serverLogin, string serverPassword, bool treatAsLocal)
         {
             _logger.MethodEntry(LogLevel.Debug);
 
             Server = server;
-            RunLocal = Server.ToLower() == "localhost" || Server.ToLower().EndsWith("|localmachine");
+            RunLocal = Server.ToLower() == "localhost" || treatAsLocal;
 
             if (!RunLocal)
             {
