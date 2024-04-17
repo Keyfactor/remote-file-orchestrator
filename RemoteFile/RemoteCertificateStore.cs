@@ -75,7 +75,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             UploadFilePath = !string.IsNullOrEmpty(ApplicationSettings.SeparateUploadFilePath) && ServerType == ServerTypeEnum.Linux ? ApplicationSettings.SeparateUploadFilePath : StorePath;
             logger.LogDebug($"UploadFilePath: {UploadFilePath}");
 
-            if (!IsStorePathValid())
+            if (!IsValueSafeRegex(StorePath + StoreFileName))
             {
                 logger.LogDebug("Store path not valid");
                 string partialMessage = ServerType == ServerTypeEnum.Windows ? @"'\', ':', " : string.Empty;
@@ -136,6 +136,14 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
         internal List<string> FindStores(string[] paths, string[] extensions, string[] files, bool includeSymLinks)
         {
             logger.MethodEntry(LogLevel.Debug);
+
+            if (!AreValuesSafeRegex(paths))
+                throw new RemoteFileException(@"Invalid/unsafe directories to search value supplied.  Only alphanumeric, /, and \ characters are allowed.");
+            if (!AreValuesSafeRegex(extensions))
+                throw new RemoteFileException(@"Invalid/unsafe file extension value supplied.  Only alphanumeric, /, and \ characters are allowed.");
+            if (!AreValuesSafeRegex(files))
+                throw new RemoteFileException(@"Invalid/unsafe file name value supplied.  Only alphanumeric, /, and \ characters are allowed.");
+
             logger.MethodExit(LogLevel.Debug);
 
             if (DiscoveredStores != null)
@@ -331,7 +339,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             }
         }
 
-        internal void Initialize()
+        internal void Initialize(string sudoImpersonatedUser)
         {
             logger.MethodEntry(LogLevel.Debug);
 
@@ -347,7 +355,19 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             logger.MethodExit(LogLevel.Debug);
         }
 
-        private bool IsStorePathValid()
+        private bool AreValuesSafeRegex(string[] values)
+        {
+            bool valueIsSafe = true;
+            foreach(string value in values)
+            {
+                valueIsSafe = IsValueSafeRegex(value.Replace("*",String.Empty));
+                if (!valueIsSafe)
+                    break;
+            }
+            return valueIsSafe;
+        }
+
+        private bool IsValueSafeRegex(string value)
         {
             logger.MethodEntry(LogLevel.Debug);
 
@@ -355,7 +375,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
 
             logger.MethodExit(LogLevel.Debug);
 
-            return regex.IsMatch(StorePath + StoreFileName);
+            return regex.IsMatch(value);
         }
 
         private List<string> FindStoresLinux(string[] paths, string[] extensions, string[] fileNames, bool includeSymLinks)

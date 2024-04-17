@@ -68,6 +68,14 @@
               "DependsOn": "",
               "Type": "String",
               "DefaultValue": ""
+            },
+            {
+              "Name": "SudoImpersonatingUser",
+              "DisplayName": "Sudo Impersonating User",
+              "Required": false,
+              "DependsOn": "",
+              "Type": "String",
+              "DefaultValue": ""
             }
           ],
           "EntryParameters": []
@@ -105,6 +113,14 @@
             {
               "Name": "LinuxFileOwnerOnStoreCreation",
               "DisplayName": "Linux File Owner on Store Creation",
+              "Required": false,
+              "DependsOn": "",
+              "Type": "String",
+              "DefaultValue": ""
+            },
+            {
+              "Name": "SudoImpersonatingUser",
+              "DisplayName": "Sudo Impersonating User",
               "Required": false,
               "DependsOn": "",
               "Type": "String",
@@ -190,6 +206,14 @@
               "DependsOn": "",
               "Type": "String",
               "DefaultValue": ""
+            },
+            {
+              "Name": "SudoImpersonatingUser",
+              "DisplayName": "Sudo Impersonating User",
+              "Required": false,
+              "DependsOn": "",
+              "Type": "String",
+              "DefaultValue": ""
             }
           ],
           "EntryParameters": []
@@ -227,6 +251,14 @@
             {
               "Name": "LinuxFileOwnerOnStoreCreation",
               "DisplayName": "Linux File Owner on Store Creation",
+              "Required": false,
+              "DependsOn": "",
+              "Type": "String",
+              "DefaultValue": ""
+            },
+            {
+              "Name": "SudoImpersonatingUser",
+              "DisplayName": "Sudo Impersonating User",
               "Required": false,
               "DependsOn": "",
               "Type": "String",
@@ -280,6 +312,14 @@
               "DependsOn": "",
               "Type": "String",
               "DefaultValue": ""
+            },
+            {
+              "Name": "SudoImpersonatingUser",
+              "DisplayName": "Sudo Impersonating User",
+              "Required": false,
+              "DependsOn": "",
+              "Type": "String",
+              "DefaultValue": ""
             }
           ],
           "EntryParameters": []
@@ -317,6 +357,14 @@
             {
               "Name": "LinuxFileOwnerOnStoreCreation",
               "DisplayName": "Linux File Owner on Store Creation",
+              "Required": false,
+              "DependsOn": "",
+              "Type": "String",
+              "DefaultValue": ""
+            },
+            {
+              "Name": "SudoImpersonatingUser",
+              "DisplayName": "Sudo Impersonating User",
               "Required": false,
               "DependsOn": "",
               "Type": "String",
