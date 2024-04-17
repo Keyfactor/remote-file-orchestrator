@@ -26,14 +26,16 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
     {
         private const string LINUX_PERMISSION_REGEXP = "^[0-7]{3}$";
         private ConnectionInfo Connection { get; set; }
+        private string SudoImpersonatedUser { get; set; }
 
         private SshClient sshClient;
 
-        internal SSHHandler(string server, string serverLogin, string serverPassword)
+        internal SSHHandler(string server, string serverLogin, string serverPassword, string sudoImpersonatedUser)
         {
             _logger.MethodEntry(LogLevel.Debug);
             
             Server = server;
+            SudoImpersonatedUser = sudoImpersonatedUser;
 
             List<AuthenticationMethod> authenticationMethods = new List<AuthenticationMethod>();
             if (serverPassword.Length < PASSWORD_LENGTH_MAX)
@@ -99,13 +101,18 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
             _logger.MethodEntry(LogLevel.Debug);
             _logger.LogDebug($"RunCommand: {commandText}");
 
-            string sudo = $"sudo -i -S ";
+            string sudo = $"sudo -S ";
             string echo = $"echo -e '\n' | ";
 
             try
             {
                 if (withSudo)
-                    commandText = sudo + commandText;
+                {
+                    if (string.IsNullOrEmpty(SudoImpersonatedUser))
+                        commandText = sudo + commandText;
+                    else
+                        commandText = sudo + $"-u {SudoImpersonatedUser}" + " " + commandText;
+                }
 
                 commandText = echo + commandText;
 
@@ -211,7 +218,6 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
 
             if (!string.IsNullOrEmpty(ApplicationSettings.SeparateUploadFilePath))
             {
-                //RunCommand($"cat {uploadPath} > {path}/{fileName}", null, ApplicationSettings.UseSudo, null);
                 RunCommand($"tee {path}/{fileName} < {uploadPath} > /dev/null", null, ApplicationSettings.UseSudo, null);
                 RunCommand($"rm {uploadPath}", null, ApplicationSettings.UseSudo, null);
             }
@@ -235,7 +241,8 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
                 SplitStorePathFile(path, out altPathOnly, out altFileNameOnly);
                 downloadPath = ApplicationSettings.SeparateUploadFilePath + altFileNameOnly;
                 RunCommand($"cp {path} {downloadPath}", null, ApplicationSettings.UseSudo, null);
-                RunCommand($"chown {Connection.Username} {downloadPath}", null, ApplicationSettings.UseSudo, null);
+                if (string.IsNullOrEmpty(SudoImpersonatedUser))
+                    RunCommand($"chown {Connection.Username} {downloadPath}", null, ApplicationSettings.UseSudo, null);
             }
 
             bool scpError = false;

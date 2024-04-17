@@ -51,8 +51,13 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
                 string storePassword = PAMUtilities.ResolvePAMField(_resolver, logger, "Store Password", config.CertificateStoreDetails.StorePassword);
 
                 ApplicationSettings.Initialize(this.GetType().Assembly.Location);
+                dynamic properties = JsonConvert.DeserializeObject(config.CertificateStoreDetails.Properties.ToString());
+                string sudoImpersonatedUser = properties.SudoImpersonatedUser == null || string.IsNullOrEmpty(properties.SudoImpersonatedUser.Value) ?
+                    ApplicationSettings.DefaultSudoImpersonatedUser :
+                    properties.SudoImpersonatedUser.Value;
+
                 certificateStore = new RemoteCertificateStore(config.CertificateStoreDetails.ClientMachine, userName, userPassword, config.CertificateStoreDetails.StorePath, storePassword, config.JobProperties);
-                certificateStore.Initialize();
+                certificateStore.Initialize(sudoImpersonatedUser);
 
                 PathFile storePathFile = RemoteCertificateStore.SplitStorePathFile(config.CertificateStoreDetails.StorePath);
 
