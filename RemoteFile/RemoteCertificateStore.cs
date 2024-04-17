@@ -23,6 +23,8 @@ using Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers;
 using Keyfactor.Extensions.Orchestrator.RemoteFile.Models;
 using Keyfactor.Logging;
 using System.Management.Automation;
+using System.Runtime.InteropServices;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Keyfactor.Extensions.Orchestrator.RemoteFile
 {
@@ -30,6 +32,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
     {
         private const string NO_EXTENSION = "noext";
         private const string FULL_SCAN = "fullscan";
+        private const string LOCAL_MACHINE_SUFFIX = "|localmachine";
 
         internal enum ServerTypeEnum
         {
@@ -340,10 +343,12 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
         {
             logger.MethodEntry(LogLevel.Debug);
 
-            if (ServerType == ServerTypeEnum.Linux)
-                RemoteHandler = new SSHHandler(Server, ServerId, ServerPassword, sudoImpersonatedUser);
+            bool treatAsLocal = Server.ToLower().EndsWith(LOCAL_MACHINE_SUFFIX);
+
+            if (ServerType == ServerTypeEnum.Linux || RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+                RemoteHandler = treatAsLocal ? new LinuxLocalHandler() as IRemoteHandler : new SSHHandler(Server, ServerId, ServerPassword, ServerType == ServerTypeEnum.Linux) as IRemoteHandler;
             else
-                RemoteHandler = new WinRMHandler(Server, ServerId, ServerPassword);
+                RemoteHandler = new WinRMHandler(Server, ServerId, ServerPassword, treatAsLocal);
 
             RemoteHandler.Initialize();
 
@@ -389,10 +394,10 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
                 {
                     foreach (string fileName in fileNames)
                     {
-                        command += (command.IndexOf("-iname") == -1 ? string.Empty : "-or ");
-                        command += $"-iname '{fileName.Trim()}";
+                        command += (command.IndexOf("-name") == -1 ? string.Empty : "-or ");
+                        command += $"-name '{fileName.Trim()}";
                         if (extension.ToLower() == NO_EXTENSION)
-                            command += $"' ! -iname '*.*' ";
+                            command += $"' ! -name '*.*' ";
                         else
                             command += $".{extension.Trim()}' ";
                     }

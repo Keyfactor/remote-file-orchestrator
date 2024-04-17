@@ -26,13 +26,16 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
 
         private Runspace runspace { get; set; }
         private WSManConnectionInfo connectionInfo { get; set; }
+        private bool RunLocal { get; set; }
 
-        internal WinRMHandler(string server, string serverLogin, string serverPassword)
+        internal WinRMHandler(string server, string serverLogin, string serverPassword, bool treatAsLocal)
         {
             _logger.MethodEntry(LogLevel.Debug);
 
             Server = server;
-            if (Server.ToLower() != "localhost")
+            RunLocal = Server.ToLower() == "localhost" || treatAsLocal;
+
+            if (!RunLocal)
             {
                 connectionInfo = new WSManConnectionInfo(new System.Uri($"{Server}/wsman"));
                 if (!string.IsNullOrEmpty(serverLogin))
@@ -50,7 +53,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
 
             try
             {
-                if (Server.ToLower() == "localhost")
+                if (RunLocal)
                 {
                     runspace = RunspaceFactory.CreateRunspace();
                 }

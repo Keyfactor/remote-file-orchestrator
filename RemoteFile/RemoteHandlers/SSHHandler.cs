@@ -9,7 +9,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Security.Cryptography;
-using System.Text.RegularExpressions;
 using System.Text;
 
 using Renci.SshNet;
@@ -24,18 +23,17 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
 {
     class SSHHandler : BaseRemoteHandler
     {
-        private const string LINUX_PERMISSION_REGEXP = "^[0-7]{3}$";
         private ConnectionInfo Connection { get; set; }
         private string SudoImpersonatedUser { get; set; }
-
         private SshClient sshClient;
 
-        internal SSHHandler(string server, string serverLogin, string serverPassword, string sudoImpersonatedUser)
+        internal SSHHandler(string server, string serverLogin, string serverPassword, bool isStoreServerLinux, string sudoImpersonatedUser)
         {
             _logger.MethodEntry(LogLevel.Debug);
             
             Server = server;
             SudoImpersonatedUser = sudoImpersonatedUser;
+            IsStoreServerLinux = isStoreServerLinux;
 
             List<AuthenticationMethod> authenticationMethods = new List<AuthenticationMethod>();
             if (serverPassword.Length < PASSWORD_LENGTH_MAX)
@@ -65,7 +63,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
             }
 
             Connection = new ConnectionInfo(server, serverLogin, authenticationMethods.ToArray());
-            
+
             _logger.MethodExit(LogLevel.Debug);
         }
 
@@ -82,14 +80,14 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
             {
                 throw new RemoteFileException($"Error making a SSH connection to remote server {Connection.Host}, for user {Connection.Username}.  Please contact your company's system administrator to verify connection and permission settings.", ex);
             }
-            
+
             _logger.MethodExit(LogLevel.Debug);
         }
 
         public override void Terminate()
         {
             _logger.MethodEntry(LogLevel.Debug);
-            
+
             sshClient.Disconnect();
             sshClient.Dispose();
             
@@ -99,14 +97,13 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
         public override string RunCommand(string commandText, object[] arguments, bool withSudo, string[] passwordsToMaskInLog)
         {
             _logger.MethodEntry(LogLevel.Debug);
-            _logger.LogDebug($"RunCommand: {commandText}");
 
             string sudo = $"sudo -S ";
             string echo = $"echo -e '\n' | ";
 
             try
             {
-                if (withSudo)
+                if (withSudo && IsStoreServerLinux)
                 {
                     if (string.IsNullOrEmpty(SudoImpersonatedUser))
                         commandText = sudo + commandText;
@@ -114,7 +111,15 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
                         commandText = sudo + $"-u {SudoImpersonatedUser}" + " " + commandText;
                 }
 
-                commandText = echo + commandText;
+                if (IsStoreServerLinux)
+                {
+                    commandText = echo + commandText;
+                }
+                else
+                {
+                    commandText = "powershell -Command \"" + commandText + "\"";
+                    commandText = commandText.Replace(@"\", @"\\");
+                }
 
                 string displayCommand = commandText;
                 if (passwordsToMaskInLog != null)
@@ -151,9 +156,10 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
 
             string uploadPath = path+fileName;
 
-            if (!string.IsNullOrEmpty(ApplicationSettings.SeparateUploadFilePath))
+            if (!string.IsNullOrEmpty(ApplicationSettings.SeparateUploadFilePath) && IsStoreServerLinux)
             {
                 uploadPath = ApplicationSettings.SeparateUploadFilePath + fileName;
+                _logger.LogDebug($"uploadPath: {uploadPath}");
             }
 
             bool scpError = false;
@@ -169,7 +175,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
 
                         using (MemoryStream stream = new MemoryStream(certBytes))
                         {
-                            client.Upload(stream, FormatFTPPath(uploadPath));
+                            client.Upload(stream, FormatFTPPath(uploadPath, false));
                         }
                     }
                     catch (Exception ex)
@@ -200,7 +206,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
 
                         using (MemoryStream stream = new MemoryStream(certBytes))
                         {
-                            client.UploadFile(stream, FormatFTPPath(uploadPath));
+                            client.UploadFile(stream, FormatFTPPath(uploadPath, !IsStoreServerLinux));
                         }
                     }
                     catch (Exception ex)
@@ -216,7 +222,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
                 }
             }
 
-            if (!string.IsNullOrEmpty(ApplicationSettings.SeparateUploadFilePath))
+            if (!string.IsNullOrEmpty(ApplicationSettings.SeparateUploadFilePath) && IsStoreServerLinux)
             {
                 RunCommand($"tee {path}/{fileName} < {uploadPath} > /dev/null", null, ApplicationSettings.UseSudo, null);
                 RunCommand($"rm {uploadPath}", null, ApplicationSettings.UseSudo, null);
@@ -236,7 +242,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
             string altPathOnly = string.Empty;
             string altFileNameOnly = string.Empty;
 
-            if (!string.IsNullOrEmpty(ApplicationSettings.SeparateUploadFilePath))
+            if (!string.IsNullOrEmpty(ApplicationSettings.SeparateUploadFilePath) && IsStoreServerLinux)
             {
                 SplitStorePathFile(path, out altPathOnly, out altFileNameOnly);
                 downloadPath = ApplicationSettings.SeparateUploadFilePath + altFileNameOnly;
@@ -258,7 +264,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
 
                         using (MemoryStream stream = new MemoryStream())
                         {
-                            client.Download(FormatFTPPath(downloadPath), stream);
+                            client.Download(FormatFTPPath(downloadPath, false), stream);
                             rtnStore = stream.ToArray();
                         }
                     }
@@ -290,7 +296,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
 
                         using (MemoryStream stream = new MemoryStream())
                         {
-                            client.DownloadFile(FormatFTPPath(downloadPath), stream);
+                            client.DownloadFile(FormatFTPPath(downloadPath, !IsStoreServerLinux), stream);
                             rtnStore = stream.ToArray();
                         }
                     }
@@ -307,7 +313,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
                 }
             }
 
-            if (!string.IsNullOrEmpty(ApplicationSettings.SeparateUploadFilePath))
+            if (!string.IsNullOrEmpty(ApplicationSettings.SeparateUploadFilePath) && IsStoreServerLinux)
             {
                 RunCommand($"rm {downloadPath}", null, ApplicationSettings.UseSudo, null);
             }
@@ -329,8 +335,13 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
                 linuxFileGroup = linuxGroupOwner[1];
             }
 
-            AreLinuxPermissionsValid(linuxFilePermissions);
-            RunCommand($"install -m {linuxFilePermissions} -o {linuxFileOwner} -g {linuxFileGroup} /dev/null {path}", null, ApplicationSettings.UseSudo, null);
+            if (IsStoreServerLinux)
+            {
+                AreLinuxPermissionsValid(linuxFilePermissions);
+                RunCommand($"install -m {linuxFilePermissions} -o {linuxFileOwner} -g {linuxFileGroup} /dev/null {path}", null, ApplicationSettings.UseSudo, null);
+            }
+            else
+                RunCommand($@"Out-File -FilePath ""{path}""", null, false, null);
 
             _logger.MethodExit(LogLevel.Debug);
         }
@@ -339,14 +350,15 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
         {
             _logger.MethodEntry(LogLevel.Debug);
             _logger.LogDebug($"DoesFileExist: {path}");
-
+            
             using (SftpClient client = new SftpClient(Connection))
             {
                 try
                 {
                     client.Connect();
-                    string existsPath = FormatFTPPath(path);
+                    string existsPath = FormatFTPPath(path, !IsStoreServerLinux);
                     bool exists = client.Exists(existsPath);
+                    _logger.LogDebug(existsPath);
 
                     _logger.MethodExit(LogLevel.Debug);
 
@@ -357,13 +369,6 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
                     client.Disconnect();
                 }
             }
-        }
-
-        public static void AreLinuxPermissionsValid(string permissions)
-        {
-            Regex regex = new Regex(LINUX_PERMISSION_REGEXP);
-            if (!regex.IsMatch(permissions))
-                throw new RemoteFileException($"Invalid format for Linux file permissions.  This value must be exactly 3 digits long with each digit between 0-7 but found {permissions} instead.");
         }
 
         public override void RemoveCertificateFile(string path, string fileName)
@@ -413,12 +418,17 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
             return pemString.Replace("PRIVATE", "RSA PRIVATE");
         }
 
-        private string FormatFTPPath(string path)
+        private string FormatFTPPath(string path, bool addLeadingSlashForWindows)
         {
             _logger.MethodEntry(LogLevel.Debug);
+
+            string rtnPath = IsStoreServerLinux ? path : path.Replace("\\", "/");
+            rtnPath = addLeadingSlashForWindows ? "/" + rtnPath : rtnPath;
+
+            _logger.LogTrace($"Formatted path: {rtnPath}");
             _logger.MethodExit(LogLevel.Debug);
 
-            return path.Substring(0, 1) == @"/" ? path : @"/" + path.Replace("\\", "/");
+            return rtnPath;
         }
     }
 }
