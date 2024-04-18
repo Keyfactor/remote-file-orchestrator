@@ -1,3 +1,8 @@
+v2.6.0
+- Added ability for Linux installed universal orchestrator to manage stores as an "agent" (stores reside on same server as universal orchestrator) without the need to have SSH enabled.
+- Added ability for Linux installed universal orchestrator to manage certificate stores on Windows servers by using SSH to communicate between the Linux UO server and the Windows machines hosting the certificate stores.
+- Modified Discovery against Linux servers to use the -name option instead of -iname for the Linux shell "find" command, so Discovery will work for AIX servers.
+
 v2.5.0
 - Add new optional custom field and config.json entries to supply a user id other than "root" for the user to "sudo into" when UseSudo = "Y".  There is an optional config.json DefaultSudoImpersonatedUser that will be used at the orchestrator level, and an optional new store type custom field, SudoImpersonatedUser, that overrides the config.json setting for each certificate store.
 - Modified the optional sudo command prefix to remove the "-i" option which was creating a new shell for the impersonated id (always root up until this release).  Without this option the profile for the logged in user and not the impersonated user will be used when running commands.
