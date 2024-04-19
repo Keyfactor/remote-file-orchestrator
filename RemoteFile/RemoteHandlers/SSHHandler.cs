@@ -25,6 +25,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
     {
         private ConnectionInfo Connection { get; set; }
         private string SudoImpersonatedUser { get; set; }
+        private bool IsStoreServerLinux { get; set; }
         private SshClient sshClient;
 
         internal SSHHandler(string server, string serverLogin, string serverPassword, bool isStoreServerLinux, string sudoImpersonatedUser)
