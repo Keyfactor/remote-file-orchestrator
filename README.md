@@ -166,8 +166,8 @@ Please consult with your company's system administrator for more information on 
 7. Modify the config.json file (See the "Configuration File Setup" section later in this README)
 8. Start the Keyfactor Universal Orchestrator Service.
 </details>  
-&nbsp;  
-&nbsp;  
+
+
 ## Configuration File Setup 
 
 The Remote File Orchestrator Extension uses a JSON configuration file.  It is located in the {Keyfactor Orchestrator Installation Folder}\Extensions\RemoteFile.  None of the values are required, and a description of each follows below:  
