@@ -261,7 +261,7 @@ The Remote File Orchestrator Extension uses a JSON configuration file.  It is lo
 
 When setting up the certificate store types you wish the Remote File Orchestrator Extension to manage, there are some common settings that will be the same for all supported types.  To create a new Certificate Store Type in Keyfactor Command, first click on settings (the gear icon on the top right) => Certificate Store Types => Add.  Alternatively, there are CURL scripts for all of the currently implemented certificate store types in the Certificate Store Type CURL Scripts folder in this repo if you wish to automate the creation of the desired store types.
 
-**Common Values:** 
+**Common Store Type Settings for all Types:** 
 
 <details>
 <summary><i>Basic Tab:</i></summary>
@@ -297,14 +297,15 @@ When setting up the certificate store types you wish the Remote File Orchestrato
 
 </details>
 
-Entry Parameters Tab:
-- See specific certificate store type instructions below  
+<details>
+<summary><i>Entry Parameters Tab:</i></summary>
+
+- See specific certificate store type instructions below
+
+</details>
 
 &nbsp;  
-&nbsp;  
-**************************************
 **RFPkcs12 Certificate Store Type**
-**************************************
 
 The RFPkcs12 store type can be used to manage any PKCS#12 compliant file format INCLUDING java keystores of type PKCS12.
 
@@ -314,24 +315,35 @@ Use cases supported:
 3. A mix of trust and key entries.
 
 **Specific Certificate Store Type Values**  
-*Basic Tab:*
+
+<details>
+<summary><i>Basic Tab:</i></summary>
+
 - **Short Name** – Required. Suggested value - **RFPkcs12**.  If you choose to use a different value you must make the corresponding modification to the manifest.json file (see "Remote File Orchestrator Extension Installation", step 6 above).
 
-*Advanced Tab:*
+</details>
+
+<details>
+<summary><i>Advanced Tab:</i></summary>
+
 - **Supports Custom Alias** - Required.
 - **Private Key Handling** - Optional.  
 
-*Custom Fields Tab:*  
+<details>
+<summary><i>Custom Fields Tab:</i></summary>
+
 - no adittional custom fields/parameters
 
-Entry Parameters Tab:
+</details>
+
+<details>
+<summary><i>Entry Parameters Tab:</i></summary>
+
 - no additional entry parameters  
 
-&nbsp;  
-&nbsp;  
-**************************************
+</details>  
+ 
 **RFJKS Certificate Store Type**
-**************************************
 
 The RFJKS store type can be used to manage java keystores of type JKS.  **PLEASE NOTE:** Java keystores of type PKCS12 **_cannot_** be managed by the RFJKS type.  You **_must_** use RFPkcs12.
 
@@ -341,20 +353,34 @@ Use cases supported:
 3. A mix of trust and key entries.
 
 **Specific Certificate Store Type Values**  
-*Basic Tab:*
+
+<details>
+<summary><i>Basic Tab:</i></summary>
+
 - **Short Name** – Required. Suggested value - **RFJKS**.  If you choose to use a different value you must make the corresponding modification to the manifest.json file (see "Remote File Orchestrator Extension Installation", step 6 above).
 
-*Advanced Tab:*
+</details>
+
+<details>
+<summary><i>Advanced Tab:</i></summary>
+
 - **Supports Custom Alias** - Required.
 - **Private Key Handling** - Optional.  
 
-*Custom Fields Tab:*  
+</details>
+
+<details>
+<summary><i>Custom Fields Tab:</i></summary>
+  
 - no adittional custom fields/parameters
 
-Entry Parameters Tab:
+<details>
+<summary><i>Entry Parameters Tab:</i></summary>
+
 - no additional entry parameters  
 
-&nbsp;  
+</details>
+
 &nbsp;  
 **************************************
 **RFPEM Certificate Store Type**
