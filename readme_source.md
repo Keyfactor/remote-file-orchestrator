@@ -25,9 +25,10 @@ The version number of a the Remote File Orchestrator Extension can be verified b
 &nbsp;  
 &nbsp;  
 
-## Security Considerations
+## Prerequisites and Security Considerations
 
-**For Linux orchestrated servers:**
+<details>
+<summary><b>For Linux orchestrated servers:</b></summary>
 1. The Remote File Orchestrator Extension makes use of a few common Linux commands when managing stores on Linux servers. If the credentials you will be connecting with need elevated access to run these commands or to access the certificate store files these commands operate against, you must set up the user id as a sudoer with no password necessary and set the config.json "UseSudo" value to "Y" (See "Config File Setup" later in this README for more information on setting up the config.json file). The full list of these commands below:
 
 |Shell Command|Used For|
@@ -45,9 +46,11 @@ The version number of a the Remote File Orchestrator Extension can be verified b
 2. The Remote File Orchestrator Extension makes use of SFTP and/or SCP to transfer files to and from the orchestrated server.  SFTP/SCP cannot make use of sudo, so all folders containing certificate stores will need to allow SFTP/SCP file transfer.  If this is not possible, set the values in the config.json apprpriately to use an alternative upload/download folder that does allow SFTP/SCP file transfer (See "Config File Setup" later in this README regarding the config.json file).
 
 3. SSH Key Authentication: When creating a Keyfactor certificate store for the remote file orchestrator extension (see "Creating Certificate Stores" later in this README, you may supply either a user id and password for the certificate store credentials (directly or through one of Keyfactor Command's PAM integrations), or a user id and SSH private key.  Both PKCS#1 (BEGIN RSA PRIVATE KEY) and PKCS#8 (BEGIN PRIVATE KEY) formats are supported for the SSH private key.  If using the normal Keyfactor Command credentials dialog without PAM integration, just copy and paste the full SSH private key into the Password textbox.  
+</details>  
 
-**For Windows orchestrated servers:**
-1. Make sure that WinRM is set up on the orchestrated server and that the WinRM port is part of the certificate store path when setting up your certificate stores When creating a new certificate store in Keyfactor Command (See "Creating Certificate Stores" later in this README).
+<details>  
+<summary><b>For Windows orchestrated servers:</b></summary>
+1. Make sure that WinRM is set up on the orchestrated server and that the WinRM port (by convention, 5585 for HTTP and 5586 for HTTPS) is part of the certificate store path when setting up your certificate stores When creating a new certificate store in Keyfactor Command (See "Creating Certificate Stores" later in this README).
 
 Please consult with your company's system administrator for more information on configuring SSH/SFTP/SCP or WinRM in your environment.
 &nbsp;  
@@ -61,8 +64,10 @@ Please consult with your company's system administrator for more information on 
 6. (Optional) If you decide to create one or more certificate store types with short names different than the suggested values (please see the individual certificate store type sections in "Certificate Store Types" later in this README for more information regarding certificate store types), edit the manifest.json file in the folder you created in step 3, and modify each "ShortName" in each "Certstores.{ShortName}.{Operation}" line with the ShortName you used to create the respective certificate store type.  If you created it with the suggested values, this step can be skipped.
 7. Modify the config.json file (See the "Configuration File Setup" section later in this README)
 8. Start the Keyfactor Universal Orchestrator Service.
-&nbsp;  
-&nbsp;  
+</details>  
+
+
+&nbsp;
 ## Configuration File Setup 
 
 The Remote File Orchestrator Extension uses a JSON configuration file.  It is located in the {Keyfactor Orchestrator Installation Folder}\Extensions\RemoteFile.  None of the values are required, and a description of each follows below:  
@@ -77,7 +82,14 @@ The Remote File Orchestrator Extension uses a JSON configuration file.  It is lo
    "DefaultOwnerOnStoreCreation": ""  
 }  
 
-**UseSudo** (Applicable for Linux orchestrated servers only) - Y/N - Determines whether to prefix certain Linux command with "sudo". This can be very helpful in ensuring that the user id running commands over an ssh connection uses "least permissions necessary" to process each task. Setting this value to "Y" will prefix all Linux commands with "sudo" with the expectation that the command being executed on the orchestrated Linux server will look in the sudoers file to determine whether the logged in ID has elevated permissions for that specific command. For Windows orchestrated servers, this setting has no effect. Setting this value to "N" will result in "sudo" not being added to Linux commands.  
+<details>
+<summary><b>UseSudo (Applicable for Linux orchestrated servers only)</b></summary>
+* Determines whether to prefix certain Linux command with "sudo". This can be very helpful in ensuring that the user id running commands over an ssh connection uses "least permissions necessary" to process each task. Setting this value to "Y" will prefix all Linux commands with "sudo" with the expectation that the command being executed on the orchestrated Linux server will look in the sudoers file to determine whether the logged in ID has elevated permissions for that specific command. Setting this value to "N" will result in "sudo" not being added to Linux commands.  For Windows orchestrated servers, this setting has no effect.  
+* Allowed values - Y/N  
+* Default value - N  
+</details>  
+
+
 **DefaultSudoImpersonatedUser** (Applicable for Linux orchestrated servers only) - Used in conjunction with UseSudo="Y", this optional setting can be used to set an alternate user id you wish to impersonate with sudo.  If this option does not exist or is set to an empty string, the default user of "root" will be used.  Any user id used here must have permissions to SCP/SFTP files to/from each certificate store location OR the SeparateUploadFilePath (see later in this section) as well as permissions to execute the commands listed in the "Security Considerations" section above.  This value will be used for all certificate stores managed by this orchestrator extension implementation UNLESS overriden by the SudoImpersonatedUser certificate store type custom field setting described later in the Certificate Store Types section.  
 **CreateStoreOnAddIfMissing** - Y/N - Determines, during a Management-Add job, if a certificate store should be created if it does not already exist.  If set to "N", and the store referenced in the Management-Add job is not found, the job will return an error with a message stating that the store does not exist.  If set to "Y", the store will be created and the certificate added to the certificate store.  **Default value if missing - N**.  
 **UseNegotiateAuth** (Applicable for Windows orchestrated servers only) – Y/N - Determines if WinRM should use Negotiate (Y) when connecting to the remote server.  **Default Value if missing - N**.  
