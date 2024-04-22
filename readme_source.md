@@ -28,7 +28,7 @@ The version number of a the Remote File Orchestrator Extension can be verified b
 ## Prerequisites and Security Considerations
 
 <details>
-<summary><b>For Linux orchestrated servers:</b></summary>
+<summary><b>Certificate stores hosted on Linux servers:</b></summary>
 1. The Remote File Orchestrator Extension makes use of a few common Linux commands when managing stores on Linux servers. If the credentials you will be connecting with need elevated access to run these commands or to access the certificate store files these commands operate against, you must set up the user id as a sudoer with no password necessary and set the config.json "UseSudo" value to "Y" (See "Config File Setup" later in this README for more information on setting up the config.json file). The full list of these commands below:
 
 |Shell Command|Used For|
@@ -49,7 +49,7 @@ The version number of a the Remote File Orchestrator Extension can be verified b
 </details>  
 
 <details>  
-<summary><b>For Windows orchestrated servers:</b></summary>
+<summary><b>Certificate stores hosted on Windows servers:</b></summary>
 1. Make sure that WinRM is set up on the orchestrated server and that the WinRM port (by convention, 5585 for HTTP and 5586 for HTTPS) is part of the certificate store path when setting up your certificate stores When creating a new certificate store in Keyfactor Command (See "Creating Certificate Stores" later in this README).
 
 Please consult with your company's system administrator for more information on configuring SSH/SFTP/SCP or WinRM in your environment.
