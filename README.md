@@ -154,7 +154,8 @@ The version number of a the Remote File Orchestrator Extension can be verified b
 1. Make sure that WinRM is set up on the orchestrated server and that the WinRM port (by convention, 5585 for HTTP and 5586 for HTTPS) is part of the certificate store path when setting up your certificate stores When creating a new certificate store in Keyfactor Command (See "Creating Certificate Stores" later in this README).
 
 Please consult with your company's system administrator for more information on configuring SSH/SFTP/SCP or WinRM in your environment.
-&nbsp;  
+
+</details>  
 &nbsp;  
 ## Remote File Orchestrator Extension Installation
 1. Create the certificate store types you wish to manage.  Please refer to the individual sections devoted to each supported store type under "Certificate Store Types" later in this README.
@@ -258,7 +259,7 @@ The Remote File Orchestrator Extension uses a JSON configuration file.  It is lo
 &nbsp;  
 ## Certificate Store Types
 
-When setting up the certificate store types you wish the Remote File Orchestrator Extension to manage, there are some common settings that will be the same for all supported types.  To create a new Certificate Store Type in Keyfactor Command, first click on settings (the gear icon on the top right) => Certificate Store Types => Add.  Alternatively, there are CURL scripts for all of the currently implemented certificate store types in the Certificate Store Type CURL Scripts folder in this repo if you wish to automate the creation of the desired store types.
+Below are the various certificate store types that the RemoteFile Orchestator Extension manages.  To create a new Certificate Store Type in Keyfactor Command, first click on settings (the gear icon on the top right) => Certificate Store Types => Add.  This section is broken out into the store type settings that are common for all managed certificate store types, followed by each individual store type and it's additional or different settings.
 
 **Common Store Type Settings for all Types:** 
 
