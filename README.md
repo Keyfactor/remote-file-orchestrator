@@ -155,7 +155,8 @@ The version number of a the Remote File Orchestrator Extension can be verified b
 
 Please consult with your company's system administrator for more information on configuring SSH/SFTP/SCP or WinRM in your environment.
 
-</details>  
+</details>
+  
 &nbsp;  
 ## Remote File Orchestrator Extension Installation
 1. Create the certificate store types you wish to manage.  Please refer to the individual sections devoted to each supported store type under "Certificate Store Types" later in this README.
