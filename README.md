@@ -129,7 +129,7 @@ The version number of a the Remote File Orchestrator Extension can be verified b
 ## Security Considerations
 
 <details>
-<summary>**For Linux orchestrated servers:**</summary>
+<summary><b>For Linux orchestrated servers:</b></summary>
 1. The Remote File Orchestrator Extension makes use of a few common Linux commands when managing stores on Linux servers. If the credentials you will be connecting with need elevated access to run these commands or to access the certificate store files these commands operate against, you must set up the user id as a sudoer with no password necessary and set the config.json "UseSudo" value to "Y" (See "Config File Setup" later in this README for more information on setting up the config.json file). The full list of these commands below:
 
 |Shell Command|Used For|
@@ -166,8 +166,8 @@ Please consult with your company's system administrator for more information on 
 7. Modify the config.json file (See the "Configuration File Setup" section later in this README)
 8. Start the Keyfactor Universal Orchestrator Service.
 </details>  
-&nbsp;  
-&nbsp;  
+\
+\ 
 ## Configuration File Setup 
 
 The Remote File Orchestrator Extension uses a JSON configuration file.  It is located in the {Keyfactor Orchestrator Installation Folder}\Extensions\RemoteFile.  None of the values are required, and a description of each follows below:  
