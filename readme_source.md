@@ -49,7 +49,7 @@ The version number of a the Remote File Orchestrator Extension can be verified b
 </details>  
 
 <details>  
-<summary> **For Windows orchestrated servers:** </summary>
+<summary><b>For Windows orchestrated servers:</b></summary>
 1. Make sure that WinRM is set up on the orchestrated server and that the WinRM port is part of the certificate store path when setting up your certificate stores When creating a new certificate store in Keyfactor Command (See "Creating Certificate Stores" later in this README).
 
 Please consult with your company's system administrator for more information on configuring SSH/SFTP/SCP or WinRM in your environment.
