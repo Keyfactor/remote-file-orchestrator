@@ -185,9 +185,11 @@ The Remote File Orchestrator Extension uses a JSON configuration file.  It is lo
 
 <details>
 <summary><b>UseSudo (Applicable for Linux orchestrated servers only)</b></summary>
+
 * Determines whether to prefix certain Linux command with "sudo". This can be very helpful in ensuring that the user id running commands over an ssh connection uses "least permissions necessary" to process each task. Setting this value to "Y" will prefix all Linux commands with "sudo" with the expectation that the command being executed on the orchestrated Linux server will look in the sudoers file to determine whether the logged in ID has elevated permissions for that specific command. Setting this value to "N" will result in "sudo" not being added to Linux commands.  For Windows orchestrated servers, this setting has no effect.  
 * Allowed values - Y/N  
 * Default value - N  
+
 </details>  
 
 
