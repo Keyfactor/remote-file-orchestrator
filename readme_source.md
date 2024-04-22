@@ -155,7 +155,6 @@ The Remote File Orchestrator Extension uses a JSON configuration file.  It is lo
 </details>
 
 &nbsp;  
-&nbsp;  
 ## Certificate Store Types
 
 When setting up the certificate store types you wish the Remote File Orchestrator Extension to manage, there are some common settings that will be the same for all supported types.  To create a new Certificate Store Type in Keyfactor Command, first click on settings (the gear icon on the top right) => Certificate Store Types => Add.  Alternatively, there are CURL scripts for all of the currently implemented certificate store types in the Certificate Store Type CURL Scripts folder in this repo if you wish to automate the creation of the desired store types.
@@ -228,6 +227,8 @@ Use cases supported:
 - **Supports Custom Alias** - Required.
 - **Private Key Handling** - Optional.  
 
+</details>
+
 <details>
 <summary><i>Custom Fields Tab:</i></summary>
 
@@ -273,6 +274,8 @@ Use cases supported:
   
 - no adittional custom fields/parameters
 
+</details>
+
 <details>
 <summary><i>Entry Parameters Tab:</i></summary>
 
@@ -281,9 +284,7 @@ Use cases supported:
 </details>
 
 &nbsp;  
-**************************************
 **RFPEM Certificate Store Type**
-**************************************
 
 The RFPEM store type can be used to manage PEM encoded files.
 
@@ -294,29 +295,42 @@ Use cases supported:
 4. Single certificate stores with private key in an external file.
 5. Single certificate stores with certificate chain in the file and private key in an external file 
 
-**Specific Certificate Store Type Values**  
-*Basic Tab:*
+**Specific Certificate Store Type Values**
+
+<details>
+<summary><i>Basic Tab:</i></summary>
+
 - **Short Name** – Required. Suggested value - **RFPEM**.  If you choose to use a different value you must make the corresponding modification to the manifest.json file (see "Remote File Orchestrator Extension Installation", step 6 above).
 
-*Advanced Tab:*
+</details>
+
+<summary><i>Advanced Tab:</i></summary>
+
 - **Supports Custom Alias** - Forbidden.
 - **Private Key Handling** - Optional.  
 
-*Custom Fields Tab:*  
+</details>
+
+<details>
+<summary><i>Custom Fields Tab:</i></summary>
+
 - **Name:** IsTrustStore, **Display Name:** Trust Store, **Type:** Bool, **Default Value:** false.   This custom field is **not required**.  Default value if not present is 'false'.  If 'true', this store will be identified as a trust store.  Any certificates attempting to be added via a Management-Add job that contain a private key will raise an error with an accompanying message.  Multiple certificates may be added to the store in this use case.  If set to 'false', this store can only contain a single certificate with chain and private key.  Management-Add jobs attempting to add a certificate without a private key to a store marked as IsTrustStore = 'false' will raise an error with an accompanying message.
 - **Name:** IncludesChain, **Display Name:** Store Includes Chain, **Type:** Bool, **Default Value:** false.   This custom field is **not required**.  Default value if not present is 'false'.  If 'true' the full certificate chain, if sent by Keyfactor Command, will be stored in the file.  The order of appearance is always assumed to be 1) end entity certificate, 2) issuing CA certificate, and 3) root certificate.  If additional CA tiers are applicable, the order will be end entity certificate up to the root CA certificate.  if set to 'false', only the end entity certificate and private key will be stored in this store.  This setting is only valid when IsTrustStore = false.
 - **Name:** SeparatePrivateKeyFilePath, **Display Name:** Separate Private Key File Location, **Type:** String, **Default Value:** empty.   This custom field is **not required**. If empty, or not provided, it will be assumed that the private key for the certificate stored in this file will be inside the same file as the certificate.  If the full path AND file name is put here, that location will be used to store the private key as an external file.  This setting is only valid when IsTrustStore = false. 
 - **Name:** IsRSAPrivateKey, **Display Name:** Is RSA Private Key, **Type:** Bool, **Default Value:** false.   This custom field is **not required**. Default value if not present is 'false'.  If 'true' it will be assumed that the private key for the certificate is a PKCS#1 RSA formatted private key (BEGIN RSA PRIVATE KEY).  If 'false' (default), encrypted/non-encrypted PKCS#8 (BEGIN [ENCRYPTED] PRIVATE KEY) is assumed  If set to 'true' the store password **must** be set to "no password", as PKCS#1 does not support encrypted keys.  This setting is only valid when IsTrustStore = false. 
 - **Name:** IgnorePrivateKeyOnInventory, **Display Name:** Ignore Private Key On Inventory, **Type:** Bool, **Default Value:** false.   This custom field is **not required**. Default value if not present is 'false'.  If 'true', inventory for this certificate store will be performed without accessing the certificate's private key or the store password.  This will functionally make the store INVENTORY ONLY, as all certificates will be returned with "Private Key Entry" = false.  Also, no certificate chain relationships will be maintained, and all certificates will be considered separate entries (basically a trust store).  This may be useful in situations where the client does not know the store password at inventory run time, but would still like the certificates to be imported into Keyfactor Command.  Once the correct store password is entered for the store, the client may de-select this option (change the value to False), schedule an inventory job, and then the appropriate private key entry and chain information should be properly stored in the Keyfactor Command location, allowing for renewal/removal of the certificate at a later time. 
 
-Entry Parameters Tab:
+</details>
+
+<details>
+<summary><i>Entry Parameters Tab:</i></summary>
+
 - no additional entry parameters
 
+</details>
+
 &nbsp;  
-&nbsp;  
-**************************************
 **RFDER Certificate Store Type**
-**************************************
 
 The RFDER store type can be used to manage DER encoded files.
 
@@ -324,25 +338,39 @@ Use cases supported:
 1. Single certificate stores with private key in an external file.
 5. Single certificate stores with no private key. 
 
-**Specific Certificate Store Type Values**  
-*Basic Tab:*
+**Specific Certificate Store Type Values**
+
+<details>
+<summary><i>Basic Tab:</i></summary>
+
 - **Short Name** – Required. Suggested value - **RFDER**.  If you choose to use a different value you must make the corresponding modification to the manifest.json file (see "Remote File Orchestrator Extension Installation", step 6 above).
 
-*Advanced Tab:*
+</details>
+
+<details>
+<summary><i>Advanced Tab:</i></summary>
+
 - **Supports Custom Alias** - Forbidden.
 - **Private Key Handling** - Optional.  
 
-*Custom Fields Tab:*  
+</details>
+
+<details>
+<summary><i>Custom Fields Tab:</i></summary> 
+
 - **Name:** SeparatePrivateKeyFilePath, **Display Name:** Separate Private Key File Location, **Type:** String, **Default Value:** empty.   This custom field is **not required**. If empty, or not provided, it will be assumed that there is no private key associated with this DER store.  If the full path AND file name is entered here, that location will be used to store the private key as an external file in DER format. 
 
-Entry Parameters Tab:
+</details>
+
+<details>
+<summary><i>Entry Parameters Tab:</i></summary>
+
 - no additional entry parameters
 
+</details>
+
 &nbsp;  
-&nbsp;  
-**************************************
 **RFKDB Certificate Store Type**
-**************************************
 
 The RFKDB store type can be used to manage IBM Key Database Files (KDB) files.  The IBM utility, GSKCAPICMD, is used to read and write certificates from and to the target store and is therefore required to be installed on the server where each KDB certificate store being managed resides, and its location MUST be in the system $Path.
 
@@ -351,25 +379,39 @@ Use cases supported:
 2. One-to-many key entries - One-to-many certificates with private keys and optionally the full certificate chain.  Each certificate identified with a custom alias or certificate thumbprint.
 3. A mix of trust and key entries.
 
-**Specific Certificate Store Type Values**  
-*Basic Tab:*
+**Specific Certificate Store Type Values**
+
+<details>
+<summary><i>Basic Tab:</i></summary>
+
 - **Short Name** – Required. Suggested value - **RFKDB**.  If you choose to use a different value you must make the corresponding modification to the manifest.json file (see "Remote File Orchestrator Extension Installation", step 6 above).
 
-*Advanced Tab:*
+</details>
+
+<details>
+<summary><i>Advanced Tab:</i></summary>
+
 - **Supports Custom Alias** - Required.
 - **Private Key Handling** - Optional.  
 
-*Custom Fields Tab:*  
+</details>
+
+<details>
+<summary><i>Custom Fields Tab:</i></summary>
+  
 - no adittional custom fields/parameters
 
-Entry Parameters Tab:
+</details>
+
+<details>
+<summary><i>Entry Parameters Tab:</i></summary>
+
 - no additional entry parameters  
 
+</details>
+
 &nbsp;  
-&nbsp;  
-**************************************
 **RFORA Certificate Store Type**
-**************************************
 
 The RFORA store type can be used to manage Pkcs2 Oracle Wallets.  Please note that while this should work for Pkcs12 Oracle Wallets installed on both Windows and Linux servers, this has only been tested on wallets installed on Windows.  Please note, when entering the Store Path for an Oracle Wallet in Keyfactor Command, make sure to INCLUDE the eWallet.p12 file name that by convention is the name of the Pkcs12 wallet file that gets created.
 
@@ -379,20 +421,36 @@ Use cases supported:
 3. A mix of trust and key entries.
 
 **Specific Certificate Store Type Values**  
-*Basic Tab:*
+
+<details>
+<summary><i>Basic Tab:</i></summary>
+
 - **Short Name** – Required. Suggested value - **RFORA**.  If you choose to use a different value you must make the corresponding modification to the manifest.json file (see "Remote File Orchestrator Extension Installation", step 6 above).
 
-*Advanced Tab:*
-- **Supports Custom Alias** - Required.
-- **Private Key Handling** - Optional.  
+</details>
 
-*Custom Fields Tab:*  
+<details>
+<summary><i>Advanced Tab:</i></summary>
+
+- **Supports Custom Alias** - Required.
+- **Private Key Handling** - Optional. 
+
+</details>
+
+<details>
+<summary><i>Custom Fields Tab:</i></summary>
+ 
 - **Name:** WorkFolder, **Display Name:** Work Folder, **Type:** String, **Default Value:** empty.   This custom field is **required**. This required field should contain the path on the managed server where temporary work files can be created during Inventory and Management jobs.  These files will be removed at the end of each job  Please make sure that user id you have assigned to this certificate store will have access to create, modify, and delete files from this folder. 
 
-Entry Parameters Tab:
+</details>
+
+<details>
+<summary><i>Entry Parameters Tab:</i></summary>
+
 - no additional entry parameters  
 
-&nbsp;  
+</details>
+
 &nbsp;  
 ## Creating Certificate Stores and Scheduling Discovery Jobs
 
