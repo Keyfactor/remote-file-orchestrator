@@ -306,6 +306,8 @@ Use cases supported:
 
 </details>
 
+<details>
+
 <summary><i>Advanced Tab:</i></summary>
 
 - **Supports Custom Alias** - Forbidden.
