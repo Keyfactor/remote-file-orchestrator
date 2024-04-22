@@ -345,7 +345,8 @@ Use cases supported:
 - no additional entry parameters  
 
 </details>  
- 
+
+&nbsp;
 **RFJKS Certificate Store Type**
 
 The RFJKS store type can be used to manage java keystores of type JKS.  **PLEASE NOTE:** Java keystores of type PKCS12 **_cannot_** be managed by the RFJKS type.  You **_must_** use RFPkcs12.
