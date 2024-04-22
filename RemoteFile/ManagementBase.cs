@@ -64,7 +64,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
                 switch (config.OperationType)
                 {
                     case CertStoreOperationType.Add:
-                        logger.LogDebug($"BEGIN create Operation for {config.CertificateStoreDetails.StorePath} on {config.CertificateStoreDetails.ClientMachine}.");
+                        logger.LogDebug($"BEGIN add Operation for {config.CertificateStoreDetails.StorePath} on {config.CertificateStoreDetails.ClientMachine}.");
                         if (!certificateStore.DoesStoreExist())
                         {
                             if (ApplicationSettings.CreateStoreIfMissing)
@@ -76,7 +76,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
                         certificateStore.AddCertificate((config.JobCertificate.Alias ?? new X509Certificate2(Convert.FromBase64String(config.JobCertificate.Contents), config.JobCertificate.PrivateKeyPassword).Thumbprint), config.JobCertificate.Contents, config.Overwrite, config.JobCertificate.PrivateKeyPassword);
                         certificateStore.SaveCertificateStore(certificateStoreSerializer.SerializeRemoteCertificateStore(certificateStore.GetCertificateStore(), storePathFile.Path, storePathFile.File, storePassword, certificateStore.RemoteHandler));
 
-                        logger.LogDebug($"END create Operation for {config.CertificateStoreDetails.StorePath} on {config.CertificateStoreDetails.ClientMachine}.");
+                        logger.LogDebug($"END add Operation for {config.CertificateStoreDetails.StorePath} on {config.CertificateStoreDetails.ClientMachine}.");
                         break;
 
                     case CertStoreOperationType.Remove:
