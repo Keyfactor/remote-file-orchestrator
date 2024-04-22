@@ -126,7 +126,7 @@ The version number of a the Remote File Orchestrator Extension can be verified b
 &nbsp;  
 &nbsp;  
 
-## Security Considerations
+## Prerequisites and Security Considerations
 
 <details>
 <summary><b>For Linux orchestrated servers:</b></summary>
@@ -151,7 +151,7 @@ The version number of a the Remote File Orchestrator Extension can be verified b
 
 <details>  
 <summary><b>For Windows orchestrated servers:</b></summary>
-1. Make sure that WinRM is set up on the orchestrated server and that the WinRM port is part of the certificate store path when setting up your certificate stores When creating a new certificate store in Keyfactor Command (See "Creating Certificate Stores" later in this README).
+1. Make sure that WinRM is set up on the orchestrated server and that the WinRM port (by convention, 5585 for HTTP and 5586 for HTTPS) is part of the certificate store path when setting up your certificate stores When creating a new certificate store in Keyfactor Command (See "Creating Certificate Stores" later in this README).
 
 Please consult with your company's system administrator for more information on configuring SSH/SFTP/SCP or WinRM in your environment.
 &nbsp;  
@@ -183,7 +183,11 @@ The Remote File Orchestrator Extension uses a JSON configuration file.  It is lo
    "DefaultOwnerOnStoreCreation": ""  
 }  
 
-**UseSudo** (Applicable for Linux orchestrated servers only) - Y/N - Determines whether to prefix certain Linux command with "sudo". This can be very helpful in ensuring that the user id running commands over an ssh connection uses "least permissions necessary" to process each task. Setting this value to "Y" will prefix all Linux commands with "sudo" with the expectation that the command being executed on the orchestrated Linux server will look in the sudoers file to determine whether the logged in ID has elevated permissions for that specific command. For Windows orchestrated servers, this setting has no effect. Setting this value to "N" will result in "sudo" not being added to Linux commands.  
+<details>
+<summary><b>UseSudo (Applicable for Linux orchestrated servers only)</b></summary>
+* Determines whether to prefix certain Linux command with "sudo". This can be very helpful in ensuring that the user id running commands over an ssh connection uses "least permissions necessary" to process each task. Setting this value to "Y" will prefix all Linux commands with "sudo" with the expectation that the command being executed on the orchestrated Linux server will look in the sudoers file to determine whether the logged in ID has elevated permissions for that specific command. Setting this value to "N" will result in "sudo" not being added to Linux commands.  For Windows orchestrated servers, this setting has no effect.  
+* Allowed values - Y/N  
+* Default value - N  
 **DefaultSudoImpersonatedUser** (Applicable for Linux orchestrated servers only) - Used in conjunction with UseSudo="Y", this optional setting can be used to set an alternate user id you wish to impersonate with sudo.  If this option does not exist or is set to an empty string, the default user of "root" will be used.  Any user id used here must have permissions to SCP/SFTP files to/from each certificate store location OR the SeparateUploadFilePath (see later in this section) as well as permissions to execute the commands listed in the "Security Considerations" section above.  This value will be used for all certificate stores managed by this orchestrator extension implementation UNLESS overriden by the SudoImpersonatedUser certificate store type custom field setting described later in the Certificate Store Types section.  
 **CreateStoreOnAddIfMissing** - Y/N - Determines, during a Management-Add job, if a certificate store should be created if it does not already exist.  If set to "N", and the store referenced in the Management-Add job is not found, the job will return an error with a message stating that the store does not exist.  If set to "Y", the store will be created and the certificate added to the certificate store.  **Default value if missing - N**.  
 **UseNegotiateAuth** (Applicable for Windows orchestrated servers only) – Y/N - Determines if WinRM should use Negotiate (Y) when connecting to the remote server.  **Default Value if missing - N**.  
