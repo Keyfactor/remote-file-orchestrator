@@ -247,7 +247,7 @@ The Remote File Orchestrator Extension uses a JSON configuration file.  It is lo
 </details>
 
 <details>  
-<summary><b>DefaultOwnerOnStoreCreation</b> (Applicable for Linux managed servers only)</summary>
+<summary><b>DefaultOwnerOnStoreCreation</b> (Applicable for Linux hosted certificate stores only)</summary>
 
 * When a Management job is run to remotely create the physical certificate store on a remote server, by default the file owner and group will be set to the user name associated with the Keyfactor certificate store.  Setting DefaultOwnerOnStoreCreation to an alternative valid Linux user name will set that as the owner/group instead.  If the group and owner need to be different values, use a ":" as a delimitter between the owner and group values, such as ownerId:groupId.  Please make sure that the user associated with the certificate store will have valid permissions to chown the certificate store file to this alernative owner.  The optional "Linux File Owner on Store Creation" custom parameter setting for a specific certificate store (See the "Certificatee Store Types Supported" section later in this README) can override this value for a specific store.
 * Allowed values - Any valid user id that the destination Linux server will recognize
@@ -261,8 +261,11 @@ The Remote File Orchestrator Extension uses a JSON configuration file.  It is lo
 
 When setting up the certificate store types you wish the Remote File Orchestrator Extension to manage, there are some common settings that will be the same for all supported types.  To create a new Certificate Store Type in Keyfactor Command, first click on settings (the gear icon on the top right) => Certificate Store Types => Add.  Alternatively, there are CURL scripts for all of the currently implemented certificate store types in the Certificate Store Type CURL Scripts folder in this repo if you wish to automate the creation of the desired store types.
 
-**Common Values:**  
-*Basic Tab:*
+**Common Values:** 
+
+<details>
+<summary><i>Basic Tab:</i></summary>
+
 - **Name** – Required. The display name you wish to use for the new Certificate Store Type.
 - **ShortName** - Required. See specific certificate store type instructions below.
 - **Custom Capability** - Unchecked
@@ -273,16 +276,26 @@ When setting up the certificate store types you wish the Remote File Orchestrato
 - **Requires Store Password** - Checked.  NOTE: This does not require that a certificate store have a password, but merely ensures that a user who creates a Keyfactor Command Certificate Store MUST click the Store Password button and either enter a password or check No Password.  Certificate stores with no passwords are still possible for certain certificate store types when checking this option.
 - **Supports Entry Password** - Unchecked.  
 
-*Advanced Tab:*  
+</details>
+
+<details>
+<summary><i>Advanced Tab:</i></summary>
+
 - **Store Path Type** - Freeform
 - **Supports Custom Alias** - See specific certificate store type instructions below.
 - **Private Key Handling** - See specific certificate store type instructions below
 - **PFX Password Style** - Default  
 
-*Custom Fields Tab:*
+</details>
+
+<details>
+<summary><i>Custom Fields Tab:</i></summary>
+
 - **Name:** LinuxFilePermissionsOnStoreCreation, **Display Name:** Linux File Permissions on Store Creation, **Type:** String, **Default Value:** none.  This custom field is **not required**.  If not present, value reverts back to the DefaultLinuxPermissionsOnStoreCreation setting in config.json (see Configuration File Setup section above).  This value, applicable to certificate stores hosted on Linux orchestrated servers only, must be 3 digits all between 0-7.  This represents the Linux file permissions that will be set for this certificate store if created via a Management Create job or a Management Add job where the config.json option CreateStoreOnAddIsMissing is set to "Y".  
 - **Name:** LinuxFileOwnerOnStoreCreation, **Display Name:** Linux File Owner on Store Creation, **Type:** String, **Default Value:** none.  This custom field is **not required**.  If not present, value reverts back to the DefaultOwnerOnStoreCreation setting in config.json (see Configuration File Setup section above).  This value, applicable to certificate stores hosted on Linux orchestrated servers only, represents the alternate Linux file owner/group that will be set for this certificate store if created via a Management Create job or a Management Add job where the config.json option CreateStoreOnAddIsMissing is set to "Y".  If the group and owner need to be different values, use a ":" as a delimitter between the owner and group values, such as ownerId:groupId.  Please confirm that the user name associated with this Keyfactor certificate store has valid permissions to chown the certificate file to this owner.
 - **Name:** SudoImpersonatedUser, **Display Name:** Sudo Impersonated User Id, **Type:** String, **Default Value:** none.  This custom field is **not required**.  If not present, value reverts back to the DefaultSudoImpersonatedUser setting in config.json (see Configuration File Setup section above).  Used in conjunction with UseSudo="Y", this optional setting can be used to set an alternate user id you wish to impersonate with sudo.  If this option does not exist or is empty, and nothing is set for DefaultSudoImpersonatedUser in your config.json, the default user of "root" will be used.  Any user id used here must have permissions to SCP/SFTP files to/from each certificate store location OR the SeparateUploadFilePath (see Configuration File Setup section above) as well as permissions to execute the commands listed in the "Security Considerations" section above.
+
+</details>
 
 Entry Parameters Tab:
 - See specific certificate store type instructions below  
