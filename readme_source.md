@@ -131,7 +131,7 @@ Please consult with your company's system administrator for more information on 
 5. Download the latest version of the RemoteFile orchestrator extension from [GitHub](https://github.com/Keyfactor/remote-file-orchestrator).  Click on the "Latest" release link on the right hand side of the main page and download the first zip file.
 6. Copy the contents of the download installation zip file to the folder created in step 4.
 7. (Optional) If you decide to create one or more certificate store types with short names different than the suggested values, edit the manifest.json file in the folder you created in step 4, and modify each "ShortName" in each "Certstores.{ShortName}.{Operation}" line with the ShortName you used to create the respective certificate store type.
-8. Modify the config.json file to use the settings you desire.  Please go to [Configuration File Setup](#configuration-file-setup] to learn more. 
+8. Modify the config.json file to use the settings you desire.  Please go to [Configuration File Setup](#configuration-file-setup) to learn more. 
 9. Start the Keyfactor Universal Orchestrator Service.
 
 </details>  
