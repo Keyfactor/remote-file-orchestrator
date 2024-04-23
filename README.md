@@ -359,7 +359,7 @@ Use cases supported:
 </details>
 
 <details>
-<summary>**RFPEM Certificate Store Type**</summary>
+<summary><b>RFPEM Certificate Store Type</b></summary>
 
 The RFPEM store type can be used to manage PEM encoded files.
 
@@ -394,8 +394,6 @@ Use cases supported:
   - no additional entry parameters
 
 </details>
-
-&nbsp;  
 
 <details>
 <summary><b>RFDER Certificate Store Type</b></summary>
