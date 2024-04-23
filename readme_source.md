@@ -3,7 +3,7 @@
 The Remote File Orchestrator Extension is a multi-purpose integration that can remotely manage a variety of file-based certificate stores and can easily be extended to manage others.  The certificate store types that can be managed in the current version are:
 
 <details>
-<summary><b>RFPkcs12</b></summary>
+<summary>RFPkcs12</summary>
 
 The RFPkcs12 store type can be used to manage any PKCS#12 compliant file format INCLUDING java keystores of type PKCS12.
 
@@ -15,7 +15,7 @@ Use cases supported:
 </details>
 
 <details>
-<summary><b>RFJKS</b></summary>
+<summary>RFJKS</summary>
 
 The RFJKS store type can be used to manage java keystores of type JKS.  **PLEASE NOTE:** Java keystores of type PKCS12 **_cannot_** be managed by the RFJKS type.  You **_must_** use RFPkcs12.
 
@@ -27,7 +27,7 @@ Use cases supported:
 </details>
 
 <details>
-<summary><b>RFPEM</b></summary>
+<summary>RFPEM</summary>
 
 The RFPEM store type can be used to manage PEM encoded files.
 
@@ -42,7 +42,7 @@ Use cases supported:
 
 <details>
 
-<summary><b>RFDER</b></summary>
+<summary>RFDER</summary>
 
 The RFDER store type can be used to manage DER encoded files.
 
@@ -53,7 +53,7 @@ Use cases supported:
 </details>
 
 <details>
-<summary><b>RFKDB</b></summary>
+<summary>RFKDB</summary>
 
 The RFKDB store type can be used to manage IBM Key Database Files (KDB) files.  The IBM utility, GSKCAPICMD, is used to read and write certificates from and to the target store and is therefore required to be installed on the server where each KDB certificate store being managed resides, and its location MUST be in the system $Path.
 
@@ -65,7 +65,7 @@ Use cases supported:
 </details>
 
 <details>
-<summary><b>RFORA</b></summary>
+<summary>RFORA</summary>
 
 The RFORA store type can be used to manage Pkcs12 Oracle Wallets.  Please note that while this should work for Pkcs12 Oracle Wallets installed on both Windows and Linux servers, this has only been tested on wallets installed on Windows.  Please note, when entering the Store Path for an Oracle Wallet in Keyfactor Command, make sure to INCLUDE the eWallet.p12 file name that by convention is the name of the Pkcs12 wallet file that gets created.
 
