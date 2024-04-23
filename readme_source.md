@@ -164,20 +164,17 @@ Below are the various certificate store types that the RemoteFile Orchestator Ex
 <details>
 <summary><b>Common Store Type Settings for all Types:</b></summary> 
 
-	<details>
-	<summary><i>Basic Tab:</i></summary>
+- <i>Basic Tab:</i></summary>
 
-	- **Name** – Required. The display name you wish to use for the new Certificate Store Type.
-	- **ShortName** - Required. See specific certificate store type instructions below.
-	- **Custom Capability** - Unchecked
-	- **Supported Job Types** - Inventory, Add, Remove, Create, and Discovery should all be checked.
-	- **Needs Server** - Checked
-	- **Blueprint Allowed** - Checked if you wish to make use of blueprinting.  Please refer to the Keyfactor Command Reference Guide for more details on this feature.
-	- **Uses PowerShell** - Unchecked
-	- **Requires Store Password** - Checked.  NOTE: This does not require that a certificate store have a password, but merely ensures that a user who creates a Keyfactor Command Certificate Store MUST click the Store Password button and either enter a password or check No Password.  Certificate stores with no passwords are still possible for certain certificate store types when checking this option.
-	- **Supports Entry Password** - Unchecked.  
-
-	</details>
+  - **Name** – Required. The display name you wish to use for the new Certificate Store Type.
+  - **ShortName** - Required. See specific certificate store type instructions below.
+  - **Custom Capability** - Unchecked
+  - **Supported Job Types** - Inventory, Add, Remove, Create, and Discovery should all be checked.
+  - **Needs Server** - Checked
+  - **Blueprint Allowed** - Checked if you wish to make use of blueprinting.  Please refer to the Keyfactor Command Reference Guide for more details on this feature.
+  - **Uses PowerShell** - Unchecked
+  - **Requires Store Password** - Checked.  NOTE: This does not require that a certificate store have a password, but merely ensures that a user who creates a Keyfactor Command Certificate Store MUST click the Store Password button and either enter a password or check No Password.  Certificate stores with no passwords are still possible for certain certificate store types when checking this option.
+  - **Supports Entry Password** - Unchecked.  
 
 <details>
 <summary><i>Advanced Tab:</i></summary>
