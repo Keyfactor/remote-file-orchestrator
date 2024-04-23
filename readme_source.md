@@ -164,7 +164,7 @@ Below are the various certificate store types that the RemoteFile Orchestator Ex
 <details>
 <summary><b>Common Store Type Settings for all Types:</b></summary> 
 
-- <i>Basic Tab:</i></summary>
+- <i>Basic Tab:</i>
 
   - **Name** – Required. The display name you wish to use for the new Certificate Store Type.
   - **ShortName** - Required. See specific certificate store type instructions below.
@@ -176,36 +176,29 @@ Below are the various certificate store types that the RemoteFile Orchestator Ex
   - **Requires Store Password** - Checked.  NOTE: This does not require that a certificate store have a password, but merely ensures that a user who creates a Keyfactor Command Certificate Store MUST click the Store Password button and either enter a password or check No Password.  Certificate stores with no passwords are still possible for certain certificate store types when checking this option.
   - **Supports Entry Password** - Unchecked.  
 
-<details>
-<summary><i>Advanced Tab:</i></summary>
+- <i>Advanced Tab:</i>
 
-- **Store Path Type** - Freeform
-- **Supports Custom Alias** - See specific certificate store type instructions below.
-- **Private Key Handling** - See specific certificate store type instructions below
-- **PFX Password Style** - Default  
+  - **Store Path Type** - Freeform
+  - **Supports Custom Alias** - See specific certificate store type instructions below.
+  - **Private Key Handling** - See specific certificate store type instructions below
+  - **PFX Password Style** - Default  
 
-</details>
+- <i>Custom Fields Tab:</i>
 
-<details>
-<summary><i>Custom Fields Tab:</i></summary>
+  - **Name:** LinuxFilePermissionsOnStoreCreation, **Display Name:** Linux File Permissions on Store Creation, **Type:** String, **Default Value:** none.  This custom field is **not required**.  If not present, value reverts back to the DefaultLinuxPermissionsOnStoreCreation setting in config.json (see Configuration File Setup section above).  This value, applicable to certificate stores hosted on Linux orchestrated servers only, must be 3 digits all between 0-7.  This represents the Linux file permissions that will be set for this certificate store if created via a Management Create job or a Management Add job where the config.json option CreateStoreOnAddIsMissing is set to "Y".  
+  - **Name:** LinuxFileOwnerOnStoreCreation, **Display Name:** Linux File Owner on Store Creation, **Type:** String, **Default Value:** none.  This custom field is **not required**.  If not present, value reverts back to the DefaultOwnerOnStoreCreation setting in config.json (see Configuration File Setup section above).  This value, applicable to certificate stores hosted on Linux orchestrated servers only, represents the alternate Linux file owner/group that will be set for this certificate store if created via a Management Create job or a Management Add job where the config.json option CreateStoreOnAddIsMissing is set to "Y".  If the group and owner need to be different values, use a ":" as a delimitter between the owner and group values, such as ownerId:groupId.  Please confirm that the user name associated with this Keyfactor certificate store has valid permissions to chown the certificate file to this owner.
+  - **Name:** SudoImpersonatedUser, **Display Name:** Sudo Impersonated User Id, **Type:** String, **Default Value:** none.  This custom field is **not required**.  If not present, value reverts back to the DefaultSudoImpersonatedUser setting in config.json (see Configuration File Setup section above).  Used in conjunction with UseSudo="Y", this optional setting can be used to set an alternate user id you wish to impersonate with sudo.  If this option does not exist or is empty, and nothing is set for DefaultSudoImpersonatedUser in your config.json, the default user of "root" will be used.  Any user id used here must have permissions to SCP/SFTP files to/from each certificate store location OR the SeparateUploadFilePath (see Configuration File Setup section above) as well as permissions to execute the commands listed in the "Security Considerations" section above.
 
-- **Name:** LinuxFilePermissionsOnStoreCreation, **Display Name:** Linux File Permissions on Store Creation, **Type:** String, **Default Value:** none.  This custom field is **not required**.  If not present, value reverts back to the DefaultLinuxPermissionsOnStoreCreation setting in config.json (see Configuration File Setup section above).  This value, applicable to certificate stores hosted on Linux orchestrated servers only, must be 3 digits all between 0-7.  This represents the Linux file permissions that will be set for this certificate store if created via a Management Create job or a Management Add job where the config.json option CreateStoreOnAddIsMissing is set to "Y".  
-- **Name:** LinuxFileOwnerOnStoreCreation, **Display Name:** Linux File Owner on Store Creation, **Type:** String, **Default Value:** none.  This custom field is **not required**.  If not present, value reverts back to the DefaultOwnerOnStoreCreation setting in config.json (see Configuration File Setup section above).  This value, applicable to certificate stores hosted on Linux orchestrated servers only, represents the alternate Linux file owner/group that will be set for this certificate store if created via a Management Create job or a Management Add job where the config.json option CreateStoreOnAddIsMissing is set to "Y".  If the group and owner need to be different values, use a ":" as a delimitter between the owner and group values, such as ownerId:groupId.  Please confirm that the user name associated with this Keyfactor certificate store has valid permissions to chown the certificate file to this owner.
-- **Name:** SudoImpersonatedUser, **Display Name:** Sudo Impersonated User Id, **Type:** String, **Default Value:** none.  This custom field is **not required**.  If not present, value reverts back to the DefaultSudoImpersonatedUser setting in config.json (see Configuration File Setup section above).  Used in conjunction with UseSudo="Y", this optional setting can be used to set an alternate user id you wish to impersonate with sudo.  If this option does not exist or is empty, and nothing is set for DefaultSudoImpersonatedUser in your config.json, the default user of "root" will be used.  Any user id used here must have permissions to SCP/SFTP files to/from each certificate store location OR the SeparateUploadFilePath (see Configuration File Setup section above) as well as permissions to execute the commands listed in the "Security Considerations" section above.
+*<i>Entry Parameters Tab:</i>
 
-</details>
-
-<details>
-<summary><i>Entry Parameters Tab:</i></summary>
-
-- See specific certificate store type instructions below
+  - See specific certificate store type instructions below
 
 </details>
 
-</details>
+&nbsp;
 
-&nbsp;  
-**RFPkcs12 Certificate Store Type**
+<details>  
+<summary>**RFPkcs12 Certificate Store Type**</summary>
 
 The RFPkcs12 store type can be used to manage any PKCS#12 compliant file format INCLUDING java keystores of type PKCS12.
 
@@ -216,37 +209,29 @@ Use cases supported:
 
 **Specific Certificate Store Type Values**  
 
-<details>
-<summary><i>Basic Tab:</i></summary>
+- <i>Basic Tab:</i>
 
-- **Short Name** – Required. Suggested value - **RFPkcs12**.  If you choose to use a different value you must make the corresponding modification to the manifest.json file (see "Remote File Orchestrator Extension Installation", step 6 above).
+  - **Short Name** – Required. Suggested value - **RFPkcs12**.  If you choose to use a different value you must make the corresponding modification to the manifest.json file (see "Remote File Orchestrator Extension Installation", step 6 above).
 
-</details>
+- <i>Advanced Tab:</i>
 
-<details>
-<summary><i>Advanced Tab:</i></summary>
+  - **Supports Custom Alias** - Required.
+  - **Private Key Handling** - Optional.  
 
-- **Supports Custom Alias** - Required.
-- **Private Key Handling** - Optional.  
+- <i>Custom Fields Tab:</i>
 
-</details>
+  - no adittional custom fields/parameters
 
-<details>
-<summary><i>Custom Fields Tab:</i></summary>
+- <i>Entry Parameters Tab:</i>
 
-- no adittional custom fields/parameters
-
-</details>
-
-<details>
-<summary><i>Entry Parameters Tab:</i></summary>
-
-- no additional entry parameters  
+  - no additional entry parameters  
 
 </details>  
 
 &nbsp;  
-**RFJKS Certificate Store Type**
+
+<details>
+<summary>**RFJKS Certificate Store Type**</summary>
 
 The RFJKS store type can be used to manage java keystores of type JKS.  **PLEASE NOTE:** Java keystores of type PKCS12 **_cannot_** be managed by the RFJKS type.  You **_must_** use RFPkcs12.
 
@@ -257,37 +242,29 @@ Use cases supported:
 
 **Specific Certificate Store Type Values**  
 
-<details>
-<summary><i>Basic Tab:</i></summary>
+- <i>Basic Tab:</i>
 
-- **Short Name** – Required. Suggested value - **RFJKS**.  If you choose to use a different value you must make the corresponding modification to the manifest.json file (see "Remote File Orchestrator Extension Installation", step 6 above).
+  - **Short Name** – Required. Suggested value - **RFJKS**.  If you choose to use a different value you must make the corresponding modification to the manifest.json file (see "Remote File Orchestrator Extension Installation", step 6 above).
 
-</details>
+- <i>Advanced Tab:</i>
 
-<details>
-<summary><i>Advanced Tab:</i></summary>
+  - **Supports Custom Alias** - Required.
+  - **Private Key Handling** - Optional.  
 
-- **Supports Custom Alias** - Required.
-- **Private Key Handling** - Optional.  
-
-</details>
-
-<details>
-<summary><i>Custom Fields Tab:</i></summary>
+- <i>Custom Fields Tab:</i>
   
-- no adittional custom fields/parameters
+  - no adittional custom fields/parameters
 
-</details>
+- <i>Entry Parameters Tab:</i>
 
-<details>
-<summary><i>Entry Parameters Tab:</i></summary>
-
-- no additional entry parameters  
+  - no additional entry parameters  
 
 </details>
 
 &nbsp;  
-**RFPEM Certificate Store Type**
+
+<details>
+<summary>**RFPEM Certificate Store Type**</summary>
 
 The RFPEM store type can be used to manage PEM encoded files.
 
@@ -300,42 +277,33 @@ Use cases supported:
 
 **Specific Certificate Store Type Values**
 
-<details>
-<summary><i>Basic Tab:</i></summary>
+- <i>Basic Tab:</i>
 
-- **Short Name** – Required. Suggested value - **RFPEM**.  If you choose to use a different value you must make the corresponding modification to the manifest.json file (see "Remote File Orchestrator Extension Installation", step 6 above).
+  - **Short Name** – Required. Suggested value - **RFPEM**.  If you choose to use a different value you must make the corresponding modification to the manifest.json file (see "Remote File Orchestrator Extension Installation", step 6 above).
 
-</details>
+- <i>Advanced Tab:</i>
 
-<details>
+  - **Supports Custom Alias** - Forbidden.
+  - **Private Key Handling** - Optional.  
 
-<summary><i>Advanced Tab:</i></summary>
+- <i>Custom Fields Tab:</i>
 
-- **Supports Custom Alias** - Forbidden.
-- **Private Key Handling** - Optional.  
+  - **Name:** IsTrustStore, **Display Name:** Trust Store, **Type:** Bool, **Default Value:** false.   This custom field is **not required**.  Default value if not present is 'false'.  If 'true', this store will be identified as a trust store.  Any certificates attempting to be added via a Management-Add job that contain a private key will raise an error with an accompanying message.  Multiple certificates may be added to the store in this use case.  If set to 'false', this store can only contain a single certificate with chain and private key.  Management-Add jobs attempting to add a certificate without a private key to a store marked as IsTrustStore = 'false' will raise an error with an accompanying message.
+  - **Name:** IncludesChain, **Display Name:** Store Includes Chain, **Type:** Bool, **Default Value:** false.   This custom field is **not required**.  Default value if not present is 'false'.  If 'true' the full certificate chain, if sent by Keyfactor Command, will be stored in the file.  The order of appearance is always assumed to be 1) end entity certificate, 2) issuing CA certificate, and 3) root certificate.  If additional CA tiers are applicable, the order will be end entity certificate up to the root CA certificate.  if set to 'false', only the end entity certificate and private key will be stored in this store.  This setting is only valid when IsTrustStore = false.
+  - **Name:** SeparatePrivateKeyFilePath, **Display Name:** Separate Private Key File Location, **Type:** String, **Default Value:** empty.   This custom field is **not required**. If empty, or not provided, it will be assumed that the private key for the certificate stored in this file will be inside the same file as the certificate.  If the full path AND file name is put here, that location will be used to store the private key as an external file.  This setting is only valid when IsTrustStore = false. 
+  - **Name:** IsRSAPrivateKey, **Display Name:** Is RSA Private Key, **Type:** Bool, **Default Value:** false.   This custom field is **not required**. Default value if not present is 'false'.  If 'true' it will be assumed that the private key for the certificate is a PKCS#1 RSA formatted private key (BEGIN RSA PRIVATE KEY).  If 'false' (default), encrypted/non-encrypted PKCS#8 (BEGIN [ENCRYPTED] PRIVATE KEY) is assumed  If set to 'true' the store password **must** be set to "no password", as PKCS#1 does not support encrypted keys.  This setting is only valid when IsTrustStore = false. 
+  - **Name:** IgnorePrivateKeyOnInventory, **Display Name:** Ignore Private Key On Inventory, **Type:** Bool, **Default Value:** false.   This custom field is **not required**. Default value if not present is 'false'.  If 'true', inventory for this certificate store will be performed without accessing the certificate's private key or the store password.  This will functionally make the store INVENTORY ONLY, as all certificates will be returned with "Private Key Entry" = false.  Also, no certificate chain relationships will be maintained, and all certificates will be considered separate entries (basically a trust store).  This may be useful in situations where the client does not know the store password at inventory run time, but would still like the certificates to be imported into Keyfactor Command.  Once the correct store password is entered for the store, the client may de-select this option (change the value to False), schedule an inventory job, and then the appropriate private key entry and chain information should be properly stored in the Keyfactor Command location, allowing for renewal/removal of the certificate at a later time. 
 
-</details>
+- <i>Entry Parameters Tab:</i>
 
-<details>
-<summary><i>Custom Fields Tab:</i></summary>
-
-- **Name:** IsTrustStore, **Display Name:** Trust Store, **Type:** Bool, **Default Value:** false.   This custom field is **not required**.  Default value if not present is 'false'.  If 'true', this store will be identified as a trust store.  Any certificates attempting to be added via a Management-Add job that contain a private key will raise an error with an accompanying message.  Multiple certificates may be added to the store in this use case.  If set to 'false', this store can only contain a single certificate with chain and private key.  Management-Add jobs attempting to add a certificate without a private key to a store marked as IsTrustStore = 'false' will raise an error with an accompanying message.
-- **Name:** IncludesChain, **Display Name:** Store Includes Chain, **Type:** Bool, **Default Value:** false.   This custom field is **not required**.  Default value if not present is 'false'.  If 'true' the full certificate chain, if sent by Keyfactor Command, will be stored in the file.  The order of appearance is always assumed to be 1) end entity certificate, 2) issuing CA certificate, and 3) root certificate.  If additional CA tiers are applicable, the order will be end entity certificate up to the root CA certificate.  if set to 'false', only the end entity certificate and private key will be stored in this store.  This setting is only valid when IsTrustStore = false.
-- **Name:** SeparatePrivateKeyFilePath, **Display Name:** Separate Private Key File Location, **Type:** String, **Default Value:** empty.   This custom field is **not required**. If empty, or not provided, it will be assumed that the private key for the certificate stored in this file will be inside the same file as the certificate.  If the full path AND file name is put here, that location will be used to store the private key as an external file.  This setting is only valid when IsTrustStore = false. 
-- **Name:** IsRSAPrivateKey, **Display Name:** Is RSA Private Key, **Type:** Bool, **Default Value:** false.   This custom field is **not required**. Default value if not present is 'false'.  If 'true' it will be assumed that the private key for the certificate is a PKCS#1 RSA formatted private key (BEGIN RSA PRIVATE KEY).  If 'false' (default), encrypted/non-encrypted PKCS#8 (BEGIN [ENCRYPTED] PRIVATE KEY) is assumed  If set to 'true' the store password **must** be set to "no password", as PKCS#1 does not support encrypted keys.  This setting is only valid when IsTrustStore = false. 
-- **Name:** IgnorePrivateKeyOnInventory, **Display Name:** Ignore Private Key On Inventory, **Type:** Bool, **Default Value:** false.   This custom field is **not required**. Default value if not present is 'false'.  If 'true', inventory for this certificate store will be performed without accessing the certificate's private key or the store password.  This will functionally make the store INVENTORY ONLY, as all certificates will be returned with "Private Key Entry" = false.  Also, no certificate chain relationships will be maintained, and all certificates will be considered separate entries (basically a trust store).  This may be useful in situations where the client does not know the store password at inventory run time, but would still like the certificates to be imported into Keyfactor Command.  Once the correct store password is entered for the store, the client may de-select this option (change the value to False), schedule an inventory job, and then the appropriate private key entry and chain information should be properly stored in the Keyfactor Command location, allowing for renewal/removal of the certificate at a later time. 
-
-</details>
-
-<details>
-<summary><i>Entry Parameters Tab:</i></summary>
-
-- no additional entry parameters
+  - no additional entry parameters
 
 </details>
 
 &nbsp;  
-**RFDER Certificate Store Type**
+
+<details>
+<summary>**RFDER Certificate Store Type**</summary>
 
 The RFDER store type can be used to manage DER encoded files.
 
@@ -345,37 +313,29 @@ Use cases supported:
 
 **Specific Certificate Store Type Values**
 
-<details>
-<summary><i>Basic Tab:</i></summary>
+- <i>Basic Tab:</i>
 
-- **Short Name** – Required. Suggested value - **RFDER**.  If you choose to use a different value you must make the corresponding modification to the manifest.json file (see "Remote File Orchestrator Extension Installation", step 6 above).
+  - **Short Name** – Required. Suggested value - **RFDER**.  If you choose to use a different value you must make the corresponding modification to the manifest.json file (see "Remote File Orchestrator Extension Installation", step 6 above).
 
-</details>
+- <i>Advanced Tab:</i>
 
-<details>
-<summary><i>Advanced Tab:</i></summary>
+  - **Supports Custom Alias** - Forbidden.
+  - **Private Key Handling** - Optional.  
 
-- **Supports Custom Alias** - Forbidden.
-- **Private Key Handling** - Optional.  
+- <i>Custom Fields Tab:</i>
 
-</details>
+  - **Name:** SeparatePrivateKeyFilePath, **Display Name:** Separate Private Key File Location, **Type:** String, **Default Value:** empty.   This custom field is **not required**. If empty, or not provided, it will be assumed that there is no private key associated with this DER store.  If the full path AND file name is entered here, that location will be used to store the private key as an external file in DER format. 
 
-<details>
-<summary><i>Custom Fields Tab:</i></summary> 
+- <i>Entry Parameters Tab:</i>
 
-- **Name:** SeparatePrivateKeyFilePath, **Display Name:** Separate Private Key File Location, **Type:** String, **Default Value:** empty.   This custom field is **not required**. If empty, or not provided, it will be assumed that there is no private key associated with this DER store.  If the full path AND file name is entered here, that location will be used to store the private key as an external file in DER format. 
-
-</details>
-
-<details>
-<summary><i>Entry Parameters Tab:</i></summary>
-
-- no additional entry parameters
+  - no additional entry parameters
 
 </details>
 
 &nbsp;  
-**RFKDB Certificate Store Type**
+
+<details>
+<summary>**RFKDB Certificate Store Type**</summary>
 
 The RFKDB store type can be used to manage IBM Key Database Files (KDB) files.  The IBM utility, GSKCAPICMD, is used to read and write certificates from and to the target store and is therefore required to be installed on the server where each KDB certificate store being managed resides, and its location MUST be in the system $Path.
 
@@ -386,37 +346,29 @@ Use cases supported:
 
 **Specific Certificate Store Type Values**
 
-<details>
-<summary><i>Basic Tab:</i></summary>
+- <i>Basic Tab:</i>
 
-- **Short Name** – Required. Suggested value - **RFKDB**.  If you choose to use a different value you must make the corresponding modification to the manifest.json file (see "Remote File Orchestrator Extension Installation", step 6 above).
+  - **Short Name** – Required. Suggested value - **RFKDB**.  If you choose to use a different value you must make the corresponding modification to the manifest.json file (see "Remote File Orchestrator Extension Installation", step 6 above).
 
-</details>
+- <i>Advanced Tab:</i>
 
-<details>
-<summary><i>Advanced Tab:</i></summary>
+  - **Supports Custom Alias** - Required.
+  - **Private Key Handling** - Optional.  
 
-- **Supports Custom Alias** - Required.
-- **Private Key Handling** - Optional.  
-
-</details>
-
-<details>
-<summary><i>Custom Fields Tab:</i></summary>
+- <i>Custom Fields Tab:</i>
   
-- no adittional custom fields/parameters
+  - no adittional custom fields/parameters
 
-</details>
+- <i>Entry Parameters Tab:</i>
 
-<details>
-<summary><i>Entry Parameters Tab:</i></summary>
-
-- no additional entry parameters  
+  - no additional entry parameters  
 
 </details>
 
 &nbsp;  
-**RFORA Certificate Store Type**
+
+<details>
+<summary>**RFORA Certificate Store Type**</summary>
 
 The RFORA store type can be used to manage Pkcs2 Oracle Wallets.  Please note that while this should work for Pkcs12 Oracle Wallets installed on both Windows and Linux servers, this has only been tested on wallets installed on Windows.  Please note, when entering the Store Path for an Oracle Wallet in Keyfactor Command, make sure to INCLUDE the eWallet.p12 file name that by convention is the name of the Pkcs12 wallet file that gets created.
 
@@ -427,32 +379,22 @@ Use cases supported:
 
 **Specific Certificate Store Type Values**  
 
-<details>
-<summary><i>Basic Tab:</i></summary>
+- <i>Basic Tab:</i>
 
-- **Short Name** – Required. Suggested value - **RFORA**.  If you choose to use a different value you must make the corresponding modification to the manifest.json file (see "Remote File Orchestrator Extension Installation", step 6 above).
+  - **Short Name** – Required. Suggested value - **RFORA**.  If you choose to use a different value you must make the corresponding modification to the manifest.json file (see "Remote File Orchestrator Extension Installation", step 6 above).
 
-</details>
+- <i>Advanced Tab:</i>
 
-<details>
-<summary><i>Advanced Tab:</i></summary>
+  - **Supports Custom Alias** - Required.
+  - **Private Key Handling** - Optional. 
 
-- **Supports Custom Alias** - Required.
-- **Private Key Handling** - Optional. 
-
-</details>
-
-<details>
-<summary><i>Custom Fields Tab:</i></summary>
+- <i>Custom Fields Tab:</i>
  
-- **Name:** WorkFolder, **Display Name:** Work Folder, **Type:** String, **Default Value:** empty.   This custom field is **required**. This required field should contain the path on the managed server where temporary work files can be created during Inventory and Management jobs.  These files will be removed at the end of each job  Please make sure that user id you have assigned to this certificate store will have access to create, modify, and delete files from this folder. 
+  - **Name:** WorkFolder, **Display Name:** Work Folder, **Type:** String, **Default Value:** empty.   This custom field is **required**. This required field should contain the path on the managed server where temporary work files can be created during Inventory and Management jobs.  These files will be removed at the end of each job  Please make sure that user id you have assigned to this certificate store will have access to create, modify, and delete files from this folder. 
 
-</details>
+- <i>Entry Parameters Tab:</i>
 
-<details>
-<summary><i>Entry Parameters Tab:</i></summary>
-
-- no additional entry parameters  
+  - no additional entry parameters  
 
 </details>
 
