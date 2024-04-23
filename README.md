@@ -225,16 +225,17 @@ Please consult with your company's system administrator for more information on 
   
 &nbsp;  
 ## Remote File Orchestrator Extension Installation
-1. Create the certificate store types you wish to manage.  Please refer to the individual sections devoted to each supported store type under "Certificate Store Types" later in this README.
-2. Stop the Keyfactor Universal Orchestrator Service for the orchestrator you plan to install this extension to run on.
-3. In the Keyfactor Orchestrator installation folder (by convention usually C:\Program Files\Keyfactor\Keyfactor Orchestrator), find the "Extensions" folder. Underneath that, create a new folder named "RemoteFile". You may choose to use a different name if you wish.
-4. Download the latest version of the RemoteFile orchestrator extension from [GitHub](https://github.com/Keyfactor/remote-file-orchestrator).  Click on the "Latest" release link on the right hand side of the main page and download the first zip file.
-5. Copy the contents of the download installation zip file to the folder created in Step 3.
-6. (Optional) If you decide to create one or more certificate store types with short names different than the suggested values (please see the individual certificate store type sections in "Certificate Store Types" later in this README for more information regarding certificate store types), edit the manifest.json file in the folder you created in step 3, and modify each "ShortName" in each "Certstores.{ShortName}.{Operation}" line with the ShortName you used to create the respective certificate store type.  If you created it with the suggested values, this step can be skipped.
-7. Modify the config.json file (See the "Configuration File Setup" section later in this README)
-8. Start the Keyfactor Universal Orchestrator Service.
-</details>  
+1. Review the [Prerequisites and Security Considerations](#prerequisites-and-security-considerations) section and make sure your environment is set up as required.
+2. Refer to the [Certificate Store Types](#certificate-store-types) section to create the certificate store types you wish to manage.
+3. Stop the Keyfactor Universal Orchestrator Service on the server you plan to install this extension to run on.
+4. In the Keyfactor Orchestrator installation folder (by convention usually C:\Program Files\Keyfactor\Keyfactor Orchestrator), find the "Extensions" folder. Underneath that, create a new folder named "RemoteFile". You may choose to use a different name if you wish.
+5. Download the latest version of the RemoteFile orchestrator extension from [GitHub](https://github.com/Keyfactor/remote-file-orchestrator).  Click on the "Latest" release link on the right hand side of the main page and download the first zip file.
+6. Copy the contents of the download installation zip file to the folder created in step 4.
+7. (Optional) If you decide to create one or more certificate store types with short names different than the suggested values, edit the manifest.json file in the folder you created in step 4, and modify each "ShortName" in each "Certstores.{ShortName}.{Operation}" line with the ShortName you used to create the respective certificate store type.
+8. Modify the config.json file to use the settings you desire.  Please go to [Configuration File Setup](#configuration-file-setup] to learn more. 
+9. Start the Keyfactor Universal Orchestrator Service.
 
+</details>  
 
 &nbsp;
 ## Configuration File Setup 
@@ -367,7 +368,7 @@ Below are the various certificate store types that the RemoteFile Orchestator Ex
 
 - <i>Basic Tab:</i>
 
-  - **Short Name** – Required. Suggested value - **RFPkcs12**.  If you choose to use a different value you must make the corresponding modification to the manifest.json file (see "Remote File Orchestrator Extension Installation", step 6 above).
+  - **Short Name** – Required. Suggested value - **RFPkcs12**.  If you choose to use a different value you must make the corresponding modification to the manifest.json file.  See [Remote File Orchestrator Extension Installation](#remote-file-orchestrator-extension}, step 7 above.
 
 - <i>Advanced Tab:</i>
 
@@ -389,7 +390,7 @@ Below are the various certificate store types that the RemoteFile Orchestator Ex
 
 - <i>Basic Tab:</i>
 
-  - **Short Name** – Required. Suggested value - **RFJKS**.  If you choose to use a different value you must make the corresponding modification to the manifest.json file (see "Remote File Orchestrator Extension Installation", step 6 above).
+  - **Short Name** – Required. Suggested value - **RFJKS**.  If you choose to use a different value you must make the corresponding modification to the manifest.json file.  See [Remote File Orchestrator Extension Installation](#remote-file-orchestrator-extension}, step 7 above.
 
 - <i>Advanced Tab:</i>
 
@@ -411,7 +412,7 @@ Below are the various certificate store types that the RemoteFile Orchestator Ex
 
 - <i>Basic Tab:</i>
 
-  - **Short Name** – Required. Suggested value - **RFPEM**.  If you choose to use a different value you must make the corresponding modification to the manifest.json file (see "Remote File Orchestrator Extension Installation", step 6 above).
+  - **Short Name** – Required. Suggested value - **RFPEM**.  If you choose to use a different value you must make the corresponding modification to the manifest.json file.  See [Remote File Orchestrator Extension Installation](#remote-file-orchestrator-extension}, step 7 above.
 
 - <i>Advanced Tab:</i>
 
@@ -437,7 +438,7 @@ Below are the various certificate store types that the RemoteFile Orchestator Ex
 
 - <i>Basic Tab:</i>
 
-  - **Short Name** – Required. Suggested value - **RFDER**.  If you choose to use a different value you must make the corresponding modification to the manifest.json file (see "Remote File Orchestrator Extension Installation", step 6 above).
+  - **Short Name** – Required. Suggested value - **RFDER**.  If you choose to use a different value you must make the corresponding modification to the manifest.json file.  See [Remote File Orchestrator Extension Installation](#remote-file-orchestrator-extension}, step 7 above.
 
 - <i>Advanced Tab:</i>
 
@@ -459,7 +460,7 @@ Below are the various certificate store types that the RemoteFile Orchestator Ex
 
 - <i>Basic Tab:</i>
 
-  - **Short Name** – Required. Suggested value - **RFKDB**.  If you choose to use a different value you must make the corresponding modification to the manifest.json file (see "Remote File Orchestrator Extension Installation", step 6 above).
+  - **Short Name** – Required. Suggested value - **RFKDB**.  If you choose to use a different value you must make the corresponding modification to the manifest.json file.  See [Remote File Orchestrator Extension Installation](#remote-file-orchestrator-extension}, step 7 above.
 
 - <i>Advanced Tab:</i>
 
@@ -481,7 +482,7 @@ Below are the various certificate store types that the RemoteFile Orchestator Ex
 
 - <i>Basic Tab:</i>
 
-  - **Short Name** – Required. Suggested value - **RFORA**.  If you choose to use a different value you must make the corresponding modification to the manifest.json file (see "Remote File Orchestrator Extension Installation", step 6 above).
+  - **Short Name** – Required. Suggested value - **RFORA**.  If you choose to use a different value you must make the corresponding modification to the manifest.json file.  See [Remote File Orchestrator Extension Installation](#remote-file-orchestrator-extension}, step 7 above.
 
 - <i>Advanced Tab:</i>
 
