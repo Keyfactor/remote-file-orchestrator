@@ -265,46 +265,46 @@ Below are the various certificate store types that the RemoteFile Orchestator Ex
 <details>
 <summary><b>Common Store Type Settings for all Types:</b></summary> 
 
-  <details>
-  <summary><i>Basic Tab:</i></summary>
+	<details>
+	<summary><i>Basic Tab:</i></summary>
 
-  - **Name** – Required. The display name you wish to use for the new Certificate Store Type.
-  - **ShortName** - Required. See specific certificate store type instructions below.
-  - **Custom Capability** - Unchecked
-  - **Supported Job Types** - Inventory, Add, Remove, Create, and Discovery should all be checked.
-  - **Needs Server** - Checked
-  - **Blueprint Allowed** - Checked if you wish to make use of blueprinting.  Please refer to the Keyfactor Command Reference Guide for more details on this feature.
-  - **Uses PowerShell** - Unchecked
-  - **Requires Store Password** - Checked.  NOTE: This does not require that a certificate store have a password, but merely ensures that a user who creates a Keyfactor Command Certificate Store MUST click the Store Password button and either enter a password or check No Password.  Certificate stores with no passwords are still possible for certain certificate store types when checking this option.
-  - **Supports Entry Password** - Unchecked.  
+	- **Name** – Required. The display name you wish to use for the new Certificate Store Type.
+	- **ShortName** - Required. See specific certificate store type instructions below.
+	- **Custom Capability** - Unchecked
+	- **Supported Job Types** - Inventory, Add, Remove, Create, and Discovery should all be checked.
+	- **Needs Server** - Checked
+	- **Blueprint Allowed** - Checked if you wish to make use of blueprinting.  Please refer to the Keyfactor Command Reference Guide for more details on this feature.
+	- **Uses PowerShell** - Unchecked
+	- **Requires Store Password** - Checked.  NOTE: This does not require that a certificate store have a password, but merely ensures that a user who creates a Keyfactor Command Certificate Store MUST click the Store Password button and either enter a password or check No Password.  Certificate stores with no passwords are still possible for certain certificate store types when checking this option.
+	- **Supports Entry Password** - Unchecked.  
 
-  </details>
+	</details>
 
-  <details>
-  <summary><i>Advanced Tab:</i></summary>
+<details>
+<summary><i>Advanced Tab:</i></summary>
 
-  - **Store Path Type** - Freeform
-  - **Supports Custom Alias** - See specific certificate store type instructions below.
-  - **Private Key Handling** - See specific certificate store type instructions below
-  - **PFX Password Style** - Default  
+- **Store Path Type** - Freeform
+- **Supports Custom Alias** - See specific certificate store type instructions below.
+- **Private Key Handling** - See specific certificate store type instructions below
+- **PFX Password Style** - Default  
 
-  </details>
+</details>
 
-  <details>
-  <summary><i>Custom Fields Tab:</i></summary>
+<details>
+<summary><i>Custom Fields Tab:</i></summary>
 
-  - **Name:** LinuxFilePermissionsOnStoreCreation, **Display Name:** Linux File Permissions on Store Creation, **Type:** String, **Default Value:** none.  This custom field is **not required**.  If not present, value reverts back to the DefaultLinuxPermissionsOnStoreCreation setting in config.json (see Configuration File Setup section above).  This value, applicable to certificate stores hosted on Linux orchestrated servers only, must be 3 digits all between 0-7.  This represents the Linux file permissions that will be set for this certificate store if created via a Management Create job or a Management Add job where the config.json option CreateStoreOnAddIsMissing is set to "Y".  
-  - **Name:** LinuxFileOwnerOnStoreCreation, **Display Name:** Linux File Owner on Store Creation, **Type:** String, **Default Value:** none.  This custom field is **not required**.  If not present, value reverts back to the DefaultOwnerOnStoreCreation setting in config.json (see Configuration File Setup section above).  This value, applicable to certificate stores hosted on Linux orchestrated servers only, represents the alternate Linux file owner/group that will be set for this certificate store if created via a Management Create job or a Management Add job where the config.json option CreateStoreOnAddIsMissing is set to "Y".  If the group and owner need to be different values, use a ":" as a delimitter between the owner and group values, such as ownerId:groupId.  Please confirm that the user name associated with this Keyfactor certificate store has valid permissions to chown the certificate file to this owner.
-  - **Name:** SudoImpersonatedUser, **Display Name:** Sudo Impersonated User Id, **Type:** String, **Default Value:** none.  This custom field is **not required**.  If not present, value reverts back to the DefaultSudoImpersonatedUser setting in config.json (see Configuration File Setup section above).  Used in conjunction with UseSudo="Y", this optional setting can be used to set an alternate user id you wish to impersonate with sudo.  If this option does not exist or is empty, and nothing is set for DefaultSudoImpersonatedUser in your config.json, the default user of "root" will be used.  Any user id used here must have permissions to SCP/SFTP files to/from each certificate store location OR the SeparateUploadFilePath (see Configuration File Setup section above) as well as permissions to execute the commands listed in the "Security Considerations" section above.
+- **Name:** LinuxFilePermissionsOnStoreCreation, **Display Name:** Linux File Permissions on Store Creation, **Type:** String, **Default Value:** none.  This custom field is **not required**.  If not present, value reverts back to the DefaultLinuxPermissionsOnStoreCreation setting in config.json (see Configuration File Setup section above).  This value, applicable to certificate stores hosted on Linux orchestrated servers only, must be 3 digits all between 0-7.  This represents the Linux file permissions that will be set for this certificate store if created via a Management Create job or a Management Add job where the config.json option CreateStoreOnAddIsMissing is set to "Y".  
+- **Name:** LinuxFileOwnerOnStoreCreation, **Display Name:** Linux File Owner on Store Creation, **Type:** String, **Default Value:** none.  This custom field is **not required**.  If not present, value reverts back to the DefaultOwnerOnStoreCreation setting in config.json (see Configuration File Setup section above).  This value, applicable to certificate stores hosted on Linux orchestrated servers only, represents the alternate Linux file owner/group that will be set for this certificate store if created via a Management Create job or a Management Add job where the config.json option CreateStoreOnAddIsMissing is set to "Y".  If the group and owner need to be different values, use a ":" as a delimitter between the owner and group values, such as ownerId:groupId.  Please confirm that the user name associated with this Keyfactor certificate store has valid permissions to chown the certificate file to this owner.
+- **Name:** SudoImpersonatedUser, **Display Name:** Sudo Impersonated User Id, **Type:** String, **Default Value:** none.  This custom field is **not required**.  If not present, value reverts back to the DefaultSudoImpersonatedUser setting in config.json (see Configuration File Setup section above).  Used in conjunction with UseSudo="Y", this optional setting can be used to set an alternate user id you wish to impersonate with sudo.  If this option does not exist or is empty, and nothing is set for DefaultSudoImpersonatedUser in your config.json, the default user of "root" will be used.  Any user id used here must have permissions to SCP/SFTP files to/from each certificate store location OR the SeparateUploadFilePath (see Configuration File Setup section above) as well as permissions to execute the commands listed in the "Security Considerations" section above.
 
-  </details>
+</details>
 
-  <details>
-  <summary><i>Entry Parameters Tab:</i></summary>
+<details>
+<summary><i>Entry Parameters Tab:</i></summary>
 
-  - See specific certificate store type instructions below
+- See specific certificate store type instructions below
 
-  </details>
+</details>
 
 </details>
 
