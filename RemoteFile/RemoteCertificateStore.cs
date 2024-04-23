@@ -12,7 +12,6 @@ using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading;
 
 using Microsoft.Extensions.Logging;
 
@@ -22,9 +21,7 @@ using Org.BouncyCastle.Security;
 using Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers;
 using Keyfactor.Extensions.Orchestrator.RemoteFile.Models;
 using Keyfactor.Logging;
-using System.Management.Automation;
 using System.Runtime.InteropServices;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Keyfactor.Extensions.Orchestrator.RemoteFile
 {
@@ -346,7 +343,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             bool treatAsLocal = Server.ToLower().EndsWith(LOCAL_MACHINE_SUFFIX);
 
             if (ServerType == ServerTypeEnum.Linux || RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
-                RemoteHandler = treatAsLocal ? new LinuxLocalHandler() as IRemoteHandler : new SSHHandler(Server, ServerId, ServerPassword, ServerType == ServerTypeEnum.Linux) as IRemoteHandler;
+                RemoteHandler = treatAsLocal ? new LinuxLocalHandler() as IRemoteHandler : new SSHHandler(Server, ServerId, ServerPassword, ServerType == ServerTypeEnum.Linux, sudoImpersonatedUser) as IRemoteHandler;
             else
                 RemoteHandler = new WinRMHandler(Server, ServerId, ServerPassword, treatAsLocal);
 
