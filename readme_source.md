@@ -195,10 +195,8 @@ Below are the various certificate store types that the RemoteFile Orchestator Ex
 
 </details>
 
-&nbsp;
-
 <details>  
-<summary>**RFPkcs12 Certificate Store Type**</summary>
+<summary><b>RFPkcs12 Certificate Store Type</b></summary>
 
 The RFPkcs12 store type can be used to manage any PKCS#12 compliant file format INCLUDING java keystores of type PKCS12.
 
@@ -228,10 +226,8 @@ Use cases supported:
 
 </details>  
 
-&nbsp;  
-
 <details>
-<summary>**RFJKS Certificate Store Type**</summary>
+<summary><b>RFJKS Certificate Store Type</b></summary>
 
 The RFJKS store type can be used to manage java keystores of type JKS.  **PLEASE NOTE:** Java keystores of type PKCS12 **_cannot_** be managed by the RFJKS type.  You **_must_** use RFPkcs12.
 
@@ -260,8 +256,6 @@ Use cases supported:
   - no additional entry parameters  
 
 </details>
-
-&nbsp;  
 
 <details>
 <summary>**RFPEM Certificate Store Type**</summary>
@@ -303,7 +297,7 @@ Use cases supported:
 &nbsp;  
 
 <details>
-<summary>**RFDER Certificate Store Type**</summary>
+<summary><b>RFDER Certificate Store Type</b></summary>
 
 The RFDER store type can be used to manage DER encoded files.
 
@@ -332,10 +326,8 @@ Use cases supported:
 
 </details>
 
-&nbsp;  
-
 <details>
-<summary>**RFKDB Certificate Store Type**</summary>
+<summary><b>RFKDB Certificate Store Type</b></summary>
 
 The RFKDB store type can be used to manage IBM Key Database Files (KDB) files.  The IBM utility, GSKCAPICMD, is used to read and write certificates from and to the target store and is therefore required to be installed on the server where each KDB certificate store being managed resides, and its location MUST be in the system $Path.
 
@@ -365,10 +357,8 @@ Use cases supported:
 
 </details>
 
-&nbsp;  
-
 <details>
-<summary>**RFORA Certificate Store Type**</summary>
+<summary><b>RFORA Certificate Store Type</b></summary>
 
 The RFORA store type can be used to manage Pkcs2 Oracle Wallets.  Please note that while this should work for Pkcs12 Oracle Wallets installed on both Windows and Linux servers, this has only been tested on wallets installed on Windows.  Please note, when entering the Store Path for an Oracle Wallet in Keyfactor Command, make sure to INCLUDE the eWallet.p12 file name that by convention is the name of the Pkcs12 wallet file that gets created.
 
