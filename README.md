@@ -102,22 +102,88 @@ This text would be entered in as the value for the __Server Password__, instead 
 ﻿<!-- add integration specific information below -->
 ## Overview
 The Remote File Orchestrator Extension is a multi-purpose integration that can remotely manage a variety of file-based certificate stores and can easily be extended to manage others.  The certificate store types that can be managed in the current version are:
-- Java Keystores of type JKS
-- PKCS12 files, including, but not limited to, Java keystores of type PKCS12
-- PEM formatted files
-- DER formatted files
-- IBM Key Database files (KDB)
-- Oracle Wallet Pkcs12 files
+
+<details>
+<summary><b>RFPkcs12</b></summary>
+
+The RFPkcs12 store type can be used to manage any PKCS#12 compliant file format INCLUDING java keystores of type PKCS12.
+
+Use cases supported:
+1. One-to-many trust entries - A single certificate without a private key in a certificate store.  Each certificate identified with a custom alias or certificate thumbprint.
+2. One-to-many key entries - One-to-many certificates with private keys and optionally the full certificate chain.  Each certificate identified with a custom alias or certificate thumbprint.
+3. A mix of trust and key entries.
+
+</details>
+
+<details>
+<summary><b>RFJKS</b></summary>
+
+The RFJKS store type can be used to manage java keystores of type JKS.  **PLEASE NOTE:** Java keystores of type PKCS12 **_cannot_** be managed by the RFJKS type.  You **_must_** use RFPkcs12.
+
+Use cases supported:
+1. One-to-many trust entries - A single certificate without a private key in a certificate store.  Each certificate identified with a custom alias or certificate thumbprint.
+2. One-to-many key entries - One-to-many certificates with private keys and optionally the full certificate chain.  Each certificate identified with a custom alias or certificate thumbprint.
+3. A mix of trust and key entries.
+
+</details>
+
+<details>
+<summary><b>RFPEM</b></summary>
+
+The RFPEM store type can be used to manage PEM encoded files.
+
+Use cases supported:
+1. Trust stores - A file with one-to-many certificates (no private keys, no certificate chains).
+2. Single certificate stores with private key in the file.
+3. Single certificate stores with certificate chain and private key in the file.
+4. Single certificate stores with private key in an external file.
+5. Single certificate stores with certificate chain in the file and private key in an external file 
+
+</details>
+
+<details>
+
+<summary><b>RFDER</b></summary>
+
+The RFDER store type can be used to manage DER encoded files.
+
+Use cases supported:
+1. Single certificate stores with private key in an external file.
+2. Single certificate stores with no private key. 
+
+</details>
+
+<details>
+<summary><b>RFKDB</b></summary>
+
+The RFKDB store type can be used to manage IBM Key Database Files (KDB) files.  The IBM utility, GSKCAPICMD, is used to read and write certificates from and to the target store and is therefore required to be installed on the server where each KDB certificate store being managed resides, and its location MUST be in the system $Path.
+
+Use cases supported:
+1. One-to-many trust entries - A single certificate without a private key in a certificate store.  Each certificate identified with a custom alias or certificate thumbprint.
+2. One-to-many key entries - One-to-many certificates with private keys and optionally the full certificate chain.  Each certificate identified with a custom alias or certificate thumbprint.
+3. A mix of trust and key entries.
+
+</details>
+
+<details>
+<summary><b>RFORA</b></summary>
+
+The RFORA store type can be used to manage Pkcs12 Oracle Wallets.  Please note that while this should work for Pkcs12 Oracle Wallets installed on both Windows and Linux servers, this has only been tested on wallets installed on Windows.  Please note, when entering the Store Path for an Oracle Wallet in Keyfactor Command, make sure to INCLUDE the eWallet.p12 file name that by convention is the name of the Pkcs12 wallet file that gets created.
+
+Use cases supported:
+1. One-to-many trust entries - A single certificate without a private key in a certificate store.  Each certificate identified with a custom alias or certificate thumbprint.
+2. One-to-many key entries - One-to-many certificates with private keys and optionally the full certificate chain.  Each certificate identified with a custom alias or certificate thumbprint.
+3. A mix of trust and key entries.
+
+</details>
 
 While the Keyfactor Universal Orchestrator (UO) can be installed on either Windows or Linux; likewise, the Remote File Orchestrator Extension can be used to manage certificate stores residing on both Windows and Linux servers.  The supported configurations of Universal Orchestrator hosts and managed orchestrated servers are shown below:
 
 | | UO Installed on Windows | UO Installed on Linux |
 |-----|-----|------|
-|Orchestrated Server on remote Windows server|&check; | |
+|Orchestrated Server on remote Windows server|&check; |&check; |
 |Orchestrated Server on remote Linux server|&check; |&check; |
 |Orchestrated Server on same server as orchestrator service (Agent)|&check; |&check; |
-
-This orchestrator extension makes use of an SSH connection to communicate remotely with certificate stores hosted on Linux servers and WinRM to communicate with certificate stores hosted on Windows servers.
 &nbsp;  
 &nbsp;  
 ## Versioning
@@ -299,15 +365,6 @@ Below are the various certificate store types that the RemoteFile Orchestator Ex
 <details>  
 <summary><b>RFPkcs12 Certificate Store Type</b></summary>
 
-The RFPkcs12 store type can be used to manage any PKCS#12 compliant file format INCLUDING java keystores of type PKCS12.
-
-Use cases supported:
-1. One-to-many trust entries - A single certificate without a private key in a certificate store.  Each certificate identified with a custom alias or certificate thumbprint.
-2. One-to-many key entries - One-to-many certificates with private keys and optionally the full certificate chain.  Each certificate identified with a custom alias or certificate thumbprint.
-3. A mix of trust and key entries.
-
-**Specific Certificate Store Type Values**  
-
 - <i>Basic Tab:</i>
 
   - **Short Name** – Required. Suggested value - **RFPkcs12**.  If you choose to use a different value you must make the corresponding modification to the manifest.json file (see "Remote File Orchestrator Extension Installation", step 6 above).
@@ -330,15 +387,6 @@ Use cases supported:
 <details>
 <summary><b>RFJKS Certificate Store Type</b></summary>
 
-The RFJKS store type can be used to manage java keystores of type JKS.  **PLEASE NOTE:** Java keystores of type PKCS12 **_cannot_** be managed by the RFJKS type.  You **_must_** use RFPkcs12.
-
-Use cases supported:
-1. One-to-many trust entries - A single certificate without a private key in a certificate store.  Each certificate identified with a custom alias or certificate thumbprint.
-2. One-to-many key entries - One-to-many certificates with private keys and optionally the full certificate chain.  Each certificate identified with a custom alias or certificate thumbprint.
-3. A mix of trust and key entries.
-
-**Specific Certificate Store Type Values**  
-
 - <i>Basic Tab:</i>
 
   - **Short Name** – Required. Suggested value - **RFJKS**.  If you choose to use a different value you must make the corresponding modification to the manifest.json file (see "Remote File Orchestrator Extension Installation", step 6 above).
@@ -360,17 +408,6 @@ Use cases supported:
 
 <details>
 <summary><b>RFPEM Certificate Store Type</b></summary>
-
-The RFPEM store type can be used to manage PEM encoded files.
-
-Use cases supported:
-1. Trust stores - A file with one-to-many certificates (no private keys, no certificate chains).
-2. Single certificate stores with private key in the file.
-3. Single certificate stores with certificate chain and private key in the file.
-4. Single certificate stores with private key in an external file.
-5. Single certificate stores with certificate chain in the file and private key in an external file 
-
-**Specific Certificate Store Type Values**
 
 - <i>Basic Tab:</i>
 
@@ -398,14 +435,6 @@ Use cases supported:
 <details>
 <summary><b>RFDER Certificate Store Type</b></summary>
 
-The RFDER store type can be used to manage DER encoded files.
-
-Use cases supported:
-1. Single certificate stores with private key in an external file.
-5. Single certificate stores with no private key. 
-
-**Specific Certificate Store Type Values**
-
 - <i>Basic Tab:</i>
 
   - **Short Name** – Required. Suggested value - **RFDER**.  If you choose to use a different value you must make the corresponding modification to the manifest.json file (see "Remote File Orchestrator Extension Installation", step 6 above).
@@ -428,15 +457,6 @@ Use cases supported:
 <details>
 <summary><b>RFKDB Certificate Store Type</b></summary>
 
-The RFKDB store type can be used to manage IBM Key Database Files (KDB) files.  The IBM utility, GSKCAPICMD, is used to read and write certificates from and to the target store and is therefore required to be installed on the server where each KDB certificate store being managed resides, and its location MUST be in the system $Path.
-
-Use cases supported:
-1. One-to-many trust entries - A single certificate without a private key in a certificate store.  Each certificate identified with a custom alias or certificate thumbprint.
-2. One-to-many key entries - One-to-many certificates with private keys and optionally the full certificate chain.  Each certificate identified with a custom alias or certificate thumbprint.
-3. A mix of trust and key entries.
-
-**Specific Certificate Store Type Values**
-
 - <i>Basic Tab:</i>
 
   - **Short Name** – Required. Suggested value - **RFKDB**.  If you choose to use a different value you must make the corresponding modification to the manifest.json file (see "Remote File Orchestrator Extension Installation", step 6 above).
@@ -458,15 +478,6 @@ Use cases supported:
 
 <details>
 <summary><b>RFORA Certificate Store Type</b></summary>
-
-The RFORA store type can be used to manage Pkcs2 Oracle Wallets.  Please note that while this should work for Pkcs12 Oracle Wallets installed on both Windows and Linux servers, this has only been tested on wallets installed on Windows.  Please note, when entering the Store Path for an Oracle Wallet in Keyfactor Command, make sure to INCLUDE the eWallet.p12 file name that by convention is the name of the Pkcs12 wallet file that gets created.
-
-Use cases supported:
-1. One-to-many trust entries - A single certificate without a private key in a certificate store.  Each certificate identified with a custom alias or certificate thumbprint.
-2. One-to-many key entries - One-to-many certificates with private keys and optionally the full certificate chain.  Each certificate identified with a custom alias or certificate thumbprint.
-3. A mix of trust and key entries.
-
-**Specific Certificate Store Type Values**  
 
 - <i>Basic Tab:</i>
 
