@@ -229,7 +229,7 @@ The Remote File Orchestrator Extension uses a JSON configuration file.  It is lo
 Below are the various certificate store types that the RemoteFile Orchestator Extension manages.  To create a new Certificate Store Type in Keyfactor Command, first click on settings (the gear icon on the top right) => Certificate Store Types => Add.  Next, follow the incstructions under each store type you wish to set up.
 
 <details>  
-<summary>RFPkcs12 Certificate Store Type</summary>
+<summary>RFPkcs12 - Pkcs12 formatted certificate file (including java keystores of type PKCS12)</summary>
 
 - <i>Basic Tab:</i>
 
@@ -263,7 +263,7 @@ Below are the various certificate store types that the RemoteFile Orchestator Ex
 </details>  
 
 <details>
-<summary>RFJKS Certificate Store Type</summary>
+<summary>RFJKS - Java keystore</summary>
 
 - <i>Basic Tab:</i>
 
@@ -297,7 +297,7 @@ Below are the various certificate store types that the RemoteFile Orchestator Ex
 </details>
 
 <details>
-<summary>RFPEM Certificate Store Type</summary>
+<summary>RFPEM - PEM formatted certificate file</summary>
 
 - <i>Basic Tab:</i>
 
@@ -336,7 +336,7 @@ Below are the various certificate store types that the RemoteFile Orchestator Ex
 </details>
 
 <details>
-<summary>RFDER Certificate Store Type</summary>
+<summary>RFDER - DER formatted certificate file</summary>
 
 - <i>Basic Tab:</i>
 
@@ -371,7 +371,7 @@ Below are the various certificate store types that the RemoteFile Orchestator Ex
 </details>
 
 <details>
-<summary>RFKDB Certificate Store Type</summary>
+<summary>RFKDB - IBM Key Database File</summary>
 
 - <i>Basic Tab:</i>
 
@@ -405,7 +405,7 @@ Below are the various certificate store types that the RemoteFile Orchestator Ex
 </details>
 
 <details>
-<summary>RFORA Certificate Store Type</summary>
+<summary>RFORA - Oracle Wallet</summary>
 
 - <i>Basic Tab:</i>
 
