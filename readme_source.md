@@ -82,7 +82,8 @@ While the Keyfactor Universal Orchestrator (UO) can be installed on either Windo
 |-----|-----|------|
 |Orchestrated Server on remote Windows server|&check; |&check; |
 |Orchestrated Server on remote Linux server|&check; |&check; |
-|Orchestrated Server on same server as orchestrator service (Agent)|&check; |&check; |
+|Orchestrated Server on same server as orchestrator service (Agent)|&check; |&check; |  
+
 &nbsp;  
 &nbsp;  
 ## Versioning
