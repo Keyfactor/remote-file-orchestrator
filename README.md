@@ -177,16 +177,18 @@ Use cases supported:
 
 </details>
 
-While the Keyfactor Universal Orchestrator (UO) can be installed on either Windows or Linux; likewise, the Remote File Orchestrator Extension can be used to manage certificate stores residing on both Windows and Linux servers.  The supported configurations of Universal Orchestrator hosts and managed orchestrated servers are shown below:
+While the Keyfactor Universal Orchestrator (UO) and RemoteFile Orchestrator Extension can be installed on either Windows or Linux, the Remote File Orchestrator Extension can also *manage* certificate stores residing on both Windows and Linux servers.  When the RemoteFile Orchestrator Extension is installed on a Windows or Linux server and is used to manager *other* Windows or Linux servers hosting certificate stores, it said to be acting as an *orchestrator*, managing certificate stores on one or more *other* orchestrated servers.  When the Remote File Orchestrator Extension manages only certificate stores residing on the *same* server, it is said to be acting as an *agent*.  When acting as an orchestrator, connectivity from the orchestrator server hosting the RemoteFile extension to the orchestrated server hosting the certificate store(s) being managed is achieved via either an SSH (for Linux and possibly Windows orchestrated servers) or WinRM (for Windows orchestrated servers) connection.  When acting as an agent, SSH/WinRM may still be used, OR the certificate store can be configured to bypass these and operate directly on the server's file system.  Please review the [Prerequisites and Security Considerations](#prerequisites-and-security-considerations) and [Certificate Stores and Discovery Jobs](#certificate-stores-and-discovery-jobs) sections for more information on proper configuration and setup for these different architectures.  The supported configurations of Universal Orchestrator hosts and managed orchestrated servers are shown below along with :
 
 | | UO Installed on Windows | UO Installed on Linux |
 |-----|-----|------|
-|Orchestrated Server on remote Windows server|&check; WinRM connection |&check; SSH connection |
-|Orchestrated Server on remote Linux server|&check; SSH connection |&check; SSH connection |
-|Orchestrated Server on same server as orchestrator service (Agent)|&check; WinRM connection or local file system |&check; SSH connection or local file system |  
+|Orchestrated Server on remote Windows server|WinRM connection | SSH connection |
+|Orchestrated Server on remote Linux server| SSH connection | SSH connection |
+|Orchestrated Server on same server as orchestrator service (Agent)| WinRM connection or local file system | SSH connection or local file system |  
 
-When the RemoteFile Orchestrator Extension is installd on a Windows or Linux server and is used to manager *other* Windows or Linux servers hosting certificate stores, it said to be acting as an *orchestrator*, managing certificate stores on one or more other *orchestrated* servers.  When the Remote File Orchestrator Extension is installed but only manages certificate stores on the *same server*, it is said to be acting as an *agent*.  When acting as an orchestrator, connectivity from the orchestrator server hosting the RemoteFile extension to the orchestrated server hosting the certificate store(s) being managed is achieved via either an SSH (for Linux and possibly Windows orchestrated servers) or WinRM (for Windows orchestrated servers) connection.  When acting as an agent, SSH/WinRM may still be used, OR the certificate store can be configured to bypass these and operate directly on the server's file system.  Please review the [Prerequisites and Security Considerations](#prerequisites-and-security-considerations) and [Certificate Stores and Discovery Jobs](#certificate-stores-and-discovery-jobs) sections for more information on proper configuration and setup for these different architectures.
+
+&bnsp;  
 &nbsp;  
+  
 ## Versioning
 
 The version number of a the Remote File Orchestrator Extension can be verified by right clicking on the RemoteFile.dll file in the Extensions/RemoteFile installation folder, selecting Properties, and then clicking on the Details tab.
