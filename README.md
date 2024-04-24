@@ -339,7 +339,7 @@ Below are the various certificate store types that the RemoteFile Orchestator Ex
 - <i>Basic Tab:</i>
 
   - **Name** – Required. The display name you wish to use for the new Certificate Store Type.
-  - **Short Name** – Required. Suggested value - **RFPkcs12**.  If you choose to use a different value you must make the corresponding modification to the manifest.json file.  See [Remote File Orchestrator Extension Installation](#remote-file-orchestrator-extension-installation}, step 7 above.
+  - **Short Name** – Required. Suggested value - **RFPkcs12**.  If you choose to use a different value you must make the corresponding modification to the manifest.json file.  See [Remote File Orchestrator Extension Installation](#remote-file-orchestrator-extension-installation), step 7 above.
   - **Custom Capability** - Unchecked
   - **Supported Job Types** - Inventory, Add, Remove, Create, and Discovery should all be checked.
   - **Needs Server** - Checked
@@ -373,7 +373,7 @@ Below are the various certificate store types that the RemoteFile Orchestator Ex
 - <i>Basic Tab:</i>
 
   - **Name** – Required. The display name you wish to use for the new Certificate Store Type.
-  - **Short Name** – Required. Suggested value - **RFJKS**.  If you choose to use a different value you must make the corresponding modification to the manifest.json file.  See [Remote File Orchestrator Extension Installation](#remote-file-orchestrator-extension-installation}, step 7 above.
+  - **Short Name** – Required. Suggested value - **RFJKS**.  If you choose to use a different value you must make the corresponding modification to the manifest.json file.  See [Remote File Orchestrator Extension Installation](#remote-file-orchestrator-extension-installation), step 7 above.
   - **Custom Capability** - Unchecked
   - **Supported Job Types** - Inventory, Add, Remove, Create, and Discovery should all be checked.
   - **Needs Server** - Checked
@@ -407,7 +407,7 @@ Below are the various certificate store types that the RemoteFile Orchestator Ex
 - <i>Basic Tab:</i>
 
   - **Name** – Required. The display name you wish to use for the new Certificate Store Type.
-  - **Short Name** – Required. Suggested value - **RFPEM**.  If you choose to use a different value you must make the corresponding modification to the manifest.json file.  See [Remote File Orchestrator Extension Installation](#remote-file-orchestrator-extension-installation}, step 7 above.
+  - **Short Name** – Required. Suggested value - **RFPEM**.  If you choose to use a different value you must make the corresponding modification to the manifest.json file.  See [Remote File Orchestrator Extension Installation](#remote-file-orchestrator-extension-installation), step 7 above.
   - **Custom Capability** - Unchecked
   - **Supported Job Types** - Inventory, Add, Remove, Create, and Discovery should all be checked.
   - **Needs Server** - Checked
@@ -446,7 +446,7 @@ Below are the various certificate store types that the RemoteFile Orchestator Ex
 - <i>Basic Tab:</i>
 
   - **Name** – Required. The display name you wish to use for the new Certificate Store Type.
-  - **Short Name** – Required. Suggested value - **RFDER**.  If you choose to use a different value you must make the corresponding modification to the manifest.json file.  See [Remote File Orchestrator Extension Installation](#remote-file-orchestrator-extension-installation}, step 7 above.
+  - **Short Name** – Required. Suggested value - **RFDER**.  If you choose to use a different value you must make the corresponding modification to the manifest.json file.  See [Remote File Orchestrator Extension Installation](#remote-file-orchestrator-extension-installation), step 7 above.
   - **Custom Capability** - Unchecked
   - **Supported Job Types** - Inventory, Add, Remove, Create, and Discovery should all be checked.
   - **Needs Server** - Checked
@@ -481,7 +481,7 @@ Below are the various certificate store types that the RemoteFile Orchestator Ex
 - <i>Basic Tab:</i>
 
   - **Name** – Required. The display name you wish to use for the new Certificate Store Type.
-  - **Short Name** – Required. Suggested value - **RFKDB**.  If you choose to use a different value you must make the corresponding modification to the manifest.json file.  See [Remote File Orchestrator Extension Installation](#remote-file-orchestrator-extension-installation}, step 7 above.
+  - **Short Name** – Required. Suggested value - **RFKDB**.  If you choose to use a different value you must make the corresponding modification to the manifest.json file.  See [Remote File Orchestrator Extension Installation](#remote-file-orchestrator-extension-installation), step 7 above.
   - **Custom Capability** - Unchecked
   - **Supported Job Types** - Inventory, Add, Remove, Create, and Discovery should all be checked.
   - **Needs Server** - Checked
@@ -515,7 +515,7 @@ Below are the various certificate store types that the RemoteFile Orchestator Ex
 - <i>Basic Tab:</i>
 
   - **Name** – Required. The display name you wish to use for the new Certificate Store Type.
-  - **Short Name** – Required. Suggested value - **RFORA**.  If you choose to use a different value you must make the corresponding modification to the manifest.json file.  See [Remote File Orchestrator Extension Installation](#remote-file-orchestrator-extension-installation}, step 7 above.
+  - **Short Name** – Required. Suggested value - **RFORA**.  If you choose to use a different value you must make the corresponding modification to the manifest.json file.  See [Remote File Orchestrator Extension Installation](#remote-file-orchestrator-extension-installation), step 7 above.
   - **Custom Capability** - Unchecked
   - **Supported Job Types** - Inventory, Add, Remove, Create, and Discovery should all be checked.
   - **Needs Server** - Checked
