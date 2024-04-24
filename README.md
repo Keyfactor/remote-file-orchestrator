@@ -109,8 +109,8 @@ The Remote File Orchestrator Extension is a multi-purpose integration that can r
 The RFPkcs12 store type can be used to manage any PKCS#12 compliant file format INCLUDING java keystores of type PKCS12.
 
 Use cases supported:
-1. One-to-many trust entries - A single certificate without a private key in a certificate store.  Each certificate identified with a custom alias or certificate thumbprint.
-2. One-to-many key entries - One-to-many certificates with private keys and optionally the full certificate chain.  Each certificate identified with a custom alias or certificate thumbprint.
+1. One-to-many trust entries - A trust entry is considered single certificate without a private key in a certificate store.  Each trust entry is identified with a custom alias.
+2. One-to-many key entries - One-to-many certificates with private keys and optionally the full certificate chain.  Each certificate identified with a custom alias.
 3. A mix of trust and key entries.
 
 </details>
@@ -121,8 +121,8 @@ Use cases supported:
 The RFJKS store type can be used to manage java keystores of type JKS.  **PLEASE NOTE:** Java keystores of type PKCS12 **_cannot_** be managed by the RFJKS type.  You **_must_** use RFPkcs12.
 
 Use cases supported:
-1. One-to-many trust entries - A single certificate without a private key in a certificate store.  Each certificate identified with a custom alias or certificate thumbprint.
-2. One-to-many key entries - One-to-many certificates with private keys and optionally the full certificate chain.  Each certificate identified with a custom alias or certificate thumbprint.
+1. One-to-many trust entries - A trust entry is considered single certificate without a private key in a certificate store.  Each trust entry is identified with a custom alias.
+2. One-to-many key entries - One-to-many certificates with private keys and optionally the full certificate chain.  Each certificate identified with a custom alias.
 3. A mix of trust and key entries.
 
 </details>
@@ -159,8 +159,8 @@ Use cases supported:
 The RFKDB store type can be used to manage IBM Key Database Files (KDB) files.  The IBM utility, GSKCAPICMD, is used to read and write certificates from and to the target store and is therefore required to be installed on the server where each KDB certificate store being managed resides, and its location MUST be in the system $Path.
 
 Use cases supported:
-1. One-to-many trust entries - A single certificate without a private key in a certificate store.  Each certificate identified with a custom alias or certificate thumbprint.
-2. One-to-many key entries - One-to-many certificates with private keys and optionally the full certificate chain.  Each certificate identified with a custom alias or certificate thumbprint.
+1. One-to-many trust entries - A trust entry is considered single certificate without a private key in a certificate store.  Each trust entry is identified with a custom alias.
+2. One-to-many key entries - One-to-many certificates with private keys and optionally the full certificate chain.  Each certificate identified with a custom alias.
 3. A mix of trust and key entries.
 
 </details>
@@ -171,13 +171,13 @@ Use cases supported:
 The RFORA store type can be used to manage Pkcs12 Oracle Wallets.  Please note that while this should work for Pkcs12 Oracle Wallets installed on both Windows and Linux servers, this has only been tested on wallets installed on Windows.  Please note, when entering the Store Path for an Oracle Wallet in Keyfactor Command, make sure to INCLUDE the eWallet.p12 file name that by convention is the name of the Pkcs12 wallet file that gets created.
 
 Use cases supported:
-1. One-to-many trust entries - A single certificate without a private key in a certificate store.  Each certificate identified with a custom alias or certificate thumbprint.
-2. One-to-many key entries - One-to-many certificates with private keys and optionally the full certificate chain.  Each certificate identified with a custom alias or certificate thumbprint.
+1. One-to-many trust entries - A trust entry is considered single certificate without a private key in a certificate store.  Each trust entry is identified with a custom alias.
+2. One-to-many key entries - One-to-many certificates with private keys and optionally the full certificate chain.  Each certificate identified with a custom alias.
 3. A mix of trust and key entries.
 
 </details>
 
-While the Keyfactor Universal Orchestrator (UO) and RemoteFile Orchestrator Extension can be installed on either Windows or Linux, the Remote File Orchestrator Extension can also *manage* certificate stores residing on both Windows and Linux servers.  When the RemoteFile Orchestrator Extension is installed on a Windows or Linux server and is used to manager *other* Windows or Linux servers hosting certificate stores, it is said to be acting as an *orchestrator*, managing certificate stores on one or more *other* orchestrated servers.  When the Remote File Orchestrator Extension manages only certificate stores residing on the *same* server, it is said to be acting as an *agent*.  When acting as an orchestrator, connectivity from the orchestrator server hosting the RemoteFile extension to the orchestrated server hosting the certificate store(s) being managed is achieved via either an SSH (for Linux and possibly Windows orchestrated servers) or WinRM (for Windows orchestrated servers) connection.  When acting as an agent, SSH/WinRM may still be used, OR the certificate store can be configured to bypass these and operate directly on the server's file system.  Please review the [Prerequisites and Security Considerations](#prerequisites-and-security-considerations) and [Certificate Stores and Discovery Jobs](#certificate-stores-and-discovery-jobs) sections for more information on proper configuration and setup for these different architectures.  The supported configurations of Universal Orchestrator hosts and managed orchestrated servers are shown below along with :
+While the Keyfactor Universal Orchestrator (UO) and RemoteFile Orchestrator Extension can be installed on either Windows or Linux, the Remote File Orchestrator Extension can also *manage* certificate stores residing on both Windows and Linux servers.  When the RemoteFile Orchestrator Extension is installed on a Windows or Linux server and is used to manager *other* Windows or Linux servers hosting certificate stores, it is said to be acting as an *orchestrator*, managing certificate stores on one or more *other* orchestrated servers.  When the Remote File Orchestrator Extension manages only certificate stores residing on the *same* server, it is said to be acting as an *agent*.  When acting as an orchestrator, connectivity from the orchestrator server hosting the RemoteFile extension to the orchestrated server hosting the certificate store(s) being managed is achieved via either an SSH (for Linux and possibly Windows orchestrated servers) or WinRM (for Windows orchestrated servers) connection.  When acting as an agent, SSH/WinRM may still be used, OR the certificate store can be configured to bypass these and operate directly on the server's file system.  Please review the [Prerequisites and Security Considerations](#prerequisites-and-security-considerations) and [Certificate Stores and Discovery Jobs](#certificate-stores-and-discovery-jobs) sections for more information on proper configuration and setup for these different architectures.  The supported configurations of Universal Orchestrator hosts and managed orchestrated servers are detailed below:
 
 | | UO Installed on Windows | UO Installed on Linux |
 |-----|-----|------|
@@ -196,7 +196,8 @@ The version number of a the Remote File Orchestrator Extension can be verified b
 
 <details>
 <summary><b>Certificate stores hosted on Linux servers:</b></summary>
-1. The Remote File Orchestrator Extension makes use of a few common Linux commands when managing stores on Linux servers. If the credentials you will be connecting with need elevated access to run these commands or to access the certificate store files these commands operate against, you must set up the user id as a sudoer with no password necessary and set the config.json "UseSudo" value to "Y" (See "Config File Setup" later in this README for more information on setting up the config.json file). The full list of these commands below:
+
+1. The Remote File Orchestrator Extension makes use of a few common Linux commands when managing stores on Linux servers. If the credentials you will be connecting with need elevated access to run these commands or to access the certificate store files these commands operate against, you must set up the user id as a sudoer with no password necessary and set the config.json "UseSudo" value to "Y".  The full list of these commands below:
 
 |Shell Command|Used For|
 |---|---|
@@ -208,27 +209,30 @@ The version number of a the Remote File Orchestrator Extension can be verified b
 |rm|Used by Inventory and Management Add/Remove jobs to remove temporary files (only when an alternate upload/download folder has been configured).|
 |install|Used by the Management Create Store job when initializing a certificate store file.|
 |orapki|Oracle Wallet CLI utility used by Inventory and Management Add/Remove jobs to manipulate an Oracle Wallet certificate store.  Used for the RFORA store type only.|
-|gskcapicmd|IBM Key Database CLI utility used by Inventory and Management Add/Remove jobs to manipulate an IBM Key Database certificate store.  Used for the RFKDB store type only.|
+|gskcapicmd|IBM Key Database CLI utility used by Inventory and Management Add/Remove jobs to manipulate an IBM Key Database certificate store.  Used for the RFKDB store type only.|  
 
-2. The Remote File Orchestrator Extension makes use of SFTP and/or SCP to transfer files to and from the orchestrated server.  SFTP/SCP cannot make use of sudo, so all folders containing certificate stores will need to allow SFTP/SCP file transfer.  If this is not possible, set the values in the config.json apprpriately to use an alternative upload/download folder that does allow SFTP/SCP file transfer (See "Config File Setup" later in this README regarding the config.json file).
+2. The Remote File Orchestrator Extension makes use of SFTP and/or SCP to transfer files to and from the orchestrated server.  SFTP/SCP cannot make use of sudo, so all folders containing certificate stores will need to allow SFTP/SCP file transfer.  If this is not possible, set the values in the config.json apprpriately to use an alternative upload/download folder that does allow SFTP/SCP file transfer.  
 
-3. SSH Key Authentication: When creating a Keyfactor certificate store for the remote file orchestrator extension (see "Creating Certificate Stores" later in this README, you may supply either a user id and password for the certificate store credentials (directly or through one of Keyfactor Command's PAM integrations), or a user id and SSH private key.  Both PKCS#1 (BEGIN RSA PRIVATE KEY) and PKCS#8 (BEGIN PRIVATE KEY) formats are supported for the SSH private key.  If using the normal Keyfactor Command credentials dialog without PAM integration, just copy and paste the full SSH private key into the Password textbox.  
+3. SSH Key Authentication: When creating a Keyfactor certificate store for the remote file orchestrator extension, you may supply either a user id and password for the certificate store credentials (directly or through one of Keyfactor Command's PAM integrations), or supply a user id and SSH private key.  Both PKCS#1 (BEGIN RSA PRIVATE KEY) and PKCS#8 (BEGIN PRIVATE KEY) formats are supported for the SSH private key.  If using the normal Keyfactor Command credentials dialog without PAM integration, just copy and paste the full SSH private key into the Password textbox.  
+
+Please reference [Configuration File Setup](#configuration-file-setup) for more information on setting up the config.json file and [Certificate Stores and Discovery Jobs](#certificate-stores-and-discovery-jobs) for more information on the items above.    
 </details>  
 
 <details>  
 <summary><b>Certificate stores hosted on Windows servers:</b></summary>
-1. Make sure that WinRM is set up on the orchestrated server and that the WinRM port (by convention, 5585 for HTTP and 5586 for HTTPS) is part of the certificate store path when setting up your certificate stores When creating a new certificate store in Keyfactor Command (See "Creating Certificate Stores" later in this README).
+1. Make sure that WinRM is set up on the orchestrated server and that the WinRM port (by convention, 5585 for HTTP and 5586 for HTTPS) is part of the certificate store path when setting up your certificate stores When creating a new certificate store in Keyfactor Command.  Please reference [Certificate Stores and Discovery Jobs](#certificate-stores-and-discovery-jobs) for more information on creating certificate stores for the RemoteFile Orchestrator Extension.  
+
+</details>
 
 Please consult with your company's system administrator for more information on configuring SSH/SFTP/SCP or WinRM in your environment.
 
-</details>
   
 &nbsp;  
 ## Remote File Orchestrator Extension Installation
 1. Review the [Prerequisites and Security Considerations](#prerequisites-and-security-considerations) section and make sure your environment is set up as required.
 2. Refer to the [Creating Certificate Store Types](#creating-certificate-store-types) section to create the certificate store types you wish to manage.
 3. Stop the Keyfactor Universal Orchestrator Service on the server you plan to install this extension to run on.
-4. In the Keyfactor Orchestrator installation folder (by convention usually C:\Program Files\Keyfactor\Keyfactor Orchestrator), find the "Extensions" folder. Underneath that, create a new folder named "RemoteFile". You may choose to use a different name if you wish.
+4. In the Keyfactor Orchestrator installation folder (by convention usually C:\Program Files\Keyfactor\Keyfactor Orchestrator for a Windows install or /opt/keyfactor/orchestrator/ for a Linux install), find the "Extensions" folder. Underneath that, create a new folder named "RemoteFile". You may choose to use a different name if you wish.
 5. Download the latest version of the RemoteFile orchestrator extension from [GitHub](https://github.com/Keyfactor/remote-file-orchestrator).  Click on the "Latest" release link on the right hand side of the main page and download the first zip file.
 6. Copy the contents of the download installation zip file to the folder created in step 4.
 7. (Optional) If you decide to create one or more certificate store types with short names different than the suggested values, edit the manifest.json file in the folder you created in step 4, and modify each "ShortName" in each "Certstores.{ShortName}.{Operation}" line with the ShortName you used to create the respective certificate store type.
@@ -255,7 +259,7 @@ The Remote File Orchestrator Extension uses a JSON configuration file.  It is lo
 <details>
 <summary><b>UseSudo</b> (Applicable for Linux hosted certificate stores only)</summary>
 
-* Determines whether to prefix certain Linux command with "sudo". This can be very helpful in ensuring that the user id running commands over an ssh connection uses "least permissions necessary" to process each task. Setting this value to "Y" will prefix all Linux commands with "sudo" with the expectation that the command being executed on the orchestrated Linux server will look in the sudoers file to determine whether the logged in ID has elevated permissions for that specific command. Setting this value to "N" will result in "sudo" not being added to Linux commands.  
+* Determines whether to prefix Linux command with "sudo". This can be very helpful in ensuring that the user id running commands over an ssh connection uses "least permissions necessary" to process each task. Setting this value to "Y" will prefix all Linux commands with "sudo" with the expectation that the command being executed on the orchestrated Linux server will look in the sudoers file to determine whether the logged in ID has elevated permissions for that specific command. Setting this value to "N" will result in "sudo" not being added to Linux commands.  
 * Allowed values - Y/N  
 * Default value - N  
 
@@ -289,7 +293,7 @@ The Remote File Orchestrator Extension uses a JSON configuration file.  It is lo
 </details>  
 
 <details>  
-<summary><b>SeparateUploadFilePath</b>(Applicable for Linux hosted certificate stores only)</summary>
+<summary><b>SeparateUploadFilePath</b> (Applicable for Linux hosted certificate stores only)</summary>
 
 * Set this to the path you wish to use as the location on the orchestrated server to upload/download and later remove temporary work files when processing jobs.  If set to "" or not provided, the location of the certificate store itself will be used.  File transfer is performed using the SCP or SFTP protocols (see the File TransferProtocol setting).
 * Allowed values - Any valid, existing Linux path configured to allow SCP/SFTP file upload/download tranfers.
@@ -309,7 +313,7 @@ The Remote File Orchestrator Extension uses a JSON configuration file.  It is lo
 <details>  
 <summary><b>DefaultLinuxPermissionsOnStoreCreation</b> (Applicable for Linux hosted certificate stores only)</summary>
 
-* The Linux file permissions that will be set on a new certificate store created via a Management Create job or a Management Add job where CreateStoreOnAddIsMissing is set to "Y".  This value will be used for all certificate stores managed by this orchestrator instance unless overridden by the optional "Linux File Permissions on Store Creation" custom parameter setting on a specific certificate store (See the "Certificatee Store Types Supported" section later in this README).
+* The Linux file permissions that will be set on a new certificate store created via a Management Create job or a Management Add job where CreateStoreOnAddIsMissing is set to "Y".  This value will be used for all certificate stores managed by this orchestrator instance unless overridden by the optional "Linux File Permissions on Store Creation" custom parameter setting on a specific certificate store.  See the [Creating Certificate Store Types](#creating-certificate-store-types) section for more information on creating RemoteFile certificate store types.
 * Allowed values - Any 3 digit value from 000-777.
 * Default Value - 600.  
 
@@ -318,7 +322,7 @@ The Remote File Orchestrator Extension uses a JSON configuration file.  It is lo
 <details>  
 <summary><b>DefaultOwnerOnStoreCreation</b> (Applicable for Linux hosted certificate stores only)</summary>
 
-* When a Management job is run to remotely create the physical certificate store on a remote server, by default the file owner and group will be set to the user name associated with the Keyfactor certificate store.  Setting DefaultOwnerOnStoreCreation to an alternative valid Linux user name will set that as the owner/group instead.  If the group and owner need to be different values, use a ":" as a delimitter between the owner and group values, such as ownerId:groupId.  Please make sure that the user associated with the certificate store will have valid permissions to chown the certificate store file to this alernative owner.  The optional "Linux File Owner on Store Creation" custom parameter setting for a specific certificate store (See the "Certificatee Store Types Supported" section later in this README) can override this value for a specific store.
+* When a Management job is run to remotely create the physical certificate store on a remote server, by default the file owner and group will be set to the user name associated with the Keyfactor certificate store.  Setting DefaultOwnerOnStoreCreation to an alternative valid Linux user name will set that as the owner/group instead.  If the group and owner need to be different values, use a ":" as a delimitter between the owner and group values, such as ownerId:groupId.  Please make sure that the user associated with the certificate store will have valid permissions to chown the certificate store file to this alernative owner.  The optional "Linux File Owner on Store Creation" custom parameter setting for a specific certificate store can override this value for a specific store.  See the [Creating Certificate Store Types](#creating-certificate-store-types) section for more information on creating RemoteFile certificate store types.
 * Allowed values - Any valid user id that the destination Linux server will recognize
 * Default Value - blank (the ID associated with the Keyfactor certificate store will be used).  
 
@@ -335,7 +339,7 @@ Below are the various certificate store types that the RemoteFile Orchestator Ex
 - <i>Basic Tab:</i>
 
   - **Name** – Required. The display name you wish to use for the new Certificate Store Type.
-  - **Short Name** – Required. Suggested value - **RFPkcs12**.  If you choose to use a different value you must make the corresponding modification to the manifest.json file.  See [Remote File Orchestrator Extension Installation](#remote-file-orchestrator-extension}, step 7 above.
+  - **Short Name** – Required. Suggested value - **RFPkcs12**.  If you choose to use a different value you must make the corresponding modification to the manifest.json file.  See [Remote File Orchestrator Extension Installation](#remote-file-orchestrator-extension-installation}, step 7 above.
   - **Custom Capability** - Unchecked
   - **Supported Job Types** - Inventory, Add, Remove, Create, and Discovery should all be checked.
   - **Needs Server** - Checked
@@ -369,7 +373,7 @@ Below are the various certificate store types that the RemoteFile Orchestator Ex
 - <i>Basic Tab:</i>
 
   - **Name** – Required. The display name you wish to use for the new Certificate Store Type.
-  - **Short Name** – Required. Suggested value - **RFJKS**.  If you choose to use a different value you must make the corresponding modification to the manifest.json file.  See [Remote File Orchestrator Extension Installation](#remote-file-orchestrator-extension}, step 7 above.
+  - **Short Name** – Required. Suggested value - **RFJKS**.  If you choose to use a different value you must make the corresponding modification to the manifest.json file.  See [Remote File Orchestrator Extension Installation](#remote-file-orchestrator-extension-installation}, step 7 above.
   - **Custom Capability** - Unchecked
   - **Supported Job Types** - Inventory, Add, Remove, Create, and Discovery should all be checked.
   - **Needs Server** - Checked
@@ -403,7 +407,7 @@ Below are the various certificate store types that the RemoteFile Orchestator Ex
 - <i>Basic Tab:</i>
 
   - **Name** – Required. The display name you wish to use for the new Certificate Store Type.
-  - **Short Name** – Required. Suggested value - **RFPEM**.  If you choose to use a different value you must make the corresponding modification to the manifest.json file.  See [Remote File Orchestrator Extension Installation](#remote-file-orchestrator-extension}, step 7 above.
+  - **Short Name** – Required. Suggested value - **RFPEM**.  If you choose to use a different value you must make the corresponding modification to the manifest.json file.  See [Remote File Orchestrator Extension Installation](#remote-file-orchestrator-extension-installation}, step 7 above.
   - **Custom Capability** - Unchecked
   - **Supported Job Types** - Inventory, Add, Remove, Create, and Discovery should all be checked.
   - **Needs Server** - Checked
@@ -442,7 +446,7 @@ Below are the various certificate store types that the RemoteFile Orchestator Ex
 - <i>Basic Tab:</i>
 
   - **Name** – Required. The display name you wish to use for the new Certificate Store Type.
-  - **Short Name** – Required. Suggested value - **RFDER**.  If you choose to use a different value you must make the corresponding modification to the manifest.json file.  See [Remote File Orchestrator Extension Installation](#remote-file-orchestrator-extension}, step 7 above.
+  - **Short Name** – Required. Suggested value - **RFDER**.  If you choose to use a different value you must make the corresponding modification to the manifest.json file.  See [Remote File Orchestrator Extension Installation](#remote-file-orchestrator-extension-installation}, step 7 above.
   - **Custom Capability** - Unchecked
   - **Supported Job Types** - Inventory, Add, Remove, Create, and Discovery should all be checked.
   - **Needs Server** - Checked
@@ -477,7 +481,7 @@ Below are the various certificate store types that the RemoteFile Orchestator Ex
 - <i>Basic Tab:</i>
 
   - **Name** – Required. The display name you wish to use for the new Certificate Store Type.
-  - **Short Name** – Required. Suggested value - **RFKDB**.  If you choose to use a different value you must make the corresponding modification to the manifest.json file.  See [Remote File Orchestrator Extension Installation](#remote-file-orchestrator-extension}, step 7 above.
+  - **Short Name** – Required. Suggested value - **RFKDB**.  If you choose to use a different value you must make the corresponding modification to the manifest.json file.  See [Remote File Orchestrator Extension Installation](#remote-file-orchestrator-extension-installation}, step 7 above.
   - **Custom Capability** - Unchecked
   - **Supported Job Types** - Inventory, Add, Remove, Create, and Discovery should all be checked.
   - **Needs Server** - Checked
@@ -511,7 +515,7 @@ Below are the various certificate store types that the RemoteFile Orchestator Ex
 - <i>Basic Tab:</i>
 
   - **Name** – Required. The display name you wish to use for the new Certificate Store Type.
-  - **Short Name** – Required. Suggested value - **RFORA**.  If you choose to use a different value you must make the corresponding modification to the manifest.json file.  See [Remote File Orchestrator Extension Installation](#remote-file-orchestrator-extension}, step 7 above.
+  - **Short Name** – Required. Suggested value - **RFORA**.  If you choose to use a different value you must make the corresponding modification to the manifest.json file.  See [Remote File Orchestrator Extension Installation](#remote-file-orchestrator-extension-installation}, step 7 above.
   - **Custom Capability** - Unchecked
   - **Supported Job Types** - Inventory, Add, Remove, Create, and Discovery should all be checked.
   - **Needs Server** - Checked
@@ -559,27 +563,27 @@ If running as an agent (accessing stores on the server where the Universal Orche
 
 
 <details>
-<summary>Store Path (certificate stores)</summary>
+<summary>Store Path (certificate stores only)</summary>
 
 For Linux orchestrated servers, "StorePath" will begin with a forward slash (/) and contain the full path and file name, including file extension if one exists (i.e. /folder/path/storename.ext).  For Windows orchestrated servers, it should be the full path and file name, including file extension if one exists, beginning with a drive letter (i.e. c:\folder\path\storename.ext).  
 
 </details>
 
 <details>
-<summary>Server Username/Password</summary>
+<summary>Server Username/Password (certificate stores and discovery jobs)</summary>
 
 A username and password (or valid PAM key if the username and/or password is stored in a KF Command configured PAM integration).  The password can be an SSH private key if connecting via SSH to a server using SSH private key authentication.  If acting as an *agent* using local file access, just check "No Value" for the username and password.
 
 </details>
 <details>
-<summary>Directories to Search (discovery jobs)</summary>
+<summary>Directories to Search (discovery jobs only)</summary>
 
 Enter one or more comma delimitted file paths to search (please reference the Keyfactor Command Reference Guide for more information), but there is also a special value that can be used on Windows orchestrated servers instead - "fullscan".  Entering fullscan in this field will tell the RemoteFile discovery job to search all available drive letters at the root and recursively search all of them for files matching the other search criteria.
 
 </details>
 
 <details>
-<summary>Extensions (discovery jobs)</summary>
+<summary>Extensions (discovery jobs only)</summary>
 
 In addition to entering one or more comma delimitted extensions to search for (please reference the Keyfactor Command Reference Guide for more information), a reserved value of "noext" can be used that will cause the RemoteFile discovery job to search for files that do not have an extension.  This value can be chained with other extensions using the comma delimiter.  For example, entering pem,jks,noext will cause the RemoteFile discovery job to return file locations with extensions of "pem", "jks", *and* files that do not have extensions.  
 
