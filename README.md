@@ -184,9 +184,7 @@ While the Keyfactor Universal Orchestrator (UO) and RemoteFile Orchestrator Exte
 |Orchestrated Server on remote Windows server|WinRM connection | SSH connection |
 |Orchestrated Server on remote Linux server| SSH connection | SSH connection |
 |Orchestrated Server on same server as orchestrator service (Agent)| WinRM connection or local file system | SSH connection or local file system |  
-
-
-&bnsp;  
+&nbsp;  
 &nbsp;  
   
 ## Versioning
