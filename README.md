@@ -182,8 +182,8 @@ While the Keyfactor Universal Orchestrator (UO) and RemoteFile Orchestrator Exte
 | | UO Installed on Windows | UO Installed on Linux |
 |-----|-----|------|
 |Orchestrated Server hosting certificate store(s) on remote Windows server|WinRM connection | SSH connection |
-|Orchestrated Server certificate store(s) on remote Linux server| SSH connection | SSH connection |
-|Orchestrated Server certificate store(s) on same server as orchestrator service (Agent)| WinRM connection or local file system | SSH connection or local file system |  
+|Orchestrated Server hosting certificate store(s) on remote Linux server| SSH connection | SSH connection |
+|Certificate store(s) on same server as orchestrator service (Agent)| WinRM connection or local file system | SSH connection or local file system |  
 
 &nbsp;   
 ## Versioning
