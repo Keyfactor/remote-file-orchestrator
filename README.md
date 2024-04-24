@@ -177,7 +177,7 @@ Use cases supported:
 
 </details>
 
-While the Keyfactor Universal Orchestrator (UO) and RemoteFile Orchestrator Extension can be installed on either Windows or Linux, the Remote File Orchestrator Extension can also *manage* certificate stores residing on both Windows and Linux servers.  When the RemoteFile Orchestrator Extension is installed on a Windows or Linux server and is used to manager *other* Windows or Linux servers hosting certificate stores, it said to be acting as an *orchestrator*, managing certificate stores on one or more *other* orchestrated servers.  When the Remote File Orchestrator Extension manages only certificate stores residing on the *same* server, it is said to be acting as an *agent*.  When acting as an orchestrator, connectivity from the orchestrator server hosting the RemoteFile extension to the orchestrated server hosting the certificate store(s) being managed is achieved via either an SSH (for Linux and possibly Windows orchestrated servers) or WinRM (for Windows orchestrated servers) connection.  When acting as an agent, SSH/WinRM may still be used, OR the certificate store can be configured to bypass these and operate directly on the server's file system.  Please review the [Prerequisites and Security Considerations](#prerequisites-and-security-considerations) and [Certificate Stores and Discovery Jobs](#certificate-stores-and-discovery-jobs) sections for more information on proper configuration and setup for these different architectures.  The supported configurations of Universal Orchestrator hosts and managed orchestrated servers are shown below along with :
+While the Keyfactor Universal Orchestrator (UO) and RemoteFile Orchestrator Extension can be installed on either Windows or Linux, the Remote File Orchestrator Extension can also *manage* certificate stores residing on both Windows and Linux servers.  When the RemoteFile Orchestrator Extension is installed on a Windows or Linux server and is used to manager *other* Windows or Linux servers hosting certificate stores, it is said to be acting as an *orchestrator*, managing certificate stores on one or more *other* orchestrated servers.  When the Remote File Orchestrator Extension manages only certificate stores residing on the *same* server, it is said to be acting as an *agent*.  When acting as an orchestrator, connectivity from the orchestrator server hosting the RemoteFile extension to the orchestrated server hosting the certificate store(s) being managed is achieved via either an SSH (for Linux and possibly Windows orchestrated servers) or WinRM (for Windows orchestrated servers) connection.  When acting as an agent, SSH/WinRM may still be used, OR the certificate store can be configured to bypass these and operate directly on the server's file system.  Please review the [Prerequisites and Security Considerations](#prerequisites-and-security-considerations) and [Certificate Stores and Discovery Jobs](#certificate-stores-and-discovery-jobs) sections for more information on proper configuration and setup for these different architectures.  The supported configurations of Universal Orchestrator hosts and managed orchestrated servers are shown below along with :
 
 | | UO Installed on Windows | UO Installed on Linux |
 |-----|-----|------|
@@ -543,16 +543,49 @@ Below are the various certificate store types that the RemoteFile Orchestator Ex
 &nbsp;  
 ## Certificate Stores and Discovery Jobs
 
-Please refer to the Keyfactor Command Reference Guide for information on creating certificate stores and scheduling Discovery jobs in Keyfactor Command.  However, there are a few fields that are important to highlight here - Client Machine, Store Path (Creating Certificate Stores), and Directories to search (Discovery jobs) and Extensions (Discovery jobs).  For Linux orchestrated servers, "Client Machine" should be the DNS or IP address of the remote orchestrated server while "Store Path" is the full path and file name of the file based store, beginning with a forward slash (/).  For Windows orchestrated servers, "Client Machine" should be of the format {protocol}://{dns-or-ip}:{port} where {protocol} is either http or https, {dns-or-ip} is the DNS or IP address of the remote orchestrated server, and {port} is the port where WinRM is listening, by convention usually 5985 for http and 5986 for https.  Alternately, entering the keyword "localhost" for "Client Machine" will point to the server where the orchestrator service is installed and WinRM WILL NOT be required.  "Store Path" is the full path and file name of the file based store, beginning with a drive letter (i.e. c:\).  For example valid values for Client Machine and Store Path for Linux and Windows managed servers may look something like:  
+When creating new certificate stores or scheduling discovery jobs in Keyfactor Command, there are a few fields that are important to highlight here:  
 
-Linux: Client Machine - 127.0.0.1 or MyLinuxServerName; Store Path - /home/folder/path/storename.ext  
-Windows: Client Machine - http<span>s://My.Server.Domain:59</span>86; Store Path - c:\folder\path\storename.ext  
+<details>
+<summary>Client Machine (certificate stores and discovery jobs)</summary>
 
-Credentials **must** be entered: a user id and either a password or valid PAM key if the password is stored in a KF Command configured PAM integration.  Alternatively, this password can be an SSH private key if connecting to a Linux server using SSH private key authentication.
+For Linux orchestrated servers, "Client Machine" should be the DNS name or IP address of the remote orchestrated server, while for Windows orchestratred servers, it should be the following URL format: protocol://dns-or-ip:port, where
+* protocol is http or https, whatever your WinRM configuration uses
+* dns-or-ip is the DNS name or IP address of the server
+* port is the port WinRM is running under, usually 5985 for http and 5986 for https.
 
-For "Directories to search", you can chain paths with a comma delimiter as documented in the Keyfactor Command Reference Guide, but there is also a special value that can be used instead - fullscan.  Entering fullscan in this field will tell the RemoteFile discovery job to search all available drive letters and recursively search all of them for files matching the other search criteria.  
+If running as an agent (accessing stores on the server where the Universal Orchestrator Services is installed ONLY), Client Machine can be entered as stated above, OR you can bypass SSH/WinRM and access the local file system directly by adding "|LocalMachine" to the end of your value for Client Machine, for example "1.1.1.1|LocalMachine".  In this instance the value to the left of the pipe (|) is ignored.  It is important to make sure the values for Client Machine and Store Path together are unique for each certificate store created, as Keyfactor Command requires the Store Type you select, along with Client Machine, and Store Path together must be unique.  To ensure this, it is good practice to put the full DNS or IP Address to the left of the | character when setting up a cerificate store that will accessed without a WinRM/SSH connection.
 
-For "Extensions", a reserved value of noext will cause the RemoteFile discovery job to search for files that do not have an extension.  This value can be chained with other extensions using a comma delimiter.  For example, entering pem,jks,noext will cause the RemoteFile discovery job to search for files with extensions of PEM or JKS or files that do not have extensions.  
+</details>
+
+
+<details>
+<summary>Store Path (certificate stores)</summary>
+
+For Linux orchestrated servers, "StorePath" will begin with a forward slash (/) and contain the full path and file name, including file extension if one exists (i.e. /folder/path/storename.ext).  For Windows orchestrated servers, it should be the full path and file name, including file extension if one exists, beginning with a drive letter (i.e. c:\folder\path\storename.ext).  
+
+</details>
+
+<details>
+<summary>Server Username/Password</summary>
+
+Credentials **must** be entered: a user id and either a password or valid PAM key if the password is stored in a KF Command configured PAM integration.  Alternatively, this password can be an SSH private key if connecting via SSH to a server using SSH private key authentication.  If acting as an *agent* using local file access, just check "No Value" for the username and password.
+
+</details>
+<details>
+<summary>Directories to Search (discovery jobs)</summary>
+
+Enter one or more comma delimitted file paths to search (please reference the Keyfactor Command Reference Guide for more information), but there is also a special value that can be used on Windows orchestrated servers instead - "fullscan".  Entering fullscan in this field will tell the RemoteFile discovery job to search all available drive letters at the root and recursively search all of them for files matching the other search criteria.
+
+</details>
+
+<details>
+<summary>Extensions (discovery jobs)</summary>
+
+In addition to entering one or more comma delimitted extensions to search for (please reference the Keyfactor Command Reference Guide for more information), a reserved value of "noext" can be used that will cause the RemoteFile discovery job to search for files that do not have an extension.  This value can be chained with other extensions using the comma delimiter.  For example, entering pem,jks,noext will cause the RemoteFile discovery job to return file locations with extensions of "pem", "jks", *and* files that do not have extensions.  
+
+</details>
+
+Please refer to the Keyfactor Command Reference Guide for complete information on creating certificate stores and scheduling discovery jobs in Keyfactor Command.  
 &nbsp;  
 &nbsp;  
 ## Developer Notes
