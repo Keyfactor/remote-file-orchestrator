@@ -85,8 +85,7 @@ While the Keyfactor Universal Orchestrator (UO) and RemoteFile Orchestrator Exte
 |Orchestrated Server on same server as orchestrator service (Agent)| WinRM connection or local file system | SSH connection or local file system |  
 
 &nbsp;  
-&nbsp;  
-  
+&nbsp;   
 ## Versioning
 
 The version number of a the Remote File Orchestrator Extension can be verified by right clicking on the RemoteFile.dll file in the Extensions/RemoteFile installation folder, selecting Properties, and then clicking on the Details tab.
