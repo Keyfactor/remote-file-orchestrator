@@ -51,7 +51,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
         {
             _logger.MethodEntry(LogLevel.Debug);
 
-            string sudo = $"echo -e '\n' | sudo -i -S ";
+            string sudo = $"echo -e \\n | sudo -S ";
 
             try
             {
