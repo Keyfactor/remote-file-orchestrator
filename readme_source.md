@@ -467,7 +467,7 @@ For Linux orchestrated servers, "StorePath" will begin with a forward slash (/) 
 <details>
 <summary>Server Username/Password</summary>
 
-Credentials **must** be entered: a user id and either a password or valid PAM key if the password is stored in a KF Command configured PAM integration.  Alternatively, this password can be an SSH private key if connecting via SSH to a server using SSH private key authentication.  If acting as an *agent* using local file access, just check "No Value" for the username and password.
+A username and password (or valid PAM key if the username and/or password is stored in a KF Command configured PAM integration).  The password can be an SSH private key if connecting via SSH to a server using SSH private key authentication.  If acting as an *agent* using local file access, just check "No Value" for the username and password.
 
 </details>
 <details>
