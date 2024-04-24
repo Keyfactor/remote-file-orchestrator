@@ -80,11 +80,11 @@ While the Keyfactor Universal Orchestrator (UO) can be installed on either Windo
 
 | | UO Installed on Windows | UO Installed on Linux |
 |-----|-----|------|
-|Orchestrated Server on remote Windows server|&check; |&check; |
-|Orchestrated Server on remote Linux server|&check; |&check; |
-|Orchestrated Server on same server as orchestrator service (Agent)|&check; |&check; |  
+|Orchestrated Server on remote Windows server|&check; WinRM connection |&check; SSH connection |
+|Orchestrated Server on remote Linux server|&check; SSH connection |&check; SSH connection |
+|Orchestrated Server on same server as orchestrator service (Agent)|&check; WinRM connection or local file system |&check; SSH connection or local file system |  
 
-&nbsp;  
+When the RemoteFile Orchestrator Extension is installd on a Windows or Linux server and is used to manager *other* Windows or Linux servers hosting certificate stores, it said to be acting as an *orchestrator*, managing certificate stores on one or more other *orchestrated* servers.  When the Remote File Orchestrator Extension is installed but only manages certificate stores on the *same server*, it is said to be acting as an *agent*.  When acting as an orchestrator, connectivity from the orchestrator server hosting the RemoteFile extension to the orchestrated server hosting the certificate store(s) being managed is achieved via either an SSH (for Linux and possibly Windows orchestrated servers) or WinRM (for Windows orchestrated servers) connection.  When acting as an agent, SSH/WinRM may still be used, OR the certificate store can be configured to bypass these and operate directly on the server's file system.  Please review the [Prerequisites and Security Considerations](#prerequisites-and-security-considerations) and [Certificate Stores and Discovery Jobs](#certificate-stores-and-discovery-jobs) sections for more information on proper configuration and setup for these different architectures.
 &nbsp;  
 ## Versioning
 
@@ -441,7 +441,7 @@ Below are the various certificate store types that the RemoteFile Orchestator Ex
 </details>
 
 &nbsp;  
-## Creating Certificate Stores and Scheduling Discovery Jobs
+## Certificate Stores and Discovery Jobs
 
 Please refer to the Keyfactor Command Reference Guide for information on creating certificate stores and scheduling Discovery jobs in Keyfactor Command.  However, there are a few fields that are important to highlight here - Client Machine, Store Path (Creating Certificate Stores), and Directories to search (Discovery jobs) and Extensions (Discovery jobs).  For Linux orchestrated servers, "Client Machine" should be the DNS or IP address of the remote orchestrated server while "Store Path" is the full path and file name of the file based store, beginning with a forward slash (/).  For Windows orchestrated servers, "Client Machine" should be of the format {protocol}://{dns-or-ip}:{port} where {protocol} is either http or https, {dns-or-ip} is the DNS or IP address of the remote orchestrated server, and {port} is the port where WinRM is listening, by convention usually 5985 for http and 5986 for https.  Alternately, entering the keyword "localhost" for "Client Machine" will point to the server where the orchestrator service is installed and WinRM WILL NOT be required.  "Store Path" is the full path and file name of the file based store, beginning with a drive letter (i.e. c:\).  For example valid values for Client Machine and Store Path for Linux and Windows managed servers may look something like:  
 
