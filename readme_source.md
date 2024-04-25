@@ -36,7 +36,9 @@ Use cases supported:
 2. Single certificate stores with private key in the file.
 3. Single certificate stores with certificate chain and private key in the file.
 4. Single certificate stores with private key in an external file.
-5. Single certificate stores with certificate chain in the file and private key in an external file 
+5. Single certificate stores with certificate chain in the file and private key in an external file
+
+NOTE: PEM stores may only have one private key (internal or external) associated with the store, as only one certificate/chain/private key combination can be stored in a PEM store supported by RFPEM.
 
 </details>
 
@@ -76,7 +78,11 @@ Use cases supported:
 
 </details>
 
-While the Keyfactor Universal Orchestrator (UO) and RemoteFile Orchestrator Extension can be installed on either Windows or Linux, the Remote File Orchestrator Extension can also *manage* certificate stores residing on both Windows and Linux servers.  When the RemoteFile Orchestrator Extension is installed on a Windows or Linux server and is used to manager *other* Windows or Linux servers hosting certificate stores, it is said to be acting as an *orchestrator*, managing certificate stores on one or more *other* orchestrated servers.  When the Remote File Orchestrator Extension manages only certificate stores residing on the *same* server, it is said to be acting as an *agent*.  When acting as an orchestrator, connectivity from the orchestrator server hosting the RemoteFile extension to the orchestrated server hosting the certificate store(s) being managed is achieved via either an SSH (for Linux and possibly Windows orchestrated servers) or WinRM (for Windows orchestrated servers) connection.  When acting as an agent, SSH/WinRM may still be used, OR the certificate store can be configured to bypass these and operate directly on the server's file system.  Please review the [Prerequisites and Security Considerations](#prerequisites-and-security-considerations) and [Certificate Stores and Discovery Jobs](#certificate-stores-and-discovery-jobs) sections for more information on proper configuration and setup for these different architectures.  The supported configurations of Universal Orchestrator hosts and managed orchestrated servers are detailed below:
+The Keyfactor Univeral Orchestrator (UO) and RemoteFile Extension can be installed on either Windows or Linux operating systems as well as manage certificates residing on servers of both operating systems. A UO service managing certificates on remote servers is considered to be acting as an Orchestrator, while a UO service managing local certificates on the same server running the service is considered an Agent.  When acting as an Orchestrator, connectivity from the orchestrator server hosting the RemoteFile extension to the orchestrated server hosting the certificate store(s) being managed is achieved via either an SSH (for Linux and possibly Windows orchestrated servers) or WinRM (for Windows orchestrated servers) connection.  When acting as an agent, SSH/WinRM may still be used, OR the certificate store can be configured to bypass these and instead directly access the orchestrator server's file system.  
+
+(images/orchestrator-agent.png)  
+
+Please review the [Prerequisites and Security Considerations](#prerequisites-and-security-considerations) and [Certificate Stores and Discovery Jobs](#certificate-stores-and-discovery-jobs) sections for more information on proper configuration and setup for these different architectures.  The supported configurations of Universal Orchestrator hosts and managed orchestrated servers are detailed below:
 
 | | UO Installed on Windows | UO Installed on Linux |
 |-----|-----|------|
@@ -456,10 +462,11 @@ For Linux orchestrated servers, "Client Machine" should be the DNS name or IP ad
 * dns-or-ip is the DNS name or IP address of the server
 * port is the port WinRM is running under, usually 5985 for http and 5986 for https.
 
-If running as an agent (accessing stores on the server where the Universal Orchestrator Services is installed ONLY), Client Machine can be entered as stated above, OR you can bypass SSH/WinRM and access the local file system directly by adding "|LocalMachine" to the end of your value for Client Machine, for example "1.1.1.1|LocalMachine".  In this instance the value to the left of the pipe (|) is ignored.  It is important to make sure the values for Client Machine and Store Path together are unique for each certificate store created, as Keyfactor Command requires the Store Type you select, along with Client Machine, and Store Path together must be unique.  To ensure this, it is good practice to put the full DNS or IP Address to the left of the | character when setting up a cerificate store that will accessed without a WinRM/SSH connection.
+Example: https://myserver.mydomain.com:5986
+
+If running as an agent (accessing stores on the server where the Universal Orchestrator Services is installed ONLY), Client Machine can be entered as stated above, OR you can bypass SSH/WinRM and access the local file system directly by adding "|LocalMachine" to the end of your value for Client Machine, for example "1.1.1.1|LocalMachine".  In this instance the value to the left of the pipe (|) is ignored.  It is important to make sure the values for Client Machine and Store Path together are unique for each certificate store created, as Keyfactor Command requires the Store Type you select, along with Client Machine, and Store Path together must be unique.  To ensure this, it is good practice to put the full DNS or IP Address to the left of the | character when setting up a cerificate store that will accessed without a WinRM/SSH connection.  
 
 </details>
-
 
 <details>
 <summary>Store Path (certificate stores only)</summary>
