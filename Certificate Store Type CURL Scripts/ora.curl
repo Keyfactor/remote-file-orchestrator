@@ -1,0 +1,56 @@
+ ﻿###CURL script to create KDB certificate store type
+
+###Replacement Variables - Manually replace these before running###
+# {URL} - Base URL for your Keyfactor deployment
+# {UserName} - User name with access to run Keyfactor APIs
+# {UserPassword} - Password for the UserName above
+
+curl -X POST {URL}/keyfactorapi/certificatestoretypes -H "Content-Type: application/json" -H "x-keyfactor-requested-with: APIClient" -u {UserName}:{UserPassword} -d '{
+  "Name": "RFORA",
+  "ShortName": "RFORA",
+  "Capability": "RFORA",
+  "ServerRequired": true,
+  "BlueprintAllowed": false,
+  "CustomAliasAllowed": "Required",
+  "PowerShell": false,
+  "PrivateKeyAllowed": "Optional",
+  "SupportedOperations": {
+    "Add": true,
+    "Create": true,
+    "Discovery": true,
+    "Enrollment": false,
+    "Remove": true
+  },
+  "PasswordOptions": {
+    "Style": "Default",
+    "EntrySupported": false,
+    "StoreRequired": true
+  },
+  "Properties": [
+   {
+      "Name": "LinuxFilePermissionsOnStoreCreation",
+      "DisplayName": "Linux File Permissions on Store Creation",
+      "Required": false,
+      "DependsOn": "",
+      "Type": "String",
+      "DefaultValue": ""
+    },
+    {
+      "Name": "LinuxFileOwnerOnStoreCreation",
+      "DisplayName": "Linux File Owner on Store Creation",
+      "Required": false,
+      "DependsOn": "",
+      "Type": "String",
+      "DefaultValue": ""
+    },
+    {
+      "Name": "WorkFolder",
+      "DisplayName": "Work Folder",
+      "Required": true,
+      "DependsOn": "",
+      "Type": "String",
+      "DefaultValue": ""
+    }
+  ],
+  "EntryParameters": []
+}' 
