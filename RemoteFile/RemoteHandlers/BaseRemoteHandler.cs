@@ -26,11 +26,15 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
             _logger = LogHandler.GetClassLogger(this.GetType());
         }
 
-        public static void AreLinuxPermissionsValid(string permissions)
+        public void AreLinuxPermissionsValid(string permissions)
         {
+            _logger.MethodEntry(LogLevel.Debug);
+
             Regex regex = new Regex(LINUX_PERMISSION_REGEXP);
             if (!regex.IsMatch(permissions))
                 throw new RemoteFileException($"Invalid format for Linux file permissions.  This value must be exactly 3 digits long with each digit between 0-7 but found {permissions} instead.");
+
+            _logger.MethodExit(LogLevel.Debug);
         }
 
         public abstract void Initialize();
