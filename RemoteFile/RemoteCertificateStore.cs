@@ -248,7 +248,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
 
                 Pkcs12Store newEntry = storeBuilder.Build();
 
-                X509Certificate2 cert = new X509Certificate2(newCertBytes, pfxPassword, X509KeyStorageFlags.Exportable);
+                X509Certificate2 cert = new X509Certificate2(newCertBytes, pfxPassword, X509KeyStorageFlags.Exportable | X509KeyStorageFlags.EphemeralKeySet);
                 byte[] binaryCert = cert.Export(X509ContentType.Pkcs12, pfxPassword);
 
                 using (MemoryStream ms = new MemoryStream(string.IsNullOrEmpty(pfxPassword) ? binaryCert : newCertBytes))
