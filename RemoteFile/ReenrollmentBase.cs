@@ -16,6 +16,14 @@ using Keyfactor.Orchestrators.Common.Enums;
 using Microsoft.Extensions.Logging;
 
 using Newtonsoft.Json;
+using static Org.BouncyCastle.Math.EC.ECCurve;
+using Org.BouncyCastle.Asn1.Pkcs;
+using Org.BouncyCastle.Asn1.X509;
+using Org.BouncyCastle.Asn1;
+using Org.BouncyCastle.Crypto.Generators;
+using Org.BouncyCastle.Crypto.Prng;
+using Org.BouncyCastle.Crypto;
+using Org.BouncyCastle.Pkcs;
 
 namespace Keyfactor.Extensions.Orchestrator.RemoteFile
 {
@@ -25,12 +33,13 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
 
         internal RemoteCertificateStore certificateStore = new RemoteCertificateStore();
 
-        public JobResult ProcessJob(ManagementJobConfiguration config)
+        public JobResult ProcessJob(ReenrollmentJobConfiguration config, SubmitReenrollmentCSR submitReenrollmentUpdate)
         {
             ILogger logger = LogHandler.GetClassLogger(this.GetType());
             logger.LogDebug($"Begin {config.Capability} for job id {config.JobId}...");
-            logger.LogDebug($"Server: { config.CertificateStoreDetails.ClientMachine }");
-            logger.LogDebug($"Store Path: { config.CertificateStoreDetails.StorePath }");
+            logger.LogDebug($"Server: {config.CertificateStoreDetails.ClientMachine}");
+            logger.LogDebug($"Store Path: {config.CertificateStoreDetails.StorePath}");
+
             logger.LogDebug($"Job Properties:");
             foreach (KeyValuePair<string, object> keyValue in config.JobProperties == null ? new Dictionary<string, object>() : config.JobProperties)
             {
@@ -50,62 +59,35 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
                 string sudoImpersonatedUser = properties.SudoImpersonatedUser == null || string.IsNullOrEmpty(properties.SudoImpersonatedUser.Value) ?
                     ApplicationSettings.DefaultSudoImpersonatedUser :
                     properties.SudoImpersonatedUser.Value;
+                bool createCSROnDevice = properties.CreateCSROnDevice == null || string.IsNullOrEmpty(properties.CreateCSROnDevice.Value) ? 
+                    ApplicationSettings.CreateCSROnDevice : 
+                    properties.CreateCSROnDevice.Value;
 
                 certificateStore = new RemoteCertificateStore(config.CertificateStoreDetails.ClientMachine, userName, userPassword, config.CertificateStoreDetails.StorePath, storePassword, config.JobProperties);
                 certificateStore.Initialize(sudoImpersonatedUser);
 
                 PathFile storePathFile = RemoteCertificateStore.SplitStorePathFile(config.CertificateStoreDetails.StorePath);
 
-                switch (config.OperationType)
+                if (!certificateStore.DoesStoreExist())
                 {
-                    case CertStoreOperationType.Add:
-                        logger.LogDebug($"BEGIN add Operation for {config.CertificateStoreDetails.StorePath} on {config.CertificateStoreDetails.ClientMachine}.");
-                        if (!certificateStore.DoesStoreExist())
-                        {
-                            if (ApplicationSettings.CreateStoreIfMissing)
-                                CreateStore(certificateStoreSerializer, config);
-                            else
-                                throw new RemoteFileException($"Certificate store {config.CertificateStoreDetails.StorePath} does not exist on server {config.CertificateStoreDetails.ClientMachine}.");
-                        }
-                        certificateStore.LoadCertificateStore(certificateStoreSerializer, config.CertificateStoreDetails.Properties, false);
-                        certificateStore.AddCertificate((config.JobCertificate.Alias ?? new X509Certificate2(Convert.FromBase64String(config.JobCertificate.Contents), config.JobCertificate.PrivateKeyPassword, X509KeyStorageFlags.EphemeralKeySet).Thumbprint), config.JobCertificate.Contents, config.Overwrite, config.JobCertificate.PrivateKeyPassword);
-                        certificateStore.SaveCertificateStore(certificateStoreSerializer.SerializeRemoteCertificateStore(certificateStore.GetCertificateStore(), storePathFile.Path, storePathFile.File, storePassword, certificateStore.RemoteHandler));
-
-                        logger.LogDebug($"END add Operation for {config.CertificateStoreDetails.StorePath} on {config.CertificateStoreDetails.ClientMachine}.");
-                        break;
-
-                    case CertStoreOperationType.Remove:
-                        logger.LogDebug($"BEGIN Delete Operation for {config.CertificateStoreDetails.StorePath} on {config.CertificateStoreDetails.ClientMachine}.");
-                        if (!certificateStore.DoesStoreExist())
-                        {
-                            throw new RemoteFileException($"Certificate store {config.CertificateStoreDetails.StorePath} does not exist on server {config.CertificateStoreDetails.ClientMachine}.");
-                        }
-                        else
-                        {
-                            certificateStore.LoadCertificateStore(certificateStoreSerializer, config.CertificateStoreDetails.Properties, false);
-                            certificateStore.DeleteCertificateByAlias(config.JobCertificate.Alias);
-                            certificateStore.SaveCertificateStore(certificateStoreSerializer.SerializeRemoteCertificateStore(certificateStore.GetCertificateStore(), storePathFile.Path, storePathFile.File, storePassword, certificateStore.RemoteHandler));
-                        }
-                        logger.LogDebug($"END Delete Operation for {config.CertificateStoreDetails.StorePath} on {config.CertificateStoreDetails.ClientMachine}.");
-                        break;
-
-                    case CertStoreOperationType.Create:
-                        logger.LogDebug($"BEGIN create Operation for {config.CertificateStoreDetails.StorePath} on {config.CertificateStoreDetails.ClientMachine}.");
-                        if (certificateStore.DoesStoreExist())
-                        {
-                            throw new RemoteFileException($"Certificate store {config.CertificateStoreDetails.StorePath} already exists.");
-                        }
-                        else
-                        {
-                            CreateStore(certificateStoreSerializer, config);
-                        }
-                        logger.LogDebug($"END create Operation for {config.CertificateStoreDetails.StorePath} on {config.CertificateStoreDetails.ClientMachine}.");
-                        break;
-
-                    default:
-                        return new JobResult() { Result = OrchestratorJobStatusJobResult.Failure, JobHistoryId = config.JobHistoryId, FailureMessage = $"Site {config.CertificateStoreDetails.StorePath} on server {config.CertificateStoreDetails.ClientMachine}: Unsupported operation: {config.OperationType.ToString()}" };
+                    throw new RemoteFileException($"Certificate store {config.CertificateStoreDetails.StorePath} does not exist on server {config.CertificateStoreDetails.ClientMachine}.");
                 }
+
+                certificateStore.LoadCertificateStore(certificateStoreSerializer, config.CertificateStoreDetails.Properties, false);
+                if (createCSROnDevice)
+                {
+                    config.
+                }
+                else
+                {
+
+                }
+                certificateStore.AddCertificate((config.JobCertificate.Alias ?? new X509Certificate2(Convert.FromBase64String(config.JobCertificate.Contents), config.JobCertificate.PrivateKeyPassword, X509KeyStorageFlags.EphemeralKeySet).Thumbprint), config.JobCertificate.Contents, config.Overwrite, config.JobCertificate.PrivateKeyPassword);
+                certificateStore.SaveCertificateStore(certificateStoreSerializer.SerializeRemoteCertificateStore(certificateStore.GetCertificateStore(), storePathFile.Path, storePathFile.File, storePassword, certificateStore.RemoteHandler));
+
+                logger.LogDebug($"END add Operation for {config.CertificateStoreDetails.StorePath} on {config.CertificateStoreDetails.ClientMachine}.");
             }
+
             catch (Exception ex)
             {
                 logger.LogError($"Exception for {config.Capability}: {RemoteFileException.FlattenExceptionMessages(ex, string.Empty)} for job id {config.JobId}");
@@ -121,18 +103,54 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             return new JobResult() { Result = OrchestratorJobStatusJobResult.Success, JobHistoryId = config.JobHistoryId };
         }
 
-        private void CreateStore(ICertificateStoreSerializer certificateStoreSerializer, ManagementJobConfiguration config)
+        private string GenerateCSR(string subjectText, List<string> sans)
         {
-            dynamic properties = JsonConvert.DeserializeObject(config.CertificateStoreDetails.Properties.ToString());
-            string linuxFilePermissions = properties.LinuxFilePermissionsOnStoreCreation == null || string.IsNullOrEmpty(properties.LinuxFilePermissionsOnStoreCreation.Value) ?
-                ApplicationSettings.DefaultLinuxPermissionsOnStoreCreation :
-                properties.LinuxFilePermissionsOnStoreCreation.Value;
+            //Code logic to:
+            //  1) Generate a new CSR
+            //  2) Include the provided subject text
+            //  3) Include the list of SANs
+            //  3) Include the OID corresponding to a Time Stamping request, so Command recognizes this as a request for re-enrollment
+            //  4) Return the base64 encoded CSR.
 
-            string linuxFileOwner = properties.LinuxFileOwnerOnStoreCreation == null || string.IsNullOrEmpty(properties.LinuxFileOwnerOnStoreCreation.Value) ?
-                ApplicationSettings.DefaultOwnerOnStoreCreation :
-                properties.LinuxFileOwnerOnStoreCreation.Value;
+            // this approach relies on the Bouncy Castle Crypto package, and not the Microsoft x509 certificate libraries.
 
-            certificateStore.CreateCertificateStore(certificateStoreSerializer, config.CertificateStoreDetails.StorePath, linuxFilePermissions, string.IsNullOrEmpty(linuxFileOwner) ? config.ServerUsername : linuxFileOwner);
+            var keyGenParams = new KeyGenerationParameters(new Org.BouncyCastle.Security.SecureRandom(new CryptoApiRandomGenerator()), 4096);
+            var keyPairGenerator = new RsaKeyPairGenerator();
+            Org.BouncyCastle.Crypto.Generators.
+            keyPairGenerator.Init(keyGenParams);
+
+            var keyPair = keyPairGenerator.GenerateKeyPair();
+            var subject = new X509Name(subjectText);
+
+            // Add SAN entries
+            var subAltNameList = new List<GeneralName>();
+            sans.ForEach(san => subAltNameList.Add(new GeneralName(GeneralName.DnsName, san.Trim())));
+            var generalSubAltNames = new GeneralNames(subAltNameList.ToArray());
+
+            // Create Key Usage attribute
+            int keyUsage = KeyUsage.DigitalSignature | KeyUsage.NonRepudiation;
+            var keyUsageExtension = new KeyUsage(keyUsage);
+
+            // Add Extended Key Usage extension for re-enrollment (1.3.6.1.5.5.7.3.8 is the OID for time stamping, the Command CA should be configured to recognize a CSR with this OID as a request for re-enrollment)
+            //var timestampOid = new DerObjectIdentifier("1.3.6.1.5.5.7.3.8"); // https://oidref.com/1.3.6.1.5.5.7.3.8
+            //var extendedKeyUsage = new ExtendedKeyUsage(new DerObjectIdentifier[] { timestampOid });
+
+            // Create extensions
+            var extensionsGenerator = new X509ExtensionsGenerator();
+            extensionsGenerator.AddExtension(X509Extensions.SubjectAlternativeName, false, generalSubAltNames);
+            extensionsGenerator.AddExtension(X509Extensions.KeyUsage, true, keyUsageExtension);
+            extensionsGenerator.AddExtension(X509Extensions.ExtendedKeyUsage, false, extendedKeyUsage);
+            X509Extensions extensions = extensionsGenerator.Generate();
+
+            // Create attribute set with extensions
+            var attributeSet = new AttributePkcs(PkcsObjectIdentifiers.Pkcs9AtExtensionRequest, new DerSet(extensions));
+
+            // Include the attributes in the request
+            var csr = new Pkcs10CertificationRequest(PkcsObjectIdentifiers.Pkcs9AtExtensionRequest.Id, subject, keyPair.Public, new DerSet(attributeSet), keyPair.Private);
+
+            // encode the CSR as base64
+            var encodedCsr = Convert.ToBase64String(csr.GetEncoded());
+            return encodedCsr;
         }
     }
 }
