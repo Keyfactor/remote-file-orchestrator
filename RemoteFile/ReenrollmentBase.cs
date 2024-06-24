@@ -19,9 +19,9 @@ using Newtonsoft.Json;
 
 namespace Keyfactor.Extensions.Orchestrator.RemoteFile
 {
-    public abstract class ManagementBase : RemoteFileJobTypeBase, IManagementJobExtension
+    public abstract class ReenrollmentBase : RemoteFileJobTypeBase, IReenrollmentJobExtension
     {
-        public string ExtensionName => "Keyfactor.Extensions.Orchestrator.RemoteFile.Management";
+        public string ExtensionName => "Keyfactor.Extensions.Orchestrator.RemoteFile";
 
         internal RemoteCertificateStore certificateStore = new RemoteCertificateStore();
 

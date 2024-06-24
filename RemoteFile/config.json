@@ -6,5 +6,6 @@
   "SeparateUploadFilePath": "",
   "FileTransferProtocol": "SCP",
   "DefaultLinuxPermissionsOnStoreCreation": "600",
-  "DefaultOwnerOnStoreCreation": ""
+  "DefaultOwnerOnStoreCreation": "",
+  "CreateCSROnDevice":  "N"
 }
