@@ -24,6 +24,7 @@ using Org.BouncyCastle.Crypto.Generators;
 using Org.BouncyCastle.Crypto.Prng;
 using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Pkcs;
+using System.Linq;
 
 namespace Keyfactor.Extensions.Orchestrator.RemoteFile
 {
@@ -32,6 +33,12 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
         public string ExtensionName => "Keyfactor.Extensions.Orchestrator.RemoteFile";
 
         internal RemoteCertificateStore certificateStore = new RemoteCertificateStore();
+
+        internal enum SupportedKeyTypeEnum
+        {
+            RSA,
+            ECC
+        }
 
         public JobResult ProcessJob(ReenrollmentJobConfiguration config, SubmitReenrollmentCSR submitReenrollmentUpdate)
         {
@@ -59,10 +66,20 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
                 string sudoImpersonatedUser = properties.SudoImpersonatedUser == null || string.IsNullOrEmpty(properties.SudoImpersonatedUser.Value) ?
                     ApplicationSettings.DefaultSudoImpersonatedUser :
                     properties.SudoImpersonatedUser.Value;
-                bool createCSROnDevice = properties.CreateCSROnDevice == null || string.IsNullOrEmpty(properties.CreateCSROnDevice.Value) ? 
-                    ApplicationSettings.CreateCSROnDevice : 
+                bool createCSROnDevice = properties.CreateCSROnDevice == null || string.IsNullOrEmpty(properties.CreateCSROnDevice.Value) ?
+                    ApplicationSettings.CreateCSROnDevice :
                     properties.CreateCSROnDevice.Value;
 
+                string keyType = !config.JobProperties.ContainsKey("keyType") || config.JobProperties["keyType"] == null || string.IsNullOrEmpty(config.JobProperties["keyType"].ToString()) ? string.Empty : config.JobProperties["keyType"].ToString();
+                int? keySize = !config.JobProperties.ContainsKey("keySize") || config.JobProperties["keySize"] == null || string.IsNullOrEmpty(config.JobProperties["keySize"].ToString()) ? null : Convert.ToInt32(config.JobProperties["keySize"]);
+                string subjectText = !config.JobProperties.ContainsKey("subjectText") || config.JobProperties["subjectText"] == null || config.JobProperties["subjectText"] == null || string.IsNullOrEmpty(config.JobProperties["subjectText"].ToString()) ? string.Empty : config.JobProperties["subjectText"].ToString();
+                string sans = !config.JobProperties.ContainsKey("SANs") || config.JobProperties["SANs"] == null || string.IsNullOrEmpty(config.JobProperties["SANs"].ToString()) ? string.Empty : config.JobProperties["SANs"].ToString();
+
+                string keyTypes = string.Join(",", Enum.GetNames(typeof(SupportedKeyTypeEnum)));
+                if (!Enum.TryParse(keyType.ToUpper(), out SupportedKeyTypeEnum keyTypeEnum))
+                {
+                    throw new RemoteFileException($"Unsupported KeyType value {keyType}.  Supported types are {keyTypes}.");
+                }
                 certificateStore = new RemoteCertificateStore(config.CertificateStoreDetails.ClientMachine, userName, userPassword, config.CertificateStoreDetails.StorePath, storePassword, config.JobProperties);
                 certificateStore.Initialize(sudoImpersonatedUser);
 
@@ -76,11 +93,11 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
                 certificateStore.LoadCertificateStore(certificateStoreSerializer, config.CertificateStoreDetails.Properties, false);
                 if (createCSROnDevice)
                 {
-                    config.
+                    throw new Exception("Not implemented");
                 }
                 else
                 {
-
+                    string csr = GenerateCSR
                 }
                 certificateStore.AddCertificate((config.JobCertificate.Alias ?? new X509Certificate2(Convert.FromBase64String(config.JobCertificate.Contents), config.JobCertificate.PrivateKeyPassword, X509KeyStorageFlags.EphemeralKeySet).Thumbprint), config.JobCertificate.Contents, config.Overwrite, config.JobCertificate.PrivateKeyPassword);
                 certificateStore.SaveCertificateStore(certificateStoreSerializer.SerializeRemoteCertificateStore(certificateStore.GetCertificateStore(), storePathFile.Path, storePathFile.File, storePassword, certificateStore.RemoteHandler));
@@ -103,7 +120,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             return new JobResult() { Result = OrchestratorJobStatusJobResult.Success, JobHistoryId = config.JobHistoryId };
         }
 
-        private string GenerateCSR(string subjectText, List<string> sans)
+        private string GenerateCSR(string subjectText, SupportedKeyTypeEnum keyType, int keySize, List<string> sans)
         {
             //Code logic to:
             //  1) Generate a new CSR
@@ -114,9 +131,18 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
 
             // this approach relies on the Bouncy Castle Crypto package, and not the Microsoft x509 certificate libraries.
 
-            var keyGenParams = new KeyGenerationParameters(new Org.BouncyCastle.Security.SecureRandom(new CryptoApiRandomGenerator()), 4096);
-            var keyPairGenerator = new RsaKeyPairGenerator();
-            Org.BouncyCastle.Crypto.Generators.
+            IAsymmetricCipherKeyPairGenerator keyPairGenerator = null;
+            switch (keyType)
+            {
+                case SupportedKeyTypeEnum.RSA:
+                    keyPairGenerator = new RsaKeyPairGenerator();
+                    break;
+                case SupportedKeyTypeEnum.ECC:
+                    keyPairGenerator = new ECKeyPairGenerator();
+                    break;
+            }
+
+            var keyGenParams = new KeyGenerationParameters(new Org.BouncyCastle.Security.SecureRandom(new CryptoApiRandomGenerator()), keySize);
             keyPairGenerator.Init(keyGenParams);
 
             var keyPair = keyPairGenerator.GenerateKeyPair();
@@ -139,7 +165,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             var extensionsGenerator = new X509ExtensionsGenerator();
             extensionsGenerator.AddExtension(X509Extensions.SubjectAlternativeName, false, generalSubAltNames);
             extensionsGenerator.AddExtension(X509Extensions.KeyUsage, true, keyUsageExtension);
-            extensionsGenerator.AddExtension(X509Extensions.ExtendedKeyUsage, false, extendedKeyUsage);
+            //extensionsGenerator.AddExtension(X509Extensions.ExtendedKeyUsage, false, extendedKeyUsage);
             X509Extensions extensions = extensionsGenerator.Generate();
 
             // Create attribute set with extensions
