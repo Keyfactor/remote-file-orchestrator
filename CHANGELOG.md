@@ -1,3 +1,8 @@
+v2.6.1
+- Bug Fix: Supplied Linux user needing password reset could cause orchestrator locking.
+- Bug Fix: Not supplying group for Linux File Owner on Store Creation caused the supplied owner to erroneously be used as the group for the newly create certificate store file.
+- Updgraded Nuget packages for BouncyCastle and Renci.SSH.Net
+
 v2.6.0
 - Added ability for Linux installed universal orchestrator to manage stores as an "agent" (stores reside on same server as universal orchestrator) without the need to have SSH enabled.
 - Added ability for Linux installed universal orchestrator to manage certificate stores on Windows servers by using SSH to communicate between the Linux UO server and the Windows machines hosting the certificate stores.
