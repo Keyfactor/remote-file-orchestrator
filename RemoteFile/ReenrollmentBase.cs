@@ -40,7 +40,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             ECC
         }
 
-        public JobResult ProcessJob(ReenrollmentJobConfiguration config, SubmitReenrollmentCSR submitReenrollmentUpdate)
+        public JobResult ProcessJob(ReenrollmentJobConfiguration config, SubmitReenrollmentCSR submitReenrollment)
         {
             ILogger logger = LogHandler.GetClassLogger(this.GetType());
             logger.LogDebug($"Begin {config.Capability} for job id {config.JobId}...");
@@ -71,15 +71,36 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
                     properties.CreateCSROnDevice.Value;
 
                 string keyType = !config.JobProperties.ContainsKey("keyType") || config.JobProperties["keyType"] == null || string.IsNullOrEmpty(config.JobProperties["keyType"].ToString()) ? string.Empty : config.JobProperties["keyType"].ToString();
-                int? keySize = !config.JobProperties.ContainsKey("keySize") || config.JobProperties["keySize"] == null || string.IsNullOrEmpty(config.JobProperties["keySize"].ToString()) ? null : Convert.ToInt32(config.JobProperties["keySize"]);
+                int keySize = !config.JobProperties.ContainsKey("keySize") || config.JobProperties["keySize"] == null || string.IsNullOrEmpty(config.JobProperties["keySize"].ToString()) ? 2048 : Convert.ToInt32(config.JobProperties["keySize"]);
                 string subjectText = !config.JobProperties.ContainsKey("subjectText") || config.JobProperties["subjectText"] == null || config.JobProperties["subjectText"] == null || string.IsNullOrEmpty(config.JobProperties["subjectText"].ToString()) ? string.Empty : config.JobProperties["subjectText"].ToString();
                 string sans = !config.JobProperties.ContainsKey("SANs") || config.JobProperties["SANs"] == null || string.IsNullOrEmpty(config.JobProperties["SANs"].ToString()) ? string.Empty : config.JobProperties["SANs"].ToString();
 
+                //TODO - Set Alias and Overwrite "for real" once product figures out how to pass that
+                string alias = "abcd";
+                bool overwrite = true;
+
+                // validate parameters
                 string keyTypes = string.Join(",", Enum.GetNames(typeof(SupportedKeyTypeEnum)));
                 if (!Enum.TryParse(keyType.ToUpper(), out SupportedKeyTypeEnum keyTypeEnum))
                 {
                     throw new RemoteFileException($"Unsupported KeyType value {keyType}.  Supported types are {keyTypes}.");
                 }
+
+                // generate CSR and call back to enroll certificate
+                string csr = string.Empty;
+                if (createCSROnDevice)
+                {
+                    throw new Exception("Not implemented");
+                }
+                else
+                {
+                    csr = GenerateCSR(subjectText, keyTypeEnum, keySize, new List<string>(sans.Split('&', StringSplitOptions.RemoveEmptyEntries)));
+                }
+
+                X509Certificate2 cert = submitReenrollment.Invoke(csr);
+
+
+                // save certificate
                 certificateStore = new RemoteCertificateStore(config.CertificateStoreDetails.ClientMachine, userName, userPassword, config.CertificateStoreDetails.StorePath, storePassword, config.JobProperties);
                 certificateStore.Initialize(sudoImpersonatedUser);
 
@@ -91,15 +112,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
                 }
 
                 certificateStore.LoadCertificateStore(certificateStoreSerializer, config.CertificateStoreDetails.Properties, false);
-                if (createCSROnDevice)
-                {
-                    throw new Exception("Not implemented");
-                }
-                else
-                {
-                    string csr = GenerateCSR
-                }
-                certificateStore.AddCertificate((config.JobCertificate.Alias ?? new X509Certificate2(Convert.FromBase64String(config.JobCertificate.Contents), config.JobCertificate.PrivateKeyPassword, X509KeyStorageFlags.EphemeralKeySet).Thumbprint), config.JobCertificate.Contents, config.Overwrite, config.JobCertificate.PrivateKeyPassword);
+                certificateStore.AddCertificate((alias ?? cert.Thumbprint), config.JobCertificate.Contents, overwrite, null);
                 certificateStore.SaveCertificateStore(certificateStoreSerializer.SerializeRemoteCertificateStore(certificateStore.GetCertificateStore(), storePathFile.Path, storePathFile.File, storePassword, certificateStore.RemoteHandler));
 
                 logger.LogDebug($"END add Operation for {config.CertificateStoreDetails.StorePath} on {config.CertificateStoreDetails.ClientMachine}.");
