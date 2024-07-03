@@ -16,7 +16,6 @@ using Keyfactor.Orchestrators.Common.Enums;
 using Microsoft.Extensions.Logging;
 
 using Newtonsoft.Json;
-using static Org.BouncyCastle.Math.EC.ECCurve;
 using Org.BouncyCastle.Asn1.Pkcs;
 using Org.BouncyCastle.Asn1.X509;
 using Org.BouncyCastle.Asn1;
@@ -24,8 +23,7 @@ using Org.BouncyCastle.Crypto.Generators;
 using Org.BouncyCastle.Crypto.Prng;
 using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Pkcs;
-using System.Linq;
-using System.Security.Cryptography.Pkcs;
+using System.Security.Cryptography;
 
 namespace Keyfactor.Extensions.Orchestrator.RemoteFile
 {
@@ -53,7 +51,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             {
                 logger.LogDebug($"    {keyValue.Key}: {keyValue.Value}");
             }
-
+            
             ICertificateStoreSerializer certificateStoreSerializer = GetCertificateStoreSerializer(config.CertificateStoreDetails.Properties);
 
             try
@@ -87,21 +85,6 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
                     throw new RemoteFileException($"Unsupported KeyType value {keyType}.  Supported types are {keyTypes}.");
                 }
 
-                // generate CSR and call back to enroll certificate
-                string csr = string.Empty;
-                if (createCSROnDevice)
-                {
-                    throw new Exception("Not implemented");
-                }
-                else
-                {
-                    csr = GenerateCSR(subjectText, keyTypeEnum, keySize, new List<string>(sans.Split('&', StringSplitOptions.RemoveEmptyEntries)));
-                }
-
-                X509Certificate2 cert = submitReenrollment.Invoke(csr);
-
-
-                // save certificate
                 certificateStore = new RemoteCertificateStore(config.CertificateStoreDetails.ClientMachine, userName, userPassword, config.CertificateStoreDetails.StorePath, storePassword, config.JobProperties);
                 certificateStore.Initialize(sudoImpersonatedUser);
 
@@ -112,6 +95,28 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
                     throw new RemoteFileException($"Certificate store {config.CertificateStoreDetails.StorePath} does not exist on server {config.CertificateStoreDetails.ClientMachine}.");
                 }
 
+                // generate CSR and call back to enroll certificate
+                string csr = string.Empty;
+                string pemPrivateKey = string.Empty;
+                if (createCSROnDevice)
+                {
+                    csr = certificateStore.GenerateCSROnDevice(subjectText, keyTypeEnum, keySize, new List<string>(sans.Split('&', StringSplitOptions.RemoveEmptyEntries)), out pemPrivateKey);
+                }
+                else
+                {
+                    csr = certificateStore.GenerateCSR(subjectText, keyTypeEnum, keySize, new List<string>(sans.Split('&', StringSplitOptions.RemoveEmptyEntries)));
+                }
+
+                X509Certificate2 cert = submitReenrollment.Invoke(csr);
+
+                if (!string.IsNullOrEmpty(pemPrivateKey))
+                {
+                    RSA rsa = RSA.Create();
+                    rsa.ImportEncryptedPkcs8PrivateKey(string.Empty, Convert.FromBase64String(pemPrivateKey), out _);
+                    cert = cert.CopyWithPrivateKey(rsa);
+                }
+
+                // save certificate
                 certificateStore.LoadCertificateStore(certificateStoreSerializer, config.CertificateStoreDetails.Properties, false);
                 certificateStore.AddCertificate((alias ?? cert.Thumbprint), Convert.ToBase64String(cert.Export(X509ContentType.Cert)), overwrite, null);
                 certificateStore.SaveCertificateStore(certificateStoreSerializer.SerializeRemoteCertificateStore(certificateStore.GetCertificateStore(), storePathFile.Path, storePathFile.File, storePassword, certificateStore.RemoteHandler));
@@ -133,108 +138,4 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             logger.LogDebug($"...End {config.Capability} job for job id {config.JobId}");
             return new JobResult() { Result = OrchestratorJobStatusJobResult.Success, JobHistoryId = config.JobHistoryId };
         }
-
-        internal string GenerateCSR(string subjectText, SupportedKeyTypeEnum keyType, int keySize, List<string> sans)
-        {
-            IAsymmetricCipherKeyPairGenerator keyPairGenerator = null;
-            string algorithm = string.Empty;
-            switch (keyType)
-            {
-                case SupportedKeyTypeEnum.RSA:
-                    keyPairGenerator = new RsaKeyPairGenerator();
-                    algorithm = "SHA256withRSA";
-                    break;
-                case SupportedKeyTypeEnum.ECC:
-                    keyPairGenerator = new ECKeyPairGenerator();
-                    algorithm = "SHA256withECDSA";
-                    if (keySize == 384) algorithm = "SHA384withECDSA";
-                    if (keySize == 521) algorithm = "SHA512withECDSA";
-                    break;
-            }
-
-            var keyGenParams = new KeyGenerationParameters(new Org.BouncyCastle.Security.SecureRandom(new CryptoApiRandomGenerator()), keySize);
-            keyPairGenerator.Init(keyGenParams);
-            var keyPair = keyPairGenerator.GenerateKeyPair();
-
-            var subject = new X509Name(subjectText);
-
-            // Add SAN entries
-            var subAltNameList = new List<GeneralName>();
-            sans.ForEach(san => subAltNameList.Add(new GeneralName(GeneralName.DnsName, san.Trim())));
-            var generalSubAltNames = new GeneralNames(subAltNameList.ToArray());
-
-            var extensionsGenerator = new X509ExtensionsGenerator();
-            extensionsGenerator.AddExtension(X509Extensions.SubjectAlternativeName, false, generalSubAltNames);
-            var attributeSet = new DerSet(new AttributePkcs(PkcsObjectIdentifiers.Pkcs9AtExtensionRequest, new DerSet(extensionsGenerator.Generate())));
-
-            Pkcs10CertificationRequest csr = new Pkcs10CertificationRequest(algorithm, subject, keyPair.Public, (DerSet)attributeSet, keyPair.Private);
-
-            // encode the CSR as base64
-            var encodedCsr = Convert.ToBase64String(csr.GetEncoded());
-            return encodedCsr;
-        }
-
-
-        //private string GenerateCSR(string subjectText, SupportedKeyTypeEnum keyType, int keySize, List<string> sans)
-        //{
-        //    //Code logic to:
-        //    //  1) Generate a new CSR
-        //    //  2) Include the provided subject text
-        //    //  3) Include the list of SANs
-        //    //  3) Include the OID corresponding to a Time Stamping request, so Command recognizes this as a request for re-enrollment
-        //    //  4) Return the base64 encoded CSR.
-
-        //    // this approach relies on the Bouncy Castle Crypto package, and not the Microsoft x509 certificate libraries.
-
-        //    IAsymmetricCipherKeyPairGenerator keyPairGenerator = null;
-        //    switch (keyType)
-        //    {
-        //        case SupportedKeyTypeEnum.RSA:
-        //            keyPairGenerator = new RsaKeyPairGenerator();
-        //            break;
-        //        case SupportedKeyTypeEnum.ECC:
-        //            keyPairGenerator = new ECKeyPairGenerator();
-        //            break;
-        //    }
-
-        //    var keyGenParams = new KeyGenerationParameters(new Org.BouncyCastle.Security.SecureRandom(new CryptoApiRandomGenerator()), keySize);
-        //    keyPairGenerator.Init(keyGenParams);
-
-        //    var keyPair = keyPairGenerator.GenerateKeyPair();
-        //    var subject = new X509Name(subjectText);
-
-        //    // Add SAN entries
-        //    var subAltNameList = new List<GeneralName>();
-        //    sans.ForEach(san => subAltNameList.Add(new GeneralName(GeneralName.DnsName, san.Trim())));
-        //    var generalSubAltNames = new GeneralNames(subAltNameList.ToArray());
-
-        //    // Create Key Usage attribute
-        //    //int keyUsage = KeyUsage.DigitalSignature | KeyUsage.NonRepudiation;
-        //    //var keyUsageExtension = new KeyUsage(keyUsage);
-
-        //    // Add Extended Key Usage extension for re-enrollment (1.3.6.1.5.5.7.3.8 is the OID for time stamping, the Command CA should be configured to recognize a CSR with this OID as a request for re-enrollment)
-        //    //var timestampOid = new DerObjectIdentifier("1.3.6.1.5.5.7.3.8"); // https://oidref.com/1.3.6.1.5.5.7.3.8
-        //    //var extendedKeyUsage = new ExtendedKeyUsage(new DerObjectIdentifier[] { timestampOid });
-
-        //    // Create extensions
-        //    var extensionsGenerator = new X509ExtensionsGenerator();
-        //    extensionsGenerator.AddExtension(X509Extensions.SubjectAlternativeName, false, generalSubAltNames);
-        //    //extensionsGenerator.AddExtension(X509Extensions.KeyUsage, true, keyUsageExtension);
-        //    //extensionsGenerator.AddExtension(X509Extensions.ExtendedKeyUsage, false, extendedKeyUsage);
-        //    X509Extensions extensions = extensionsGenerator.Generate();
-
-        //    // Create attribute set with extensions
-        //    //var attributeSet = new AttributePkcs(PkcsObjectIdentifiers.Pkcs9AtExtensionRequest, new DerSet(extensions));
-        //    var attribute = new DerSet(new AttributePkcs(PkcsObjectIdentifiers.Pkcs9AtExtensionRequest, new DerSet(extensions)));
-        //    var attributeSet = new DerSet(new AttributePkcs(PkcsObjectIdentifiers.Pkcs9AtExtensionRequest, new DerSet(extensionsGenerator.Generate())));
-
-        //    // Include the attributes in the request
-        //    var csr = new Pkcs10CertificationRequest(PkcsObjectIdentifiers.Pkcs9AtExtensionRequest.Id, subject, keyPair.Public, attributeSet, keyPair.Private);
-        //    //var csr = new Pkcs10CertificationRequest(PkcsObjectIdentifiers.Pkcs9AtExtensionRequest.Id, subject, keyPair.Public, new DerSet(attributeSet), keyPair.Private);
-
-        //    // encode the CSR as base64
-        //    var encodedCsr = Convert.ToBase64String(csr.GetEncoded());
-        //    return encodedCsr;
-        //}
     }
-}
