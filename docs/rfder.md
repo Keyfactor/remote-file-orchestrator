@@ -250,8 +250,8 @@ The following table describes the required and optional fields for the `RFDER` c
 | --------- | ----------- | ------------------------- |
 | Category | Select "RFDER" or the customized certificate store name from the previous step. | |
 | Container | Optional container to associate certificate store with. | |
-| Client Machine | For the Client Machine field when instantiating new Certificate Stores of type 'RFDER', enter the DNS name or IP address of the remote orchestrated server. For Windows servers, use the format protocol://dns-or-ip:port (e.g., https://myserver.mydomain.com:5986). | |
-| Store Path | For the Store Path field when instantiating new Certificate Stores of type 'RFDER', enter the full path and file name, including the file extension, of the DER encoded file. For example, on Linux: /folder/path/certificate.der, and on Windows: C:\folder\path\certificate.der. | |
+| Client Machine | The Client Machine field for Certificate Stores of type 'RFDER' should be the DNS name or IP address of the remote orchestrated server. Example for Windows: 'https://myserver.mydomain.com:5986'. | |
+| Store Path | The Store Path field for Certificate Stores of type 'RFDER' should include the full path and file name, along with the file extension if applicable. Example for Linux: '/folder/path/certificate.der'. | |
 | Orchestrator | Select an approved orchestrator capable of managing `RFDER` certificates. Specifically, one with the `RFDER` capability. | |
 
 * **Using kfutil**

@@ -250,8 +250,8 @@ The following table describes the required and optional fields for the `RFPEM` c
 | --------- | ----------- | ------------------------- |
 | Category | Select "RFPEM" or the customized certificate store name from the previous step. | |
 | Container | Optional container to associate certificate store with. | |
-| Client Machine | For the Client Machine field when instantiating new Certificate Stores of type 'RFPEM', enter the DNS name or IP address of the remote orchestrated server. For Windows servers, use the format protocol://dns-or-ip:port (e.g., https://myserver.mydomain.com:5986). | |
-| Store Path | For the Store Path field when instantiating new Certificate Stores of type 'RFPEM', enter the full path and file name, including the file extension, of the PEM encoded file. For example, on Linux: /folder/path/certificate.pem, and on Windows: C:\folder\path\certificate.pem. | |
+| Client Machine | The Client Machine field for Certificate Stores of type 'RFPEM' should be the DNS name or IP address of the remote orchestrated server. Example for Windows: 'https://myserver.mydomain.com:5986'. | |
+| Store Path | The Store Path field for Certificate Stores of type 'RFPEM' should include the full path and file name, along with the file extension if applicable. Example for Linux: '/folder/path/certificate.pem'. | |
 | Orchestrator | Select an approved orchestrator capable of managing `RFPEM` certificates. Specifically, one with the `RFPEM` capability. | |
 
 * **Using kfutil**
