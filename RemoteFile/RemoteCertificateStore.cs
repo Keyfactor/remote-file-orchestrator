@@ -397,7 +397,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             switch (keyType)
             {
                 case SupportedKeyTypeEnum.RSA:
-                    cmd.Replace("REPLACE", $"rsa:{keySize.ToString()})";
+                    cmd.Replace("REPLACE", $"rsa:{keySize.ToString()}");
                     break;
                 case SupportedKeyTypeEnum.ECC:
                     string algName = "prime256v1";
@@ -414,6 +414,9 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
                     break;
             }
 
+            RemoteHandler.RunCommand(cmd, null, ApplicationSettings.UseSudo, null);
+            privateKey = Encoding.UTF8.GetString(RemoteHandler.DownloadCertificateFile(path + fileName + "key"));
+            return Encoding.UTF8.GetString(RemoteHandler.DownloadCertificateFile(path + fileName + "csr"));
         }
 
         internal void Initialize(string sudoImpersonatedUser)

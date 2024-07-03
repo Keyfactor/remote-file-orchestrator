@@ -51,7 +51,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             {
                 logger.LogDebug($"    {keyValue.Key}: {keyValue.Value}");
             }
-            
+
             ICertificateStoreSerializer certificateStoreSerializer = GetCertificateStoreSerializer(config.CertificateStoreDetails.Properties);
 
             try
@@ -139,3 +139,4 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             return new JobResult() { Result = OrchestratorJobStatusJobResult.Success, JobHistoryId = config.JobHistoryId };
         }
     }
+}
