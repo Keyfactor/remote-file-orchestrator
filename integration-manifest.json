@@ -1,388 +1,194 @@
 {
-  "$schema": "https://keyfactor.github.io/integration-manifest-schema.json",
-  "integration_type": "orchestrator",
-  "name": "Remote File",
-  "status": "production",
-  "link_github": true,
-  "update_catalog": true,
-  "release_dir": "RemoteFile/bin/Release",
-  "description": "The Remote File Orchestrator allows for the remote management of file-based certificate stores. Discovery, Inventory, and Management functions are supported. The orchestrator performs operations by first converting the certificate store into a BouncyCastle PKCS12Store.",
-  "about": {
-    "orchestrator": {
-      "UOFramework": "10.1",
-      "pam_support": true,
-      "keyfactor_platform_version": "9.10",
-      "win": {
-        "supportsCreateStore": true,
-        "supportsDiscovery": true,
-        "supportsManagementAdd": true,
-        "supportsManagementRemove": true,
-        "supportsReenrollment": false,
-        "supportsInventory": true,
-        "platformSupport": "Unused"
-      },
-      "linux": {
-        "supportsCreateStore": true,
-        "supportsDiscovery": true,
-        "supportsManagementAdd": true,
-        "supportsManagementRemove": true,
-        "supportsReenrollment": false,
-        "supportsInventory": true,
-        "platformSupport": "Unused"
-      },
-      "store_types": {
-        "RFJKS": {
-          "Name": "RFJKS",
-          "ShortName": "RFJKS",
-          "Capability": "RFJKS",
-          "ServerRequired": true,
-          "BlueprintAllowed": false,
-          "CustomAliasAllowed": "Required",
-          "PowerShell": false,
-          "PrivateKeyAllowed": "Optional",
-          "SupportedOperations": {
-            "Add": true,
-            "Create": true,
-            "Discovery": true,
-            "Enrollment": false,
-            "Remove": true
-          },
-          "PasswordOptions": {
-            "Style": "Default",
-            "EntrySupported": false,
-            "StoreRequired": true
-          },
-          "Properties": [
-            {
-              "Name": "LinuxFilePermissionsOnStoreCreation",
-              "DisplayName": "Linux File Permissions on Store Creation",
-              "Required": false,
-              "DependsOn": "",
-              "Type": "String",
-              "DefaultValue": ""
+    "$schema": "/Users/hroszell/coding/dev/staff-tools/keyfactor.github.io/v2/integration-manifest-schema.json",
+    "integration_type": "orchestrator",
+    "name": "Remote File",
+    "status": "production",
+    "link_github": true,
+    "update_catalog": true,
+    "release_dir": "RemoteFile/bin/Release",
+    "description": "The Remote File Orchestrator allows for the remote management of file-based certificate stores. Discovery, Inventory, and Management functions are supported. The orchestrator performs operations by first converting the certificate store into a BouncyCastle PKCS12Store.",
+    "about": {
+        "orchestrator": {
+            "UOFramework": "10.1",
+            "pam_support": true,
+            "keyfactor_platform_version": "9.10",
+            "win": {
+                "supportsCreateStore": true,
+                "supportsDiscovery": true,
+                "supportsManagementAdd": true,
+                "supportsManagementRemove": true,
+                "supportsReenrollment": false,
+                "supportsInventory": true,
+                "platformSupport": "Unused"
             },
-            {
-              "Name": "LinuxFileOwnerOnStoreCreation",
-              "DisplayName": "Linux File Owner on Store Creation",
-              "Required": false,
-              "DependsOn": "",
-              "Type": "String",
-              "DefaultValue": ""
+            "linux": {
+                "supportsCreateStore": true,
+                "supportsDiscovery": true,
+                "supportsManagementAdd": true,
+                "supportsManagementRemove": true,
+                "supportsReenrollment": false,
+                "supportsInventory": true,
+                "platformSupport": "Unused"
             },
-            {
-              "Name": "SudoImpersonatingUser",
-              "DisplayName": "Sudo Impersonating User",
-              "Required": false,
-              "DependsOn": "",
-              "Type": "String",
-              "DefaultValue": ""
-            }
-          ],
-          "EntryParameters": []
-        },
-        "RFPEM": {
-          "Name": "RFPEM",
-          "ShortName": "RFPEM",
-          "Capability": "RFPEM",
-          "ServerRequired": true,
-          "BlueprintAllowed": false,
-          "CustomAliasAllowed": "Forbidden",
-          "PowerShell": false,
-          "PrivateKeyAllowed": "Optional",
-          "SupportedOperations": {
-            "Add": true,
-            "Create": true,
-            "Discovery": true,
-            "Enrollment": false,
-            "Remove": true
-          },
-          "PasswordOptions": {
-            "Style": "Default",
-            "EntrySupported": false,
-            "StoreRequired": true
-          },
-          "Properties": [
-            {
-              "Name": "LinuxFilePermissionsOnStoreCreation",
-              "DisplayName": "Linux File Permissions on Store Creation",
-              "Required": false,
-              "DependsOn": "",
-              "Type": "String",
-              "DefaultValue": ""
-            },
-            {
-              "Name": "LinuxFileOwnerOnStoreCreation",
-              "DisplayName": "Linux File Owner on Store Creation",
-              "Required": false,
-              "DependsOn": "",
-              "Type": "String",
-              "DefaultValue": ""
-            },
-            {
-              "Name": "SudoImpersonatingUser",
-              "DisplayName": "Sudo Impersonating User",
-              "Required": false,
-              "DependsOn": "",
-              "Type": "String",
-              "DefaultValue": ""
-            },
-            {
-              "Name": "IsTrustStore",
-              "DisplayName": "Trust Store",
-              "Required": false,
-              "DependsOn": "",
-              "Type": "Bool",
-              "DefaultValue": false
-            },
-            {
-              "Name": "IncludesChain",
-              "DisplayName": "Store Includes Chain",
-              "Required": false,
-              "DependsOn": "",
-              "Type": "Bool",
-              "DefaultValue": false
-            },
-            {
-              "Name": "SeparatePrivateKeyFilePath",
-              "DisplayName": "Separate Private Key File Location",
-              "Required": false,
-              "DependsOn": "",
-              "Type": "String",
-              "DefaultValue": ""
-            },
-            {
-              "Name": "IsRSAPrivateKey",
-              "DisplayName": "Is RSA Private Key",
-              "Required": false,
-              "DependsOn": "",
-              "Type": "Bool",
-              "DefaultValue": false
-            },
-            {
-              "Name": "IgnorePrivateKeyOnInventory",
-              "DisplayName": "Ignore Private Key On Inventory",
-              "Required": false,
-              "DependsOn": "",
-              "Type": "Bool",
-              "DefaultValue": false
-            }
-          ],
-          "EntryParameters": []
-        },
-        "RFPkcs12": {
-          "Name": "RFPkcs12",
-          "ShortName": "RFPkcs12",
-          "Capability": "RFPkcs12",
-          "ServerRequired": true,
-          "BlueprintAllowed": false,
-          "CustomAliasAllowed": "Required",
-          "PowerShell": false,
-          "PrivateKeyAllowed": "Optional",
-          "SupportedOperations": {
-            "Add": true,
-            "Create": true,
-            "Discovery": true,
-            "Enrollment": false,
-            "Remove": true
-          },
-          "PasswordOptions": {
-            "Style": "Default",
-            "EntrySupported": false,
-            "StoreRequired": true
-          },
-          "Properties": [
-            {
-              "Name": "LinuxFilePermissionsOnStoreCreation",
-              "DisplayName": "Linux File Permissions on Store Creation",
-              "Required": false,
-              "DependsOn": "",
-              "Type": "String",
-              "DefaultValue": ""
-            },
-            {
-              "Name": "LinuxFileOwnerOnStoreCreation",
-              "DisplayName": "Linux File Owner on Store Creation",
-              "Required": false,
-              "DependsOn": "",
-              "Type": "String",
-              "DefaultValue": ""
-            },
-            {
-              "Name": "SudoImpersonatingUser",
-              "DisplayName": "Sudo Impersonating User",
-              "Required": false,
-              "DependsOn": "",
-              "Type": "String",
-              "DefaultValue": ""
-            }
-          ],
-          "EntryParameters": []
-        },
-        "RFDER": {
-          "Name": "RFDER",
-          "ShortName": "RFDER",
-          "Capability": "RFDER",
-          "ServerRequired": true,
-          "BlueprintAllowed": false,
-          "CustomAliasAllowed": "Forbidden",
-          "PowerShell": false,
-          "PrivateKeyAllowed": "Optional",
-          "SupportedOperations": {
-            "Add": true,
-            "Create": true,
-            "Discovery": true,
-            "Enrollment": false,
-            "Remove": true
-          },
-          "PasswordOptions": {
-            "Style": "Default",
-            "EntrySupported": false,
-            "StoreRequired": true
-          },
-          "Properties": [
-            {
-              "Name": "LinuxFilePermissionsOnStoreCreation",
-              "DisplayName": "Linux File Permissions on Store Creation",
-              "Required": false,
-              "DependsOn": "",
-              "Type": "String",
-              "DefaultValue": ""
-            },
-            {
-              "Name": "LinuxFileOwnerOnStoreCreation",
-              "DisplayName": "Linux File Owner on Store Creation",
-              "Required": false,
-              "DependsOn": "",
-              "Type": "String",
-              "DefaultValue": ""
-            },
-            {
-              "Name": "SudoImpersonatingUser",
-              "DisplayName": "Sudo Impersonating User",
-              "Required": false,
-              "DependsOn": "",
-              "Type": "String",
-              "DefaultValue": ""
-            },
-            {
-              "Name": "SeparatePrivateKeyFilePath",
-              "DisplayName": "Separate Private Key File Location",
-              "Required": false,
-              "DependsOn": "",
-              "Type": "String",
-              "DefaultValue": ""
-            }
-          ],
-          "EntryParameters": []
-        },
-        "RFKDB": {
-          "Name": "RFKDB",
-          "ShortName": "RFKDB",
-          "Capability": "RFKDB",
-          "ServerRequired": true,
-          "BlueprintAllowed": false,
-          "CustomAliasAllowed": "Required",
-          "PowerShell": false,
-          "PrivateKeyAllowed": "Optional",
-          "SupportedOperations": {
-            "Add": true,
-            "Create": true,
-            "Discovery": true,
-            "Enrollment": false,
-            "Remove": true
-          },
-          "PasswordOptions": {
-            "Style": "Default",
-            "EntrySupported": false,
-            "StoreRequired": true
-          },
-          "Properties": [
-            {
-              "Name": "LinuxFilePermissionsOnStoreCreation",
-              "DisplayName": "Linux File Permissions on Store Creation",
-              "Required": false,
-              "DependsOn": "",
-              "Type": "String",
-              "DefaultValue": ""
-            },
-            {
-              "Name": "LinuxFileOwnerOnStoreCreation",
-              "DisplayName": "Linux File Owner on Store Creation",
-              "Required": false,
-              "DependsOn": "",
-              "Type": "String",
-              "DefaultValue": ""
-            },
-            {
-              "Name": "SudoImpersonatingUser",
-              "DisplayName": "Sudo Impersonating User",
-              "Required": false,
-              "DependsOn": "",
-              "Type": "String",
-              "DefaultValue": ""
-            }
-          ],
-          "EntryParameters": []
-        },
-        "RFORA": {
-          "Name": "RFORA",
-          "ShortName": "RFORA",
-          "Capability": "RFORA",
-          "ServerRequired": true,
-          "BlueprintAllowed": false,
-          "CustomAliasAllowed": "Required",
-          "PowerShell": false,
-          "PrivateKeyAllowed": "Optional",
-          "SupportedOperations": {
-            "Add": true,
-            "Create": true,
-            "Discovery": true,
-            "Enrollment": false,
-            "Remove": true
-          },
-          "PasswordOptions": {
-            "Style": "Default",
-            "EntrySupported": false,
-            "StoreRequired": true
-          },
-          "Properties": [
-            {
-              "Name": "LinuxFilePermissionsOnStoreCreation",
-              "DisplayName": "Linux File Permissions on Store Creation",
-              "Required": false,
-              "DependsOn": "",
-              "Type": "String",
-              "DefaultValue": ""
-            },
-            {
-              "Name": "LinuxFileOwnerOnStoreCreation",
-              "DisplayName": "Linux File Owner on Store Creation",
-              "Required": false,
-              "DependsOn": "",
-              "Type": "String",
-              "DefaultValue": ""
-            },
-            {
-              "Name": "SudoImpersonatingUser",
-              "DisplayName": "Sudo Impersonating User",
-              "Required": false,
-              "DependsOn": "",
-              "Type": "String",
-              "DefaultValue": ""
-            },
-            {
-              "Name": "WorkFolder",
-              "DisplayName": "Location to use for creation/removal of work files",
-              "Required": true,
-              "DependsOn": "",
-              "Type": "String",
-              "DefaultValue": ""
-            }
-          ],
-          "EntryParameters": []
+            "store_types": [
+                {
+                    "Name": "RFJKS",
+                    "ShortName": "RFJKS",
+                    "Capability": "RFJKS",
+                    "ServerRequired": true,
+                    "BlueprintAllowed": false,
+                    "CustomAliasAllowed": "Required",
+                    "PowerShell": false,
+                    "PrivateKeyAllowed": "Optional",
+                    "SupportedOperations": {
+                        "Add": true,
+                        "Create": true,
+                        "Discovery": true,
+                        "Enrollment": false,
+                        "Remove": true
+                    },
+                    "PasswordOptions": {
+                        "Style": "Default",
+                        "EntrySupported": false,
+                        "StoreRequired": true
+                    },
+                    "Properties": [],
+                    "EntryParameters": [],
+                    "ClientMachineDescription": "For the Client Machine field when instantiating new Certificate Stores of type 'RFJKS', enter the DNS name or IP address of the remote orchestrated server. For Windows servers, use the format protocol://dns-or-ip:port (e.g., https://myserver.mydomain.com:5986).",
+                    "StorePathDescription": "For the Store Path field when instantiating new Certificate Stores of type 'RFJKS', enter the full path and file name, including the file extension, of the JKS keystore. For example, on Linux: /folder/path/keystore.jks, and on Windows: C:\\folder\\path\\keystore.jks."
+                },
+                {
+                    "Name": "RFPEM",
+                    "ShortName": "RFPEM",
+                    "Capability": "RFPEM",
+                    "ServerRequired": true,
+                    "BlueprintAllowed": false,
+                    "CustomAliasAllowed": "Forbidden",
+                    "PowerShell": false,
+                    "PrivateKeyAllowed": "Optional",
+                    "SupportedOperations": {
+                        "Add": true,
+                        "Create": true,
+                        "Discovery": true,
+                        "Enrollment": false,
+                        "Remove": true
+                    },
+                    "PasswordOptions": {
+                        "Style": "Default",
+                        "EntrySupported": false,
+                        "StoreRequired": true
+                    },
+                    "Properties": [],
+                    "EntryParameters": [],
+                    "ClientMachineDescription": "For the Client Machine field when instantiating new Certificate Stores of type 'RFPEM', enter the DNS name or IP address of the remote orchestrated server. For Windows servers, use the format protocol://dns-or-ip:port (e.g., https://myserver.mydomain.com:5986).",
+                    "StorePathDescription": "For the Store Path field when instantiating new Certificate Stores of type 'RFPEM', enter the full path and file name, including the file extension, of the PEM encoded file. For example, on Linux: /folder/path/certificate.pem, and on Windows: C:\\folder\\path\\certificate.pem."
+                },
+                {
+                    "Name": "RFPkcs12",
+                    "ShortName": "RFPkcs12",
+                    "Capability": "RFPkcs12",
+                    "ServerRequired": true,
+                    "BlueprintAllowed": false,
+                    "CustomAliasAllowed": "Required",
+                    "PowerShell": false,
+                    "PrivateKeyAllowed": "Optional",
+                    "SupportedOperations": {
+                        "Add": true,
+                        "Create": true,
+                        "Discovery": true,
+                        "Enrollment": false,
+                        "Remove": true
+                    },
+                    "PasswordOptions": {
+                        "Style": "Default",
+                        "EntrySupported": false,
+                        "StoreRequired": true
+                    },
+                    "Properties": [],
+                    "EntryParameters": [],
+                    "ClientMachineDescription": "For the Client Machine field when instantiating new Certificate Stores of type 'RFPkcs12', enter the DNS name or IP address of the remote orchestrated server. For Windows servers, use the format protocol://dns-or-ip:port (e.g., https://myserver.mydomain.com:5986).",
+                    "StorePathDescription": "For the Store Path field when instantiating new Certificate Stores of type 'RFPkcs12', enter the full path and file name, including the file extension, of the PKCS#12 keystore. For example, on Linux: /folder/path/keystore.p12, and on Windows: C:\\folder\\path\\keystore.p12."
+                },
+                {
+                    "Name": "RFDER",
+                    "ShortName": "RFDER",
+                    "Capability": "RFDER",
+                    "ServerRequired": true,
+                    "BlueprintAllowed": false,
+                    "CustomAliasAllowed": "Forbidden",
+                    "PowerShell": false,
+                    "PrivateKeyAllowed": "Optional",
+                    "SupportedOperations": {
+                        "Add": true,
+                        "Create": true,
+                        "Discovery": true,
+                        "Enrollment": false,
+                        "Remove": true
+                    },
+                    "PasswordOptions": {
+                        "Style": "Default",
+                        "EntrySupported": false,
+                        "StoreRequired": true
+                    },
+                    "Properties": [],
+                    "EntryParameters": [],
+                    "ClientMachineDescription": "For the Client Machine field when instantiating new Certificate Stores of type 'RFDER', enter the DNS name or IP address of the remote orchestrated server. For Windows servers, use the format protocol://dns-or-ip:port (e.g., https://myserver.mydomain.com:5986).",
+                    "StorePathDescription": "For the Store Path field when instantiating new Certificate Stores of type 'RFDER', enter the full path and file name, including the file extension, of the DER encoded file. For example, on Linux: /folder/path/certificate.der, and on Windows: C:\\folder\\path\\certificate.der."
+                },
+                {
+                    "Name": "RFKDB",
+                    "ShortName": "RFKDB",
+                    "Capability": "RFKDB",
+                    "ServerRequired": true,
+                    "BlueprintAllowed": false,
+                    "CustomAliasAllowed": "Required",
+                    "PowerShell": false,
+                    "PrivateKeyAllowed": "Optional",
+                    "SupportedOperations": {
+                        "Add": true,
+                        "Create": true,
+                        "Discovery": true,
+                        "Enrollment": false,
+                        "Remove": true
+                    },
+                    "PasswordOptions": {
+                        "Style": "Default",
+                        "EntrySupported": false,
+                        "StoreRequired": true
+                    },
+                    "Properties": [],
+                    "EntryParameters": [],
+                    "ClientMachineDescription": "For the Client Machine field when instantiating new Certificate Stores of type 'RFKDB', enter the DNS name or IP address of the remote orchestrated server. For Windows servers, use the format protocol://dns-or-ip:port (e.g., https://myserver.mydomain.com:5986).",
+                    "StorePathDescription": "For the Store Path field when instantiating new Certificate Stores of type 'RFKDB', enter the full path and file name, including the file extension, of the IBM Key Database file. For example, on Linux: /folder/path/keystore.kdb, and on Windows: C:\\folder\\path\\keystore.kdb."
+                },
+                {
+                    "Name": "RFORA",
+                    "ShortName": "RFORA",
+                    "Capability": "RFORA",
+                    "ServerRequired": true,
+                    "BlueprintAllowed": false,
+                    "CustomAliasAllowed": "Required",
+                    "PowerShell": false,
+                    "PrivateKeyAllowed": "Optional",
+                    "SupportedOperations": {
+                        "Add": true,
+                        "Create": true,
+                        "Discovery": true,
+                        "Enrollment": false,
+                        "Remove": true
+                    },
+                    "PasswordOptions": {
+                        "Style": "Default",
+                        "EntrySupported": false,
+                        "StoreRequired": true
+                    },
+                    "Properties": [],
+                    "EntryParameters": [],
+                    "ClientMachineDescription": "For the Client Machine field when instantiating new Certificate Stores of type 'RFORA', enter the DNS name or IP address of the remote orchestrated server. For Windows servers, use the format protocol://dns-or-ip:port (e.g., https://myserver.mydomain.com:5986).",
+                    "StorePathDescription": "For the Store Path field when instantiating new Certificate Stores of type 'RFORA', enter the full path, including the 'eWallet.p12' file name. For example, on Linux: /folder/path/eWallet.p12, and on Windows: C:\\folder\\path\\eWallet.p12."
+                }
+            ]
         }
-      }
-    }
-  }
+    },
+    "support_level": "kf-supported"
 }
-
