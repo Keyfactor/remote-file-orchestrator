@@ -391,13 +391,14 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
 
             X500DistinguishedName dn = new X500DistinguishedName(subjectText);
             string opensslSubject = dn.Format(true);
-            opensslSubject = "/" + opensslSubject.Replace(System.Environment.NewLine, "/").Substring(0, opensslSubject.Length - 1);
+            opensslSubject = opensslSubject.Replace(System.Environment.NewLine, "/");
+            opensslSubject = "/" + opensslSubject.Substring(0, opensslSubject.Length - 1);
 
-            string cmd = $"openssl req -new -newkey REPLACE -nodes -keyout {path}{fileName}.key -out {{path}}{{fileName}}.csr -subj '{opensslSubject}'";
+            string cmd = $"openssl req -new -newkey REPLACE -nodes -keyout {path}{fileName}.key -out {path}{fileName}.csr -subj '{opensslSubject}'";
             switch (keyType)
             {
                 case SupportedKeyTypeEnum.RSA:
-                    cmd.Replace("REPLACE", $"rsa:{keySize.ToString()}");
+                    cmd = cmd.Replace("REPLACE", $"rsa:{keySize.ToString()}");
                     break;
                 case SupportedKeyTypeEnum.ECC:
                     string algName = "prime256v1";
@@ -410,13 +411,30 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
                             algName = "secp521r1";
                             break;
                     }
-                    cmd.Replace("REPLACE", $"ec:<(openssl ecparam -name {algName})");
+                    cmd = cmd.Replace("REPLACE", $"ec:<(openssl ecparam -name {algName})");
                     break;
             }
 
-            RemoteHandler.RunCommand(cmd, null, ApplicationSettings.UseSudo, null);
-            privateKey = Encoding.UTF8.GetString(RemoteHandler.DownloadCertificateFile(path + fileName + "key"));
-            return Encoding.UTF8.GetString(RemoteHandler.DownloadCertificateFile(path + fileName + "csr"));
+            string csr = string.Empty;
+            privateKey = string.Empty;
+            try
+            {
+                RemoteHandler.RunCommand(cmd, null, ApplicationSettings.UseSudo, null);
+                privateKey = Encoding.UTF8.GetString(RemoteHandler.DownloadCertificateFile(path + fileName + "key"));
+                csr = Encoding.UTF8.GetString(RemoteHandler.DownloadCertificateFile(path + fileName + "csr"));
+            }
+            catch (Exception ex)
+            {
+                if (!ex.Message.Contains("----") || !ex.Message.Contains("++++"))
+                    throw;
+            }
+            finally
+            {
+                RemoteHandler.RemoveCertificateFile(path, fileName + "key");
+                RemoteHandler.RemoveCertificateFile(path, fileName + "csr");
+            }
+
+            return csr;
         }
 
         internal void Initialize(string sudoImpersonatedUser)
