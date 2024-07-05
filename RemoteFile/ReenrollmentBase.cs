@@ -12,17 +12,11 @@ using System.Security.Cryptography.X509Certificates;
 using Keyfactor.Logging;
 using Keyfactor.Orchestrators.Extensions;
 using Keyfactor.Orchestrators.Common.Enums;
+using Keyfactor.PKI.PEM;
 
 using Microsoft.Extensions.Logging;
 
 using Newtonsoft.Json;
-using Org.BouncyCastle.Asn1.Pkcs;
-using Org.BouncyCastle.Asn1.X509;
-using Org.BouncyCastle.Asn1;
-using Org.BouncyCastle.Crypto.Generators;
-using Org.BouncyCastle.Crypto.Prng;
-using Org.BouncyCastle.Crypto;
-using Org.BouncyCastle.Pkcs;
 using System.Security.Cryptography;
 
 namespace Keyfactor.Extensions.Orchestrator.RemoteFile
@@ -108,17 +102,29 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
                 }
 
                 X509Certificate2 cert = submitReenrollment.Invoke(csr);
+                if (cert == null)
+                    throw new RemoteFileException("Enrollment of CSR failed.  Please check Keyfactor Command logs for more information on potential enrollment errors.");
 
                 if (!string.IsNullOrEmpty(pemPrivateKey))
                 {
-                    RSA rsa = RSA.Create();
-                    rsa.ImportEncryptedPkcs8PrivateKey(string.Empty, Convert.FromBase64String(pemPrivateKey), out _);
-                    cert = cert.CopyWithPrivateKey(rsa);
+                    if (keyTypeEnum == SupportedKeyTypeEnum.RSA)
+                    {
+                        RSA rsa = RSA.Create();
+                        rsa.ImportEncryptedPkcs8PrivateKey(string.Empty, Keyfactor.PKI.PEM.PemUtilities.PEMToDER(pemPrivateKey), out _);
+                        cert = cert.CopyWithPrivateKey(rsa);
+                    }
+                    else
+                    {
+                        ECCurve ec = ECCurve.CreateFromValue("1.3.132.0.34");
+                        ECDsa e = ECDsa.Create(ec);
+                        e.ImportECPrivateKey(Keyfactor.PKI.PEM.PemUtilities.PEMToDER(pemPrivateKey), out _);
+                        cert = cert.CopyWithPrivateKey(e);
+                    }
                 }
 
                 // save certificate
                 certificateStore.LoadCertificateStore(certificateStoreSerializer, config.CertificateStoreDetails.Properties, false);
-                certificateStore.AddCertificate((alias ?? cert.Thumbprint), Convert.ToBase64String(cert.Export(X509ContentType.Cert)), overwrite, null);
+                certificateStore.AddCertificate((alias ?? cert.Thumbprint), Convert.ToBase64String(cert.Export(X509ContentType.Pfx)), overwrite, null);
                 certificateStore.SaveCertificateStore(certificateStoreSerializer.SerializeRemoteCertificateStore(certificateStore.GetCertificateStore(), storePathFile.Path, storePathFile.File, storePassword, certificateStore.RemoteHandler));
 
                 logger.LogDebug($"END add Operation for {config.CertificateStoreDetails.StorePath} on {config.CertificateStoreDetails.ClientMachine}.");
@@ -126,8 +132,9 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
 
             catch (Exception ex)
             {
-                logger.LogError($"Exception for {config.Capability}: {RemoteFileException.FlattenExceptionMessages(ex, string.Empty)} for job id {config.JobId}");
-                return new JobResult() { Result = OrchestratorJobStatusJobResult.Failure, JobHistoryId = config.JobHistoryId, FailureMessage = RemoteFileException.FlattenExceptionMessages(ex, $"Site {config.CertificateStoreDetails.StorePath} on server {config.CertificateStoreDetails.ClientMachine}:") };
+                string errorMessage = $"Exception for {config.Capability}: {RemoteFileException.FlattenExceptionMessages(ex, string.Empty)} for job id {config.JobId}";
+                logger.LogError(errorMessage);
+                return new JobResult() { Result = OrchestratorJobStatusJobResult.Failure, JobHistoryId = config.JobHistoryId, FailureMessage = $"Site {config.CertificateStoreDetails.StorePath} on server {config.CertificateStoreDetails.ClientMachine}: {errorMessage}" };
             }
             finally
             {

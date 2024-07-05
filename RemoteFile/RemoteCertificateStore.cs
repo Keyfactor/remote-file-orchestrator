@@ -390,7 +390,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             string fileName = Guid.NewGuid().ToString();
 
             X500DistinguishedName dn = new X500DistinguishedName(subjectText);
-            string opensslSubject = dn.Format(true);
+            string opensslSubject = dn.Format(true).Replace("S=","ST=");
             opensslSubject = opensslSubject.Replace(System.Environment.NewLine, "/");
             opensslSubject = "/" + opensslSubject.Substring(0, opensslSubject.Length - 1);
 
@@ -419,19 +419,25 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             privateKey = string.Empty;
             try
             {
-                RemoteHandler.RunCommand(cmd, null, ApplicationSettings.UseSudo, null);
-                privateKey = Encoding.UTF8.GetString(RemoteHandler.DownloadCertificateFile(path + fileName + "key"));
-                csr = Encoding.UTF8.GetString(RemoteHandler.DownloadCertificateFile(path + fileName + "csr"));
-            }
-            catch (Exception ex)
-            {
-                if (!ex.Message.Contains("----") || !ex.Message.Contains("++++"))
-                    throw;
+                try
+                {
+                    RemoteHandler.RunCommand(cmd, null, ApplicationSettings.UseSudo, null);
+                }
+                catch (Exception ex)
+                {
+                    if (!ex.Message.Contains("----"))
+                        throw;
+                }
+
+                privateKey = Encoding.UTF8.GetString(RemoteHandler.DownloadCertificateFile(path + fileName + ".key"));
+                csr = Encoding.UTF8.GetString(RemoteHandler.DownloadCertificateFile(path + fileName + ".csr"));
             }
             finally
             {
-                RemoteHandler.RemoveCertificateFile(path, fileName + "key");
-                RemoteHandler.RemoveCertificateFile(path, fileName + "csr");
+                if (RemoteHandler.DoesFileExist(path + fileName + ".key"))
+                    RemoteHandler.RemoveCertificateFile(path, fileName + ".key");
+                if (RemoteHandler.DoesFileExist(path + fileName + ".csr"))
+                    RemoteHandler.RemoveCertificateFile(path, fileName + ".csr");
             }
 
             return csr;
