@@ -76,6 +76,9 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
             {
                 sshClient = new SshClient(Connection);
                 sshClient.Connect();
+
+                //method call below necessary to check edge condition where password for user id has expired. SCP (and possibly SFTP) download hangs in that scenario
+                CheckConnection();
             }
             catch (Exception ex)
             {
@@ -146,7 +149,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
             catch (Exception ex)
             {
                 _logger.LogError($"Exception during RunCommand...{RemoteFileException.FlattenExceptionMessages(ex, ex.Message)}");
-                throw ex;
+                throw;
             }
         }
 
@@ -328,18 +331,18 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
         {
             _logger.MethodEntry(LogLevel.Debug);
             string[] linuxGroupOwner = linuxFileOwner.Split(":");
-            string linuxFileGroup = linuxFileOwner;
+            string linuxFileGroup = String.Empty;
 
             if (linuxGroupOwner.Length == 2)
             {
                 linuxFileOwner = linuxGroupOwner[0];
-                linuxFileGroup = linuxGroupOwner[1];
+                linuxFileGroup = $"-g {linuxGroupOwner[1]}";
             }
 
             if (IsStoreServerLinux)
             {
                 AreLinuxPermissionsValid(linuxFilePermissions);
-                RunCommand($"install -m {linuxFilePermissions} -o {linuxFileOwner} -g {linuxFileGroup} /dev/null {path}", null, ApplicationSettings.UseSudo, null);
+                RunCommand($"install -m {linuxFilePermissions} -o {linuxFileOwner} {linuxFileGroup} /dev/null {path}", null, ApplicationSettings.UseSudo, null);
             }
             else
                 RunCommand($@"Out-File -FilePath ""{path}""", null, false, null);
@@ -430,6 +433,19 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
             _logger.MethodExit(LogLevel.Debug);
 
             return rtnPath;
+        }
+
+        private void CheckConnection()
+        {
+            try
+            {
+                RunCommand("echo", null, ApplicationSettings.UseSudo, null);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(RemoteFileException.FlattenExceptionMessages(ex, "Error validating server connection."));
+                throw;
+            }
         }
     }
 }

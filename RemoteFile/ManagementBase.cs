@@ -8,7 +8,6 @@
 using System;
 using System.Collections.Generic;
 using System.Security.Cryptography.X509Certificates;
-using System.Threading;
 
 using Keyfactor.Logging;
 using Keyfactor.Orchestrators.Extensions;
@@ -22,8 +21,6 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
 {
     public abstract class ManagementBase : RemoteFileJobTypeBase, IManagementJobExtension
     {
-        static Mutex mutex = new Mutex(false, "ModifyStore");
-
         public string ExtensionName => "";
 
         internal RemoteCertificateStore certificateStore = new RemoteCertificateStore();
@@ -44,8 +41,6 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
 
             try
             {
-                mutex.WaitOne();
-
                 string userName = PAMUtilities.ResolvePAMField(_resolver, logger, "Server User Name", config.ServerUsername);
                 string userPassword = PAMUtilities.ResolvePAMField(_resolver, logger, "Server Password", config.ServerPassword);
                 string storePassword = PAMUtilities.ResolvePAMField(_resolver, logger, "Store Password", config.CertificateStoreDetails.StorePassword);
@@ -118,8 +113,6 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             }
             finally
             {
-                mutex.ReleaseMutex();
-
                 if (certificateStore.RemoteHandler != null)
                     certificateStore.Terminate();
             }
