@@ -22,6 +22,13 @@ using Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers;
 using Keyfactor.Extensions.Orchestrator.RemoteFile.Models;
 using Keyfactor.Logging;
 using System.Runtime.InteropServices;
+using Org.BouncyCastle.Asn1.Pkcs;
+using Org.BouncyCastle.Asn1.X509;
+using Org.BouncyCastle.Asn1;
+using Org.BouncyCastle.Crypto.Generators;
+using Org.BouncyCastle.Crypto.Prng;
+using Org.BouncyCastle.Crypto;
+using static Keyfactor.Extensions.Orchestrator.RemoteFile.ReenrollmentBase;
 
 namespace Keyfactor.Extensions.Orchestrator.RemoteFile
 {
@@ -248,7 +255,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
 
                 Pkcs12Store newEntry = storeBuilder.Build();
 
-                X509Certificate2 cert = new X509Certificate2(newCertBytes, pfxPassword, X509KeyStorageFlags.Exportable);
+                X509Certificate2 cert = new X509Certificate2(newCertBytes, pfxPassword, X509KeyStorageFlags.Exportable | X509KeyStorageFlags.EphemeralKeySet);
                 byte[] binaryCert = cert.Export(X509ContentType.Pkcs12, pfxPassword);
 
                 using (MemoryStream ms = new MemoryStream(string.IsNullOrEmpty(pfxPassword) ? binaryCert : newCertBytes))
@@ -334,6 +341,106 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             {
                 throw new RemoteFileException($"Error attempting to parse certficate store path={pathFileName}.", ex);
             }
+        }
+
+        internal string GenerateCSR(string subjectText, SupportedKeyTypeEnum keyType, int keySize, List<string> sans)
+        {
+            IAsymmetricCipherKeyPairGenerator keyPairGenerator = null;
+            string algorithm = string.Empty;
+            switch (keyType)
+            {
+                case SupportedKeyTypeEnum.RSA:
+                    keyPairGenerator = new RsaKeyPairGenerator();
+                    algorithm = "SHA256withRSA";
+                    break;
+                case SupportedKeyTypeEnum.ECC:
+                    keyPairGenerator = new ECKeyPairGenerator();
+                    algorithm = "SHA256withECDSA";
+                    if (keySize == 384) algorithm = "SHA384withECDSA";
+                    if (keySize == 521) algorithm = "SHA512withECDSA";
+                    break;
+            }
+
+            var keyGenParams = new KeyGenerationParameters(new Org.BouncyCastle.Security.SecureRandom(new CryptoApiRandomGenerator()), keySize);
+            keyPairGenerator.Init(keyGenParams);
+            var keyPair = keyPairGenerator.GenerateKeyPair();
+
+            var subject = new X509Name(subjectText);
+
+            // Add SAN entries
+            var subAltNameList = new List<GeneralName>();
+            sans.ForEach(san => subAltNameList.Add(new GeneralName(GeneralName.DnsName, san.Trim())));
+            var generalSubAltNames = new GeneralNames(subAltNameList.ToArray());
+
+            var extensionsGenerator = new X509ExtensionsGenerator();
+            extensionsGenerator.AddExtension(X509Extensions.SubjectAlternativeName, false, generalSubAltNames);
+            var attributeSet = new DerSet(new AttributePkcs(PkcsObjectIdentifiers.Pkcs9AtExtensionRequest, new DerSet(extensionsGenerator.Generate())));
+
+            Pkcs10CertificationRequest csr = new Pkcs10CertificationRequest(algorithm, subject, keyPair.Public, (DerSet)attributeSet, keyPair.Private);
+
+            // encode the CSR as base64
+            var encodedCsr = Convert.ToBase64String(csr.GetEncoded());
+            return encodedCsr;
+        }
+
+        internal string GenerateCSROnDevice(string subjectText, SupportedKeyTypeEnum keyType, int keySize, List<string> sans, out string privateKey)
+        {
+            string path = ApplicationSettings.TempFilePathForODKG;
+            if (path.Substring(path.Length - 1, 1) != "/") path += "/";
+            string fileName = Guid.NewGuid().ToString();
+
+            X500DistinguishedName dn = new X500DistinguishedName(subjectText);
+            string opensslSubject = dn.Format(true).Replace("S=","ST=");
+            opensslSubject = opensslSubject.Replace(System.Environment.NewLine, "/");
+            opensslSubject = "/" + opensslSubject.Substring(0, opensslSubject.Length - 1);
+
+            string cmd = $"openssl req -new -newkey REPLACE -nodes -keyout {path}{fileName}.key -out {path}{fileName}.csr -subj '{opensslSubject}'";
+            switch (keyType)
+            {
+                case SupportedKeyTypeEnum.RSA:
+                    cmd = cmd.Replace("REPLACE", $"rsa:{keySize.ToString()}");
+                    break;
+                case SupportedKeyTypeEnum.ECC:
+                    string algName = "prime256v1";
+                    switch (keySize)
+                    {
+                        case 384:
+                            algName = "secp384r1";
+                            break;
+                        case 521:
+                            algName = "secp521r1";
+                            break;
+                    }
+                    cmd = cmd.Replace("REPLACE", $"ec:<(openssl ecparam -name {algName})");
+                    break;
+            }
+
+            string csr = string.Empty;
+            privateKey = string.Empty;
+            try
+            {
+                try
+                {
+                    RemoteHandler.RunCommand(cmd, null, ApplicationSettings.UseSudo, null);
+                }
+                catch (Exception ex)
+                {
+                    if (!ex.Message.Contains("----"))
+                        throw;
+                }
+
+                privateKey = Encoding.UTF8.GetString(RemoteHandler.DownloadCertificateFile(path + fileName + ".key"));
+                csr = Encoding.UTF8.GetString(RemoteHandler.DownloadCertificateFile(path + fileName + ".csr"));
+            }
+            finally
+            {
+                if (RemoteHandler.DoesFileExist(path + fileName + ".key"))
+                    RemoteHandler.RemoveCertificateFile(path, fileName + ".key");
+                if (RemoteHandler.DoesFileExist(path + fileName + ".csr"))
+                    RemoteHandler.RemoveCertificateFile(path, fileName + ".csr");
+            }
+
+            return csr;
         }
 
         internal void Initialize(string sudoImpersonatedUser)
