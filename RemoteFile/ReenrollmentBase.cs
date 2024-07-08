@@ -21,7 +21,7 @@ using System.Security.Cryptography;
 
 namespace Keyfactor.Extensions.Orchestrator.RemoteFile
 {
-    public abstract class ReenrollmentBase : RemoteFileJobTypeBase, IReenrollmentJobExtension
+    public abstract class ReenrollmentBase : RemoteFileJobTypeBase
     {
         public string ExtensionName => "Keyfactor.Extensions.Orchestrator.RemoteFile";
 
@@ -33,7 +33,16 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             ECC
         }
 
-        public JobResult ProcessJob(ReenrollmentJobConfiguration config, SubmitReenrollmentCSR submitReenrollment)
+        //TODO:
+        // 1) Set SANs, Alias and Overwrite "for real" once product figures out how to pass that
+        // 2) Add "CreateCSROnDevice" (Y/N) to config.json
+        // 3) Add "TempFilePathForODKG" (string) to config.json
+        // 4) Add Reenrollment to manifest.json for all store types
+        // 5) Rename ProcessJobToDo to ProcessJob
+        // 6) Modify ReenrollmentBase to implement IReenrollmentJobExtension 
+        // 6) Update README.  Remember to explain the differences between ODKG and OOKG
+
+        public JobResult ProcessJobToDo(ReenrollmentJobConfiguration config, SubmitReenrollmentCSR submitReenrollment)
         {
             ILogger logger = LogHandler.GetClassLogger(this.GetType());
             logger.LogDebug($"Begin {config.Capability} for job id {config.JobId}...");
@@ -67,7 +76,6 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
                 int keySize = !config.JobProperties.ContainsKey("keySize") || config.JobProperties["keySize"] == null || string.IsNullOrEmpty(config.JobProperties["keySize"].ToString()) ? 2048 : Convert.ToInt32(config.JobProperties["keySize"]);
                 string subjectText = !config.JobProperties.ContainsKey("subjectText") || config.JobProperties["subjectText"] == null || config.JobProperties["subjectText"] == null || string.IsNullOrEmpty(config.JobProperties["subjectText"].ToString()) ? string.Empty : config.JobProperties["subjectText"].ToString();
 
-                //TODO - Set SANs, Alias and Overwrite "for real" once product figures out how to pass that
                 string alias = "abcd";
                 string sans = "reenroll2.Keyfactor.com&reenroll1.keyfactor.com&reenroll3.Keyfactor.com";
                 bool overwrite = true;
@@ -102,25 +110,12 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
                 }
 
                 X509Certificate2 cert = submitReenrollment.Invoke(csr);
-                if (cert == null)
+                if (cert == null || String.IsNullOrEmpty(pemPrivateKey))
                     throw new RemoteFileException("Enrollment of CSR failed.  Please check Keyfactor Command logs for more information on potential enrollment errors.");
 
-                if (!string.IsNullOrEmpty(pemPrivateKey))
-                {
-                    if (keyTypeEnum == SupportedKeyTypeEnum.RSA)
-                    {
-                        RSA rsa = RSA.Create();
-                        rsa.ImportEncryptedPkcs8PrivateKey(string.Empty, Keyfactor.PKI.PEM.PemUtilities.PEMToDER(pemPrivateKey), out _);
-                        cert = cert.CopyWithPrivateKey(rsa);
-                    }
-                    else
-                    {
-                        ECCurve ec = ECCurve.CreateFromValue("1.3.132.0.34");
-                        ECDsa e = ECDsa.Create(ec);
-                        e.ImportECPrivateKey(Keyfactor.PKI.PEM.PemUtilities.PEMToDER(pemPrivateKey), out _);
-                        cert = cert.CopyWithPrivateKey(e);
-                    }
-                }
+                AsymmetricAlgorithm alg = keyTypeEnum == SupportedKeyTypeEnum.RSA ? RSA.Create() : ECDsa.Create();
+                alg.ImportEncryptedPkcs8PrivateKey(string.Empty, Keyfactor.PKI.PEM.PemUtilities.PEMToDER(pemPrivateKey), out _);
+                cert = keyTypeEnum == SupportedKeyTypeEnum.RSA ? cert.CopyWithPrivateKey((RSA)alg) : cert.CopyWithPrivateKey((ECDsa)alg);
 
                 // save certificate
                 certificateStore.LoadCertificateStore(certificateStoreSerializer, config.CertificateStoreDetails.Properties, false);

@@ -7,5 +7,4 @@
   "FileTransferProtocol": "SCP",
   "DefaultLinuxPermissionsOnStoreCreation": "600",
   "DefaultOwnerOnStoreCreation": "",
-  "CreateCSROnDevice":  "N"
 }
