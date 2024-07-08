@@ -1,3 +1,8 @@
+v2.7.0
+- Modified RFJKS store type support java keystores of both PKCS12 and JKS
+- Added support for OpenSSH private keys for SSH authentication
+- Bug fix for orchestrators installed on Windows 2016
+
 v2.6.1
 - Bug Fix: Supplied Linux user needing password reset could cause orchestrator locking.
 - Bug Fix: Not supplying group for Linux File Owner on Store Creation caused the supplied owner to erroneously be used as the group for the newly create certificate store file.

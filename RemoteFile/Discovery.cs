@@ -22,7 +22,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
     public class Discovery: IDiscoveryJobExtension
     {
         public IPAMSecretResolver _resolver;
-        public string ExtensionName => "";
+        public string ExtensionName => "Keyfactor.Extensions.Orchestrator.RemoteFile.Discovery";
 
         public Discovery(IPAMSecretResolver resolver)
         {
