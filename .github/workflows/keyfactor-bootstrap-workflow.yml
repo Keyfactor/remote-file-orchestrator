@@ -1,4 +1,4 @@
-name: Keyfactor Release Workflow
+name: Keyfactor Bootstrap Workflow
 
 on:
   workflow_dispatch:
