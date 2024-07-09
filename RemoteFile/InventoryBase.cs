@@ -21,7 +21,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
 {
     public abstract class InventoryBase : RemoteFileJobTypeBase, IInventoryJobExtension
     {
-        public string ExtensionName => string.Empty;
+        public string ExtensionName => "Keyfactor.Extensions.Orchestrator.RemoteFile.Inventory";
 
         RemoteCertificateStore certificateStore = new RemoteCertificateStore();
 
