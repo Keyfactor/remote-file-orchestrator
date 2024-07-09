@@ -47,7 +47,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
 
                 try
                 {
-                    using (MemoryStream ms = new MemoryStream(Encoding.ASCII.GetBytes(FormatRSAPrivateKey(serverPassword))))
+                    using (MemoryStream ms = new MemoryStream(Encoding.ASCII.GetBytes(FormatPrivateKey(serverPassword))))
                     {
                         privateKeyFile = new PrivateKeyFile(ms);
                     }
@@ -400,12 +400,14 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
             _logger.MethodEntry(LogLevel.Debug);
         }
 
-        private string FormatRSAPrivateKey(string privateKey)
+        private string FormatPrivateKey(string privateKey)
         {
             _logger.MethodEntry(LogLevel.Debug);
             _logger.MethodExit(LogLevel.Debug);
+
+            String keyType = privateKey.Contains("OPENSSH PRIVATE KEY") ? "OPENSSH" : "RSA";
             
-            return privateKey.Replace(" RSA PRIVATE ", "^^^").Replace(" ", System.Environment.NewLine).Replace("^^^", " RSA PRIVATE ") + System.Environment.NewLine;
+            return privateKey.Replace($" {keyType} PRIVATE ", "^^^").Replace(" ", System.Environment.NewLine).Replace("^^^", $" {keyType} PRIVATE ") + System.Environment.NewLine;
         }
 
         private string ConvertToPKCS1(string privateKey)
