@@ -18,6 +18,8 @@ using Microsoft.Extensions.Logging;
 using Keyfactor.Logging;
 using Keyfactor.PKI.PrivateKeys;
 using Keyfactor.PKI.PEM;
+using static Microsoft.ApplicationInsights.MetricDimensionNames.TelemetryContext;
+using Renci.SshNet.Common;
 
 namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
 {
@@ -26,6 +28,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
         private ConnectionInfo Connection { get; set; }
         private string SudoImpersonatedUser { get; set; }
         private bool IsStoreServerLinux { get; set; }
+        private string Password { get; set; }
         private SshClient sshClient;
 
         internal SSHHandler(string server, string serverLogin, string serverPassword, bool isStoreServerLinux, string sudoImpersonatedUser)
@@ -35,11 +38,16 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
             Server = server;
             SudoImpersonatedUser = sudoImpersonatedUser;
             IsStoreServerLinux = isStoreServerLinux;
+            Password = serverPassword;
 
             List<AuthenticationMethod> authenticationMethods = new List<AuthenticationMethod>();
             if (serverPassword.Length < PASSWORD_LENGTH_MAX)
             {
                 authenticationMethods.Add(new PasswordAuthenticationMethod(serverLogin, serverPassword));
+
+                KeyboardInteractiveAuthenticationMethod keyboardAuthentication = new KeyboardInteractiveAuthenticationMethod(UserId);
+                keyboardAuthentication.AuthenticationPrompt += KeyboardAuthentication_AuthenticationPrompt;
+                authenticationMethods.Add(keyboardAuthentication);
             }
             else
             {
@@ -380,6 +388,17 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
             _logger.LogDebug($"RemoveCertificateFile: {path} {fileName}");
 
             RunCommand($"rm {path}{fileName}", null, ApplicationSettings.UseSudo, null);
+        }
+
+        private void KeyboardAuthentication_AuthenticationPrompt(object sender, AuthenticationPromptEventArgs e)
+        {
+            _logger.MethodEntry(LogLevel.Debug);
+            foreach (AuthenticationPrompt prompt in e.Prompts)
+            {
+                if (prompt.Request.StartsWith("Password"))
+                    prompt.Response = Password;
+            }
+            _logger.MethodExit(LogLevel.Debug);
         }
 
         private void SplitStorePathFile(string pathFileName, out string path, out string fileName)
