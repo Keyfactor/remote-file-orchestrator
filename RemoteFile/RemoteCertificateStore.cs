@@ -454,8 +454,6 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             else
                 RemoteHandler = new WinRMHandler(Server, ServerId, ServerPassword, treatAsLocal);
 
-            RemoteHandler.Initialize();
-
             logger.MethodExit(LogLevel.Debug);
         }
 

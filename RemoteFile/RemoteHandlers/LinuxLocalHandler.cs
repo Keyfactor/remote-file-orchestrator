@@ -29,12 +29,6 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
         internal LinuxLocalHandler()
         {
             _logger.MethodEntry(LogLevel.Debug);
-            _logger.MethodExit(LogLevel.Debug);
-        }
-
-        public override void Initialize()
-        {
-            _logger.MethodEntry(LogLevel.Debug);
 
             BaseCommand = Cli.Wrap("/bin/bash");
 

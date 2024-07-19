@@ -33,8 +33,6 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
                 throw new RemoteFileException($"Invalid format for Linux file permissions.  This value must be exactly 3 digits long with each digit between 0-7 but found {permissions} instead.");
         }
 
-        public abstract void Initialize();
-
         public abstract void Terminate();
 
         public abstract string RunCommand(string commandText, object[] arguments, bool withSudo, string[] passwordsToMaskInLog);

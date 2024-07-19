@@ -20,6 +20,7 @@ using Keyfactor.PKI.PrivateKeys;
 using Keyfactor.PKI.PEM;
 using static Microsoft.ApplicationInsights.MetricDimensionNames.TelemetryContext;
 using Renci.SshNet.Common;
+using Org.BouncyCastle.Bcpg;
 
 namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
 {
@@ -28,6 +29,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
         private ConnectionInfo Connection { get; set; }
         private string SudoImpersonatedUser { get; set; }
         private bool IsStoreServerLinux { get; set; }
+        private string UserId { get; set; }
         private string Password { get; set; }
         private SshClient sshClient;
 
@@ -38,16 +40,25 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
             Server = server;
             SudoImpersonatedUser = sudoImpersonatedUser;
             IsStoreServerLinux = isStoreServerLinux;
+            UserId = serverLogin;
             Password = serverPassword;
 
-            List<AuthenticationMethod> authenticationMethods = new List<AuthenticationMethod>();
             if (serverPassword.Length < PASSWORD_LENGTH_MAX)
             {
-                authenticationMethods.Add(new PasswordAuthenticationMethod(serverLogin, serverPassword));
-
-                KeyboardInteractiveAuthenticationMethod keyboardAuthentication = new KeyboardInteractiveAuthenticationMethod(UserId);
-                keyboardAuthentication.AuthenticationPrompt += KeyboardAuthentication_AuthenticationPrompt;
-                authenticationMethods.Add(keyboardAuthentication);
+                try
+                {
+                    Connection = new ConnectionInfo(server, serverLogin, new PasswordAuthenticationMethod(serverLogin, serverPassword));
+                    SshClient tempSshClient = new SshClient(Connection);
+                    tempSshClient.Connect();
+                    tempSshClient.Disconnect();
+                    tempSshClient.Dispose();
+                }
+                catch (Exception ex)
+                {
+                    KeyboardInteractiveAuthenticationMethod keyboardAuthentication = new KeyboardInteractiveAuthenticationMethod(UserId);
+                    keyboardAuthentication.AuthenticationPrompt += KeyboardAuthentication_AuthenticationPrompt;
+                    Connection = new ConnectionInfo(server, serverLogin, keyboardAuthentication);
+                }
             }
             else
             {
@@ -68,17 +79,8 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
                     }
                 }
 
-                authenticationMethods.Add(new PrivateKeyAuthenticationMethod(serverLogin, privateKeyFile));
+                Connection = new ConnectionInfo(server, serverLogin, new PrivateKeyAuthenticationMethod(serverLogin, privateKeyFile)); 
             }
-
-            Connection = new ConnectionInfo(server, serverLogin, authenticationMethods.ToArray());
-
-            _logger.MethodExit(LogLevel.Debug);
-        }
-
-        public override void Initialize()
-        {
-            _logger.MethodEntry(LogLevel.Debug);
 
             try
             {
