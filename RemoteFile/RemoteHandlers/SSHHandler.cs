@@ -45,20 +45,9 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
 
             if (serverPassword.Length < PASSWORD_LENGTH_MAX)
             {
-                try
-                {
-                    Connection = new ConnectionInfo(server, serverLogin, new PasswordAuthenticationMethod(serverLogin, serverPassword));
-                    SshClient tempSshClient = new SshClient(Connection);
-                    tempSshClient.Connect();
-                    tempSshClient.Disconnect();
-                    tempSshClient.Dispose();
-                }
-                catch (Exception ex)
-                {
-                    KeyboardInteractiveAuthenticationMethod keyboardAuthentication = new KeyboardInteractiveAuthenticationMethod(UserId);
-                    keyboardAuthentication.AuthenticationPrompt += KeyboardAuthentication_AuthenticationPrompt;
-                    Connection = new ConnectionInfo(server, serverLogin, keyboardAuthentication);
-                }
+                KeyboardInteractiveAuthenticationMethod keyboardAuthentication = new KeyboardInteractiveAuthenticationMethod(UserId);
+                keyboardAuthentication.AuthenticationPrompt += KeyboardAuthentication_AuthenticationPrompt;
+                Connection = new ConnectionInfo(server, serverLogin, new PasswordAuthenticationMethod(serverLogin, serverPassword), keyboardAuthentication);
             }
             else
             {
