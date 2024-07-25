@@ -103,7 +103,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             logger.MethodExit(LogLevel.Debug);
         }
 
-        internal void LoadCertificateStore(ICertificateStoreSerializer certificateStoreSerializer, string storeProperties, bool isInventory)
+        internal void LoadCertificateStore(ICertificateStoreSerializer certificateStoreSerializer, bool isInventory)
         {
             logger.MethodEntry(LogLevel.Debug);
 
@@ -242,7 +242,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             logger.MethodExit(LogLevel.Debug);
         }
 
-        internal void AddCertificate(string alias, string certificateEntry, bool overwrite, string pfxPassword)
+        internal void AddCertificate(string alias, string certificateEntry, bool overwrite, string pfxPassword, bool removeRootCertificate)
         {
             logger.MethodEntry(LogLevel.Debug);
 
@@ -251,7 +251,9 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
                 Pkcs12StoreBuilder storeBuilder = new Pkcs12StoreBuilder();
                 Pkcs12Store certs = storeBuilder.Build();
 
-                byte[] newCertBytes = Convert.FromBase64String(certificateEntry);
+                byte[] newCertBytes = removeRootCertificate && !string.IsNullOrEmpty(pfxPassword) ? 
+                    RemoveRootCertificate(Convert.FromBase64String(certificateEntry), pfxPassword) : 
+                    Convert.FromBase64String(certificateEntry);
 
                 Pkcs12Store newEntry = storeBuilder.Build();
 
@@ -455,6 +457,35 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
                 RemoteHandler = new WinRMHandler(Server, ServerId, ServerPassword, treatAsLocal);
 
             logger.MethodExit(LogLevel.Debug);
+        }
+
+        private byte[] RemoveRootCertificate(byte[] binCert, string password)
+        {
+            Pkcs12StoreBuilder storeBuilder = new Pkcs12StoreBuilder();
+            Pkcs12Store store = storeBuilder.Build();
+            Pkcs12Store store2 = storeBuilder.Build();
+
+            byte[] rtnCert = new byte[1];
+
+            using (MemoryStream ms = new MemoryStream(binCert))
+            {
+                store.Load(ms, password.ToCharArray());
+            }
+
+            foreach (string alias in store.Aliases)
+            {
+                X509CertificateEntry[] chain = store.GetCertificateChain(alias);
+                chain = chain.Where(p => p.Certificate.SubjectDN.ToString() != p.Certificate.IssuerDN.ToString()).ToArray();
+                store2.SetKeyEntry(alias, store.GetKey(alias), chain);
+                
+                using (MemoryStream ms = new MemoryStream())
+                {
+                    store2.Save(ms, password.ToCharArray(), new SecureRandom());
+                    rtnCert = ms.ToArray();
+                }
+            }
+
+            return rtnCert;
         }
 
         private bool AreValuesSafeRegex(string[] values)
