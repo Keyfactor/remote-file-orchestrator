@@ -1,3 +1,7 @@
+v2.8.0
+- Added new custom field - Remove Root Certificate from Chain - to allow adding certificate entries with the root CA certificate removed from the chain.
+- Added SSH KeyboardInteractive Authentication support if Password Authentication is not enabled.
+
 v2.7.0
 - Modified RFJKS store type support java keystores of both PKCS12 and JKS
 - Added support for OpenSSH private keys for SSH authentication

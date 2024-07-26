@@ -29,8 +29,9 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
         {
             ILogger logger = LogHandler.GetClassLogger(this.GetType());
             logger.LogDebug($"Begin {config.Capability} for job id {config.JobId}...");
-            logger.LogDebug($"Server: { config.CertificateStoreDetails.ClientMachine }");
-            logger.LogDebug($"Store Path: { config.CertificateStoreDetails.StorePath }");
+            logger.LogDebug($"Server: {config.CertificateStoreDetails.ClientMachine}");
+            logger.LogDebug($"Store Path: {config.CertificateStoreDetails.StorePath}");
+            logger.LogDebug($"Store Properties: {config.CertificateStoreDetails.Properties.ToString()}");
             logger.LogDebug($"Job Properties:");
             foreach (KeyValuePair<string, object> keyValue in config.JobProperties == null ? new Dictionary<string, object>() : config.JobProperties)
             {
@@ -50,6 +51,9 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
                 string sudoImpersonatedUser = properties.SudoImpersonatedUser == null || string.IsNullOrEmpty(properties.SudoImpersonatedUser.Value) ?
                     ApplicationSettings.DefaultSudoImpersonatedUser :
                     properties.SudoImpersonatedUser.Value;
+                bool removeRootCertificate = properties.RemoveRootCertificate == null || string.IsNullOrEmpty(properties.RemoveRootCertificate.Value) ?
+                    false :
+                    Convert.ToBoolean(properties.RemoveRootCertificate.Value);
 
                 certificateStore = new RemoteCertificateStore(config.CertificateStoreDetails.ClientMachine, userName, userPassword, config.CertificateStoreDetails.StorePath, storePassword, config.JobProperties);
                 certificateStore.Initialize(sudoImpersonatedUser);
@@ -67,8 +71,8 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
                             else
                                 throw new RemoteFileException($"Certificate store {config.CertificateStoreDetails.StorePath} does not exist on server {config.CertificateStoreDetails.ClientMachine}.");
                         }
-                        certificateStore.LoadCertificateStore(certificateStoreSerializer, config.CertificateStoreDetails.Properties, false);
-                        certificateStore.AddCertificate((config.JobCertificate.Alias ?? new X509Certificate2(Convert.FromBase64String(config.JobCertificate.Contents), config.JobCertificate.PrivateKeyPassword, X509KeyStorageFlags.EphemeralKeySet).Thumbprint), config.JobCertificate.Contents, config.Overwrite, config.JobCertificate.PrivateKeyPassword);
+                        certificateStore.LoadCertificateStore(certificateStoreSerializer, false);
+                        certificateStore.AddCertificate((config.JobCertificate.Alias ?? new X509Certificate2(Convert.FromBase64String(config.JobCertificate.Contents), config.JobCertificate.PrivateKeyPassword, X509KeyStorageFlags.EphemeralKeySet).Thumbprint), config.JobCertificate.Contents, config.Overwrite, config.JobCertificate.PrivateKeyPassword, removeRootCertificate);
                         certificateStore.SaveCertificateStore(certificateStoreSerializer.SerializeRemoteCertificateStore(certificateStore.GetCertificateStore(), storePathFile.Path, storePathFile.File, storePassword, certificateStore.RemoteHandler));
 
                         logger.LogDebug($"END add Operation for {config.CertificateStoreDetails.StorePath} on {config.CertificateStoreDetails.ClientMachine}.");
@@ -82,7 +86,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
                         }
                         else
                         {
-                            certificateStore.LoadCertificateStore(certificateStoreSerializer, config.CertificateStoreDetails.Properties, false);
+                            certificateStore.LoadCertificateStore(certificateStoreSerializer, false);
                             certificateStore.DeleteCertificateByAlias(config.JobCertificate.Alias);
                             certificateStore.SaveCertificateStore(certificateStoreSerializer.SerializeRemoteCertificateStore(certificateStore.GetCertificateStore(), storePathFile.Path, storePathFile.File, storePassword, certificateStore.RemoteHandler));
                         }

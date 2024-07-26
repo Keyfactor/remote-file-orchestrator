@@ -68,6 +68,9 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
                 string sudoImpersonatedUser = properties.SudoImpersonatedUser == null || string.IsNullOrEmpty(properties.SudoImpersonatedUser.Value) ?
                     ApplicationSettings.DefaultSudoImpersonatedUser :
                     properties.SudoImpersonatedUser.Value;
+                bool removeRootCertificate = properties.RemoveRootCertificate == null || string.IsNullOrEmpty(properties.RemoveRootCertificate.Value) ?
+                    false :
+                    Convert.ToBoolean(properties.RemoveRootCertificate.Value);
                 bool createCSROnDevice = properties.CreateCSROnDevice == null || string.IsNullOrEmpty(properties.CreateCSROnDevice.Value) ?
                     ApplicationSettings.CreateCSROnDevice :
                     Convert.ToBoolean(properties.CreateCSROnDevice.Value);
@@ -118,8 +121,8 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
                 cert = keyTypeEnum == SupportedKeyTypeEnum.RSA ? cert.CopyWithPrivateKey((RSA)alg) : cert.CopyWithPrivateKey((ECDsa)alg);
 
                 // save certificate
-                certificateStore.LoadCertificateStore(certificateStoreSerializer, config.CertificateStoreDetails.Properties, false);
-                certificateStore.AddCertificate((alias ?? cert.Thumbprint), Convert.ToBase64String(cert.Export(X509ContentType.Pfx)), overwrite, null);
+                certificateStore.LoadCertificateStore(certificateStoreSerializer, false);
+                certificateStore.AddCertificate((alias ?? cert.Thumbprint), Convert.ToBase64String(cert.Export(X509ContentType.Pfx)), overwrite, null, removeRootCertificate);
                 certificateStore.SaveCertificateStore(certificateStoreSerializer.SerializeRemoteCertificateStore(certificateStore.GetCertificateStore(), storePathFile.Path, storePathFile.File, storePassword, certificateStore.RemoteHandler));
 
                 logger.LogDebug($"END add Operation for {config.CertificateStoreDetails.StorePath} on {config.CertificateStoreDetails.ClientMachine}.");
