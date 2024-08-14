@@ -43,13 +43,6 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
                 }
             }
 
-            _logger.MethodExit(LogLevel.Debug);
-        }
-
-        public override void Initialize()
-        {
-            _logger.MethodEntry(LogLevel.Debug);
-
             try
             {
                 if (RunLocal)
@@ -69,8 +62,8 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
 
             catch (Exception ex)
             {
-                _logger.LogError($"Exception during Initialize...{RemoteFileException.FlattenExceptionMessages(ex, ex.Message)}");
-                throw ex;
+                _logger.LogError($"Exception attempting to connect to server...{RemoteFileException.FlattenExceptionMessages(ex, ex.Message)}");
+                throw;
             }
 
             _logger.MethodExit(LogLevel.Debug);
