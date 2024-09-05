@@ -1,20 +1,24 @@
 ## Overview
 
-TODO Overview is a required section
+The RFJKS store type can be used to manage java keystores of types JKS or PKCS12.  If creating a new java keystore and adding a certificate all via Keyfactor Command, the created java keystore will be of type PKCS12, as java keystores of type JKS have been deprecated as of JDK 9.
+
+Use cases supported:
+1. One-to-many trust entries - A trust entry is considered single certificate without a private key in a certificate store.  Each trust entry is identified with a custom alias.
+2. One-to-many key entries - One-to-many certificates with private keys and optionally the full certificate chain.  Each certificate identified with a custom alias.
+3. A mix of trust and key entries.
 
 ## Requirements
 
-TODO Requirements is a required section
+{% include 'requirements.md' %}
 
-## Extension Mechanics
+## Configuration File Setup
 
-TODO Extension Mechanics is an optional section - if you don't need it, feel free to remove it. Refer to the docs on [Confluence](https://keyfactor.atlassian.net/wiki/x/SAAyHg) for more info
+{% include 'configurationfile.md' %}
 
-## Test Cases
+## Discovery
 
-TODO Test Cases is an optional section - if you don't need it, feel free to remove it. Refer to the docs on [Confluence](https://keyfactor.atlassian.net/wiki/x/SAAyHg) for more info
+{% include 'discovery.md' %}
 
-## Installation
+## Developer Notes
 
-TODO Installation is an optional section - if you don't need it, feel free to remove it. Refer to the docs on [Confluence](https://keyfactor.atlassian.net/wiki/x/SAAyHg) for more info
-
+{% include 'developernotes.md' %}
