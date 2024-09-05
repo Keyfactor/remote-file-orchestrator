@@ -19,6 +19,10 @@ Use cases supported:
 
 {% include 'discovery.md' %}
 
+## Client Machine Instructions
+
+{% include 'clientmachine.md' %}
+
 ## Developer Notes
 
 {% include 'developernotes.md' %}
