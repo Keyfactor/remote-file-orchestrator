@@ -14,60 +14,60 @@
             "pam_support": true,
             "keyfactor_platform_version": "10.4",
             "store_types": [
-              {
-                "Name": "RFJKS",
-                "ShortName": "RFJKS",
-                "Capability": "RFJKS",
-                "ServerRequired": true,
-                "BlueprintAllowed": false,
-                "CustomAliasAllowed": "Required",
-                "PowerShell": false,
-                "PrivateKeyAllowed": "Optional",
-                "SupportedOperations": {
-                  "Add": true,
-                  "Create": true,
-                  "Discovery": true,
-                  "Enrollment": false,
-                  "Remove": true
+                {
+                    "Name": "RFJKS",
+                    "ShortName": "RFJKS",
+                    "Capability": "RFJKS",
+                    "ServerRequired": true,
+                    "BlueprintAllowed": false,
+                    "CustomAliasAllowed": "Required",
+                    "PowerShell": false,
+                    "PrivateKeyAllowed": "Optional",
+                    "SupportedOperations": {
+                        "Add": true,
+                        "Create": true,
+                        "Discovery": true,
+                        "Enrollment": false,
+                        "Remove": true
+                    },
+                    "PasswordOptions": {
+                        "Style": "Default",
+                        "EntrySupported": false,
+                        "StoreRequired": true
+                    },
+                    "Properties": [
+                        {
+                            "Name": "LinuxFilePermissionsOnStoreCreation",
+                            "DisplayName": "Linux File Permissions on Store Creation",
+                            "Required": false,
+                            "DependsOn": "",
+                            "Type": "String",
+                            "DefaultValue": "",
+                            "Description": "The LinuxFilePermissionsOnStoreCreation field should contain a three-digit value between 000 and 777 representing the Linux file permissions to be set for the certificate store upon creation. Example: '600' or '755'."
+                        },
+                        {
+                            "Name": "LinuxFileOwnerOnStoreCreation",
+                            "DisplayName": "Linux File Owner on Store Creation",
+                            "Required": false,
+                            "DependsOn": "",
+                            "Type": "String",
+                            "DefaultValue": "",
+                            "Description": "The LinuxFileOwnerOnStoreCreation field should contain a valid user ID recognized by the destination Linux server, optionally followed by a colon and a group ID if the group owner differs. Example: 'userID' or 'userID:groupID'."
+                        },
+                        {
+                            "Name": "SudoImpersonatingUser",
+                            "DisplayName": "Sudo Impersonating User",
+                            "Required": false,
+                            "DependsOn": "",
+                            "Type": "String",
+                            "DefaultValue": "",
+                            "Description": "The SudoImpersonatingUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'."
+                        }
+                    ],
+                    "EntryParameters": [],
+                    "ClientMachineDescription": "The IP address or DNS of the server hosting the certificate store.  For more information, see [Client Machine ](#client-machine-instructions)",
+                    "StorePathDescription": "The full path and file name, including file extension if one exists where the certificate store file is located.  For Linux orchestrated servers, StorePath will begin with a forward slash (i.e. /folder/path/storename.ext).  For Windows orchestrated servers, it should begin with a drive letter (i.e. c:\\folder\\path\\storename.ext)."
                 },
-                "PasswordOptions": {
-                  "Style": "Default",
-                  "EntrySupported": false,
-                  "StoreRequired": true
-                },
-                "Properties": [
-                  {
-                    "Name": "LinuxFilePermissionsOnStoreCreation",
-                    "DisplayName": "Linux File Permissions on Store Creation",
-                    "Required": false,
-                    "DependsOn": "",
-                    "Type": "String",
-                    "DefaultValue": "",
-                    "Description": "The LinuxFilePermissionsOnStoreCreation field should contain a three-digit value between 000 and 777 representing the Linux file permissions to be set for the certificate store upon creation. Example: '600' or '755'."
-                  },
-                  {
-                    "Name": "LinuxFileOwnerOnStoreCreation",
-                    "DisplayName": "Linux File Owner on Store Creation",
-                    "Required": false,
-                    "DependsOn": "",
-                    "Type": "String",
-                    "DefaultValue": "",
-                    "Description": "The LinuxFileOwnerOnStoreCreation field should contain a valid user ID recognized by the destination Linux server, optionally followed by a colon and a group ID if the group owner differs. Example: 'userID' or 'userID:groupID'."
-                  },
-                  {
-                    "Name": "SudoImpersonatingUser",
-                    "DisplayName": "Sudo Impersonating User",
-                    "Required": false,
-                    "DependsOn": "",
-                    "Type": "String",
-                    "DefaultValue": "",
-                    "Description": "The SudoImpersonatingUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'."
-                  }
-                ],
-                "EntryParameters": [],
-                "ClientMachineDescription": "The IP address or DNS of the server hosting the certificate store.  For more information, see [Client Machine ](#client-machine-instructions)",
-                "StorePathDescription": "The full path and file name, including file extension if one exists where the certificate store file is located.  For Linux orchestrated servers, StorePath will begin with a forward slash (i.e. /folder/path/storename.ext).  For Windows orchestrated servers, it should begin with a drive letter (i.e. c:\\folder\\path\\storename.ext)."
-              },
                 {
                     "Name": "RFPEM",
                     "ShortName": "RFPEM",
