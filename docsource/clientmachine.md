@@ -1,3 +1,5 @@
+When creating a Certificate Store or scheduling a Discovery Job, you will be asked to provide a "Client Machine".
+
 For Linux orchestrated servers, "Client Machine" should be the DNS name or IP address of the remote orchestrated server, while for Windows orchestratred servers, it should be the following URL format: protocol://dns-or-ip:port, where
 * protocol is http or https, whatever your WinRM configuration uses
 * dns-or-ip is the DNS name or IP address of the server
