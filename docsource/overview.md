@@ -13,7 +13,7 @@ The Keyfactor Univeral Orchestrator (UO) and RemoteFile Extension can be install
 
 ![](images/orchestrator-agent.png)  
 
-Please review the [Prerequisites and Security Considerations](#prerequisites-and-security-considerations) and [Certificate Stores and Discovery Jobs](#certificate-stores-and-discovery-jobs) sections for more information on proper configuration and setup for these different architectures.  The supported configurations of Universal Orchestrator hosts and managed orchestrated servers are detailed below:
+Please refer to the READMEs for each supported store type for more information on proper configuration and setup for these different architectures.  The supported configurations of Universal Orchestrator hosts and managed orchestrated servers are detailed below:
 
 | | UO Installed on Windows | UO Installed on Linux |
 |-----|-----|------|

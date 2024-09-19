@@ -1,20 +1,28 @@
 ## Overview
 
-TODO Overview is a required section
+The RFORA store type can be used to manage Pkcs12 Oracle Wallets.  Please note that while this should work for Pkcs12 Oracle Wallets installed on both Windows and Linux servers, this has only been tested on wallets installed on Windows.  Please note, when entering the Store Path for an Oracle Wallet in Keyfactor Command, make sure to INCLUDE the eWallet.p12 file name that by convention is the name of the Pkcs12 wallet file that gets created.
+
+Use cases supported:
+1. One-to-many trust entries - A trust entry is considered single certificate without a private key in a certificate store.  Each trust entry is identified with a custom alias.
+2. One-to-many key entries - One-to-many certificates with private keys and optionally the full certificate chain.  Each certificate identified with a custom alias.
+3. A mix of trust and key entries.
 
 ## Requirements
 
-TODO Requirements is a required section
+{% include 'requirements.md' %}
 
-## Extension Mechanics
+## Configuration File Setup
 
-TODO Extension Mechanics is an optional section - if you don't need it, feel free to remove it. Refer to the docs on [Confluence](https://keyfactor.atlassian.net/wiki/x/SAAyHg) for more info
+{% include 'configurationfile.md' %}
 
-## Test Cases
+## Discovery
 
-TODO Test Cases is an optional section - if you don't need it, feel free to remove it. Refer to the docs on [Confluence](https://keyfactor.atlassian.net/wiki/x/SAAyHg) for more info
+{% include 'discovery.md' %}
 
-## Installation
+## Client Machine Instructions
 
-TODO Installation is an optional section - if you don't need it, feel free to remove it. Refer to the docs on [Confluence](https://keyfactor.atlassian.net/wiki/x/SAAyHg) for more info
+{% include 'clientmachine.md' %}
 
+## Developer Notes
+
+{% include 'developernotes.md' %}

@@ -1,20 +1,29 @@
 ## Overview
 
-TODO Overview is a required section
+The RFKDB store type can be used to manage IBM Key Database Files (KDB) files.  The IBM utility, GSKCAPICMD, is used to read and write certificates from and to the target store and is therefore required to be installed on the server where each KDB certificate store being managed resides, and its location MUST be in the system $Path.
+
+Use cases supported:
+1. One-to-many trust entries - A trust entry is considered single certificate without a private key in a certificate store.  Each trust entry is identified with a custom alias.
+2. One-to-many key entries - One-to-many certificates with private keys and optionally the full certificate chain.  Each certificate identified with a custom alias.
+3. A mix of trust and key entries.
 
 ## Requirements
 
-TODO Requirements is a required section
+{% include 'requirements.md' %}
 
-## Extension Mechanics
+## Configuration File Setup
 
-TODO Extension Mechanics is an optional section - if you don't need it, feel free to remove it. Refer to the docs on [Confluence](https://keyfactor.atlassian.net/wiki/x/SAAyHg) for more info
+{% include 'configurationfile.md' %}
 
-## Test Cases
+## Discovery
 
-TODO Test Cases is an optional section - if you don't need it, feel free to remove it. Refer to the docs on [Confluence](https://keyfactor.atlassian.net/wiki/x/SAAyHg) for more info
+{% include 'discovery.md' %}
 
-## Installation
+## Client Machine Instructions
 
-TODO Installation is an optional section - if you don't need it, feel free to remove it. Refer to the docs on [Confluence](https://keyfactor.atlassian.net/wiki/x/SAAyHg) for more info
+{% include 'clientmachine.md' %}
+
+## Developer Notes
+
+{% include 'developernotes.md' %}
 
