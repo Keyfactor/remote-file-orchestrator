@@ -1,20 +1,33 @@
 ## Overview
 
-TODO Overview is a required section
+The RFPEM store type can be used to manage PEM encoded files.
+
+Use cases supported:
+1. Trust stores - A file with one-to-many certificates (no private keys, no certificate chains).
+2. Single certificate stores with private key in the file.
+3. Single certificate stores with certificate chain and private key in the file.
+4. Single certificate stores with private key in an external file.
+5. Single certificate stores with certificate chain in the file and private key in an external file
+
+NOTE: PEM stores may only have one private key (internal or external) associated with the store, as only one certificate/chain/private key combination can be stored in a PEM store supported by RFPEM.
 
 ## Requirements
 
-TODO Requirements is a required section
+{% include 'requirements.md' %}
 
-## Extension Mechanics
+## Configuration File Setup
 
-TODO Extension Mechanics is an optional section - if you don't need it, feel free to remove it. Refer to the docs on [Confluence](https://keyfactor.atlassian.net/wiki/x/SAAyHg) for more info
+{% include 'configurationfile.md' %}
 
-## Test Cases
+## Discovery
 
-TODO Test Cases is an optional section - if you don't need it, feel free to remove it. Refer to the docs on [Confluence](https://keyfactor.atlassian.net/wiki/x/SAAyHg) for more info
+{% include 'discovery.md' %}
 
-## Installation
+## Client Machine Instructions
 
-TODO Installation is an optional section - if you don't need it, feel free to remove it. Refer to the docs on [Confluence](https://keyfactor.atlassian.net/wiki/x/SAAyHg) for more info
+{% include 'clientmachine.md' %}
+
+## Developer Notes
+
+{% include 'developernotes.md' %}
 
