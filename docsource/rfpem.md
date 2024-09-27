@@ -10,24 +10,3 @@ Use cases supported:
 5. Single certificate stores with certificate chain in the file and private key in an external file
 
 NOTE: PEM stores may only have one private key (internal or external) associated with the store, as only one certificate/chain/private key combination can be stored in a PEM store supported by RFPEM.
-
-## Requirements
-
-{% include 'requirements.md' %}
-
-## Configuration File Setup
-
-{% include 'configurationfile.md' %}
-
-## Discovery
-
-{% include 'discovery.md' %}
-
-## Client Machine Instructions
-
-{% include 'clientmachine.md' %}
-
-## Developer Notes
-
-{% include 'developernotes.md' %}
-
