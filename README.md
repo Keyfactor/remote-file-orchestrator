@@ -54,7 +54,7 @@ Please refer to the READMEs for each supported store type for more information o
 
 The Remote File Universal Orchestrator extension implements 6 Certificate Store Types. Depending on your use case, you may elect to use one, or all of these Certificate Store Types. Descriptions of each are provided below.
 
-<details><summary>RFJKS</summary>
+<details><summary>RFJKS (RFJKS)</summary>
 
 ### RFJKS
 The RFJKS store type can be used to manage java keystores of types JKS or PKCS12.  If creating a new java keystore and adding a certificate all via Keyfactor Command, the created java keystore will be of type PKCS12, as java keystores of type JKS have been deprecated as of JDK 9.
@@ -65,7 +65,7 @@ Use cases supported:
 3. A mix of trust and key entries.
 </details>
 
-<details><summary>RFPEM</summary>
+<details><summary>RFPEM (RFPEM)</summary>
 
 ### RFPEM
 The RFPEM store type can be used to manage PEM encoded files.
@@ -80,7 +80,7 @@ Use cases supported:
 NOTE: PEM stores may only have one private key (internal or external) associated with the store, as only one certificate/chain/private key combination can be stored in a PEM store supported by RFPEM.
 </details>
 
-<details><summary>RFPkcs12</summary>
+<details><summary>RFPkcs12 (RFPkcs12)</summary>
 
 ### RFPkcs12
 The RFPkcs12 store type can be used to manage any PKCS#12 compliant file format INCLUDING java keystores of type PKCS12.
@@ -91,7 +91,7 @@ Use cases supported:
 3. A mix of trust and key entries.
 </details>
 
-<details><summary>RFDER</summary>
+<details><summary>RFDER (RFDER)</summary>
 
 ### RFDER
 The RFDER store type can be used to manage DER encoded files.
@@ -101,7 +101,7 @@ Use cases supported:
 2. Single certificate stores with no private key.
 </details>
 
-<details><summary>RFKDB</summary>
+<details><summary>RFKDB (RFKDB)</summary>
 
 ### RFKDB
 The RFKDB store type can be used to manage IBM Key Database Files (KDB) files.  The IBM utility, GSKCAPICMD, is used to read and write certificates from and to the target store and is therefore required to be installed on the server where each KDB certificate store being managed resides, and its location MUST be in the system $Path.
@@ -112,7 +112,7 @@ Use cases supported:
 3. A mix of trust and key entries.
 </details>
 
-<details><summary>RFORA</summary>
+<details><summary>RFORA (RFORA)</summary>
 
 ### RFORA
 The RFORA store type can be used to manage Pkcs12 Oracle Wallets.  Please note that while this should work for Pkcs12 Oracle Wallets installed on both Windows and Linux servers, this has only been tested on wallets installed on Windows.  Please note, when entering the Store Path for an Oracle Wallet in Keyfactor Command, make sure to INCLUDE the eWallet.p12 file name that by convention is the name of the Pkcs12 wallet file that gets created.
@@ -175,7 +175,12 @@ Please consult with your company's system administrator for more information on 
 
 
 ## Create Certificate Store Types
-<details><summary>RFJKS</summary>
+
+To use the Remote File Universal Orchestrator extension, you **must** create the Certificate Store Types required for your usecase. This only needs to happen _once_ per Keyfactor Command instance.
+
+The Remote File Universal Orchestrator extension implements 6 Certificate Store Types. Depending on your use case, you may elect to use one, or all of these Certificate Store Types.
+
+<details><summary>RFJKS (RFJKS)</summary>
 
 
 * **Create RFJKS using kfutil**:
@@ -196,17 +201,16 @@ Please consult with your company's system administrator for more information on 
     | Name | RFJKS | Display name for the store type (may be customized) |
     | Short Name | RFJKS | Short display name for the store type |
     | Capability | RFJKS | Store type name orchestrator will register with. Check the box to allow entry of value |
-    | Supported Job Types (check the box for each) | Add, Discovery, Remove | Job types the extension supports |
-    | Supports Add | ✅ | Check the box. Indicates that the Store Type supports Management Add |
-    | Supports Remove | ✅ | Check the box. Indicates that the Store Type supports Management Remove |
-    | Supports Discovery | ✅ | Check the box. Indicates that the Store Type supports Discovery |
-    | Supports Reenrollment |  |  Indicates that the Store Type supports Reenrollment |
-    | Supports Create | ✅ | Check the box. Indicates that the Store Type supports store creation |
-    | Needs Server | ✅ | Determines if a target server name is required when creating store |
-    | Blueprint Allowed |  | Determines if store type may be included in an Orchestrator blueprint |
-    | Uses PowerShell |  | Determines if underlying implementation is PowerShell |
-    | Requires Store Password | ✅ | Determines if a store password is required when configuring an individual store. |
-    | Supports Entry Password |  | Determines if an individual entry within a store can have a password. |
+    | Supports Add | ✅ Checked | Check the box. Indicates that the Store Type supports Management Add |
+    | Supports Remove | ✅ Checked | Check the box. Indicates that the Store Type supports Management Remove |
+    | Supports Discovery | ✅ Checked | Check the box. Indicates that the Store Type supports Discovery |
+    | Supports Reenrollment | 🔲 Unchecked |  Indicates that the Store Type supports Reenrollment |
+    | Supports Create | ✅ Checked | Check the box. Indicates that the Store Type supports store creation |
+    | Needs Server | ✅ Checked | Determines if a target server name is required when creating store |
+    | Blueprint Allowed | 🔲 Unchecked | Determines if store type may be included in an Orchestrator blueprint |
+    | Uses PowerShell | 🔲 Unchecked | Determines if underlying implementation is PowerShell |
+    | Requires Store Password | ✅ Checked | Enables users to optionally specify a store password when defining a Certificate Store. |
+    | Supports Entry Password | 🔲 Unchecked | Determines if an individual entry within a store can have a password. |
 
     The Basic tab should look like this:
 
@@ -228,11 +232,11 @@ Please consult with your company's system administrator for more information on 
 
     | Name | Display Name | Description | Type | Default Value/Options | Required |
     | ---- | ------------ | ---- | --------------------- | -------- | ----------- |
-    | ServerUsername | Server Username | A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value* | Secret |  |  |
-    | ServerPassword | Server Password | A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value* | Secret |  |  |
-    | LinuxFilePermissionsOnStoreCreation | Linux File Permissions on Store Creation | The LinuxFilePermissionsOnStoreCreation field should contain a three-digit value between 000 and 777 representing the Linux file permissions to be set for the certificate store upon creation. Example: '600' or '755'. | String |  |  |
-    | LinuxFileOwnerOnStoreCreation | Linux File Owner on Store Creation | The LinuxFileOwnerOnStoreCreation field should contain a valid user ID recognized by the destination Linux server, optionally followed by a colon and a group ID if the group owner differs. Example: 'userID' or 'userID:groupID'. | String |  |  |
-    | SudoImpersonatingUser | Sudo Impersonating User | The SudoImpersonatingUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'. | String |  |  |
+    | ServerUsername | Server Username | A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value* | Secret |  | 🔲 Unchecked |
+    | ServerPassword | Server Password | A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value* | Secret |  | 🔲 Unchecked |
+    | LinuxFilePermissionsOnStoreCreation | Linux File Permissions on Store Creation | The LinuxFilePermissionsOnStoreCreation field should contain a three-digit value between 000 and 777 representing the Linux file permissions to be set for the certificate store upon creation. Example: '600' or '755'. | String |  | 🔲 Unchecked |
+    | LinuxFileOwnerOnStoreCreation | Linux File Owner on Store Creation | The LinuxFileOwnerOnStoreCreation field should contain a valid user ID recognized by the destination Linux server, optionally followed by a colon and a group ID if the group owner differs. Example: 'userID' or 'userID:groupID'. | String |  | 🔲 Unchecked |
+    | SudoImpersonatingUser | Sudo Impersonating User | The SudoImpersonatingUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'. | String |  | 🔲 Unchecked |
 
     The Custom Fields tab should look like this:
 
@@ -243,7 +247,7 @@ Please consult with your company's system administrator for more information on 
     </details>
 </details>
 
-<details><summary>RFPEM</summary>
+<details><summary>RFPEM (RFPEM)</summary>
 
 
 * **Create RFPEM using kfutil**:
@@ -264,17 +268,16 @@ Please consult with your company's system administrator for more information on 
     | Name | RFPEM | Display name for the store type (may be customized) |
     | Short Name | RFPEM | Short display name for the store type |
     | Capability | RFPEM | Store type name orchestrator will register with. Check the box to allow entry of value |
-    | Supported Job Types (check the box for each) | Add, Discovery, Remove | Job types the extension supports |
-    | Supports Add | ✅ | Check the box. Indicates that the Store Type supports Management Add |
-    | Supports Remove | ✅ | Check the box. Indicates that the Store Type supports Management Remove |
-    | Supports Discovery | ✅ | Check the box. Indicates that the Store Type supports Discovery |
-    | Supports Reenrollment |  |  Indicates that the Store Type supports Reenrollment |
-    | Supports Create | ✅ | Check the box. Indicates that the Store Type supports store creation |
-    | Needs Server | ✅ | Determines if a target server name is required when creating store |
-    | Blueprint Allowed |  | Determines if store type may be included in an Orchestrator blueprint |
-    | Uses PowerShell |  | Determines if underlying implementation is PowerShell |
-    | Requires Store Password | ✅ | Determines if a store password is required when configuring an individual store. |
-    | Supports Entry Password |  | Determines if an individual entry within a store can have a password. |
+    | Supports Add | ✅ Checked | Check the box. Indicates that the Store Type supports Management Add |
+    | Supports Remove | ✅ Checked | Check the box. Indicates that the Store Type supports Management Remove |
+    | Supports Discovery | ✅ Checked | Check the box. Indicates that the Store Type supports Discovery |
+    | Supports Reenrollment | 🔲 Unchecked |  Indicates that the Store Type supports Reenrollment |
+    | Supports Create | ✅ Checked | Check the box. Indicates that the Store Type supports store creation |
+    | Needs Server | ✅ Checked | Determines if a target server name is required when creating store |
+    | Blueprint Allowed | 🔲 Unchecked | Determines if store type may be included in an Orchestrator blueprint |
+    | Uses PowerShell | 🔲 Unchecked | Determines if underlying implementation is PowerShell |
+    | Requires Store Password | ✅ Checked | Enables users to optionally specify a store password when defining a Certificate Store. |
+    | Supports Entry Password | 🔲 Unchecked | Determines if an individual entry within a store can have a password. |
 
     The Basic tab should look like this:
 
@@ -296,16 +299,16 @@ Please consult with your company's system administrator for more information on 
 
     | Name | Display Name | Description | Type | Default Value/Options | Required |
     | ---- | ------------ | ---- | --------------------- | -------- | ----------- |
-    | ServerUsername | Server Username | A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value* | Secret |  |  |
-    | ServerPassword | Server Password | A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value* | Secret |  |  |
-    | LinuxFilePermissionsOnStoreCreation | Linux File Permissions on Store Creation | The LinuxFilePermissionsOnStoreCreation field should contain a three-digit value between 000 and 777 representing the Linux file permissions to be set for the certificate store upon creation. Example: '600' or '755'. | String |  |  |
-    | LinuxFileOwnerOnStoreCreation | Linux File Owner on Store Creation | The LinuxFileOwnerOnStoreCreation field should contain a valid user ID recognized by the destination Linux server, optionally followed by a colon and a group ID if the group owner differs. Example: 'userID' or 'userID:groupID'. | String |  |  |
-    | SudoImpersonatingUser | Sudo Impersonating User | The SudoImpersonatingUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'. | String |  |  |
-    | IsTrustStore | Trust Store | The IsTrustStore field should contain a boolean value ('true' or 'false') indicating whether the store will be identified as a trust store, which can hold multiple certificates without private keys. Example: 'true' for a trust store or 'false' for a store with a single certificate and private key. | Bool | false |  |
-    | IncludesChain | Store Includes Chain | The IncludesChain field should contain a boolean value ('true' or 'false') indicating whether the certificate store includes the full certificate chain along with the end entity certificate. Example: 'true' to include the full chain or 'false' to exclude it. | Bool | false |  |
-    | SeparatePrivateKeyFilePath | Separate Private Key File Location | The SeparatePrivateKeyFilePath field should contain the full path and file name where the separate private key file will be stored if it is to be kept outside the main certificate file. Example: '/path/to/privatekey.pem'. | String |  |  |
-    | IsRSAPrivateKey | Is RSA Private Key | The IsRSAPrivateKey field should contain a boolean value ('true' or 'false') indicating whether the private key is in PKCS#1 RSA format. Example: 'true' for a PKCS#1 RSA private key or 'false' for a PKCS#8 private key. | Bool | false |  |
-    | IgnorePrivateKeyOnInventory | Ignore Private Key On Inventory | The IgnorePrivateKeyOnInventory field should contain a boolean value ('true' or 'false') indicating whether to ignore the private key during inventory, which will make the store inventory-only and return all certificates without private key entries. Example: 'true' to ignore the private key or 'false' to include it. | Bool | false |  |
+    | ServerUsername | Server Username | A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value* | Secret |  | 🔲 Unchecked |
+    | ServerPassword | Server Password | A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value* | Secret |  | 🔲 Unchecked |
+    | LinuxFilePermissionsOnStoreCreation | Linux File Permissions on Store Creation | The LinuxFilePermissionsOnStoreCreation field should contain a three-digit value between 000 and 777 representing the Linux file permissions to be set for the certificate store upon creation. Example: '600' or '755'. | String |  | 🔲 Unchecked |
+    | LinuxFileOwnerOnStoreCreation | Linux File Owner on Store Creation | The LinuxFileOwnerOnStoreCreation field should contain a valid user ID recognized by the destination Linux server, optionally followed by a colon and a group ID if the group owner differs. Example: 'userID' or 'userID:groupID'. | String |  | 🔲 Unchecked |
+    | SudoImpersonatingUser | Sudo Impersonating User | The SudoImpersonatingUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'. | String |  | 🔲 Unchecked |
+    | IsTrustStore | Trust Store | The IsTrustStore field should contain a boolean value ('true' or 'false') indicating whether the store will be identified as a trust store, which can hold multiple certificates without private keys. Example: 'true' for a trust store or 'false' for a store with a single certificate and private key. | Bool | false | 🔲 Unchecked |
+    | IncludesChain | Store Includes Chain | The IncludesChain field should contain a boolean value ('true' or 'false') indicating whether the certificate store includes the full certificate chain along with the end entity certificate. Example: 'true' to include the full chain or 'false' to exclude it. | Bool | false | 🔲 Unchecked |
+    | SeparatePrivateKeyFilePath | Separate Private Key File Location | The SeparatePrivateKeyFilePath field should contain the full path and file name where the separate private key file will be stored if it is to be kept outside the main certificate file. Example: '/path/to/privatekey.pem'. | String |  | 🔲 Unchecked |
+    | IsRSAPrivateKey | Is RSA Private Key | The IsRSAPrivateKey field should contain a boolean value ('true' or 'false') indicating whether the private key is in PKCS#1 RSA format. Example: 'true' for a PKCS#1 RSA private key or 'false' for a PKCS#8 private key. | Bool | false | 🔲 Unchecked |
+    | IgnorePrivateKeyOnInventory | Ignore Private Key On Inventory | The IgnorePrivateKeyOnInventory field should contain a boolean value ('true' or 'false') indicating whether to ignore the private key during inventory, which will make the store inventory-only and return all certificates without private key entries. Example: 'true' to ignore the private key or 'false' to include it. | Bool | false | 🔲 Unchecked |
 
     The Custom Fields tab should look like this:
 
@@ -316,7 +319,7 @@ Please consult with your company's system administrator for more information on 
     </details>
 </details>
 
-<details><summary>RFPkcs12</summary>
+<details><summary>RFPkcs12 (RFPkcs12)</summary>
 
 
 * **Create RFPkcs12 using kfutil**:
@@ -337,17 +340,16 @@ Please consult with your company's system administrator for more information on 
     | Name | RFPkcs12 | Display name for the store type (may be customized) |
     | Short Name | RFPkcs12 | Short display name for the store type |
     | Capability | RFPkcs12 | Store type name orchestrator will register with. Check the box to allow entry of value |
-    | Supported Job Types (check the box for each) | Add, Discovery, Remove | Job types the extension supports |
-    | Supports Add | ✅ | Check the box. Indicates that the Store Type supports Management Add |
-    | Supports Remove | ✅ | Check the box. Indicates that the Store Type supports Management Remove |
-    | Supports Discovery | ✅ | Check the box. Indicates that the Store Type supports Discovery |
-    | Supports Reenrollment |  |  Indicates that the Store Type supports Reenrollment |
-    | Supports Create | ✅ | Check the box. Indicates that the Store Type supports store creation |
-    | Needs Server | ✅ | Determines if a target server name is required when creating store |
-    | Blueprint Allowed |  | Determines if store type may be included in an Orchestrator blueprint |
-    | Uses PowerShell |  | Determines if underlying implementation is PowerShell |
-    | Requires Store Password | ✅ | Determines if a store password is required when configuring an individual store. |
-    | Supports Entry Password |  | Determines if an individual entry within a store can have a password. |
+    | Supports Add | ✅ Checked | Check the box. Indicates that the Store Type supports Management Add |
+    | Supports Remove | ✅ Checked | Check the box. Indicates that the Store Type supports Management Remove |
+    | Supports Discovery | ✅ Checked | Check the box. Indicates that the Store Type supports Discovery |
+    | Supports Reenrollment | 🔲 Unchecked |  Indicates that the Store Type supports Reenrollment |
+    | Supports Create | ✅ Checked | Check the box. Indicates that the Store Type supports store creation |
+    | Needs Server | ✅ Checked | Determines if a target server name is required when creating store |
+    | Blueprint Allowed | 🔲 Unchecked | Determines if store type may be included in an Orchestrator blueprint |
+    | Uses PowerShell | 🔲 Unchecked | Determines if underlying implementation is PowerShell |
+    | Requires Store Password | ✅ Checked | Enables users to optionally specify a store password when defining a Certificate Store. |
+    | Supports Entry Password | 🔲 Unchecked | Determines if an individual entry within a store can have a password. |
 
     The Basic tab should look like this:
 
@@ -369,11 +371,11 @@ Please consult with your company's system administrator for more information on 
 
     | Name | Display Name | Description | Type | Default Value/Options | Required |
     | ---- | ------------ | ---- | --------------------- | -------- | ----------- |
-    | ServerUsername | Server Username | A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value* | Secret |  |  |
-    | ServerPassword | Server Password | A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value* | Secret |  |  |
-    | LinuxFilePermissionsOnStoreCreation | Linux File Permissions on Store Creation | The LinuxFilePermissionsOnStoreCreation field should contain a three-digit value between 000 and 777 representing the Linux file permissions to be set for the certificate store upon creation. Example: '600' or '755'. | String |  |  |
-    | LinuxFileOwnerOnStoreCreation | Linux File Owner on Store Creation | The LinuxFileOwnerOnStoreCreation field should contain a valid user ID recognized by the destination Linux server, optionally followed by a colon and a group ID if the group owner differs. Example: 'userID' or 'userID:groupID'. | String |  |  |
-    | SudoImpersonatingUser | Sudo Impersonating User | The SudoImpersonatingUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'. | String |  |  |
+    | ServerUsername | Server Username | A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value* | Secret |  | 🔲 Unchecked |
+    | ServerPassword | Server Password | A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value* | Secret |  | 🔲 Unchecked |
+    | LinuxFilePermissionsOnStoreCreation | Linux File Permissions on Store Creation | The LinuxFilePermissionsOnStoreCreation field should contain a three-digit value between 000 and 777 representing the Linux file permissions to be set for the certificate store upon creation. Example: '600' or '755'. | String |  | 🔲 Unchecked |
+    | LinuxFileOwnerOnStoreCreation | Linux File Owner on Store Creation | The LinuxFileOwnerOnStoreCreation field should contain a valid user ID recognized by the destination Linux server, optionally followed by a colon and a group ID if the group owner differs. Example: 'userID' or 'userID:groupID'. | String |  | 🔲 Unchecked |
+    | SudoImpersonatingUser | Sudo Impersonating User | The SudoImpersonatingUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'. | String |  | 🔲 Unchecked |
 
     The Custom Fields tab should look like this:
 
@@ -384,7 +386,7 @@ Please consult with your company's system administrator for more information on 
     </details>
 </details>
 
-<details><summary>RFDER</summary>
+<details><summary>RFDER (RFDER)</summary>
 
 
 * **Create RFDER using kfutil**:
@@ -405,17 +407,16 @@ Please consult with your company's system administrator for more information on 
     | Name | RFDER | Display name for the store type (may be customized) |
     | Short Name | RFDER | Short display name for the store type |
     | Capability | RFDER | Store type name orchestrator will register with. Check the box to allow entry of value |
-    | Supported Job Types (check the box for each) | Add, Discovery, Remove | Job types the extension supports |
-    | Supports Add | ✅ | Check the box. Indicates that the Store Type supports Management Add |
-    | Supports Remove | ✅ | Check the box. Indicates that the Store Type supports Management Remove |
-    | Supports Discovery | ✅ | Check the box. Indicates that the Store Type supports Discovery |
-    | Supports Reenrollment |  |  Indicates that the Store Type supports Reenrollment |
-    | Supports Create | ✅ | Check the box. Indicates that the Store Type supports store creation |
-    | Needs Server | ✅ | Determines if a target server name is required when creating store |
-    | Blueprint Allowed |  | Determines if store type may be included in an Orchestrator blueprint |
-    | Uses PowerShell |  | Determines if underlying implementation is PowerShell |
-    | Requires Store Password | ✅ | Determines if a store password is required when configuring an individual store. |
-    | Supports Entry Password |  | Determines if an individual entry within a store can have a password. |
+    | Supports Add | ✅ Checked | Check the box. Indicates that the Store Type supports Management Add |
+    | Supports Remove | ✅ Checked | Check the box. Indicates that the Store Type supports Management Remove |
+    | Supports Discovery | ✅ Checked | Check the box. Indicates that the Store Type supports Discovery |
+    | Supports Reenrollment | 🔲 Unchecked |  Indicates that the Store Type supports Reenrollment |
+    | Supports Create | ✅ Checked | Check the box. Indicates that the Store Type supports store creation |
+    | Needs Server | ✅ Checked | Determines if a target server name is required when creating store |
+    | Blueprint Allowed | 🔲 Unchecked | Determines if store type may be included in an Orchestrator blueprint |
+    | Uses PowerShell | 🔲 Unchecked | Determines if underlying implementation is PowerShell |
+    | Requires Store Password | ✅ Checked | Enables users to optionally specify a store password when defining a Certificate Store. |
+    | Supports Entry Password | 🔲 Unchecked | Determines if an individual entry within a store can have a password. |
 
     The Basic tab should look like this:
 
@@ -437,12 +438,12 @@ Please consult with your company's system administrator for more information on 
 
     | Name | Display Name | Description | Type | Default Value/Options | Required |
     | ---- | ------------ | ---- | --------------------- | -------- | ----------- |
-    | ServerUsername | Server Username | A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value* | Secret |  |  |
-    | ServerPassword | Server Password | A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value* | Secret |  |  |
-    | LinuxFilePermissionsOnStoreCreation | Linux File Permissions on Store Creation | The LinuxFilePermissionsOnStoreCreation field should contain a three-digit value between 000 and 777 representing the Linux file permissions to be set for the certificate store upon creation. Example: '600' or '755'. | String |  |  |
-    | LinuxFileOwnerOnStoreCreation | Linux File Owner on Store Creation | The LinuxFileOwnerOnStoreCreation field should contain a valid user ID recognized by the destination Linux server, optionally followed by a colon and a group ID if the group owner differs. Example: 'userID' or 'userID:groupID'. | String |  |  |
-    | SudoImpersonatingUser | Sudo Impersonating User | The SudoImpersonatingUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'. | String |  |  |
-    | SeparatePrivateKeyFilePath | Separate Private Key File Location | The SeparatePrivateKeyFilePath field should contain the full path and file name where the separate private key file will be stored if it is to be kept outside the main certificate file. Example: '/path/to/privatekey.der'. | String |  |  |
+    | ServerUsername | Server Username | A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value* | Secret |  | 🔲 Unchecked |
+    | ServerPassword | Server Password | A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value* | Secret |  | 🔲 Unchecked |
+    | LinuxFilePermissionsOnStoreCreation | Linux File Permissions on Store Creation | The LinuxFilePermissionsOnStoreCreation field should contain a three-digit value between 000 and 777 representing the Linux file permissions to be set for the certificate store upon creation. Example: '600' or '755'. | String |  | 🔲 Unchecked |
+    | LinuxFileOwnerOnStoreCreation | Linux File Owner on Store Creation | The LinuxFileOwnerOnStoreCreation field should contain a valid user ID recognized by the destination Linux server, optionally followed by a colon and a group ID if the group owner differs. Example: 'userID' or 'userID:groupID'. | String |  | 🔲 Unchecked |
+    | SudoImpersonatingUser | Sudo Impersonating User | The SudoImpersonatingUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'. | String |  | 🔲 Unchecked |
+    | SeparatePrivateKeyFilePath | Separate Private Key File Location | The SeparatePrivateKeyFilePath field should contain the full path and file name where the separate private key file will be stored if it is to be kept outside the main certificate file. Example: '/path/to/privatekey.der'. | String |  | 🔲 Unchecked |
 
     The Custom Fields tab should look like this:
 
@@ -453,7 +454,7 @@ Please consult with your company's system administrator for more information on 
     </details>
 </details>
 
-<details><summary>RFKDB</summary>
+<details><summary>RFKDB (RFKDB)</summary>
 
 
 * **Create RFKDB using kfutil**:
@@ -474,17 +475,16 @@ Please consult with your company's system administrator for more information on 
     | Name | RFKDB | Display name for the store type (may be customized) |
     | Short Name | RFKDB | Short display name for the store type |
     | Capability | RFKDB | Store type name orchestrator will register with. Check the box to allow entry of value |
-    | Supported Job Types (check the box for each) | Add, Discovery, Remove | Job types the extension supports |
-    | Supports Add | ✅ | Check the box. Indicates that the Store Type supports Management Add |
-    | Supports Remove | ✅ | Check the box. Indicates that the Store Type supports Management Remove |
-    | Supports Discovery | ✅ | Check the box. Indicates that the Store Type supports Discovery |
-    | Supports Reenrollment |  |  Indicates that the Store Type supports Reenrollment |
-    | Supports Create | ✅ | Check the box. Indicates that the Store Type supports store creation |
-    | Needs Server | ✅ | Determines if a target server name is required when creating store |
-    | Blueprint Allowed |  | Determines if store type may be included in an Orchestrator blueprint |
-    | Uses PowerShell |  | Determines if underlying implementation is PowerShell |
-    | Requires Store Password | ✅ | Determines if a store password is required when configuring an individual store. |
-    | Supports Entry Password |  | Determines if an individual entry within a store can have a password. |
+    | Supports Add | ✅ Checked | Check the box. Indicates that the Store Type supports Management Add |
+    | Supports Remove | ✅ Checked | Check the box. Indicates that the Store Type supports Management Remove |
+    | Supports Discovery | ✅ Checked | Check the box. Indicates that the Store Type supports Discovery |
+    | Supports Reenrollment | 🔲 Unchecked |  Indicates that the Store Type supports Reenrollment |
+    | Supports Create | ✅ Checked | Check the box. Indicates that the Store Type supports store creation |
+    | Needs Server | ✅ Checked | Determines if a target server name is required when creating store |
+    | Blueprint Allowed | 🔲 Unchecked | Determines if store type may be included in an Orchestrator blueprint |
+    | Uses PowerShell | 🔲 Unchecked | Determines if underlying implementation is PowerShell |
+    | Requires Store Password | ✅ Checked | Enables users to optionally specify a store password when defining a Certificate Store. |
+    | Supports Entry Password | 🔲 Unchecked | Determines if an individual entry within a store can have a password. |
 
     The Basic tab should look like this:
 
@@ -506,11 +506,11 @@ Please consult with your company's system administrator for more information on 
 
     | Name | Display Name | Description | Type | Default Value/Options | Required |
     | ---- | ------------ | ---- | --------------------- | -------- | ----------- |
-    | ServerUsername | Server Username | A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value* | Secret |  |  |
-    | ServerPassword | Server Password | A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value* | Secret |  |  |
-    | LinuxFilePermissionsOnStoreCreation | Linux File Permissions on Store Creation | The LinuxFilePermissionsOnStoreCreation field should contain a three-digit value between 000 and 777 representing the Linux file permissions to be set for the certificate store upon creation. Example: '600' or '755'. | String |  |  |
-    | LinuxFileOwnerOnStoreCreation | Linux File Owner on Store Creation | The LinuxFileOwnerOnStoreCreation field should contain a valid user ID recognized by the destination Linux server, optionally followed by a colon and a group ID if the group owner differs. Example: 'userID' or 'userID:groupID'. | String |  |  |
-    | SudoImpersonatingUser | Sudo Impersonating User | The SudoImpersonatingUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'. | String |  |  |
+    | ServerUsername | Server Username | A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value* | Secret |  | 🔲 Unchecked |
+    | ServerPassword | Server Password | A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value* | Secret |  | 🔲 Unchecked |
+    | LinuxFilePermissionsOnStoreCreation | Linux File Permissions on Store Creation | The LinuxFilePermissionsOnStoreCreation field should contain a three-digit value between 000 and 777 representing the Linux file permissions to be set for the certificate store upon creation. Example: '600' or '755'. | String |  | 🔲 Unchecked |
+    | LinuxFileOwnerOnStoreCreation | Linux File Owner on Store Creation | The LinuxFileOwnerOnStoreCreation field should contain a valid user ID recognized by the destination Linux server, optionally followed by a colon and a group ID if the group owner differs. Example: 'userID' or 'userID:groupID'. | String |  | 🔲 Unchecked |
+    | SudoImpersonatingUser | Sudo Impersonating User | The SudoImpersonatingUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'. | String |  | 🔲 Unchecked |
 
     The Custom Fields tab should look like this:
 
@@ -521,7 +521,7 @@ Please consult with your company's system administrator for more information on 
     </details>
 </details>
 
-<details><summary>RFORA</summary>
+<details><summary>RFORA (RFORA)</summary>
 
 
 * **Create RFORA using kfutil**:
@@ -542,17 +542,16 @@ Please consult with your company's system administrator for more information on 
     | Name | RFORA | Display name for the store type (may be customized) |
     | Short Name | RFORA | Short display name for the store type |
     | Capability | RFORA | Store type name orchestrator will register with. Check the box to allow entry of value |
-    | Supported Job Types (check the box for each) | Add, Discovery, Remove | Job types the extension supports |
-    | Supports Add | ✅ | Check the box. Indicates that the Store Type supports Management Add |
-    | Supports Remove | ✅ | Check the box. Indicates that the Store Type supports Management Remove |
-    | Supports Discovery | ✅ | Check the box. Indicates that the Store Type supports Discovery |
-    | Supports Reenrollment |  |  Indicates that the Store Type supports Reenrollment |
-    | Supports Create | ✅ | Check the box. Indicates that the Store Type supports store creation |
-    | Needs Server | ✅ | Determines if a target server name is required when creating store |
-    | Blueprint Allowed |  | Determines if store type may be included in an Orchestrator blueprint |
-    | Uses PowerShell |  | Determines if underlying implementation is PowerShell |
-    | Requires Store Password | ✅ | Determines if a store password is required when configuring an individual store. |
-    | Supports Entry Password |  | Determines if an individual entry within a store can have a password. |
+    | Supports Add | ✅ Checked | Check the box. Indicates that the Store Type supports Management Add |
+    | Supports Remove | ✅ Checked | Check the box. Indicates that the Store Type supports Management Remove |
+    | Supports Discovery | ✅ Checked | Check the box. Indicates that the Store Type supports Discovery |
+    | Supports Reenrollment | 🔲 Unchecked |  Indicates that the Store Type supports Reenrollment |
+    | Supports Create | ✅ Checked | Check the box. Indicates that the Store Type supports store creation |
+    | Needs Server | ✅ Checked | Determines if a target server name is required when creating store |
+    | Blueprint Allowed | 🔲 Unchecked | Determines if store type may be included in an Orchestrator blueprint |
+    | Uses PowerShell | 🔲 Unchecked | Determines if underlying implementation is PowerShell |
+    | Requires Store Password | ✅ Checked | Enables users to optionally specify a store password when defining a Certificate Store. |
+    | Supports Entry Password | 🔲 Unchecked | Determines if an individual entry within a store can have a password. |
 
     The Basic tab should look like this:
 
@@ -574,12 +573,12 @@ Please consult with your company's system administrator for more information on 
 
     | Name | Display Name | Description | Type | Default Value/Options | Required |
     | ---- | ------------ | ---- | --------------------- | -------- | ----------- |
-    | ServerUsername | Server Username | A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value* | Secret |  |  |
-    | ServerPassword | Server Password | A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value* | Secret |  |  |
-    | LinuxFilePermissionsOnStoreCreation | Linux File Permissions on Store Creation | The LinuxFilePermissionsOnStoreCreation field should contain a three-digit value between 000 and 777 representing the Linux file permissions to be set for the certificate store upon creation. Example: '600' or '755'. | String |  |  |
-    | LinuxFileOwnerOnStoreCreation | Linux File Owner on Store Creation | The LinuxFileOwnerOnStoreCreation field should contain a valid user ID recognized by the destination Linux server, optionally followed by a colon and a group ID if the group owner differs. Example: 'userID' or 'userID:groupID'. | String |  |  |
-    | SudoImpersonatingUser | Sudo Impersonating User | The SudoImpersonatingUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'. | String |  |  |
-    | WorkFolder | Location to use for creation/removal of work files | The WorkFolder field should contain the path on the managed server where temporary work files can be created, modified, and deleted during Inventory and Management jobs. Example: '/path/to/workfolder'. | String |  | ✅ |
+    | ServerUsername | Server Username | A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value* | Secret |  | 🔲 Unchecked |
+    | ServerPassword | Server Password | A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value* | Secret |  | 🔲 Unchecked |
+    | LinuxFilePermissionsOnStoreCreation | Linux File Permissions on Store Creation | The LinuxFilePermissionsOnStoreCreation field should contain a three-digit value between 000 and 777 representing the Linux file permissions to be set for the certificate store upon creation. Example: '600' or '755'. | String |  | 🔲 Unchecked |
+    | LinuxFileOwnerOnStoreCreation | Linux File Owner on Store Creation | The LinuxFileOwnerOnStoreCreation field should contain a valid user ID recognized by the destination Linux server, optionally followed by a colon and a group ID if the group owner differs. Example: 'userID' or 'userID:groupID'. | String |  | 🔲 Unchecked |
+    | SudoImpersonatingUser | Sudo Impersonating User | The SudoImpersonatingUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'. | String |  | 🔲 Unchecked |
+    | WorkFolder | Location to use for creation/removal of work files | The WorkFolder field should contain the path on the managed server where temporary work files can be created, modified, and deleted during Inventory and Management jobs. Example: '/path/to/workfolder'. | String |  | ✅ Checked |
 
     The Custom Fields tab should look like this:
 
@@ -595,7 +594,16 @@ Please consult with your company's system administrator for more information on 
 
 1. **Download the latest Remote File Universal Orchestrator extension from GitHub.** 
 
-    On the [Remote File Universal Orchestrator extension GitHub version page](https://github.com/Keyfactor/remote-file-orchestrator/releases/latest), click the `remote-file-orchestrator` asset to download the zip archive. Unzip the archive containing extension assemblies to a known location.
+    Navigate to the [Remote File Universal Orchestrator extension GitHub version page](https://github.com/Keyfactor/remote-file-orchestrator/releases/latest). Refer to the compatibility matrix below to determine whether `remote-file-orchestrator` `net6.0` or `net8.0` asset should be downloaded. Then, click the corresponding asset to download the zip archive.
+    | Universal Orchestrator Version | Latest .NET version installed on the Universal Orchestrator server | `rollForward` condition in `Orchestrator.runtimeconfig.json` | `remote-file-orchestrator` .NET version to download |
+    | --------- | ----------- | ----------- | ----------- |
+    | Older than `11.0` | | | `net6.0` |
+    | Between `11.0` and `11.6` | `net6.0` | | `net6.0` | 
+    | Between `11.0` and `11.6` | `net8.0` | `Never` | `net6.0` | 
+    | Between `11.0` and `11.6` | `net8.0` | `LatestMajor` | `net8.0` | 
+    | Newer than `11.6` | `net8.0` | | `net8.0` |
+
+    Unzip the archive containing extension assemblies to a known location.
 
 2. **Locate the Universal Orchestrator extensions directory.**
 
@@ -715,7 +723,7 @@ The Remote File Orchestrator Extension uses a JSON configuration file.  It is lo
 
 The Remote File Universal Orchestrator extension implements 6 Certificate Store Types, each of which implements different functionality. Refer to the individual instructions below for each Certificate Store Type that you deemed necessary for your use case from the installation section.
 
-<details><summary>RFJKS</summary>
+<details><summary>RFJKS (RFJKS)</summary>
 
 
 * **Manually with the Command UI**
@@ -729,18 +737,34 @@ The Remote File Universal Orchestrator extension implements 6 Certificate Store 
     2. **Add a Certificate Store.**
 
         Click the Add button to add a new Certificate Store. Use the table below to populate the **Attributes** in the **Add** form.
-        | Attribute | Description | Attribute is PAM Eligible |
-        | --------- | ----------- | ------------------------- |
-        | Category | Select "RFJKS" or the customized certificate store name from the previous step. | |
-        | Container | Optional container to associate certificate store with. | |
-        | Client Machine | The IP address or DNS of the server hosting the certificate store.  For more information, see [Client Machine ](#client-machine-instructions) | |
-        | Store Path | The full path and file name, including file extension if one exists where the certificate store file is located.  For Linux orchestrated servers, StorePath will begin with a forward slash (i.e. /folder/path/storename.ext).  For Windows orchestrated servers, it should begin with a drive letter (i.e. c:\folder\path\storename.ext). | |
-        | Orchestrator | Select an approved orchestrator capable of managing `RFJKS` certificates. Specifically, one with the `RFJKS` capability. | |
-        | ServerUsername | A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value* |  ✅  |
-        | ServerPassword | A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value* |  ✅  |
-        | LinuxFilePermissionsOnStoreCreation | The LinuxFilePermissionsOnStoreCreation field should contain a three-digit value between 000 and 777 representing the Linux file permissions to be set for the certificate store upon creation. Example: '600' or '755'. |  |
-        | LinuxFileOwnerOnStoreCreation | The LinuxFileOwnerOnStoreCreation field should contain a valid user ID recognized by the destination Linux server, optionally followed by a colon and a group ID if the group owner differs. Example: 'userID' or 'userID:groupID'. |  |
-        | SudoImpersonatingUser | The SudoImpersonatingUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'. |  |
+        | Attribute | Description |
+        | --------- | ----------- |
+        | Category | Select "RFJKS" or the customized certificate store name from the previous step. |
+        | Container | Optional container to associate certificate store with. |
+        | Client Machine | The IP address or DNS of the server hosting the certificate store.  For more information, see [Client Machine ](#client-machine-instructions) |
+        | Store Path | The full path and file name, including file extension if one exists where the certificate store file is located.  For Linux orchestrated servers, StorePath will begin with a forward slash (i.e. /folder/path/storename.ext).  For Windows orchestrated servers, it should begin with a drive letter (i.e. c:\folder\path\storename.ext). |
+        | Orchestrator | Select an approved orchestrator capable of managing `RFJKS` certificates. Specifically, one with the `RFJKS` capability. |
+        | ServerUsername | A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value* |
+        | ServerPassword | A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value* |
+        | LinuxFilePermissionsOnStoreCreation | The LinuxFilePermissionsOnStoreCreation field should contain a three-digit value between 000 and 777 representing the Linux file permissions to be set for the certificate store upon creation. Example: '600' or '755'. |
+        | LinuxFileOwnerOnStoreCreation | The LinuxFileOwnerOnStoreCreation field should contain a valid user ID recognized by the destination Linux server, optionally followed by a colon and a group ID if the group owner differs. Example: 'userID' or 'userID:groupID'. |
+        | SudoImpersonatingUser | The SudoImpersonatingUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'. |
+        | Store Password | Password used to secure the Certificate Store |
+
+        
+
+        <details><summary>Attributes eligible for retrieval by a PAM Provider on the Universal Orchestrator</summary>
+
+        If a PAM provider was installed _on the Universal Orchestrator_ in the [Installation](#Installation) section, the following parameters can be configured for retrieval _on the Universal Orchestrator_.
+        | Attribute | Description |
+        | --------- | ----------- |
+        | ServerUsername | A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value* |
+        | ServerPassword | A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value* |
+        | Store Password | Password used to secure the Certificate Store |
+
+        > Any secret can be rendered by a PAM provider _on the Keyfactor Command server_. The above parameters are specific to the Remote File Universal Orchestrator extension. 
+        </details>
+        
 
     </details>
 
@@ -756,18 +780,34 @@ The Remote File Universal Orchestrator extension implements 6 Certificate Store 
     2. **Populate the generated CSV file**
 
         Open the CSV file, and reference the table below to populate parameters for each **Attribute**.
-        | Attribute | Description | Attribute is PAM Eligible |
-        | --------- | ----------- | ------------------------- |
-        | Category | Select "RFJKS" or the customized certificate store name from the previous step. | |
-        | Container | Optional container to associate certificate store with. | |
-        | Client Machine | The IP address or DNS of the server hosting the certificate store.  For more information, see [Client Machine ](#client-machine-instructions) | |
-        | Store Path | The full path and file name, including file extension if one exists where the certificate store file is located.  For Linux orchestrated servers, StorePath will begin with a forward slash (i.e. /folder/path/storename.ext).  For Windows orchestrated servers, it should begin with a drive letter (i.e. c:\folder\path\storename.ext). | |
-        | Orchestrator | Select an approved orchestrator capable of managing `RFJKS` certificates. Specifically, one with the `RFJKS` capability. | |
-        | ServerUsername | A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value* |  ✅  |
-        | ServerPassword | A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value* |  ✅  |
-        | LinuxFilePermissionsOnStoreCreation | The LinuxFilePermissionsOnStoreCreation field should contain a three-digit value between 000 and 777 representing the Linux file permissions to be set for the certificate store upon creation. Example: '600' or '755'. |  |
-        | LinuxFileOwnerOnStoreCreation | The LinuxFileOwnerOnStoreCreation field should contain a valid user ID recognized by the destination Linux server, optionally followed by a colon and a group ID if the group owner differs. Example: 'userID' or 'userID:groupID'. |  |
-        | SudoImpersonatingUser | The SudoImpersonatingUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'. |  |
+        | Attribute | Description |
+        | --------- | ----------- |
+        | Category | Select "RFJKS" or the customized certificate store name from the previous step. |
+        | Container | Optional container to associate certificate store with. |
+        | Client Machine | The IP address or DNS of the server hosting the certificate store.  For more information, see [Client Machine ](#client-machine-instructions) |
+        | Store Path | The full path and file name, including file extension if one exists where the certificate store file is located.  For Linux orchestrated servers, StorePath will begin with a forward slash (i.e. /folder/path/storename.ext).  For Windows orchestrated servers, it should begin with a drive letter (i.e. c:\folder\path\storename.ext). |
+        | Orchestrator | Select an approved orchestrator capable of managing `RFJKS` certificates. Specifically, one with the `RFJKS` capability. |
+        | ServerUsername | A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value* |
+        | ServerPassword | A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value* |
+        | LinuxFilePermissionsOnStoreCreation | The LinuxFilePermissionsOnStoreCreation field should contain a three-digit value between 000 and 777 representing the Linux file permissions to be set for the certificate store upon creation. Example: '600' or '755'. |
+        | LinuxFileOwnerOnStoreCreation | The LinuxFileOwnerOnStoreCreation field should contain a valid user ID recognized by the destination Linux server, optionally followed by a colon and a group ID if the group owner differs. Example: 'userID' or 'userID:groupID'. |
+        | SudoImpersonatingUser | The SudoImpersonatingUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'. |
+        | Store Password | Password used to secure the Certificate Store |
+
+        
+
+        <details><summary>Attributes eligible for retrieval by a PAM Provider on the Universal Orchestrator</summary>
+
+        If a PAM provider was installed _on the Universal Orchestrator_ in the [Installation](#Installation) section, the following parameters can be configured for retrieval _on the Universal Orchestrator_.
+        | Attribute | Description |
+        | --------- | ----------- |
+        | ServerUsername | A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value* |
+        | ServerPassword | A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value* |
+        | Store Password | Password used to secure the Certificate Store |
+
+        > Any secret can be rendered by a PAM provider _on the Keyfactor Command server_. The above parameters are specific to the Remote File Universal Orchestrator extension. 
+        </details>
+        
 
     3. **Import the CSV file to create the certificate stores** 
 
@@ -781,7 +821,7 @@ The Remote File Universal Orchestrator extension implements 6 Certificate Store 
 
 </details>
 
-<details><summary>RFPEM</summary>
+<details><summary>RFPEM (RFPEM)</summary>
 
 
 * **Manually with the Command UI**
@@ -795,23 +835,39 @@ The Remote File Universal Orchestrator extension implements 6 Certificate Store 
     2. **Add a Certificate Store.**
 
         Click the Add button to add a new Certificate Store. Use the table below to populate the **Attributes** in the **Add** form.
-        | Attribute | Description | Attribute is PAM Eligible |
-        | --------- | ----------- | ------------------------- |
-        | Category | Select "RFPEM" or the customized certificate store name from the previous step. | |
-        | Container | Optional container to associate certificate store with. | |
-        | Client Machine | The Client Machine field should contain the DNS name or IP address of the remote orchestrated server for Linux orchestrated servers, formatted as a URL (protocol://dns-or-ip:port) for Windows orchestrated servers, or '1.1.1.1|LocalMachine' for local agents. Example: 'https://myserver.mydomain.com:5986' or '1.1.1.1|LocalMachine' for local access. | |
-        | Store Path | The Store Path field should contain the full path and file name, including file extension if applicable, beginning with a forward slash (/) for Linux orchestrated servers or a drive letter (i.e., c:\folder\path\storename.ext) for Windows orchestrated servers. Example: '/folder/path/storename.pem' or 'c:\folder\path\storename.pem'. | |
-        | Orchestrator | Select an approved orchestrator capable of managing `RFPEM` certificates. Specifically, one with the `RFPEM` capability. | |
-        | ServerUsername | A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value* |  ✅  |
-        | ServerPassword | A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value* |  ✅  |
-        | LinuxFilePermissionsOnStoreCreation | The LinuxFilePermissionsOnStoreCreation field should contain a three-digit value between 000 and 777 representing the Linux file permissions to be set for the certificate store upon creation. Example: '600' or '755'. |  |
-        | LinuxFileOwnerOnStoreCreation | The LinuxFileOwnerOnStoreCreation field should contain a valid user ID recognized by the destination Linux server, optionally followed by a colon and a group ID if the group owner differs. Example: 'userID' or 'userID:groupID'. |  |
-        | SudoImpersonatingUser | The SudoImpersonatingUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'. |  |
-        | IsTrustStore | The IsTrustStore field should contain a boolean value ('true' or 'false') indicating whether the store will be identified as a trust store, which can hold multiple certificates without private keys. Example: 'true' for a trust store or 'false' for a store with a single certificate and private key. |  |
-        | IncludesChain | The IncludesChain field should contain a boolean value ('true' or 'false') indicating whether the certificate store includes the full certificate chain along with the end entity certificate. Example: 'true' to include the full chain or 'false' to exclude it. |  |
-        | SeparatePrivateKeyFilePath | The SeparatePrivateKeyFilePath field should contain the full path and file name where the separate private key file will be stored if it is to be kept outside the main certificate file. Example: '/path/to/privatekey.pem'. |  |
-        | IsRSAPrivateKey | The IsRSAPrivateKey field should contain a boolean value ('true' or 'false') indicating whether the private key is in PKCS#1 RSA format. Example: 'true' for a PKCS#1 RSA private key or 'false' for a PKCS#8 private key. |  |
-        | IgnorePrivateKeyOnInventory | The IgnorePrivateKeyOnInventory field should contain a boolean value ('true' or 'false') indicating whether to ignore the private key during inventory, which will make the store inventory-only and return all certificates without private key entries. Example: 'true' to ignore the private key or 'false' to include it. |  |
+        | Attribute | Description |
+        | --------- | ----------- |
+        | Category | Select "RFPEM" or the customized certificate store name from the previous step. |
+        | Container | Optional container to associate certificate store with. |
+        | Client Machine | The Client Machine field should contain the DNS name or IP address of the remote orchestrated server for Linux orchestrated servers, formatted as a URL (protocol://dns-or-ip:port) for Windows orchestrated servers, or '1.1.1.1|LocalMachine' for local agents. Example: 'https://myserver.mydomain.com:5986' or '1.1.1.1|LocalMachine' for local access. |
+        | Store Path | The Store Path field should contain the full path and file name, including file extension if applicable, beginning with a forward slash (/) for Linux orchestrated servers or a drive letter (i.e., c:\folder\path\storename.ext) for Windows orchestrated servers. Example: '/folder/path/storename.pem' or 'c:\folder\path\storename.pem'. |
+        | Orchestrator | Select an approved orchestrator capable of managing `RFPEM` certificates. Specifically, one with the `RFPEM` capability. |
+        | ServerUsername | A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value* |
+        | ServerPassword | A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value* |
+        | LinuxFilePermissionsOnStoreCreation | The LinuxFilePermissionsOnStoreCreation field should contain a three-digit value between 000 and 777 representing the Linux file permissions to be set for the certificate store upon creation. Example: '600' or '755'. |
+        | LinuxFileOwnerOnStoreCreation | The LinuxFileOwnerOnStoreCreation field should contain a valid user ID recognized by the destination Linux server, optionally followed by a colon and a group ID if the group owner differs. Example: 'userID' or 'userID:groupID'. |
+        | SudoImpersonatingUser | The SudoImpersonatingUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'. |
+        | IsTrustStore | The IsTrustStore field should contain a boolean value ('true' or 'false') indicating whether the store will be identified as a trust store, which can hold multiple certificates without private keys. Example: 'true' for a trust store or 'false' for a store with a single certificate and private key. |
+        | IncludesChain | The IncludesChain field should contain a boolean value ('true' or 'false') indicating whether the certificate store includes the full certificate chain along with the end entity certificate. Example: 'true' to include the full chain or 'false' to exclude it. |
+        | SeparatePrivateKeyFilePath | The SeparatePrivateKeyFilePath field should contain the full path and file name where the separate private key file will be stored if it is to be kept outside the main certificate file. Example: '/path/to/privatekey.pem'. |
+        | IsRSAPrivateKey | The IsRSAPrivateKey field should contain a boolean value ('true' or 'false') indicating whether the private key is in PKCS#1 RSA format. Example: 'true' for a PKCS#1 RSA private key or 'false' for a PKCS#8 private key. |
+        | IgnorePrivateKeyOnInventory | The IgnorePrivateKeyOnInventory field should contain a boolean value ('true' or 'false') indicating whether to ignore the private key during inventory, which will make the store inventory-only and return all certificates without private key entries. Example: 'true' to ignore the private key or 'false' to include it. |
+        | Store Password | Password used to secure the Certificate Store |
+
+        
+
+        <details><summary>Attributes eligible for retrieval by a PAM Provider on the Universal Orchestrator</summary>
+
+        If a PAM provider was installed _on the Universal Orchestrator_ in the [Installation](#Installation) section, the following parameters can be configured for retrieval _on the Universal Orchestrator_.
+        | Attribute | Description |
+        | --------- | ----------- |
+        | ServerUsername | A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value* |
+        | ServerPassword | A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value* |
+        | Store Password | Password used to secure the Certificate Store |
+
+        > Any secret can be rendered by a PAM provider _on the Keyfactor Command server_. The above parameters are specific to the Remote File Universal Orchestrator extension. 
+        </details>
+        
 
     </details>
 
@@ -827,23 +883,39 @@ The Remote File Universal Orchestrator extension implements 6 Certificate Store 
     2. **Populate the generated CSV file**
 
         Open the CSV file, and reference the table below to populate parameters for each **Attribute**.
-        | Attribute | Description | Attribute is PAM Eligible |
-        | --------- | ----------- | ------------------------- |
-        | Category | Select "RFPEM" or the customized certificate store name from the previous step. | |
-        | Container | Optional container to associate certificate store with. | |
-        | Client Machine | The Client Machine field should contain the DNS name or IP address of the remote orchestrated server for Linux orchestrated servers, formatted as a URL (protocol://dns-or-ip:port) for Windows orchestrated servers, or '1.1.1.1|LocalMachine' for local agents. Example: 'https://myserver.mydomain.com:5986' or '1.1.1.1|LocalMachine' for local access. | |
-        | Store Path | The Store Path field should contain the full path and file name, including file extension if applicable, beginning with a forward slash (/) for Linux orchestrated servers or a drive letter (i.e., c:\folder\path\storename.ext) for Windows orchestrated servers. Example: '/folder/path/storename.pem' or 'c:\folder\path\storename.pem'. | |
-        | Orchestrator | Select an approved orchestrator capable of managing `RFPEM` certificates. Specifically, one with the `RFPEM` capability. | |
-        | ServerUsername | A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value* |  ✅  |
-        | ServerPassword | A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value* |  ✅  |
-        | LinuxFilePermissionsOnStoreCreation | The LinuxFilePermissionsOnStoreCreation field should contain a three-digit value between 000 and 777 representing the Linux file permissions to be set for the certificate store upon creation. Example: '600' or '755'. |  |
-        | LinuxFileOwnerOnStoreCreation | The LinuxFileOwnerOnStoreCreation field should contain a valid user ID recognized by the destination Linux server, optionally followed by a colon and a group ID if the group owner differs. Example: 'userID' or 'userID:groupID'. |  |
-        | SudoImpersonatingUser | The SudoImpersonatingUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'. |  |
-        | IsTrustStore | The IsTrustStore field should contain a boolean value ('true' or 'false') indicating whether the store will be identified as a trust store, which can hold multiple certificates without private keys. Example: 'true' for a trust store or 'false' for a store with a single certificate and private key. |  |
-        | IncludesChain | The IncludesChain field should contain a boolean value ('true' or 'false') indicating whether the certificate store includes the full certificate chain along with the end entity certificate. Example: 'true' to include the full chain or 'false' to exclude it. |  |
-        | SeparatePrivateKeyFilePath | The SeparatePrivateKeyFilePath field should contain the full path and file name where the separate private key file will be stored if it is to be kept outside the main certificate file. Example: '/path/to/privatekey.pem'. |  |
-        | IsRSAPrivateKey | The IsRSAPrivateKey field should contain a boolean value ('true' or 'false') indicating whether the private key is in PKCS#1 RSA format. Example: 'true' for a PKCS#1 RSA private key or 'false' for a PKCS#8 private key. |  |
-        | IgnorePrivateKeyOnInventory | The IgnorePrivateKeyOnInventory field should contain a boolean value ('true' or 'false') indicating whether to ignore the private key during inventory, which will make the store inventory-only and return all certificates without private key entries. Example: 'true' to ignore the private key or 'false' to include it. |  |
+        | Attribute | Description |
+        | --------- | ----------- |
+        | Category | Select "RFPEM" or the customized certificate store name from the previous step. |
+        | Container | Optional container to associate certificate store with. |
+        | Client Machine | The Client Machine field should contain the DNS name or IP address of the remote orchestrated server for Linux orchestrated servers, formatted as a URL (protocol://dns-or-ip:port) for Windows orchestrated servers, or '1.1.1.1|LocalMachine' for local agents. Example: 'https://myserver.mydomain.com:5986' or '1.1.1.1|LocalMachine' for local access. |
+        | Store Path | The Store Path field should contain the full path and file name, including file extension if applicable, beginning with a forward slash (/) for Linux orchestrated servers or a drive letter (i.e., c:\folder\path\storename.ext) for Windows orchestrated servers. Example: '/folder/path/storename.pem' or 'c:\folder\path\storename.pem'. |
+        | Orchestrator | Select an approved orchestrator capable of managing `RFPEM` certificates. Specifically, one with the `RFPEM` capability. |
+        | ServerUsername | A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value* |
+        | ServerPassword | A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value* |
+        | LinuxFilePermissionsOnStoreCreation | The LinuxFilePermissionsOnStoreCreation field should contain a three-digit value between 000 and 777 representing the Linux file permissions to be set for the certificate store upon creation. Example: '600' or '755'. |
+        | LinuxFileOwnerOnStoreCreation | The LinuxFileOwnerOnStoreCreation field should contain a valid user ID recognized by the destination Linux server, optionally followed by a colon and a group ID if the group owner differs. Example: 'userID' or 'userID:groupID'. |
+        | SudoImpersonatingUser | The SudoImpersonatingUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'. |
+        | IsTrustStore | The IsTrustStore field should contain a boolean value ('true' or 'false') indicating whether the store will be identified as a trust store, which can hold multiple certificates without private keys. Example: 'true' for a trust store or 'false' for a store with a single certificate and private key. |
+        | IncludesChain | The IncludesChain field should contain a boolean value ('true' or 'false') indicating whether the certificate store includes the full certificate chain along with the end entity certificate. Example: 'true' to include the full chain or 'false' to exclude it. |
+        | SeparatePrivateKeyFilePath | The SeparatePrivateKeyFilePath field should contain the full path and file name where the separate private key file will be stored if it is to be kept outside the main certificate file. Example: '/path/to/privatekey.pem'. |
+        | IsRSAPrivateKey | The IsRSAPrivateKey field should contain a boolean value ('true' or 'false') indicating whether the private key is in PKCS#1 RSA format. Example: 'true' for a PKCS#1 RSA private key or 'false' for a PKCS#8 private key. |
+        | IgnorePrivateKeyOnInventory | The IgnorePrivateKeyOnInventory field should contain a boolean value ('true' or 'false') indicating whether to ignore the private key during inventory, which will make the store inventory-only and return all certificates without private key entries. Example: 'true' to ignore the private key or 'false' to include it. |
+        | Store Password | Password used to secure the Certificate Store |
+
+        
+
+        <details><summary>Attributes eligible for retrieval by a PAM Provider on the Universal Orchestrator</summary>
+
+        If a PAM provider was installed _on the Universal Orchestrator_ in the [Installation](#Installation) section, the following parameters can be configured for retrieval _on the Universal Orchestrator_.
+        | Attribute | Description |
+        | --------- | ----------- |
+        | ServerUsername | A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value* |
+        | ServerPassword | A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value* |
+        | Store Password | Password used to secure the Certificate Store |
+
+        > Any secret can be rendered by a PAM provider _on the Keyfactor Command server_. The above parameters are specific to the Remote File Universal Orchestrator extension. 
+        </details>
+        
 
     3. **Import the CSV file to create the certificate stores** 
 
@@ -857,7 +929,7 @@ The Remote File Universal Orchestrator extension implements 6 Certificate Store 
 
 </details>
 
-<details><summary>RFPkcs12</summary>
+<details><summary>RFPkcs12 (RFPkcs12)</summary>
 
 
 * **Manually with the Command UI**
@@ -871,18 +943,34 @@ The Remote File Universal Orchestrator extension implements 6 Certificate Store 
     2. **Add a Certificate Store.**
 
         Click the Add button to add a new Certificate Store. Use the table below to populate the **Attributes** in the **Add** form.
-        | Attribute | Description | Attribute is PAM Eligible |
-        | --------- | ----------- | ------------------------- |
-        | Category | Select "RFPkcs12" or the customized certificate store name from the previous step. | |
-        | Container | Optional container to associate certificate store with. | |
-        | Client Machine | The Client Machine field should contain the DNS name or IP address of the remote orchestrated server for Linux orchestrated servers, formatted as a URL (protocol://dns-or-ip:port) for Windows orchestrated servers, or '1.1.1.1|LocalMachine' for local agents. Example: 'https://myserver.mydomain.com:5986' or '1.1.1.1|LocalMachine' for local access. | |
-        | Store Path | The Store Path field should contain the full path and file name, including file extension if applicable, beginning with a forward slash (/) for Linux orchestrated servers or a drive letter (i.e., c:\folder\path\storename.p12) for Windows orchestrated servers. Example: '/folder/path/storename.p12' or 'c:\folder\path\storename.p12'. | |
-        | Orchestrator | Select an approved orchestrator capable of managing `RFPkcs12` certificates. Specifically, one with the `RFPkcs12` capability. | |
-        | ServerUsername | A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value* |  ✅  |
-        | ServerPassword | A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value* |  ✅  |
-        | LinuxFilePermissionsOnStoreCreation | The LinuxFilePermissionsOnStoreCreation field should contain a three-digit value between 000 and 777 representing the Linux file permissions to be set for the certificate store upon creation. Example: '600' or '755'. |  |
-        | LinuxFileOwnerOnStoreCreation | The LinuxFileOwnerOnStoreCreation field should contain a valid user ID recognized by the destination Linux server, optionally followed by a colon and a group ID if the group owner differs. Example: 'userID' or 'userID:groupID'. |  |
-        | SudoImpersonatingUser | The SudoImpersonatingUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'. |  |
+        | Attribute | Description |
+        | --------- | ----------- |
+        | Category | Select "RFPkcs12" or the customized certificate store name from the previous step. |
+        | Container | Optional container to associate certificate store with. |
+        | Client Machine | The Client Machine field should contain the DNS name or IP address of the remote orchestrated server for Linux orchestrated servers, formatted as a URL (protocol://dns-or-ip:port) for Windows orchestrated servers, or '1.1.1.1|LocalMachine' for local agents. Example: 'https://myserver.mydomain.com:5986' or '1.1.1.1|LocalMachine' for local access. |
+        | Store Path | The Store Path field should contain the full path and file name, including file extension if applicable, beginning with a forward slash (/) for Linux orchestrated servers or a drive letter (i.e., c:\folder\path\storename.p12) for Windows orchestrated servers. Example: '/folder/path/storename.p12' or 'c:\folder\path\storename.p12'. |
+        | Orchestrator | Select an approved orchestrator capable of managing `RFPkcs12` certificates. Specifically, one with the `RFPkcs12` capability. |
+        | ServerUsername | A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value* |
+        | ServerPassword | A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value* |
+        | LinuxFilePermissionsOnStoreCreation | The LinuxFilePermissionsOnStoreCreation field should contain a three-digit value between 000 and 777 representing the Linux file permissions to be set for the certificate store upon creation. Example: '600' or '755'. |
+        | LinuxFileOwnerOnStoreCreation | The LinuxFileOwnerOnStoreCreation field should contain a valid user ID recognized by the destination Linux server, optionally followed by a colon and a group ID if the group owner differs. Example: 'userID' or 'userID:groupID'. |
+        | SudoImpersonatingUser | The SudoImpersonatingUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'. |
+        | Store Password | Password used to secure the Certificate Store |
+
+        
+
+        <details><summary>Attributes eligible for retrieval by a PAM Provider on the Universal Orchestrator</summary>
+
+        If a PAM provider was installed _on the Universal Orchestrator_ in the [Installation](#Installation) section, the following parameters can be configured for retrieval _on the Universal Orchestrator_.
+        | Attribute | Description |
+        | --------- | ----------- |
+        | ServerUsername | A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value* |
+        | ServerPassword | A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value* |
+        | Store Password | Password used to secure the Certificate Store |
+
+        > Any secret can be rendered by a PAM provider _on the Keyfactor Command server_. The above parameters are specific to the Remote File Universal Orchestrator extension. 
+        </details>
+        
 
     </details>
 
@@ -898,18 +986,34 @@ The Remote File Universal Orchestrator extension implements 6 Certificate Store 
     2. **Populate the generated CSV file**
 
         Open the CSV file, and reference the table below to populate parameters for each **Attribute**.
-        | Attribute | Description | Attribute is PAM Eligible |
-        | --------- | ----------- | ------------------------- |
-        | Category | Select "RFPkcs12" or the customized certificate store name from the previous step. | |
-        | Container | Optional container to associate certificate store with. | |
-        | Client Machine | The Client Machine field should contain the DNS name or IP address of the remote orchestrated server for Linux orchestrated servers, formatted as a URL (protocol://dns-or-ip:port) for Windows orchestrated servers, or '1.1.1.1|LocalMachine' for local agents. Example: 'https://myserver.mydomain.com:5986' or '1.1.1.1|LocalMachine' for local access. | |
-        | Store Path | The Store Path field should contain the full path and file name, including file extension if applicable, beginning with a forward slash (/) for Linux orchestrated servers or a drive letter (i.e., c:\folder\path\storename.p12) for Windows orchestrated servers. Example: '/folder/path/storename.p12' or 'c:\folder\path\storename.p12'. | |
-        | Orchestrator | Select an approved orchestrator capable of managing `RFPkcs12` certificates. Specifically, one with the `RFPkcs12` capability. | |
-        | ServerUsername | A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value* |  ✅  |
-        | ServerPassword | A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value* |  ✅  |
-        | LinuxFilePermissionsOnStoreCreation | The LinuxFilePermissionsOnStoreCreation field should contain a three-digit value between 000 and 777 representing the Linux file permissions to be set for the certificate store upon creation. Example: '600' or '755'. |  |
-        | LinuxFileOwnerOnStoreCreation | The LinuxFileOwnerOnStoreCreation field should contain a valid user ID recognized by the destination Linux server, optionally followed by a colon and a group ID if the group owner differs. Example: 'userID' or 'userID:groupID'. |  |
-        | SudoImpersonatingUser | The SudoImpersonatingUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'. |  |
+        | Attribute | Description |
+        | --------- | ----------- |
+        | Category | Select "RFPkcs12" or the customized certificate store name from the previous step. |
+        | Container | Optional container to associate certificate store with. |
+        | Client Machine | The Client Machine field should contain the DNS name or IP address of the remote orchestrated server for Linux orchestrated servers, formatted as a URL (protocol://dns-or-ip:port) for Windows orchestrated servers, or '1.1.1.1|LocalMachine' for local agents. Example: 'https://myserver.mydomain.com:5986' or '1.1.1.1|LocalMachine' for local access. |
+        | Store Path | The Store Path field should contain the full path and file name, including file extension if applicable, beginning with a forward slash (/) for Linux orchestrated servers or a drive letter (i.e., c:\folder\path\storename.p12) for Windows orchestrated servers. Example: '/folder/path/storename.p12' or 'c:\folder\path\storename.p12'. |
+        | Orchestrator | Select an approved orchestrator capable of managing `RFPkcs12` certificates. Specifically, one with the `RFPkcs12` capability. |
+        | ServerUsername | A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value* |
+        | ServerPassword | A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value* |
+        | LinuxFilePermissionsOnStoreCreation | The LinuxFilePermissionsOnStoreCreation field should contain a three-digit value between 000 and 777 representing the Linux file permissions to be set for the certificate store upon creation. Example: '600' or '755'. |
+        | LinuxFileOwnerOnStoreCreation | The LinuxFileOwnerOnStoreCreation field should contain a valid user ID recognized by the destination Linux server, optionally followed by a colon and a group ID if the group owner differs. Example: 'userID' or 'userID:groupID'. |
+        | SudoImpersonatingUser | The SudoImpersonatingUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'. |
+        | Store Password | Password used to secure the Certificate Store |
+
+        
+
+        <details><summary>Attributes eligible for retrieval by a PAM Provider on the Universal Orchestrator</summary>
+
+        If a PAM provider was installed _on the Universal Orchestrator_ in the [Installation](#Installation) section, the following parameters can be configured for retrieval _on the Universal Orchestrator_.
+        | Attribute | Description |
+        | --------- | ----------- |
+        | ServerUsername | A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value* |
+        | ServerPassword | A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value* |
+        | Store Password | Password used to secure the Certificate Store |
+
+        > Any secret can be rendered by a PAM provider _on the Keyfactor Command server_. The above parameters are specific to the Remote File Universal Orchestrator extension. 
+        </details>
+        
 
     3. **Import the CSV file to create the certificate stores** 
 
@@ -923,7 +1027,7 @@ The Remote File Universal Orchestrator extension implements 6 Certificate Store 
 
 </details>
 
-<details><summary>RFDER</summary>
+<details><summary>RFDER (RFDER)</summary>
 
 
 * **Manually with the Command UI**
@@ -937,19 +1041,35 @@ The Remote File Universal Orchestrator extension implements 6 Certificate Store 
     2. **Add a Certificate Store.**
 
         Click the Add button to add a new Certificate Store. Use the table below to populate the **Attributes** in the **Add** form.
-        | Attribute | Description | Attribute is PAM Eligible |
-        | --------- | ----------- | ------------------------- |
-        | Category | Select "RFDER" or the customized certificate store name from the previous step. | |
-        | Container | Optional container to associate certificate store with. | |
-        | Client Machine | The Client Machine field should contain the DNS name or IP address of the remote orchestrated server for Linux orchestrated servers, formatted as a URL (protocol://dns-or-ip:port) for Windows orchestrated servers, or '1.1.1.1|LocalMachine' for local agents. Example: 'https://myserver.mydomain.com:5986' or '1.1.1.1|LocalMachine' for local access. | |
-        | Store Path | The Store Path field should contain the full path and file name, including file extension if applicable, beginning with a forward slash (/) for Linux orchestrated servers or a drive letter (i.e., c:\folder\path\storename.der) for Windows orchestrated servers. Example: '/folder/path/storename.der' or 'c:\folder\path\storename.der'. | |
-        | Orchestrator | Select an approved orchestrator capable of managing `RFDER` certificates. Specifically, one with the `RFDER` capability. | |
-        | ServerUsername | A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value* |  ✅  |
-        | ServerPassword | A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value* |  ✅  |
-        | LinuxFilePermissionsOnStoreCreation | The LinuxFilePermissionsOnStoreCreation field should contain a three-digit value between 000 and 777 representing the Linux file permissions to be set for the certificate store upon creation. Example: '600' or '755'. |  |
-        | LinuxFileOwnerOnStoreCreation | The LinuxFileOwnerOnStoreCreation field should contain a valid user ID recognized by the destination Linux server, optionally followed by a colon and a group ID if the group owner differs. Example: 'userID' or 'userID:groupID'. |  |
-        | SudoImpersonatingUser | The SudoImpersonatingUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'. |  |
-        | SeparatePrivateKeyFilePath | The SeparatePrivateKeyFilePath field should contain the full path and file name where the separate private key file will be stored if it is to be kept outside the main certificate file. Example: '/path/to/privatekey.der'. |  |
+        | Attribute | Description |
+        | --------- | ----------- |
+        | Category | Select "RFDER" or the customized certificate store name from the previous step. |
+        | Container | Optional container to associate certificate store with. |
+        | Client Machine | The Client Machine field should contain the DNS name or IP address of the remote orchestrated server for Linux orchestrated servers, formatted as a URL (protocol://dns-or-ip:port) for Windows orchestrated servers, or '1.1.1.1|LocalMachine' for local agents. Example: 'https://myserver.mydomain.com:5986' or '1.1.1.1|LocalMachine' for local access. |
+        | Store Path | The Store Path field should contain the full path and file name, including file extension if applicable, beginning with a forward slash (/) for Linux orchestrated servers or a drive letter (i.e., c:\folder\path\storename.der) for Windows orchestrated servers. Example: '/folder/path/storename.der' or 'c:\folder\path\storename.der'. |
+        | Orchestrator | Select an approved orchestrator capable of managing `RFDER` certificates. Specifically, one with the `RFDER` capability. |
+        | ServerUsername | A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value* |
+        | ServerPassword | A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value* |
+        | LinuxFilePermissionsOnStoreCreation | The LinuxFilePermissionsOnStoreCreation field should contain a three-digit value between 000 and 777 representing the Linux file permissions to be set for the certificate store upon creation. Example: '600' or '755'. |
+        | LinuxFileOwnerOnStoreCreation | The LinuxFileOwnerOnStoreCreation field should contain a valid user ID recognized by the destination Linux server, optionally followed by a colon and a group ID if the group owner differs. Example: 'userID' or 'userID:groupID'. |
+        | SudoImpersonatingUser | The SudoImpersonatingUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'. |
+        | SeparatePrivateKeyFilePath | The SeparatePrivateKeyFilePath field should contain the full path and file name where the separate private key file will be stored if it is to be kept outside the main certificate file. Example: '/path/to/privatekey.der'. |
+        | Store Password | Password used to secure the Certificate Store |
+
+        
+
+        <details><summary>Attributes eligible for retrieval by a PAM Provider on the Universal Orchestrator</summary>
+
+        If a PAM provider was installed _on the Universal Orchestrator_ in the [Installation](#Installation) section, the following parameters can be configured for retrieval _on the Universal Orchestrator_.
+        | Attribute | Description |
+        | --------- | ----------- |
+        | ServerUsername | A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value* |
+        | ServerPassword | A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value* |
+        | Store Password | Password used to secure the Certificate Store |
+
+        > Any secret can be rendered by a PAM provider _on the Keyfactor Command server_. The above parameters are specific to the Remote File Universal Orchestrator extension. 
+        </details>
+        
 
     </details>
 
@@ -965,19 +1085,35 @@ The Remote File Universal Orchestrator extension implements 6 Certificate Store 
     2. **Populate the generated CSV file**
 
         Open the CSV file, and reference the table below to populate parameters for each **Attribute**.
-        | Attribute | Description | Attribute is PAM Eligible |
-        | --------- | ----------- | ------------------------- |
-        | Category | Select "RFDER" or the customized certificate store name from the previous step. | |
-        | Container | Optional container to associate certificate store with. | |
-        | Client Machine | The Client Machine field should contain the DNS name or IP address of the remote orchestrated server for Linux orchestrated servers, formatted as a URL (protocol://dns-or-ip:port) for Windows orchestrated servers, or '1.1.1.1|LocalMachine' for local agents. Example: 'https://myserver.mydomain.com:5986' or '1.1.1.1|LocalMachine' for local access. | |
-        | Store Path | The Store Path field should contain the full path and file name, including file extension if applicable, beginning with a forward slash (/) for Linux orchestrated servers or a drive letter (i.e., c:\folder\path\storename.der) for Windows orchestrated servers. Example: '/folder/path/storename.der' or 'c:\folder\path\storename.der'. | |
-        | Orchestrator | Select an approved orchestrator capable of managing `RFDER` certificates. Specifically, one with the `RFDER` capability. | |
-        | ServerUsername | A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value* |  ✅  |
-        | ServerPassword | A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value* |  ✅  |
-        | LinuxFilePermissionsOnStoreCreation | The LinuxFilePermissionsOnStoreCreation field should contain a three-digit value between 000 and 777 representing the Linux file permissions to be set for the certificate store upon creation. Example: '600' or '755'. |  |
-        | LinuxFileOwnerOnStoreCreation | The LinuxFileOwnerOnStoreCreation field should contain a valid user ID recognized by the destination Linux server, optionally followed by a colon and a group ID if the group owner differs. Example: 'userID' or 'userID:groupID'. |  |
-        | SudoImpersonatingUser | The SudoImpersonatingUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'. |  |
-        | SeparatePrivateKeyFilePath | The SeparatePrivateKeyFilePath field should contain the full path and file name where the separate private key file will be stored if it is to be kept outside the main certificate file. Example: '/path/to/privatekey.der'. |  |
+        | Attribute | Description |
+        | --------- | ----------- |
+        | Category | Select "RFDER" or the customized certificate store name from the previous step. |
+        | Container | Optional container to associate certificate store with. |
+        | Client Machine | The Client Machine field should contain the DNS name or IP address of the remote orchestrated server for Linux orchestrated servers, formatted as a URL (protocol://dns-or-ip:port) for Windows orchestrated servers, or '1.1.1.1|LocalMachine' for local agents. Example: 'https://myserver.mydomain.com:5986' or '1.1.1.1|LocalMachine' for local access. |
+        | Store Path | The Store Path field should contain the full path and file name, including file extension if applicable, beginning with a forward slash (/) for Linux orchestrated servers or a drive letter (i.e., c:\folder\path\storename.der) for Windows orchestrated servers. Example: '/folder/path/storename.der' or 'c:\folder\path\storename.der'. |
+        | Orchestrator | Select an approved orchestrator capable of managing `RFDER` certificates. Specifically, one with the `RFDER` capability. |
+        | ServerUsername | A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value* |
+        | ServerPassword | A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value* |
+        | LinuxFilePermissionsOnStoreCreation | The LinuxFilePermissionsOnStoreCreation field should contain a three-digit value between 000 and 777 representing the Linux file permissions to be set for the certificate store upon creation. Example: '600' or '755'. |
+        | LinuxFileOwnerOnStoreCreation | The LinuxFileOwnerOnStoreCreation field should contain a valid user ID recognized by the destination Linux server, optionally followed by a colon and a group ID if the group owner differs. Example: 'userID' or 'userID:groupID'. |
+        | SudoImpersonatingUser | The SudoImpersonatingUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'. |
+        | SeparatePrivateKeyFilePath | The SeparatePrivateKeyFilePath field should contain the full path and file name where the separate private key file will be stored if it is to be kept outside the main certificate file. Example: '/path/to/privatekey.der'. |
+        | Store Password | Password used to secure the Certificate Store |
+
+        
+
+        <details><summary>Attributes eligible for retrieval by a PAM Provider on the Universal Orchestrator</summary>
+
+        If a PAM provider was installed _on the Universal Orchestrator_ in the [Installation](#Installation) section, the following parameters can be configured for retrieval _on the Universal Orchestrator_.
+        | Attribute | Description |
+        | --------- | ----------- |
+        | ServerUsername | A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value* |
+        | ServerPassword | A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value* |
+        | Store Password | Password used to secure the Certificate Store |
+
+        > Any secret can be rendered by a PAM provider _on the Keyfactor Command server_. The above parameters are specific to the Remote File Universal Orchestrator extension. 
+        </details>
+        
 
     3. **Import the CSV file to create the certificate stores** 
 
@@ -991,7 +1127,7 @@ The Remote File Universal Orchestrator extension implements 6 Certificate Store 
 
 </details>
 
-<details><summary>RFKDB</summary>
+<details><summary>RFKDB (RFKDB)</summary>
 
 
 * **Manually with the Command UI**
@@ -1005,18 +1141,34 @@ The Remote File Universal Orchestrator extension implements 6 Certificate Store 
     2. **Add a Certificate Store.**
 
         Click the Add button to add a new Certificate Store. Use the table below to populate the **Attributes** in the **Add** form.
-        | Attribute | Description | Attribute is PAM Eligible |
-        | --------- | ----------- | ------------------------- |
-        | Category | Select "RFKDB" or the customized certificate store name from the previous step. | |
-        | Container | Optional container to associate certificate store with. | |
-        | Client Machine | The Client Machine field should contain the DNS name or IP address of the remote orchestrated server for Linux orchestrated servers, formatted as a URL (protocol://dns-or-ip:port) for Windows orchestrated servers, or '1.1.1.1|LocalMachine' for local agents. Example: 'https://myserver.mydomain.com:5986' or '1.1.1.1|LocalMachine' for local access. | |
-        | Store Path | The Store Path field should contain the full path and file name, including file extension if applicable, beginning with a forward slash (/) for Linux orchestrated servers or a drive letter (i.e., c:\folder\path\storename.kdb) for Windows orchestrated servers. Example: '/folder/path/storename.kdb' or 'c:\folder\path\storename.kdb'. | |
-        | Orchestrator | Select an approved orchestrator capable of managing `RFKDB` certificates. Specifically, one with the `RFKDB` capability. | |
-        | ServerUsername | A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value* |  ✅  |
-        | ServerPassword | A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value* |  ✅  |
-        | LinuxFilePermissionsOnStoreCreation | The LinuxFilePermissionsOnStoreCreation field should contain a three-digit value between 000 and 777 representing the Linux file permissions to be set for the certificate store upon creation. Example: '600' or '755'. |  |
-        | LinuxFileOwnerOnStoreCreation | The LinuxFileOwnerOnStoreCreation field should contain a valid user ID recognized by the destination Linux server, optionally followed by a colon and a group ID if the group owner differs. Example: 'userID' or 'userID:groupID'. |  |
-        | SudoImpersonatingUser | The SudoImpersonatingUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'. |  |
+        | Attribute | Description |
+        | --------- | ----------- |
+        | Category | Select "RFKDB" or the customized certificate store name from the previous step. |
+        | Container | Optional container to associate certificate store with. |
+        | Client Machine | The Client Machine field should contain the DNS name or IP address of the remote orchestrated server for Linux orchestrated servers, formatted as a URL (protocol://dns-or-ip:port) for Windows orchestrated servers, or '1.1.1.1|LocalMachine' for local agents. Example: 'https://myserver.mydomain.com:5986' or '1.1.1.1|LocalMachine' for local access. |
+        | Store Path | The Store Path field should contain the full path and file name, including file extension if applicable, beginning with a forward slash (/) for Linux orchestrated servers or a drive letter (i.e., c:\folder\path\storename.kdb) for Windows orchestrated servers. Example: '/folder/path/storename.kdb' or 'c:\folder\path\storename.kdb'. |
+        | Orchestrator | Select an approved orchestrator capable of managing `RFKDB` certificates. Specifically, one with the `RFKDB` capability. |
+        | ServerUsername | A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value* |
+        | ServerPassword | A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value* |
+        | LinuxFilePermissionsOnStoreCreation | The LinuxFilePermissionsOnStoreCreation field should contain a three-digit value between 000 and 777 representing the Linux file permissions to be set for the certificate store upon creation. Example: '600' or '755'. |
+        | LinuxFileOwnerOnStoreCreation | The LinuxFileOwnerOnStoreCreation field should contain a valid user ID recognized by the destination Linux server, optionally followed by a colon and a group ID if the group owner differs. Example: 'userID' or 'userID:groupID'. |
+        | SudoImpersonatingUser | The SudoImpersonatingUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'. |
+        | Store Password | Password used to secure the Certificate Store |
+
+        
+
+        <details><summary>Attributes eligible for retrieval by a PAM Provider on the Universal Orchestrator</summary>
+
+        If a PAM provider was installed _on the Universal Orchestrator_ in the [Installation](#Installation) section, the following parameters can be configured for retrieval _on the Universal Orchestrator_.
+        | Attribute | Description |
+        | --------- | ----------- |
+        | ServerUsername | A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value* |
+        | ServerPassword | A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value* |
+        | Store Password | Password used to secure the Certificate Store |
+
+        > Any secret can be rendered by a PAM provider _on the Keyfactor Command server_. The above parameters are specific to the Remote File Universal Orchestrator extension. 
+        </details>
+        
 
     </details>
 
@@ -1032,18 +1184,34 @@ The Remote File Universal Orchestrator extension implements 6 Certificate Store 
     2. **Populate the generated CSV file**
 
         Open the CSV file, and reference the table below to populate parameters for each **Attribute**.
-        | Attribute | Description | Attribute is PAM Eligible |
-        | --------- | ----------- | ------------------------- |
-        | Category | Select "RFKDB" or the customized certificate store name from the previous step. | |
-        | Container | Optional container to associate certificate store with. | |
-        | Client Machine | The Client Machine field should contain the DNS name or IP address of the remote orchestrated server for Linux orchestrated servers, formatted as a URL (protocol://dns-or-ip:port) for Windows orchestrated servers, or '1.1.1.1|LocalMachine' for local agents. Example: 'https://myserver.mydomain.com:5986' or '1.1.1.1|LocalMachine' for local access. | |
-        | Store Path | The Store Path field should contain the full path and file name, including file extension if applicable, beginning with a forward slash (/) for Linux orchestrated servers or a drive letter (i.e., c:\folder\path\storename.kdb) for Windows orchestrated servers. Example: '/folder/path/storename.kdb' or 'c:\folder\path\storename.kdb'. | |
-        | Orchestrator | Select an approved orchestrator capable of managing `RFKDB` certificates. Specifically, one with the `RFKDB` capability. | |
-        | ServerUsername | A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value* |  ✅  |
-        | ServerPassword | A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value* |  ✅  |
-        | LinuxFilePermissionsOnStoreCreation | The LinuxFilePermissionsOnStoreCreation field should contain a three-digit value between 000 and 777 representing the Linux file permissions to be set for the certificate store upon creation. Example: '600' or '755'. |  |
-        | LinuxFileOwnerOnStoreCreation | The LinuxFileOwnerOnStoreCreation field should contain a valid user ID recognized by the destination Linux server, optionally followed by a colon and a group ID if the group owner differs. Example: 'userID' or 'userID:groupID'. |  |
-        | SudoImpersonatingUser | The SudoImpersonatingUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'. |  |
+        | Attribute | Description |
+        | --------- | ----------- |
+        | Category | Select "RFKDB" or the customized certificate store name from the previous step. |
+        | Container | Optional container to associate certificate store with. |
+        | Client Machine | The Client Machine field should contain the DNS name or IP address of the remote orchestrated server for Linux orchestrated servers, formatted as a URL (protocol://dns-or-ip:port) for Windows orchestrated servers, or '1.1.1.1|LocalMachine' for local agents. Example: 'https://myserver.mydomain.com:5986' or '1.1.1.1|LocalMachine' for local access. |
+        | Store Path | The Store Path field should contain the full path and file name, including file extension if applicable, beginning with a forward slash (/) for Linux orchestrated servers or a drive letter (i.e., c:\folder\path\storename.kdb) for Windows orchestrated servers. Example: '/folder/path/storename.kdb' or 'c:\folder\path\storename.kdb'. |
+        | Orchestrator | Select an approved orchestrator capable of managing `RFKDB` certificates. Specifically, one with the `RFKDB` capability. |
+        | ServerUsername | A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value* |
+        | ServerPassword | A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value* |
+        | LinuxFilePermissionsOnStoreCreation | The LinuxFilePermissionsOnStoreCreation field should contain a three-digit value between 000 and 777 representing the Linux file permissions to be set for the certificate store upon creation. Example: '600' or '755'. |
+        | LinuxFileOwnerOnStoreCreation | The LinuxFileOwnerOnStoreCreation field should contain a valid user ID recognized by the destination Linux server, optionally followed by a colon and a group ID if the group owner differs. Example: 'userID' or 'userID:groupID'. |
+        | SudoImpersonatingUser | The SudoImpersonatingUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'. |
+        | Store Password | Password used to secure the Certificate Store |
+
+        
+
+        <details><summary>Attributes eligible for retrieval by a PAM Provider on the Universal Orchestrator</summary>
+
+        If a PAM provider was installed _on the Universal Orchestrator_ in the [Installation](#Installation) section, the following parameters can be configured for retrieval _on the Universal Orchestrator_.
+        | Attribute | Description |
+        | --------- | ----------- |
+        | ServerUsername | A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value* |
+        | ServerPassword | A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value* |
+        | Store Password | Password used to secure the Certificate Store |
+
+        > Any secret can be rendered by a PAM provider _on the Keyfactor Command server_. The above parameters are specific to the Remote File Universal Orchestrator extension. 
+        </details>
+        
 
     3. **Import the CSV file to create the certificate stores** 
 
@@ -1057,7 +1225,7 @@ The Remote File Universal Orchestrator extension implements 6 Certificate Store 
 
 </details>
 
-<details><summary>RFORA</summary>
+<details><summary>RFORA (RFORA)</summary>
 
 
 * **Manually with the Command UI**
@@ -1071,19 +1239,35 @@ The Remote File Universal Orchestrator extension implements 6 Certificate Store 
     2. **Add a Certificate Store.**
 
         Click the Add button to add a new Certificate Store. Use the table below to populate the **Attributes** in the **Add** form.
-        | Attribute | Description | Attribute is PAM Eligible |
-        | --------- | ----------- | ------------------------- |
-        | Category | Select "RFORA" or the customized certificate store name from the previous step. | |
-        | Container | Optional container to associate certificate store with. | |
-        | Client Machine | The Client Machine field should contain the DNS name or IP address of the remote orchestrated server for Linux orchestrated servers, formatted as a URL (protocol://dns-or-ip:port) for Windows orchestrated servers, or '1.1.1.1|LocalMachine' for local agents. Example: 'https://myserver.mydomain.com:5986' or '1.1.1.1|LocalMachine' for local access. | |
-        | Store Path | The Store Path field should contain the full path and file name of the Oracle Wallet, including the 'eWallet.p12' file name by convention. Example: '/path/to/eWallet.p12' or 'c:\path\to\eWallet.p12'. | |
-        | Orchestrator | Select an approved orchestrator capable of managing `RFORA` certificates. Specifically, one with the `RFORA` capability. | |
-        | ServerUsername | A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value* |  ✅  |
-        | ServerPassword | A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value* |  ✅  |
-        | LinuxFilePermissionsOnStoreCreation | The LinuxFilePermissionsOnStoreCreation field should contain a three-digit value between 000 and 777 representing the Linux file permissions to be set for the certificate store upon creation. Example: '600' or '755'. |  |
-        | LinuxFileOwnerOnStoreCreation | The LinuxFileOwnerOnStoreCreation field should contain a valid user ID recognized by the destination Linux server, optionally followed by a colon and a group ID if the group owner differs. Example: 'userID' or 'userID:groupID'. |  |
-        | SudoImpersonatingUser | The SudoImpersonatingUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'. |  |
-        | WorkFolder | The WorkFolder field should contain the path on the managed server where temporary work files can be created, modified, and deleted during Inventory and Management jobs. Example: '/path/to/workfolder'. |  |
+        | Attribute | Description |
+        | --------- | ----------- |
+        | Category | Select "RFORA" or the customized certificate store name from the previous step. |
+        | Container | Optional container to associate certificate store with. |
+        | Client Machine | The Client Machine field should contain the DNS name or IP address of the remote orchestrated server for Linux orchestrated servers, formatted as a URL (protocol://dns-or-ip:port) for Windows orchestrated servers, or '1.1.1.1|LocalMachine' for local agents. Example: 'https://myserver.mydomain.com:5986' or '1.1.1.1|LocalMachine' for local access. |
+        | Store Path | The Store Path field should contain the full path and file name of the Oracle Wallet, including the 'eWallet.p12' file name by convention. Example: '/path/to/eWallet.p12' or 'c:\path\to\eWallet.p12'. |
+        | Orchestrator | Select an approved orchestrator capable of managing `RFORA` certificates. Specifically, one with the `RFORA` capability. |
+        | ServerUsername | A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value* |
+        | ServerPassword | A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value* |
+        | LinuxFilePermissionsOnStoreCreation | The LinuxFilePermissionsOnStoreCreation field should contain a three-digit value between 000 and 777 representing the Linux file permissions to be set for the certificate store upon creation. Example: '600' or '755'. |
+        | LinuxFileOwnerOnStoreCreation | The LinuxFileOwnerOnStoreCreation field should contain a valid user ID recognized by the destination Linux server, optionally followed by a colon and a group ID if the group owner differs. Example: 'userID' or 'userID:groupID'. |
+        | SudoImpersonatingUser | The SudoImpersonatingUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'. |
+        | WorkFolder | The WorkFolder field should contain the path on the managed server where temporary work files can be created, modified, and deleted during Inventory and Management jobs. Example: '/path/to/workfolder'. |
+        | Store Password | Password used to secure the Certificate Store |
+
+        
+
+        <details><summary>Attributes eligible for retrieval by a PAM Provider on the Universal Orchestrator</summary>
+
+        If a PAM provider was installed _on the Universal Orchestrator_ in the [Installation](#Installation) section, the following parameters can be configured for retrieval _on the Universal Orchestrator_.
+        | Attribute | Description |
+        | --------- | ----------- |
+        | ServerUsername | A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value* |
+        | ServerPassword | A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value* |
+        | Store Password | Password used to secure the Certificate Store |
+
+        > Any secret can be rendered by a PAM provider _on the Keyfactor Command server_. The above parameters are specific to the Remote File Universal Orchestrator extension. 
+        </details>
+        
 
     </details>
 
@@ -1099,19 +1283,35 @@ The Remote File Universal Orchestrator extension implements 6 Certificate Store 
     2. **Populate the generated CSV file**
 
         Open the CSV file, and reference the table below to populate parameters for each **Attribute**.
-        | Attribute | Description | Attribute is PAM Eligible |
-        | --------- | ----------- | ------------------------- |
-        | Category | Select "RFORA" or the customized certificate store name from the previous step. | |
-        | Container | Optional container to associate certificate store with. | |
-        | Client Machine | The Client Machine field should contain the DNS name or IP address of the remote orchestrated server for Linux orchestrated servers, formatted as a URL (protocol://dns-or-ip:port) for Windows orchestrated servers, or '1.1.1.1|LocalMachine' for local agents. Example: 'https://myserver.mydomain.com:5986' or '1.1.1.1|LocalMachine' for local access. | |
-        | Store Path | The Store Path field should contain the full path and file name of the Oracle Wallet, including the 'eWallet.p12' file name by convention. Example: '/path/to/eWallet.p12' or 'c:\path\to\eWallet.p12'. | |
-        | Orchestrator | Select an approved orchestrator capable of managing `RFORA` certificates. Specifically, one with the `RFORA` capability. | |
-        | ServerUsername | A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value* |  ✅  |
-        | ServerPassword | A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value* |  ✅  |
-        | LinuxFilePermissionsOnStoreCreation | The LinuxFilePermissionsOnStoreCreation field should contain a three-digit value between 000 and 777 representing the Linux file permissions to be set for the certificate store upon creation. Example: '600' or '755'. |  |
-        | LinuxFileOwnerOnStoreCreation | The LinuxFileOwnerOnStoreCreation field should contain a valid user ID recognized by the destination Linux server, optionally followed by a colon and a group ID if the group owner differs. Example: 'userID' or 'userID:groupID'. |  |
-        | SudoImpersonatingUser | The SudoImpersonatingUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'. |  |
-        | WorkFolder | The WorkFolder field should contain the path on the managed server where temporary work files can be created, modified, and deleted during Inventory and Management jobs. Example: '/path/to/workfolder'. |  |
+        | Attribute | Description |
+        | --------- | ----------- |
+        | Category | Select "RFORA" or the customized certificate store name from the previous step. |
+        | Container | Optional container to associate certificate store with. |
+        | Client Machine | The Client Machine field should contain the DNS name or IP address of the remote orchestrated server for Linux orchestrated servers, formatted as a URL (protocol://dns-or-ip:port) for Windows orchestrated servers, or '1.1.1.1|LocalMachine' for local agents. Example: 'https://myserver.mydomain.com:5986' or '1.1.1.1|LocalMachine' for local access. |
+        | Store Path | The Store Path field should contain the full path and file name of the Oracle Wallet, including the 'eWallet.p12' file name by convention. Example: '/path/to/eWallet.p12' or 'c:\path\to\eWallet.p12'. |
+        | Orchestrator | Select an approved orchestrator capable of managing `RFORA` certificates. Specifically, one with the `RFORA` capability. |
+        | ServerUsername | A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value* |
+        | ServerPassword | A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value* |
+        | LinuxFilePermissionsOnStoreCreation | The LinuxFilePermissionsOnStoreCreation field should contain a three-digit value between 000 and 777 representing the Linux file permissions to be set for the certificate store upon creation. Example: '600' or '755'. |
+        | LinuxFileOwnerOnStoreCreation | The LinuxFileOwnerOnStoreCreation field should contain a valid user ID recognized by the destination Linux server, optionally followed by a colon and a group ID if the group owner differs. Example: 'userID' or 'userID:groupID'. |
+        | SudoImpersonatingUser | The SudoImpersonatingUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'. |
+        | WorkFolder | The WorkFolder field should contain the path on the managed server where temporary work files can be created, modified, and deleted during Inventory and Management jobs. Example: '/path/to/workfolder'. |
+        | Store Password | Password used to secure the Certificate Store |
+
+        
+
+        <details><summary>Attributes eligible for retrieval by a PAM Provider on the Universal Orchestrator</summary>
+
+        If a PAM provider was installed _on the Universal Orchestrator_ in the [Installation](#Installation) section, the following parameters can be configured for retrieval _on the Universal Orchestrator_.
+        | Attribute | Description |
+        | --------- | ----------- |
+        | ServerUsername | A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value* |
+        | ServerPassword | A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value* |
+        | Store Password | Password used to secure the Certificate Store |
+
+        > Any secret can be rendered by a PAM provider _on the Keyfactor Command server_. The above parameters are specific to the Remote File Universal Orchestrator extension. 
+        </details>
+        
 
     3. **Import the CSV file to create the certificate stores** 
 
