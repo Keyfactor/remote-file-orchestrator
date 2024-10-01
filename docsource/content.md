@@ -48,7 +48,7 @@ Please refer to the READMEs for each supported store type for more information o
 - PKCS#8 (BEGIN PRIVATE KEY)
 - ECDSA OPENSSH (BEGIN OPENSSH PRIVATE KEY)   
 
-Please reference [Configuration File Setup](#configuration-file-setup) for more information on setting up the config.json file and [Certificate Stores and Discovery Jobs](#certificate-stores-and-discovery-jobs) for more information on the items above.    
+Please reference [Post Installation](#post-installation) for more information on setting up the config.json file and [Defining Certificate Stores](#defining-certificate-stores) and [Discovering Certificate Stores with the Discovery Job](#discovering-certificate-stores-with-the-discovery-job) for more information on defining and configuring certificate stores.    
 </details>  
 
 <details>  
