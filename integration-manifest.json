@@ -33,9 +33,33 @@
                     "PasswordOptions": {
                         "Style": "Default",
                         "EntrySupported": false,
-                        "StoreRequired": true
+                        "StoreRequired": true,
+                        "StorePassword": {
+                            "Description": "Password used to secure the Certificate Store",
+                            "IsPAMEligible": true
+                        }
                     },
                     "Properties": [
+                        {
+                            "Name": "ServerUsername",
+                            "DisplayName": "Server Username",
+                            "Type": "Secret",
+                            "DependsOn": "",
+                            "DefaultValue": "",
+                            "Required": false,
+                            "IsPAMEligible": true,
+                            "Description": "A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value*"
+                        },
+                        {
+                            "Name": "ServerPassword",
+                            "DisplayName": "Server Password",
+                            "Type": "Secret",
+                            "DependsOn": "",
+                            "DefaultValue": "",
+                            "Required": false,
+                            "IsPAMEligible": true,
+                            "Description": "A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value*"
+                        },
                         {
                             "Name": "LinuxFilePermissionsOnStoreCreation",
                             "DisplayName": "Linux File Permissions on Store Creation",
@@ -87,9 +111,33 @@
                     "PasswordOptions": {
                         "Style": "Default",
                         "EntrySupported": false,
-                        "StoreRequired": true
+                        "StoreRequired": true,
+                        "StorePassword": {
+                            "Description": "Password used to secure the Certificate Store",
+                            "IsPAMEligible": true
+                        }
                     },
                     "Properties": [
+                        {
+                            "Name": "ServerUsername",
+                            "DisplayName": "Server Username",
+                            "Type": "Secret",
+                            "DependsOn": "",
+                            "DefaultValue": "",
+                            "Required": false,
+                            "IsPAMEligible": true,
+                            "Description": "A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value*"
+                        },
+                        {
+                            "Name": "ServerPassword",
+                            "DisplayName": "Server Password",
+                            "Type": "Secret",
+                            "DependsOn": "",
+                            "DefaultValue": "",
+                            "Required": false,
+                            "IsPAMEligible": true,
+                            "Description": "A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value*"
+                        },
                         {
                             "Name": "LinuxFilePermissionsOnStoreCreation",
                             "DisplayName": "Linux File Permissions on Store Creation",
@@ -186,9 +234,33 @@
                     "PasswordOptions": {
                         "Style": "Default",
                         "EntrySupported": false,
-                        "StoreRequired": true
+                        "StoreRequired": true,
+                        "StorePassword": {
+                            "Description": "Password used to secure the Certificate Store",
+                            "IsPAMEligible": true
+                        }
                     },
                     "Properties": [
+                        {
+                            "Name": "ServerUsername",
+                            "DisplayName": "Server Username",
+                            "Type": "Secret",
+                            "DependsOn": "",
+                            "DefaultValue": "",
+                            "Required": false,
+                            "IsPAMEligible": true,
+                            "Description": "A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value*"
+                        },
+                        {
+                            "Name": "ServerPassword",
+                            "DisplayName": "Server Password",
+                            "Type": "Secret",
+                            "DependsOn": "",
+                            "DefaultValue": "",
+                            "Required": false,
+                            "IsPAMEligible": true,
+                            "Description": "A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value*"
+                        },
                         {
                             "Name": "LinuxFilePermissionsOnStoreCreation",
                             "DisplayName": "Linux File Permissions on Store Creation",
@@ -240,9 +312,33 @@
                     "PasswordOptions": {
                         "Style": "Default",
                         "EntrySupported": false,
-                        "StoreRequired": true
+                        "StoreRequired": true,
+                        "StorePassword": {
+                            "Description": "Password used to secure the Certificate Store",
+                            "IsPAMEligible": true
+                        }
                     },
                     "Properties": [
+                        {
+                            "Name": "ServerUsername",
+                            "DisplayName": "Server Username",
+                            "Type": "Secret",
+                            "DependsOn": "",
+                            "DefaultValue": "",
+                            "Required": false,
+                            "IsPAMEligible": true,
+                            "Description": "A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value*"
+                        },
+                        {
+                            "Name": "ServerPassword",
+                            "DisplayName": "Server Password",
+                            "Type": "Secret",
+                            "DependsOn": "",
+                            "DefaultValue": "",
+                            "Required": false,
+                            "IsPAMEligible": true,
+                            "Description": "A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value*"
+                        },
                         {
                             "Name": "LinuxFilePermissionsOnStoreCreation",
                             "DisplayName": "Linux File Permissions on Store Creation",
@@ -303,9 +399,33 @@
                     "PasswordOptions": {
                         "Style": "Default",
                         "EntrySupported": false,
-                        "StoreRequired": true
+                        "StoreRequired": true,
+                        "StorePassword": {
+                            "Description": "Password used to secure the Certificate Store",
+                            "IsPAMEligible": true
+                        }
                     },
                     "Properties": [
+                        {
+                            "Name": "ServerUsername",
+                            "DisplayName": "Server Username",
+                            "Type": "Secret",
+                            "DependsOn": "",
+                            "DefaultValue": "",
+                            "Required": false,
+                            "IsPAMEligible": true,
+                            "Description": "A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value*"
+                        },
+                        {
+                            "Name": "ServerPassword",
+                            "DisplayName": "Server Password",
+                            "Type": "Secret",
+                            "DependsOn": "",
+                            "DefaultValue": "",
+                            "Required": false,
+                            "IsPAMEligible": true,
+                            "Description": "A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value*"
+                        },
                         {
                             "Name": "LinuxFilePermissionsOnStoreCreation",
                             "DisplayName": "Linux File Permissions on Store Creation",
@@ -357,9 +477,33 @@
                     "PasswordOptions": {
                         "Style": "Default",
                         "EntrySupported": false,
-                        "StoreRequired": true
+                        "StoreRequired": true,
+                        "StorePassword": {
+                            "Description": "Password used to secure the Certificate Store",
+                            "IsPAMEligible": true
+                        }
                     },
                     "Properties": [
+                        {
+                            "Name": "ServerUsername",
+                            "DisplayName": "Server Username",
+                            "Type": "Secret",
+                            "DependsOn": "",
+                            "DefaultValue": "",
+                            "Required": false,
+                            "IsPAMEligible": true,
+                            "Description": "A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value*"
+                        },
+                        {
+                            "Name": "ServerPassword",
+                            "DisplayName": "Server Password",
+                            "Type": "Secret",
+                            "DependsOn": "",
+                            "DefaultValue": "",
+                            "Required": false,
+                            "IsPAMEligible": true,
+                            "Description": "A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value*"
+                        },
                         {
                             "Name": "LinuxFilePermissionsOnStoreCreation",
                             "DisplayName": "Linux File Permissions on Store Creation",
