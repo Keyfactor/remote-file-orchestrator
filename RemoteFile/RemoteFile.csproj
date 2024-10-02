@@ -8,11 +8,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="ImplementedStoreTypes\JKS\JksStore.cs" />
-    <Compile Remove="RemoteHandlers\SSHHelper.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="BouncyCastle.Cryptography" Version="2.4.0" />
     <PackageReference Include="CliWrap" Version="3.6.6" />
     <PackageReference Include="Keyfactor.Logging" Version="1.1.1" />
