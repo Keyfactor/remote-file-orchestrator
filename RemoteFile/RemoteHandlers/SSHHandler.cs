@@ -60,7 +60,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
                         privateKeyFile = new PrivateKeyFile(ms);
                     }
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     using (MemoryStream ms = new MemoryStream(Encoding.ASCII.GetBytes(ConvertToPKCS1(serverPassword))))
                     {
