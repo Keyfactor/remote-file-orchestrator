@@ -22,6 +22,7 @@
     </None>
     <None Update="config.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>  </ItemGroup>
+    </None>
+  </ItemGroup>
 
 </Project>
