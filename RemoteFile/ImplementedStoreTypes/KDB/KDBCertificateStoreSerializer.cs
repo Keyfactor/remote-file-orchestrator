@@ -51,9 +51,9 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.KDB
                 byte[] storeBytes = remoteHandler.DownloadCertificateFile($"{storePath}{tempCertFile}");
                 store.Load(new MemoryStream(storeBytes), string.IsNullOrEmpty(storePassword) ? new char[0] : storePassword.ToCharArray());
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
+                throw;
             }
             finally
             {
@@ -90,9 +90,9 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.KDB
                 storeInfo.Add(new SerializedStoreInfo() { Contents = storeContents, FilePath = storePath+storeFileName });
                 return storeInfo;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
+                throw;
             }
             finally
             {
