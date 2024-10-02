@@ -1,9 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-    <TargetFramework>net6.0</TargetFramework>
+    <AppendTargetFrameworkToOutputPath>true</AppendTargetFrameworkToOutputPath>
+    <TargetFrameworks>net6.0;net8.0</TargetFrameworks>
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    <ImplicitUsings>disable</ImplicitUsings>
   </PropertyGroup>
 
   <ItemGroup>
@@ -17,21 +18,15 @@
     <PackageReference Include="Keyfactor.Logging" Version="1.1.1" />
     <PackageReference Include="Keyfactor.Orchestrators.IOrchestratorJobExtensions" Version="0.7.0" />
     <PackageReference Include="Keyfactor.PKI" Version="5.0.0" />
-    <PackageReference Include="Microsoft.PowerShell.SDK" Version="7.2.12" />
+    <PackageReference Include="Microsoft.PowerShell.SDK" Version="7.2.12" Condition="'$(TargetFramework)' == 'net6.0'" />
+    <PackageReference Include="Microsoft.PowerShell.SDK" Version="7.4.5" Condition="'$(TargetFramework)' == 'net8.0'" />
     <PackageReference Include="SSH.NET" Version="2024.0.0" />
-  </ItemGroup>
 
-  <ItemGroup>
-    <Reference Include="Renci.SshNet">
-      <HintPath>External References\Renci.SshNet.dll</HintPath>
-    </Reference>
-    <Reference Include="SshNet.Security.Cryptography">
-      <HintPath>External References\SshNet.Security.Cryptography.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="echo F | xcopy &quot;$(ProjectDir)config.json&quot; &quot;$(TargetDir)\config.json&quot; /Y&#xD;&#xA;echo F | xcopy &quot;$(ProjectDir)manifest.json&quot; &quot;$(TargetDir)\manifest.json&quot; /Y" />
-  </Target>
+    <None Update="manifest.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="config.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>  </ItemGroup>
 
 </Project>

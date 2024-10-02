@@ -1,389 +1,551 @@
 {
-  "$schema": "https://keyfactor.github.io/integration-manifest-schema.json",
-  "integration_type": "orchestrator",
-  "name": "Remote File",
-  "status": "production",
-  "link_github": true,
-  "update_catalog": true,
-  "support_level": "kf-supported",
-  "release_dir": "RemoteFile/bin/Release",
-  "description": "The Remote File Orchestrator allows for the remote management of file-based certificate stores. Discovery, Inventory, and Management functions are supported. The orchestrator performs operations by first converting the certificate store into a BouncyCastle PKCS12Store.",
-  "about": {
-    "orchestrator": {
-      "UOFramework": "10.1",
-      "pam_support": true,
-      "keyfactor_platform_version": "9.10",
-      "win": {
-        "supportsCreateStore": true,
-        "supportsDiscovery": true,
-        "supportsManagementAdd": true,
-        "supportsManagementRemove": true,
-        "supportsReenrollment": false,
-        "supportsInventory": true,
-        "platformSupport": "Unused"
-      },
-      "linux": {
-        "supportsCreateStore": true,
-        "supportsDiscovery": true,
-        "supportsManagementAdd": true,
-        "supportsManagementRemove": true,
-        "supportsReenrollment": false,
-        "supportsInventory": true,
-        "platformSupport": "Unused"
-      },
-      "store_types": {
-        "RFJKS": {
-          "Name": "RFJKS",
-          "ShortName": "RFJKS",
-          "Capability": "RFJKS",
-          "ServerRequired": true,
-          "BlueprintAllowed": false,
-          "CustomAliasAllowed": "Required",
-          "PowerShell": false,
-          "PrivateKeyAllowed": "Optional",
-          "SupportedOperations": {
-            "Add": true,
-            "Create": true,
-            "Discovery": true,
-            "Enrollment": false,
-            "Remove": true
-          },
-          "PasswordOptions": {
-            "Style": "Default",
-            "EntrySupported": false,
-            "StoreRequired": true
-          },
-          "Properties": [
-            {
-              "Name": "LinuxFilePermissionsOnStoreCreation",
-              "DisplayName": "Linux File Permissions on Store Creation",
-              "Required": false,
-              "DependsOn": "",
-              "Type": "String",
-              "DefaultValue": ""
-            },
-            {
-              "Name": "LinuxFileOwnerOnStoreCreation",
-              "DisplayName": "Linux File Owner on Store Creation",
-              "Required": false,
-              "DependsOn": "",
-              "Type": "String",
-              "DefaultValue": ""
-            },
-            {
-              "Name": "SudoImpersonatingUser",
-              "DisplayName": "Sudo Impersonating User",
-              "Required": false,
-              "DependsOn": "",
-              "Type": "String",
-              "DefaultValue": ""
-            }
-          ],
-          "EntryParameters": []
-        },
-        "RFPEM": {
-          "Name": "RFPEM",
-          "ShortName": "RFPEM",
-          "Capability": "RFPEM",
-          "ServerRequired": true,
-          "BlueprintAllowed": false,
-          "CustomAliasAllowed": "Forbidden",
-          "PowerShell": false,
-          "PrivateKeyAllowed": "Optional",
-          "SupportedOperations": {
-            "Add": true,
-            "Create": true,
-            "Discovery": true,
-            "Enrollment": false,
-            "Remove": true
-          },
-          "PasswordOptions": {
-            "Style": "Default",
-            "EntrySupported": false,
-            "StoreRequired": true
-          },
-          "Properties": [
-            {
-              "Name": "LinuxFilePermissionsOnStoreCreation",
-              "DisplayName": "Linux File Permissions on Store Creation",
-              "Required": false,
-              "DependsOn": "",
-              "Type": "String",
-              "DefaultValue": ""
-            },
-            {
-              "Name": "LinuxFileOwnerOnStoreCreation",
-              "DisplayName": "Linux File Owner on Store Creation",
-              "Required": false,
-              "DependsOn": "",
-              "Type": "String",
-              "DefaultValue": ""
-            },
-            {
-              "Name": "SudoImpersonatingUser",
-              "DisplayName": "Sudo Impersonating User",
-              "Required": false,
-              "DependsOn": "",
-              "Type": "String",
-              "DefaultValue": ""
-            },
-            {
-              "Name": "IsTrustStore",
-              "DisplayName": "Trust Store",
-              "Required": false,
-              "DependsOn": "",
-              "Type": "Bool",
-              "DefaultValue": false
-            },
-            {
-              "Name": "IncludesChain",
-              "DisplayName": "Store Includes Chain",
-              "Required": false,
-              "DependsOn": "",
-              "Type": "Bool",
-              "DefaultValue": false
-            },
-            {
-              "Name": "SeparatePrivateKeyFilePath",
-              "DisplayName": "Separate Private Key File Location",
-              "Required": false,
-              "DependsOn": "",
-              "Type": "String",
-              "DefaultValue": ""
-            },
-            {
-              "Name": "IsRSAPrivateKey",
-              "DisplayName": "Is RSA Private Key",
-              "Required": false,
-              "DependsOn": "",
-              "Type": "Bool",
-              "DefaultValue": false
-            },
-            {
-              "Name": "IgnorePrivateKeyOnInventory",
-              "DisplayName": "Ignore Private Key On Inventory",
-              "Required": false,
-              "DependsOn": "",
-              "Type": "Bool",
-              "DefaultValue": false
-            }
-          ],
-          "EntryParameters": []
-        },
-        "RFPkcs12": {
-          "Name": "RFPkcs12",
-          "ShortName": "RFPkcs12",
-          "Capability": "RFPkcs12",
-          "ServerRequired": true,
-          "BlueprintAllowed": false,
-          "CustomAliasAllowed": "Required",
-          "PowerShell": false,
-          "PrivateKeyAllowed": "Optional",
-          "SupportedOperations": {
-            "Add": true,
-            "Create": true,
-            "Discovery": true,
-            "Enrollment": false,
-            "Remove": true
-          },
-          "PasswordOptions": {
-            "Style": "Default",
-            "EntrySupported": false,
-            "StoreRequired": true
-          },
-          "Properties": [
-            {
-              "Name": "LinuxFilePermissionsOnStoreCreation",
-              "DisplayName": "Linux File Permissions on Store Creation",
-              "Required": false,
-              "DependsOn": "",
-              "Type": "String",
-              "DefaultValue": ""
-            },
-            {
-              "Name": "LinuxFileOwnerOnStoreCreation",
-              "DisplayName": "Linux File Owner on Store Creation",
-              "Required": false,
-              "DependsOn": "",
-              "Type": "String",
-              "DefaultValue": ""
-            },
-            {
-              "Name": "SudoImpersonatingUser",
-              "DisplayName": "Sudo Impersonating User",
-              "Required": false,
-              "DependsOn": "",
-              "Type": "String",
-              "DefaultValue": ""
-            }
-          ],
-          "EntryParameters": []
-        },
-        "RFDER": {
-          "Name": "RFDER",
-          "ShortName": "RFDER",
-          "Capability": "RFDER",
-          "ServerRequired": true,
-          "BlueprintAllowed": false,
-          "CustomAliasAllowed": "Forbidden",
-          "PowerShell": false,
-          "PrivateKeyAllowed": "Optional",
-          "SupportedOperations": {
-            "Add": true,
-            "Create": true,
-            "Discovery": true,
-            "Enrollment": false,
-            "Remove": true
-          },
-          "PasswordOptions": {
-            "Style": "Default",
-            "EntrySupported": false,
-            "StoreRequired": true
-          },
-          "Properties": [
-            {
-              "Name": "LinuxFilePermissionsOnStoreCreation",
-              "DisplayName": "Linux File Permissions on Store Creation",
-              "Required": false,
-              "DependsOn": "",
-              "Type": "String",
-              "DefaultValue": ""
-            },
-            {
-              "Name": "LinuxFileOwnerOnStoreCreation",
-              "DisplayName": "Linux File Owner on Store Creation",
-              "Required": false,
-              "DependsOn": "",
-              "Type": "String",
-              "DefaultValue": ""
-            },
-            {
-              "Name": "SudoImpersonatingUser",
-              "DisplayName": "Sudo Impersonating User",
-              "Required": false,
-              "DependsOn": "",
-              "Type": "String",
-              "DefaultValue": ""
-            },
-            {
-              "Name": "SeparatePrivateKeyFilePath",
-              "DisplayName": "Separate Private Key File Location",
-              "Required": false,
-              "DependsOn": "",
-              "Type": "String",
-              "DefaultValue": ""
-            }
-          ],
-          "EntryParameters": []
-        },
-        "RFKDB": {
-          "Name": "RFKDB",
-          "ShortName": "RFKDB",
-          "Capability": "RFKDB",
-          "ServerRequired": true,
-          "BlueprintAllowed": false,
-          "CustomAliasAllowed": "Required",
-          "PowerShell": false,
-          "PrivateKeyAllowed": "Optional",
-          "SupportedOperations": {
-            "Add": true,
-            "Create": true,
-            "Discovery": true,
-            "Enrollment": false,
-            "Remove": true
-          },
-          "PasswordOptions": {
-            "Style": "Default",
-            "EntrySupported": false,
-            "StoreRequired": true
-          },
-          "Properties": [
-            {
-              "Name": "LinuxFilePermissionsOnStoreCreation",
-              "DisplayName": "Linux File Permissions on Store Creation",
-              "Required": false,
-              "DependsOn": "",
-              "Type": "String",
-              "DefaultValue": ""
-            },
-            {
-              "Name": "LinuxFileOwnerOnStoreCreation",
-              "DisplayName": "Linux File Owner on Store Creation",
-              "Required": false,
-              "DependsOn": "",
-              "Type": "String",
-              "DefaultValue": ""
-            },
-            {
-              "Name": "SudoImpersonatingUser",
-              "DisplayName": "Sudo Impersonating User",
-              "Required": false,
-              "DependsOn": "",
-              "Type": "String",
-              "DefaultValue": ""
-            }
-          ],
-          "EntryParameters": []
-        },
-        "RFORA": {
-          "Name": "RFORA",
-          "ShortName": "RFORA",
-          "Capability": "RFORA",
-          "ServerRequired": true,
-          "BlueprintAllowed": false,
-          "CustomAliasAllowed": "Required",
-          "PowerShell": false,
-          "PrivateKeyAllowed": "Optional",
-          "SupportedOperations": {
-            "Add": true,
-            "Create": true,
-            "Discovery": true,
-            "Enrollment": false,
-            "Remove": true
-          },
-          "PasswordOptions": {
-            "Style": "Default",
-            "EntrySupported": false,
-            "StoreRequired": true
-          },
-          "Properties": [
-            {
-              "Name": "LinuxFilePermissionsOnStoreCreation",
-              "DisplayName": "Linux File Permissions on Store Creation",
-              "Required": false,
-              "DependsOn": "",
-              "Type": "String",
-              "DefaultValue": ""
-            },
-            {
-              "Name": "LinuxFileOwnerOnStoreCreation",
-              "DisplayName": "Linux File Owner on Store Creation",
-              "Required": false,
-              "DependsOn": "",
-              "Type": "String",
-              "DefaultValue": ""
-            },
-            {
-              "Name": "SudoImpersonatingUser",
-              "DisplayName": "Sudo Impersonating User",
-              "Required": false,
-              "DependsOn": "",
-              "Type": "String",
-              "DefaultValue": ""
-            },
-            {
-              "Name": "WorkFolder",
-              "DisplayName": "Location to use for creation/removal of work files",
-              "Required": true,
-              "DependsOn": "",
-              "Type": "String",
-              "DefaultValue": ""
-            }
-          ],
-          "EntryParameters": []
+    "$schema": "https://keyfactor.github.io/v2/integration-manifest-schema.json",
+    "integration_type": "orchestrator",
+    "name": "Remote File",
+    "status": "production",
+    "link_github": true,
+    "update_catalog": true,
+    "support_level": "kf-supported",
+    "release_dir": "RemoteFile/bin/Release",
+    "description": "The Remote File Orchestrator allows for the remote management of file-based certificate stores. Discovery, Inventory, and Management functions are supported. The orchestrator performs operations by first converting the certificate store into a BouncyCastle PKCS12Store.",
+    "about": {
+        "orchestrator": {
+            "UOFramework": "10.4",
+            "pam_support": true,
+            "keyfactor_platform_version": "10.4",
+            "store_types": [
+                {
+                    "Name": "RFJKS",
+                    "ShortName": "RFJKS",
+                    "Capability": "RFJKS",
+                    "ServerRequired": true,
+                    "BlueprintAllowed": false,
+                    "CustomAliasAllowed": "Required",
+                    "PowerShell": false,
+                    "PrivateKeyAllowed": "Optional",
+                    "SupportedOperations": {
+                        "Add": true,
+                        "Create": true,
+                        "Discovery": true,
+                        "Enrollment": false,
+                        "Remove": true
+                    },
+                    "PasswordOptions": {
+                        "Style": "Default",
+                        "EntrySupported": false,
+                        "StoreRequired": true,
+                        "StorePassword": {
+                            "Description": "Password used to secure the Certificate Store",
+                            "IsPAMEligible": true
+                        }
+                    },
+                    "Properties": [
+                        {
+                            "Name": "ServerUsername",
+                            "DisplayName": "Server Username",
+                            "Type": "Secret",
+                            "DependsOn": "",
+                            "DefaultValue": "",
+                            "Required": false,
+                            "IsPAMEligible": true,
+                            "Description": "A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value*"
+                        },
+                        {
+                            "Name": "ServerPassword",
+                            "DisplayName": "Server Password",
+                            "Type": "Secret",
+                            "DependsOn": "",
+                            "DefaultValue": "",
+                            "Required": false,
+                            "IsPAMEligible": true,
+                            "Description": "A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value*"
+                        },
+                        {
+                            "Name": "LinuxFilePermissionsOnStoreCreation",
+                            "DisplayName": "Linux File Permissions on Store Creation",
+                            "Required": false,
+                            "DependsOn": "",
+                            "Type": "String",
+                            "DefaultValue": "",
+                            "Description": "The LinuxFilePermissionsOnStoreCreation field should contain a three-digit value between 000 and 777 representing the Linux file permissions to be set for the certificate store upon creation. Example: '600' or '755'."
+                        },
+                        {
+                            "Name": "LinuxFileOwnerOnStoreCreation",
+                            "DisplayName": "Linux File Owner on Store Creation",
+                            "Required": false,
+                            "DependsOn": "",
+                            "Type": "String",
+                            "DefaultValue": "",
+                            "Description": "The LinuxFileOwnerOnStoreCreation field should contain a valid user ID recognized by the destination Linux server, optionally followed by a colon and a group ID if the group owner differs. Example: 'userID' or 'userID:groupID'."
+                        },
+                        {
+                            "Name": "SudoImpersonatingUser",
+                            "DisplayName": "Sudo Impersonating User",
+                            "Required": false,
+                            "DependsOn": "",
+                            "Type": "String",
+                            "DefaultValue": "",
+                            "Description": "The SudoImpersonatingUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'."
+                        }
+                    ],
+                    "EntryParameters": [],
+                    "ClientMachineDescription": "The IP address or DNS of the server hosting the certificate store.  For more information, see [Client Machine ](#client-machine-instructions)",
+                    "StorePathDescription": "The full path and file name, including file extension if one exists where the certificate store file is located.  For Linux orchestrated servers, StorePath will begin with a forward slash (i.e. /folder/path/storename.ext).  For Windows orchestrated servers, it should begin with a drive letter (i.e. c:\\folder\\path\\storename.ext)."
+                },
+                {
+                    "Name": "RFPEM",
+                    "ShortName": "RFPEM",
+                    "Capability": "RFPEM",
+                    "ServerRequired": true,
+                    "BlueprintAllowed": false,
+                    "CustomAliasAllowed": "Forbidden",
+                    "PowerShell": false,
+                    "PrivateKeyAllowed": "Optional",
+                    "SupportedOperations": {
+                        "Add": true,
+                        "Create": true,
+                        "Discovery": true,
+                        "Enrollment": false,
+                        "Remove": true
+                    },
+                    "PasswordOptions": {
+                        "Style": "Default",
+                        "EntrySupported": false,
+                        "StoreRequired": true,
+                        "StorePassword": {
+                            "Description": "Password used to secure the Certificate Store",
+                            "IsPAMEligible": true
+                        }
+                    },
+                    "Properties": [
+                        {
+                            "Name": "ServerUsername",
+                            "DisplayName": "Server Username",
+                            "Type": "Secret",
+                            "DependsOn": "",
+                            "DefaultValue": "",
+                            "Required": false,
+                            "IsPAMEligible": true,
+                            "Description": "A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value*"
+                        },
+                        {
+                            "Name": "ServerPassword",
+                            "DisplayName": "Server Password",
+                            "Type": "Secret",
+                            "DependsOn": "",
+                            "DefaultValue": "",
+                            "Required": false,
+                            "IsPAMEligible": true,
+                            "Description": "A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value*"
+                        },
+                        {
+                            "Name": "LinuxFilePermissionsOnStoreCreation",
+                            "DisplayName": "Linux File Permissions on Store Creation",
+                            "Required": false,
+                            "DependsOn": "",
+                            "Type": "String",
+                            "DefaultValue": "",
+                            "Description": "The LinuxFilePermissionsOnStoreCreation field should contain a three-digit value between 000 and 777 representing the Linux file permissions to be set for the certificate store upon creation. Example: '600' or '755'."
+                        },
+                        {
+                            "Name": "LinuxFileOwnerOnStoreCreation",
+                            "DisplayName": "Linux File Owner on Store Creation",
+                            "Required": false,
+                            "DependsOn": "",
+                            "Type": "String",
+                            "DefaultValue": "",
+                            "Description": "The LinuxFileOwnerOnStoreCreation field should contain a valid user ID recognized by the destination Linux server, optionally followed by a colon and a group ID if the group owner differs. Example: 'userID' or 'userID:groupID'."
+                        },
+                        {
+                            "Name": "SudoImpersonatingUser",
+                            "DisplayName": "Sudo Impersonating User",
+                            "Required": false,
+                            "DependsOn": "",
+                            "Type": "String",
+                            "DefaultValue": "",
+                            "Description": "The SudoImpersonatingUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'."
+                        },
+                        {
+                            "Name": "IsTrustStore",
+                            "DisplayName": "Trust Store",
+                            "Required": false,
+                            "DependsOn": "",
+                            "Type": "Bool",
+                            "DefaultValue": "false",
+                            "Description": "The IsTrustStore field should contain a boolean value ('true' or 'false') indicating whether the store will be identified as a trust store, which can hold multiple certificates without private keys. Example: 'true' for a trust store or 'false' for a store with a single certificate and private key."
+                        },
+                        {
+                            "Name": "IncludesChain",
+                            "DisplayName": "Store Includes Chain",
+                            "Required": false,
+                            "DependsOn": "",
+                            "Type": "Bool",
+                            "DefaultValue": "false",
+                            "Description": "The IncludesChain field should contain a boolean value ('true' or 'false') indicating whether the certificate store includes the full certificate chain along with the end entity certificate. Example: 'true' to include the full chain or 'false' to exclude it."
+                        },
+                        {
+                            "Name": "SeparatePrivateKeyFilePath",
+                            "DisplayName": "Separate Private Key File Location",
+                            "Required": false,
+                            "DependsOn": "",
+                            "Type": "String",
+                            "DefaultValue": "",
+                            "Description": "The SeparatePrivateKeyFilePath field should contain the full path and file name where the separate private key file will be stored if it is to be kept outside the main certificate file. Example: '/path/to/privatekey.pem'."
+                        },
+                        {
+                            "Name": "IsRSAPrivateKey",
+                            "DisplayName": "Is RSA Private Key",
+                            "Required": false,
+                            "DependsOn": "",
+                            "Type": "Bool",
+                            "DefaultValue": "false",
+                            "Description": "The IsRSAPrivateKey field should contain a boolean value ('true' or 'false') indicating whether the private key is in PKCS#1 RSA format. Example: 'true' for a PKCS#1 RSA private key or 'false' for a PKCS#8 private key."
+                        },
+                        {
+                            "Name": "IgnorePrivateKeyOnInventory",
+                            "DisplayName": "Ignore Private Key On Inventory",
+                            "Required": false,
+                            "DependsOn": "",
+                            "Type": "Bool",
+                            "DefaultValue": "false",
+                            "Description": "The IgnorePrivateKeyOnInventory field should contain a boolean value ('true' or 'false') indicating whether to ignore the private key during inventory, which will make the store inventory-only and return all certificates without private key entries. Example: 'true' to ignore the private key or 'false' to include it."
+                        }
+                    ],
+                    "EntryParameters": [],
+                    "ClientMachineDescription": "The Client Machine field should contain the DNS name or IP address of the remote orchestrated server for Linux orchestrated servers, formatted as a URL (protocol://dns-or-ip:port) for Windows orchestrated servers, or '1.1.1.1|LocalMachine' for local agents. Example: 'https://myserver.mydomain.com:5986' or '1.1.1.1|LocalMachine' for local access.",
+                    "StorePathDescription": "The Store Path field should contain the full path and file name, including file extension if applicable, beginning with a forward slash (/) for Linux orchestrated servers or a drive letter (i.e., c:\\folder\\path\\storename.ext) for Windows orchestrated servers. Example: '/folder/path/storename.pem' or 'c:\\folder\\path\\storename.pem'."
+                },
+                {
+                    "Name": "RFPkcs12",
+                    "ShortName": "RFPkcs12",
+                    "Capability": "RFPkcs12",
+                    "ServerRequired": true,
+                    "BlueprintAllowed": false,
+                    "CustomAliasAllowed": "Required",
+                    "PowerShell": false,
+                    "PrivateKeyAllowed": "Optional",
+                    "SupportedOperations": {
+                        "Add": true,
+                        "Create": true,
+                        "Discovery": true,
+                        "Enrollment": false,
+                        "Remove": true
+                    },
+                    "PasswordOptions": {
+                        "Style": "Default",
+                        "EntrySupported": false,
+                        "StoreRequired": true,
+                        "StorePassword": {
+                            "Description": "Password used to secure the Certificate Store",
+                            "IsPAMEligible": true
+                        }
+                    },
+                    "Properties": [
+                        {
+                            "Name": "ServerUsername",
+                            "DisplayName": "Server Username",
+                            "Type": "Secret",
+                            "DependsOn": "",
+                            "DefaultValue": "",
+                            "Required": false,
+                            "IsPAMEligible": true,
+                            "Description": "A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value*"
+                        },
+                        {
+                            "Name": "ServerPassword",
+                            "DisplayName": "Server Password",
+                            "Type": "Secret",
+                            "DependsOn": "",
+                            "DefaultValue": "",
+                            "Required": false,
+                            "IsPAMEligible": true,
+                            "Description": "A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value*"
+                        },
+                        {
+                            "Name": "LinuxFilePermissionsOnStoreCreation",
+                            "DisplayName": "Linux File Permissions on Store Creation",
+                            "Required": false,
+                            "DependsOn": "",
+                            "Type": "String",
+                            "DefaultValue": "",
+                            "Description": "The LinuxFilePermissionsOnStoreCreation field should contain a three-digit value between 000 and 777 representing the Linux file permissions to be set for the certificate store upon creation. Example: '600' or '755'."
+                        },
+                        {
+                            "Name": "LinuxFileOwnerOnStoreCreation",
+                            "DisplayName": "Linux File Owner on Store Creation",
+                            "Required": false,
+                            "DependsOn": "",
+                            "Type": "String",
+                            "DefaultValue": "",
+                            "Description": "The LinuxFileOwnerOnStoreCreation field should contain a valid user ID recognized by the destination Linux server, optionally followed by a colon and a group ID if the group owner differs. Example: 'userID' or 'userID:groupID'."
+                        },
+                        {
+                            "Name": "SudoImpersonatingUser",
+                            "DisplayName": "Sudo Impersonating User",
+                            "Required": false,
+                            "DependsOn": "",
+                            "Type": "String",
+                            "DefaultValue": "",
+                            "Description": "The SudoImpersonatingUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'."
+                        }
+                    ],
+                    "EntryParameters": [],
+                    "ClientMachineDescription": "The Client Machine field should contain the DNS name or IP address of the remote orchestrated server for Linux orchestrated servers, formatted as a URL (protocol://dns-or-ip:port) for Windows orchestrated servers, or '1.1.1.1|LocalMachine' for local agents. Example: 'https://myserver.mydomain.com:5986' or '1.1.1.1|LocalMachine' for local access.",
+                    "StorePathDescription": "The Store Path field should contain the full path and file name, including file extension if applicable, beginning with a forward slash (/) for Linux orchestrated servers or a drive letter (i.e., c:\\folder\\path\\storename.p12) for Windows orchestrated servers. Example: '/folder/path/storename.p12' or 'c:\\folder\\path\\storename.p12'."
+                },
+                {
+                    "Name": "RFDER",
+                    "ShortName": "RFDER",
+                    "Capability": "RFDER",
+                    "ServerRequired": true,
+                    "BlueprintAllowed": false,
+                    "CustomAliasAllowed": "Forbidden",
+                    "PowerShell": false,
+                    "PrivateKeyAllowed": "Optional",
+                    "SupportedOperations": {
+                        "Add": true,
+                        "Create": true,
+                        "Discovery": true,
+                        "Enrollment": false,
+                        "Remove": true
+                    },
+                    "PasswordOptions": {
+                        "Style": "Default",
+                        "EntrySupported": false,
+                        "StoreRequired": true,
+                        "StorePassword": {
+                            "Description": "Password used to secure the Certificate Store",
+                            "IsPAMEligible": true
+                        }
+                    },
+                    "Properties": [
+                        {
+                            "Name": "ServerUsername",
+                            "DisplayName": "Server Username",
+                            "Type": "Secret",
+                            "DependsOn": "",
+                            "DefaultValue": "",
+                            "Required": false,
+                            "IsPAMEligible": true,
+                            "Description": "A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value*"
+                        },
+                        {
+                            "Name": "ServerPassword",
+                            "DisplayName": "Server Password",
+                            "Type": "Secret",
+                            "DependsOn": "",
+                            "DefaultValue": "",
+                            "Required": false,
+                            "IsPAMEligible": true,
+                            "Description": "A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value*"
+                        },
+                        {
+                            "Name": "LinuxFilePermissionsOnStoreCreation",
+                            "DisplayName": "Linux File Permissions on Store Creation",
+                            "Required": false,
+                            "DependsOn": "",
+                            "Type": "String",
+                            "DefaultValue": "",
+                            "Description": "The LinuxFilePermissionsOnStoreCreation field should contain a three-digit value between 000 and 777 representing the Linux file permissions to be set for the certificate store upon creation. Example: '600' or '755'."
+                        },
+                        {
+                            "Name": "LinuxFileOwnerOnStoreCreation",
+                            "DisplayName": "Linux File Owner on Store Creation",
+                            "Required": false,
+                            "DependsOn": "",
+                            "Type": "String",
+                            "DefaultValue": "",
+                            "Description": "The LinuxFileOwnerOnStoreCreation field should contain a valid user ID recognized by the destination Linux server, optionally followed by a colon and a group ID if the group owner differs. Example: 'userID' or 'userID:groupID'."
+                        },
+                        {
+                            "Name": "SudoImpersonatingUser",
+                            "DisplayName": "Sudo Impersonating User",
+                            "Required": false,
+                            "DependsOn": "",
+                            "Type": "String",
+                            "DefaultValue": "",
+                            "Description": "The SudoImpersonatingUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'."
+                        },
+                        {
+                            "Name": "SeparatePrivateKeyFilePath",
+                            "DisplayName": "Separate Private Key File Location",
+                            "Required": false,
+                            "DependsOn": "",
+                            "Type": "String",
+                            "DefaultValue": "",
+                            "Description": "The SeparatePrivateKeyFilePath field should contain the full path and file name where the separate private key file will be stored if it is to be kept outside the main certificate file. Example: '/path/to/privatekey.der'."
+                        }
+                    ],
+                    "EntryParameters": [],
+                    "ClientMachineDescription": "The Client Machine field should contain the DNS name or IP address of the remote orchestrated server for Linux orchestrated servers, formatted as a URL (protocol://dns-or-ip:port) for Windows orchestrated servers, or '1.1.1.1|LocalMachine' for local agents. Example: 'https://myserver.mydomain.com:5986' or '1.1.1.1|LocalMachine' for local access.",
+                    "StorePathDescription": "The Store Path field should contain the full path and file name, including file extension if applicable, beginning with a forward slash (/) for Linux orchestrated servers or a drive letter (i.e., c:\\folder\\path\\storename.der) for Windows orchestrated servers. Example: '/folder/path/storename.der' or 'c:\\folder\\path\\storename.der'."
+                },
+                {
+                    "Name": "RFKDB",
+                    "ShortName": "RFKDB",
+                    "Capability": "RFKDB",
+                    "ServerRequired": true,
+                    "BlueprintAllowed": false,
+                    "CustomAliasAllowed": "Required",
+                    "PowerShell": false,
+                    "PrivateKeyAllowed": "Optional",
+                    "SupportedOperations": {
+                        "Add": true,
+                        "Create": true,
+                        "Discovery": true,
+                        "Enrollment": false,
+                        "Remove": true
+                    },
+                    "PasswordOptions": {
+                        "Style": "Default",
+                        "EntrySupported": false,
+                        "StoreRequired": true,
+                        "StorePassword": {
+                            "Description": "Password used to secure the Certificate Store",
+                            "IsPAMEligible": true
+                        }
+                    },
+                    "Properties": [
+                        {
+                            "Name": "ServerUsername",
+                            "DisplayName": "Server Username",
+                            "Type": "Secret",
+                            "DependsOn": "",
+                            "DefaultValue": "",
+                            "Required": false,
+                            "IsPAMEligible": true,
+                            "Description": "A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value*"
+                        },
+                        {
+                            "Name": "ServerPassword",
+                            "DisplayName": "Server Password",
+                            "Type": "Secret",
+                            "DependsOn": "",
+                            "DefaultValue": "",
+                            "Required": false,
+                            "IsPAMEligible": true,
+                            "Description": "A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value*"
+                        },
+                        {
+                            "Name": "LinuxFilePermissionsOnStoreCreation",
+                            "DisplayName": "Linux File Permissions on Store Creation",
+                            "Required": false,
+                            "DependsOn": "",
+                            "Type": "String",
+                            "DefaultValue": "",
+                            "Description": "The LinuxFilePermissionsOnStoreCreation field should contain a three-digit value between 000 and 777 representing the Linux file permissions to be set for the certificate store upon creation. Example: '600' or '755'."
+                        },
+                        {
+                            "Name": "LinuxFileOwnerOnStoreCreation",
+                            "DisplayName": "Linux File Owner on Store Creation",
+                            "Required": false,
+                            "DependsOn": "",
+                            "Type": "String",
+                            "DefaultValue": "",
+                            "Description": "The LinuxFileOwnerOnStoreCreation field should contain a valid user ID recognized by the destination Linux server, optionally followed by a colon and a group ID if the group owner differs. Example: 'userID' or 'userID:groupID'."
+                        },
+                        {
+                            "Name": "SudoImpersonatingUser",
+                            "DisplayName": "Sudo Impersonating User",
+                            "Required": false,
+                            "DependsOn": "",
+                            "Type": "String",
+                            "DefaultValue": "",
+                            "Description": "The SudoImpersonatingUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'."
+                        }
+                    ],
+                    "EntryParameters": [],
+                    "ClientMachineDescription": "The Client Machine field should contain the DNS name or IP address of the remote orchestrated server for Linux orchestrated servers, formatted as a URL (protocol://dns-or-ip:port) for Windows orchestrated servers, or '1.1.1.1|LocalMachine' for local agents. Example: 'https://myserver.mydomain.com:5986' or '1.1.1.1|LocalMachine' for local access.",
+                    "StorePathDescription": "The Store Path field should contain the full path and file name, including file extension if applicable, beginning with a forward slash (/) for Linux orchestrated servers or a drive letter (i.e., c:\\folder\\path\\storename.kdb) for Windows orchestrated servers. Example: '/folder/path/storename.kdb' or 'c:\\folder\\path\\storename.kdb'."
+                },
+                {
+                    "Name": "RFORA",
+                    "ShortName": "RFORA",
+                    "Capability": "RFORA",
+                    "ServerRequired": true,
+                    "BlueprintAllowed": false,
+                    "CustomAliasAllowed": "Required",
+                    "PowerShell": false,
+                    "PrivateKeyAllowed": "Optional",
+                    "SupportedOperations": {
+                        "Add": true,
+                        "Create": true,
+                        "Discovery": true,
+                        "Enrollment": false,
+                        "Remove": true
+                    },
+                    "PasswordOptions": {
+                        "Style": "Default",
+                        "EntrySupported": false,
+                        "StoreRequired": true,
+                        "StorePassword": {
+                            "Description": "Password used to secure the Certificate Store",
+                            "IsPAMEligible": true
+                        }
+                    },
+                    "Properties": [
+                        {
+                            "Name": "ServerUsername",
+                            "DisplayName": "Server Username",
+                            "Type": "Secret",
+                            "DependsOn": "",
+                            "DefaultValue": "",
+                            "Required": false,
+                            "IsPAMEligible": true,
+                            "Description": "A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value*"
+                        },
+                        {
+                            "Name": "ServerPassword",
+                            "DisplayName": "Server Password",
+                            "Type": "Secret",
+                            "DependsOn": "",
+                            "DefaultValue": "",
+                            "Required": false,
+                            "IsPAMEligible": true,
+                            "Description": "A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value*"
+                        },
+                        {
+                            "Name": "LinuxFilePermissionsOnStoreCreation",
+                            "DisplayName": "Linux File Permissions on Store Creation",
+                            "Required": false,
+                            "DependsOn": "",
+                            "Type": "String",
+                            "DefaultValue": "",
+                            "Description": "The LinuxFilePermissionsOnStoreCreation field should contain a three-digit value between 000 and 777 representing the Linux file permissions to be set for the certificate store upon creation. Example: '600' or '755'."
+                        },
+                        {
+                            "Name": "LinuxFileOwnerOnStoreCreation",
+                            "DisplayName": "Linux File Owner on Store Creation",
+                            "Required": false,
+                            "DependsOn": "",
+                            "Type": "String",
+                            "DefaultValue": "",
+                            "Description": "The LinuxFileOwnerOnStoreCreation field should contain a valid user ID recognized by the destination Linux server, optionally followed by a colon and a group ID if the group owner differs. Example: 'userID' or 'userID:groupID'."
+                        },
+                        {
+                            "Name": "SudoImpersonatingUser",
+                            "DisplayName": "Sudo Impersonating User",
+                            "Required": false,
+                            "DependsOn": "",
+                            "Type": "String",
+                            "DefaultValue": "",
+                            "Description": "The SudoImpersonatingUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'."
+                        },
+                        {
+                            "Name": "WorkFolder",
+                            "DisplayName": "Location to use for creation/removal of work files",
+                            "Required": true,
+                            "DependsOn": "",
+                            "Type": "String",
+                            "DefaultValue": "",
+                            "Description": "The WorkFolder field should contain the path on the managed server where temporary work files can be created, modified, and deleted during Inventory and Management jobs. Example: '/path/to/workfolder'."
+                        }
+                    ],
+                    "EntryParameters": [],
+                    "ClientMachineDescription": "The Client Machine field should contain the DNS name or IP address of the remote orchestrated server for Linux orchestrated servers, formatted as a URL (protocol://dns-or-ip:port) for Windows orchestrated servers, or '1.1.1.1|LocalMachine' for local agents. Example: 'https://myserver.mydomain.com:5986' or '1.1.1.1|LocalMachine' for local access.",
+                    "StorePathDescription": "The Store Path field should contain the full path and file name of the Oracle Wallet, including the 'eWallet.p12' file name by convention. Example: '/path/to/eWallet.p12' or 'c:\\path\\to\\eWallet.p12'."
+                }
+            ]
         }
-      }
     }
-  }
 }
-
