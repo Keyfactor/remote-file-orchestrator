@@ -1,5 +1,5 @@
 v2.8.1
-- Logging bug fix
+- Fixed issue were sensitive information could be exposed at debug logging level
 
 v2.8.0
 - Added new custom field - Remove Root Certificate from Chain - to allow adding certificate entries with the root CA certificate removed from the chain.
