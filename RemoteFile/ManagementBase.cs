@@ -30,7 +30,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             ILogger logger = LogHandler.GetClassLogger(this.GetType());
             logger.LogDebug($"Begin {config.Capability} for job id {config.JobId}...");
             logger.LogDebug($"Server: {config.CertificateStoreDetails.ClientMachine}");
-            logger.LogDebug($"Store Path: {config.CertificateStoreDetails.StorePath}");
+            logger.LogDebug($"Store Path: {config.CertificateStoreDetails.StorePath}"); 
             logger.LogDebug($"Job Properties:");
             foreach (KeyValuePair<string, object> keyValue in config.JobProperties == null ? new Dictionary<string, object>() : config.JobProperties)
             {
