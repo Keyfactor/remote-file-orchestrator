@@ -1,3 +1,6 @@
+v2.8.1
+- Logging bug fix
+
 v2.8.0
 - Added new custom field - Remove Root Certificate from Chain - to allow adding certificate entries with the root CA certificate removed from the chain.
 - Added SSH KeyboardInteractive Authentication support if Password Authentication is not enabled.
