@@ -31,8 +31,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             logger.LogDebug($"Begin {config.Capability} for job id {config.JobId}...");
             logger.LogDebug($"Server: { config.CertificateStoreDetails.ClientMachine }");
             logger.LogDebug($"Store Path: { config.CertificateStoreDetails.StorePath }");
-            logger.LogDebug($"Store Properties: {config.CertificateStoreDetails.Properties.ToString()}");
-            logger.LogDebug($"Job Properties:");
+            logger.LogDebug($"Job Properties:"); 
             foreach (KeyValuePair<string, object> keyValue in config.JobProperties ?? new Dictionary<string,object>())
             {
                 logger.LogDebug($"    {keyValue.Key}: {keyValue.Value}");
