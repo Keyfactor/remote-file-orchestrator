@@ -153,7 +153,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             if (DiscoveredStores != null)
                 return DiscoveredStores;
 
-            return ServerType == ServerTypeEnum.Linux ? FindStoresLinux(paths, extensions, files, ignoredDirs, includeSymLinks) : FindStoresWindows(paths, extensions, files, ignoredDirs);
+            return ServerType == ServerTypeEnum.Linux ? FindStoresLinux(paths, extensions, files, ignoredDirs, includeSymLinks) : FindStoresWindows(paths, extensions, files);
         }
 
         internal List<X509Certificate2Collection> GetCertificateChains()

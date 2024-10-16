@@ -16,6 +16,7 @@ using Keyfactor.Orchestrators.Common.Enums;
 
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using static Keyfactor.PKI.PKIConstants.Microsoft;
 
 namespace Keyfactor.Extensions.Orchestrator.RemoteFile
 {
@@ -68,6 +69,11 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
                     filesTosearch = new string[] { "*" };
 
                 locations = certificateStore.FindStores(directoriesToSearch, extensionsToSearch, filesTosearch, ignoredDirs, includeSymLinks);
+
+                foreach (string ignoredDir in ignoredDirs)
+                {
+                    locations = locations.Where(p => !p.StartsWith(ignoredDir) && !p.ToLower().StartsWith("find:")).ToList();
+                }
             }
             catch (Exception ex)
             {
