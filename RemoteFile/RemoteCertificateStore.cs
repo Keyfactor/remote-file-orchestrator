@@ -137,7 +137,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             logger.MethodExit(LogLevel.Debug);
         }
 
-        internal List<string> FindStores(string[] paths, string[] extensions, string[] files, bool includeSymLinks)
+        internal List<string> FindStores(string[] paths, string[] extensions, string[] files, string[] ignoredDirs, bool includeSymLinks)
         {
             logger.MethodEntry(LogLevel.Debug);
 
@@ -153,7 +153,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             if (DiscoveredStores != null)
                 return DiscoveredStores;
 
-            return ServerType == ServerTypeEnum.Linux ? FindStoresLinux(paths, extensions, files, includeSymLinks) : FindStoresWindows(paths, extensions, files);
+            return ServerType == ServerTypeEnum.Linux ? FindStoresLinux(paths, extensions, files, ignoredDirs, includeSymLinks) : FindStoresWindows(paths, extensions, files);
         }
 
         internal List<X509Certificate2Collection> GetCertificateChains()
@@ -511,7 +511,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             return regex.IsMatch(value);
         }
 
-        private List<string> FindStoresLinux(string[] paths, string[] extensions, string[] fileNames, bool includeSymLinks)
+        private List<string> FindStoresLinux(string[] paths, string[] extensions, string[] fileNames, string[] ignoredDirs, bool includeSymLinks)
         {
             logger.MethodEntry(LogLevel.Debug);
             
@@ -519,6 +519,12 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             {
                 string concatPaths = string.Join(" ", paths);
                 string command = $"find {concatPaths} -path /proc -prune -o ";
+
+                foreach (string ignoredDir in ignoredDirs)
+                {
+                    command += $"-path {ignoredDir} -prune -o ";
+                }
+
                 if (!includeSymLinks)
                     command += " -type f ";
 
