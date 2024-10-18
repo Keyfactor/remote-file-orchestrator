@@ -1,3 +1,12 @@
+v2.9.0
+- Modify Discovery on Linux servers to filter out ignored folders when searching using the Find command rather than eliminating them after.  This was done to eliminate permissions errors.
+- Deprecated isRSAPrivateKey custom property on RFPEM certificate store type.  Integration now reads the existing private key to determin if it is formatted as PKCS#1 or PKCS#8 and, on renewal, keeps the format the same.  For new PEM certificate stores/certificates, PKCS#8 will always be used.  PLEASE NOTE, for existing certificate stores that already have isRSAPrivateKey defined, this setting will be ignored.
+- Modify to create 2 builds - one for .net6 and one for .net8
+- Update README to new DocTool format
+
+v2.8.1
+- Fixed issue were sensitive information could be exposed at debug logging level
+
 v2.8.0
 - Added new custom field - Remove Root Certificate from Chain - to allow adding certificate entries with the root CA certificate removed from the chain.
 - Added SSH KeyboardInteractive Authentication support if Password Authentication is not enabled.
