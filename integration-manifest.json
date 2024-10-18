@@ -113,7 +113,7 @@
                         "EntrySupported": false,
                         "StoreRequired": true,
                         "StorePassword": {
-                            "Description": "Password used to secure the Certificate Store",
+                            "Description": "Password used to secure the Certificate Store.  For stores with PKCS#8 private keys, set the password for encrypted private keys (BEGIN ENCRYPTED PRIVATE KEY) or 'No Value' for unencrypted private keys (BEGIN PRIVATE KEY).  If managing a store with a PKCS#1 private key (BEGIN RSA PRIVATE KEY), this value MUST be set to 'No Value'",
                             "IsPAMEligible": true
                         }
                     },
@@ -191,15 +191,6 @@
                             "Type": "String",
                             "DefaultValue": "",
                             "Description": "The SeparatePrivateKeyFilePath field should contain the full path and file name where the separate private key file will be stored if it is to be kept outside the main certificate file. Example: '/path/to/privatekey.pem'."
-                        },
-                        {
-                            "Name": "IsRSAPrivateKey",
-                            "DisplayName": "Is RSA Private Key",
-                            "Required": false,
-                            "DependsOn": "",
-                            "Type": "Bool",
-                            "DefaultValue": "false",
-                            "Description": "The IsRSAPrivateKey field should contain a boolean value ('true' or 'false') indicating whether the private key is in PKCS#1 RSA format. Example: 'true' for a PKCS#1 RSA private key or 'false' for a PKCS#8 private key."
                         },
                         {
                             "Name": "IgnorePrivateKeyOnInventory",
