@@ -9,7 +9,7 @@
 
 namespace Keyfactor.Extensions.Orchestrator.RemoteFile.Models
 {
-    class SerializedStoreInfo : X509Certificate2
+    internal class SerializedStoreInfo
     {
         public string FilePath { get; set; }
 
