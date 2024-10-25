@@ -60,7 +60,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
                         privateKeyFile = new PrivateKeyFile(ms);
                     }
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     using (MemoryStream ms = new MemoryStream(Encoding.ASCII.GetBytes(ConvertToPKCS1(serverPassword))))
                     {
@@ -354,24 +354,27 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
             _logger.MethodEntry(LogLevel.Debug);
             _logger.LogDebug($"DoesFileExist: {path}");
             
-            using (SftpClient client = new SftpClient(Connection))
-            {
-                try
-                {
-                    client.Connect();
-                    string existsPath = FormatFTPPath(path, !IsStoreServerLinux);
-                    bool exists = client.Exists(existsPath);
-                    _logger.LogDebug(existsPath);
+            string rtn = RunCommand($"ls {path} >> /dev/null 2>&1 && echo True || echo False", null, ApplicationSettings.UseSudo, null);
+            return Convert.ToBoolean(rtn);
+            
+            //using (SftpClient client = new SftpClient(Connection))
+            //{
+            //    try
+            //    {
+            //        client.Connect();
+            //        string existsPath = FormatFTPPath(path, !IsStoreServerLinux);
+            //        bool exists = client.Exists(existsPath);
+            //        _logger.LogDebug(existsPath);
 
-                    _logger.MethodExit(LogLevel.Debug);
+            //        _logger.MethodExit(LogLevel.Debug);
 
-                    return exists;
-                }
-                finally
-                {
-                    client.Disconnect();
-                }
-            }
+            //        return exists;
+            //    }
+            //    finally
+            //    {
+            //        client.Disconnect();
+            //    }
+            //}
         }
 
         public override void RemoveCertificateFile(string path, string fileName)
