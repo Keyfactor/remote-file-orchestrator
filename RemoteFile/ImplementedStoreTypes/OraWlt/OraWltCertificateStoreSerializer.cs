@@ -59,9 +59,9 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.OraWlt
                 JKSCertificateStoreSerializer serializer = new JKSCertificateStoreSerializer(String.Empty);
                 store = serializer.DeserializeRemoteCertificateStore(storeBytes, $"{WorkFolder}{tempStoreFileJKS}", storePassword, remoteHandler, isInventory);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
+                throw;
             }
             finally
             {
@@ -101,9 +101,9 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.OraWlt
                 storeInfo.Add(new SerializedStoreInfo() { Contents = storeContents, FilePath = storePath+storeFileName });
                 return storeInfo;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
+                throw;
             }
             finally
             {
