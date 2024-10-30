@@ -158,7 +158,8 @@ Before installing the Remote File Universal Orchestrator extension, we recommend
 |---|---|
 |echo|Used to append a newline and terminate all commands sent.|
 |find|Used by Discovery jobs to locate potential certificate stores on the file system.|
-|cp|Used by Inventory and Management Add/Remove jobs to copy the certificate store file to a temporary file (only when an alternate download folder has been configured).|
+|cp|Used by Inventory and Management Add/Remove/Create jobs to determine if certificate store file exists.|
+|ls|Used by Management Add/Remove jobs to copy the certificate store file to a temporary file (only when an alternate download folder has been configured).|
 |chown|Used by the Inventory and Management Add/Remove jobs to set the permissions on the temporary file (only when an alternate download folder has been configured).|
 |tee|Used by Management Add/Remove jobs to copy the temporary uploaded certificate file to the certificate store file (only when an alternate upload folder has been configured).|
 |rm|Used by Inventory and Management Add/Remove jobs to remove temporary files (only when an alternate upload/download folder has been configured).|
