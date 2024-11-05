@@ -1,3 +1,6 @@
+v2.9.1
+- Big Fix: Use AES encryption when creating Pkcs12 files
+
 v2.9.0
 - Modify Discovery on Linux servers to filter out ignored folders when searching using the Find command rather than eliminating them after.  This was done to eliminate permissions errors.
 - Deprecated isRSAPrivateKey custom property on RFPEM certificate store type.  Integration now reads the existing private key to determin if it is formatted as PKCS#1 or PKCS#8 and, on renewal, keeps the format the same.  For new PEM certificate stores/certificates, PKCS#8 will always be used.  PLEASE NOTE, for existing certificate stores that already have isRSAPrivateKey defined, this setting will be ignored.
