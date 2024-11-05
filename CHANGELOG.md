@@ -1,5 +1,5 @@
 v2.9.1
-- Big Fix: Use AES encryption when creating Pkcs12 files
+- Bug Fix: Use AES encryption when creating PKCS12 files instead of less secure defaults
 
 v2.9.0
 - Modify Discovery on Linux servers to filter out ignored folders when searching using the Find command rather than eliminating them after.  This was done to eliminate permissions errors.
