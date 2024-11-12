@@ -50,11 +50,14 @@ Please refer to the READMEs for each supported store type for more information o
 |-----|-----|------|
 |Orchestrated Server hosting certificate store(s) on remote Windows server|WinRM connection | SSH connection |
 |Orchestrated Server hosting certificate store(s) on remote Linux server| SSH connection | SSH connection |
-|Certificate store(s) on same server as orchestrator service (Agent)| WinRM connection or local file system | SSH connection or local file system |
+|Certificate store(s) on same server as orchestrator service (Agent)| WinRM connection or local file system | SSH connection or local file system |  
+
+Note: when creating, adding certificates to, or removing certificates from any store managed by RemoteFile, the destination store file will be recreated.  When this occurs current AES encryption algorithms will be used for affected certificates and certificate store files.
 
 The Remote File Universal Orchestrator extension implements 6 Certificate Store Types. Depending on your use case, you may elect to use one, or all of these Certificate Store Types. Descriptions of each are provided below.
 
 <details><summary>RFJKS (RFJKS)</summary>
+
 
 ### RFJKS
 
@@ -67,6 +70,7 @@ Use cases supported:
 </details>
 
 <details><summary>RFPEM (RFPEM)</summary>
+
 
 ### RFPEM
 
@@ -83,6 +87,7 @@ NOTE: PEM stores may only have one private key (internal or external) associated
 </details>
 
 <details><summary>RFPkcs12 (RFPkcs12)</summary>
+
 
 ### RFPkcs12
 
@@ -101,6 +106,7 @@ Use cases not supported:
 
 <details><summary>RFDER (RFDER)</summary>
 
+
 ### RFDER
 
 The RFDER store type can be used to manage DER encoded files.
@@ -111,6 +117,7 @@ Use cases supported:
 </details>
 
 <details><summary>RFKDB (RFKDB)</summary>
+
 
 ### RFKDB
 
@@ -123,6 +130,7 @@ Use cases supported:
 </details>
 
 <details><summary>RFORA (RFORA)</summary>
+
 
 ### RFORA
 
@@ -1410,7 +1418,7 @@ If running as an agent (accessing stores on the server where the Universal Orche
 
 ## Developer Notes
 
-The Remote File Orchestrator Extension is meant to be extended to be used for other file based certificate store types than the ones referenced above.  The advantage to extending this integration rather than creating a new one is that the configuration, remoting, and Inventory/Management/Discovery logic is already written.  The developer needs to only implement a few classes and write code to convert the destired file based store to a common format.  This section describes the steps necessary to add additional store/file types.  Please note that familiarity with the [.Net Core BouncyCastle cryptography library](https://github.com/bcgit/bc-csharp) is a prerequisite for adding additional supported file/store types.  
+The Remote File Orchestrator Extension is designed to be highly extensible, enabling its use with various file-based certificate stores beyond the specific implementations currently referenced above.  The advantage to extending this integration rather than creating a new one is that the configuration, remoting, and Inventory/Management/Discovery logic is already written.  The developer needs to only implement a few classes and write code to convert the destired file based store to a common format.  This section describes the steps necessary to add additional store/file types.  Please note that familiarity with the [.Net Core BouncyCastle cryptography library](https://github.com/bcgit/bc-csharp) is a prerequisite for adding additional supported file/store types.  
 
 Steps to create a new supported file based certificate store type:
 
