@@ -21,6 +21,8 @@ Please refer to the READMEs for each supported store type for more information o
 |Orchestrated Server hosting certificate store(s) on remote Linux server| SSH connection | SSH connection |
 |Certificate store(s) on same server as orchestrator service (Agent)| WinRM connection or local file system | SSH connection or local file system |  
 
+Note: when creating, adding certificates to, or removing certificates from any store managed by RemoteFile, the destination store file will be recreated.  When this occurs current AES encryption algorithms will be used for affected certificates and certificate store files.
+
 
 ## Requirements
 
