@@ -1,4 +1,4 @@
-v2.9.1
+v2.9.1 
 - Bug Fix: Use AES encryption when creating PKCS12 files instead of less secure defaults
 
 v2.9.0
