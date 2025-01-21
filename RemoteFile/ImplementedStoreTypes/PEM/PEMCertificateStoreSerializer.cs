@@ -33,7 +33,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.PEM
     class PEMCertificateStoreSerializer : ICertificateStoreSerializer
     {
         string[] PrivateKeyDelimetersPkcs8 = new string[] { "-----BEGIN PRIVATE KEY-----", "-----BEGIN ENCRYPTED PRIVATE KEY-----" };
-        string[] PrivateKeyDelimetersPkcs1 = new string[] { "-----BEGIN RSA PRIVATE KEY-----" };
+        string[] PrivateKeyDelimetersRSA = new string[] { "-----BEGIN RSA PRIVATE KEY-----", "-----BEGIN ENCRYPTED RSA PRIVATE KEY-----", "-----BEGIN RSA ENCRYPTED PRIVATE KEY-----" };
         string[] PrivateKeyDelimetersEC = new string[] { "-----BEGIN EC PRIVATE KEY-----", "-----BEGIN EC ENCRYPTED PRIVATE KEY-----", "-----BEGIN ENCRYPTED EC PRIVATE KEY-----" };
         string CertDelimBeg = "-----BEGIN CERTIFICATE-----";
         string CertDelimEnd = "-----END CERTIFICATE-----";
@@ -41,7 +41,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.PEM
         private enum PrivateKeyTypeEnum
         {
             EC,
-            PKCS1,
+            RSA,
             PKCS8
         }
 
@@ -79,9 +79,6 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.PEM
             {
                 PrivateKeyTypeEnum privateKeyType;
                 AsymmetricKeyEntry keyEntry = GetPrivateKey(storeContents, storePassword ?? string.Empty, remoteHandler, out privateKeyType);
-
-                if (privateKeyType == PrivateKeyTypeEnum.PKCS1 && !string.IsNullOrEmpty(storePassword))
-                    throw new RemoteFileException($"Certificate store with an RSA Private Key cannot contain a store password.  Invalid store format not supported.");
 
                 store.SetKeyEntry(CertificateConverterFactory.FromBouncyCastleCertificate(certificates[0].Certificate).ToX509Certificate2().Thumbprint, keyEntry, certificates);
             }
@@ -121,15 +118,9 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.PEM
             else
             {
                 string storeContents = Encoding.ASCII.GetString(remoteHandler.DownloadCertificateFile(storePath + storeFileName));
-                PrivateKeyTypeEnum privateKeyType = PrivateKeyTypeEnum.PKCS8;
-                try
-                {
-                    GetPrivateKey(storeContents, storePassword, remoteHandler, out privateKeyType);
-                }
-                catch (RemoteFileException) { }
 
-                if (privateKeyType == PrivateKeyTypeEnum.PKCS1 && !string.IsNullOrEmpty(storePassword))
-                    throw new RemoteFileException($"Certificate store with an RSA Private Key cannot contain a store password.  Invalid store format not supported.");
+                PrivateKeyTypeEnum privateKeyType = PrivateKeyTypeEnum.PKCS8;
+                GetPrivateKey(storeContents, storePassword, remoteHandler, out privateKeyType);
 
                 bool keyEntryProcessed = false;
                 foreach (string alias in certificateStore.Aliases)
@@ -144,12 +135,18 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.PEM
 
                     X509CertificateEntry[] chainEntries = certificateStore.GetCertificateChain(alias);
                     CertificateConverter certConverter = CertificateConverterFactory.FromBouncyCastleCertificate(chainEntries[0].Certificate);
-                    ECDiffieHellman
-                    AsymmetricKeyParameter privateKey = certificateStore.GetKey(alias).Key;
-                    X509CertificateEntry[] certEntries = certificateStore.GetCertificateChain(alias);
-                    AsymmetricKeyParameter publicKey = certEntries[0].Certificate.GetPublicKey();
 
-                    if (isRSAPrivateKey)
+                    AsymmetricKeyParameter privateKey = certificateStore.GetKey(alias).Key;
+                    AsymmetricKeyParameter publicKey = chainEntries[0].Certificate.GetPublicKey();
+
+                    if (privateKeyType == PrivateKeyTypeEnum.PKCS8)
+                    {
+                        PrivateKeyConverter keyConverter = PrivateKeyConverterFactory.FromBCKeyPair(privateKey, publicKey, false);
+
+                        byte[] privateKeyBytes = string.IsNullOrEmpty(storePassword) ? keyConverter.ToPkcs8BlobUnencrypted() : keyConverter.ToPkcs8Blob(storePassword);
+                        keyString = PemUtilities.DERToPEM(privateKeyBytes, string.IsNullOrEmpty(storePassword) ? PemUtilities.PemObjectType.PrivateKey : PemUtilities.PemObjectType.EncryptedPrivateKey);
+                    }
+                    else
                     {
                         TextWriter textWriter = new StringWriter();
                         PemWriter pemWriter = new PemWriter(textWriter);
@@ -157,13 +154,6 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.PEM
                         pemWriter.Writer.Flush();
 
                         keyString = textWriter.ToString();
-                    }
-                    else
-                    {
-                        PrivateKeyConverter keyConverter = PrivateKeyConverterFactory.FromBCKeyPair(privateKey, publicKey, false);
-
-                        byte[] privateKeyBytes = string.IsNullOrEmpty(storePassword) ? keyConverter.ToPkcs8BlobUnencrypted() : keyConverter.ToPkcs8Blob(storePassword);
-                        keyString = PemUtilities.DERToPEM(privateKeyBytes, string.IsNullOrEmpty(storePassword) ? PemUtilities.PemObjectType.PrivateKey : PemUtilities.PemObjectType.EncryptedPrivateKey);
                     }
 
                     pemString = certConverter.ToPEM(true);
@@ -239,7 +229,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.PEM
             return certificateEntries.ToArray();
         }
 
-        private AsymmetricKeyEntry GetPrivateKey(string storeContents, string storePassword, IRemoteHandler remoteHandler, out PrivateKeyTypeEnum? privateKeyType)
+        private AsymmetricKeyEntry GetPrivateKey(string storeContents, string storePassword, IRemoteHandler remoteHandler, out PrivateKeyTypeEnum privateKeyType)
         {
             logger.MethodEntry(LogLevel.Debug);
 
