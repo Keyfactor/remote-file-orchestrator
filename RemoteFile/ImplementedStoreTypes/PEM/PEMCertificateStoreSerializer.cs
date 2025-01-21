@@ -33,8 +33,8 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.PEM
     class PEMCertificateStoreSerializer : ICertificateStoreSerializer
     {
         string[] PrivateKeyDelimetersPkcs8 = new string[] { "-----BEGIN PRIVATE KEY-----", "-----BEGIN ENCRYPTED PRIVATE KEY-----" };
-        string[] PrivateKeyDelimetersRSA = new string[] { "-----BEGIN RSA PRIVATE KEY-----", "-----BEGIN ENCRYPTED RSA PRIVATE KEY-----", "-----BEGIN RSA ENCRYPTED PRIVATE KEY-----" };
-        string[] PrivateKeyDelimetersEC = new string[] { "-----BEGIN EC PRIVATE KEY-----", "-----BEGIN EC ENCRYPTED PRIVATE KEY-----", "-----BEGIN ENCRYPTED EC PRIVATE KEY-----" };
+        string[] PrivateKeyDelimetersRSA = new string[] { "-----BEGIN RSA PRIVATE KEY-----" };
+        string[] PrivateKeyDelimetersEC = new string[] { "-----BEGIN EC PRIVATE KEY-----" };
         string CertDelimBeg = "-----BEGIN CERTIFICATE-----";
         string CertDelimEnd = "-----END CERTIFICATE-----";
 
@@ -122,6 +122,9 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.PEM
                 PrivateKeyTypeEnum privateKeyType = PrivateKeyTypeEnum.PKCS8;
                 GetPrivateKey(storeContents, storePassword, remoteHandler, out privateKeyType);
 
+                if (!string.IsNullOrEmpty(storePassword) && privateKeyType != PrivateKeyTypeEnum.PKCS8)
+                    throw new RemoteFileException("Error retrieving private key.  Certificate store password cannot have a non empty value if the private key is in PKCS#1 format (BEGIN [RSA|EC] PRIVATE KEY)");
+        
                 bool keyEntryProcessed = false;
                 foreach (string alias in certificateStore.Aliases)
                 {
@@ -238,70 +241,79 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.PEM
                 storeContents = Encoding.ASCII.GetString(remoteHandler.DownloadCertificateFile(SeparatePrivateKeyFilePath));
             }
 
-            privateKeyType = GetPrivateKeyType(PrivateKeyDelimetersPkcs8, storeContents, PrivateKeyTypeEnum.PKCS8) ? PrivateKeyTypeEnum.PKCS8 : null;
-            if (!privateKeyType.HasValue)
-                privateKeyType = GetPrivateKeyType(PrivateKeyDelimetersPkcs1, storeContents, PrivateKeyTypeEnum.PKCS1) ? PrivateKeyTypeEnum.PKCS1 : null;
-            if (!privateKeyType.HasValue)
-                privateKeyType = GetPrivateKeyType(PrivateKeyDelimetersEC, storeContents, PrivateKeyTypeEnum.EC) ? PrivateKeyTypeEnum.EC : null;
-
-            if (privateKeyType == null)
-            {
-                throw new RemoteFileException("Invalid or unsupported private key.");
-            }
-
+            string begDelim = string.Empty;
+            privateKeyType = GetPrivateKeyType(storeContents, out begDelim);
 
             string privateKey = string.Empty;
-            foreach (string begDelim in isRSA ? PrivateKeyDelimetersPkcs1 : PrivateKeyDelimetersPkcs8)
-            {
-                string endDelim = begDelim.Replace("BEGIN", "END");
+            string endDelim = begDelim.Replace("BEGIN", "END");
 
-                int keyStart = storeContents.IndexOf(begDelim);
-                if (keyStart == -1)
-                    continue;
-                int keyLength = storeContents.IndexOf(endDelim) + endDelim.Length - keyStart;
-                if (keyLength == -1)
-                    throw new RemoteFileException("Invalid private key: No ending private key delimiter found.");
+            int keyStart = storeContents.IndexOf(begDelim);
+            if (keyStart == -1)
+                throw new RemoteFileException("Invalid private key: No beginning private key delimiter found.");
 
-                privateKey = storeContents.Substring(keyStart, keyLength).Replace(begDelim, string.Empty).Replace(endDelim, string.Empty);
+            int keyLength = storeContents.IndexOf(endDelim) + endDelim.Length - keyStart;
+            if (keyLength == -1)
+                throw new RemoteFileException("Invalid private key: No ending private key delimiter found.");
 
-                break;
-            }
+            privateKey = storeContents.Substring(keyStart, keyLength).Replace(begDelim, string.Empty).Replace(endDelim, string.Empty);
 
             if (string.IsNullOrEmpty(privateKey))
                 throw new RemoteFileException("Invalid private key: No private key or invalid private key format found.");
 
-            PrivateKeyConverter c;
-            if (isRSA)
+            PrivateKeyConverter c = null;
+            int bytesRead;
+            switch (privateKeyType)
             {
-                RSA rsa = RSA.Create();
-                int bytesRead;
-                rsa.ImportRSAPrivateKey(Convert.FromBase64String(privateKey), out bytesRead);
-                c = PrivateKeyConverterFactory.FromNetPrivateKey(rsa, false);
+                case PrivateKeyTypeEnum.PKCS8:
+                    c = PrivateKeyConverterFactory.FromPkcs8Blob(Convert.FromBase64String(privateKey), storePassword);
+                    break;
+                case PrivateKeyTypeEnum.RSA:
+                    RSA rsa = RSA.Create();
+                    rsa.ImportRSAPrivateKey(Convert.FromBase64String(privateKey), out bytesRead);
+                    c = PrivateKeyConverterFactory.FromNetPrivateKey(rsa, false);
+                    break;
+                case PrivateKeyTypeEnum.EC:
+                    ECDiffieHellman ec = ECDiffieHellman.Create();
+                    ec.ImportECPrivateKey(Convert.FromBase64String(privateKey), out bytesRead);
+                    c = PrivateKeyConverterFactory.FromNetPrivateKey(ec, true);
+                    break;
             }
-            else
-            {
-                c = PrivateKeyConverterFactory.FromPkcs8Blob(Convert.FromBase64String(privateKey), storePassword);
-            }
-            ec
+
             logger.MethodExit(LogLevel.Debug);
 
             return new AsymmetricKeyEntry(c.ToBCPrivateKey());
         }
 
-        private bool GetPrivateKeyType(string[] begDelims, string storeContents, PrivateKeyTypeEnum typeCheckingFor)
+        private PrivateKeyTypeEnum GetPrivateKeyType(string storeContents, out string privateKeyBegDelim)
         {
-            bool found = false;
-
-            foreach (string begDelim in begDelims)
+            foreach (string begDelim in PrivateKeyDelimetersPkcs8)
             {
                 if (storeContents.Contains(begDelim))
                 {
-                    found = true;
-                    break;
+                    privateKeyBegDelim = begDelim;
+                    return PrivateKeyTypeEnum.PKCS8;
                 }
             }
 
-            return found;
+            foreach (string begDelim in PrivateKeyDelimetersRSA)
+            {
+                if (storeContents.Contains(begDelim))
+                {
+                    privateKeyBegDelim = begDelim;
+                    return PrivateKeyTypeEnum.RSA;
+                }
+            }
+
+            foreach (string begDelim in PrivateKeyDelimetersEC)
+            {
+                if (storeContents.Contains(begDelim))
+                {
+                    privateKeyBegDelim = begDelim;
+                    return PrivateKeyTypeEnum.EC;
+                }
+            }
+
+            throw new RemoteFileException("Invalid or unsupported Private Key format.");
         }
     }
 }
