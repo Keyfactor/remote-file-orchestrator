@@ -21,12 +21,14 @@ using Keyfactor.Extensions.Orchestrator.RemoteFile.Models;
 
 using Microsoft.Extensions.Logging;
 
+using Org.BouncyCastle.Math;
 using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Pkcs;
 using Org.BouncyCastle.X509;
 using System.Security.Cryptography;
 using Org.BouncyCastle.OpenSsl;
 using Org.BouncyCastle.Crypto.Parameters;
+using Org.BouncyCastle.Asn1.X9;
 
 namespace Keyfactor.Extensions.Orchestrator.RemoteFile.PEM
 {
@@ -119,8 +121,9 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.PEM
             {
                 string storeContents = Encoding.ASCII.GetString(remoteHandler.DownloadCertificateFile(storePath + storeFileName));
 
-                PrivateKeyTypeEnum privateKeyType = PrivateKeyTypeEnum.PKCS8;
-                GetPrivateKey(storeContents, storePassword, remoteHandler, out privateKeyType);
+                string begDelim;
+                string privateKeyContents = String.IsNullOrEmpty(SeparatePrivateKeyFilePath) ? storeContents : Encoding.ASCII.GetString(remoteHandler.DownloadCertificateFile(SeparatePrivateKeyFilePath));
+                PrivateKeyTypeEnum privateKeyType = GetPrivateKeyType(privateKeyContents, out begDelim);
 
                 if (!string.IsNullOrEmpty(storePassword) && privateKeyType != PrivateKeyTypeEnum.PKCS8)
                     throw new RemoteFileException("Error retrieving private key.  Certificate store password cannot have a non empty value if the private key is in PKCS#1 format (BEGIN [RSA|EC] PRIVATE KEY)");
@@ -236,6 +239,8 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.PEM
         {
             logger.MethodEntry(LogLevel.Debug);
 
+            AsymmetricKeyEntry keyEntry = null;
+
             if (!String.IsNullOrEmpty(SeparatePrivateKeyFilePath))
             {
                 storeContents = Encoding.ASCII.GetString(remoteHandler.DownloadCertificateFile(SeparatePrivateKeyFilePath));
@@ -266,29 +271,30 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.PEM
             {
                 case PrivateKeyTypeEnum.PKCS8:
                     c = PrivateKeyConverterFactory.FromPkcs8Blob(Convert.FromBase64String(privateKey), storePassword);
+                    keyEntry = new AsymmetricKeyEntry(c.ToBCPrivateKey());
                     break;
                 case PrivateKeyTypeEnum.RSA:
                     RSA rsa = RSA.Create();
                     rsa.ImportRSAPrivateKey(Convert.FromBase64String(privateKey), out bytesRead);
                     c = PrivateKeyConverterFactory.FromNetPrivateKey(rsa, false);
+                    keyEntry = new AsymmetricKeyEntry(c.ToBCPrivateKey());
                     break;
                 case PrivateKeyTypeEnum.EC:
                     ECDiffieHellman ec = ECDiffieHellman.Create();
-                    ec.ImportECPrivateKey(Convert.FromBase64String(privateKey), out bytesRead);
-                    c = PrivateKeyConverterFactory.FromNetPrivateKey(ec, true);
+                    keyEntry = new AsymmetricKeyEntry(this.ToBCPrivateKey(ec));
                     break;
             }
 
             logger.MethodExit(LogLevel.Debug);
 
-            return new AsymmetricKeyEntry(c.ToBCPrivateKey());
+            return keyEntry; 
         }
 
         private PrivateKeyTypeEnum GetPrivateKeyType(string storeContents, out string privateKeyBegDelim)
         {
             foreach (string begDelim in PrivateKeyDelimetersPkcs8)
             {
-                if (storeContents.Contains(begDelim))
+                if (string.IsNullOrEmpty(storeContents) || storeContents.Contains(begDelim))
                 {
                     privateKeyBegDelim = begDelim;
                     return PrivateKeyTypeEnum.PKCS8;
@@ -314,6 +320,35 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.PEM
             }
 
             throw new RemoteFileException("Invalid or unsupported Private Key format.");
+        }
+
+        private AsymmetricKeyParameter ToBCPrivateKey(ECDiffieHellman ecdh)
+        {
+            // Export the key as ECParameters
+            ECParameters parameters = ecdh.ExportParameters(true);
+
+            // Convert the parameters to a BouncyCastle ECCurve
+            var curve2 = ECNamedCurveTable.GetByName(parameters.Curve.Oid.FriendlyName);
+            var curve = ECNamedCurveTable.GetByOid(new Org.BouncyCastle.Asn1.DerObjectIdentifier(parameters.Curve.Oid.Value));
+            if (curve == null)
+                throw new RemoteFileException("Error converting to BouncyCastle private key - Unsupported curve");
+
+            // Convert the parameters to BigInteger
+            var q = curve.Curve.CreatePoint(
+                new BigInteger(1, parameters.Q.X),
+                new BigInteger(1, parameters.Q.Y));
+
+            if (parameters.D != null)
+            {
+                // Create private key parameter
+                return new ECPrivateKeyParameters(
+                    new BigInteger(1, parameters.D),
+                    new ECDomainParameters(curve));
+            }
+            else
+            {
+                throw new RemoteFileException("Error converting to BouncyCastle private key - Invalid parameter.");
+            }
         }
     }
 }
