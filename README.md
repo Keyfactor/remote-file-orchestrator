@@ -726,7 +726,7 @@ The Remote File Orchestrator Extension uses a JSON configuration file.  It is lo
 
 * The Linux file permissions that will be set on a new certificate store created via a Management Create job or a Management Add job where CreateStoreOnAddIsMissing is set to "Y".  This value will be used for all certificate stores managed by this orchestrator instance unless overridden by the optional "Linux File Permissions on Store Creation" custom parameter setting on a specific certificate store.  See the [Creating Certificate Store Types](#creating-certificate-store-types) section for more information on creating RemoteFile certificate store types.
 * Allowed values - Any 3 digit value from 000-777.
-* Default Value - 600.  
+* Default Value - blank (if this and the LinuxFilePermissionsOnStoreCreation certificate store setting are both left blank, the permissions on the parent folder will be used).   
 
 </details>
 
@@ -735,7 +735,7 @@ The Remote File Orchestrator Extension uses a JSON configuration file.  It is lo
 
 * When a Management job is run to remotely create the physical certificate store on a remote server, by default the file owner and group will be set to the user name associated with the Keyfactor certificate store.  Setting DefaultOwnerOnStoreCreation to an alternate valid Linux user name will set that as the owner instead.  The owner AND group may be supplied by adding a ":" as a delimitter between the owner and group values, such as ownerId:groupId.  Supplying only the ownerId will set that value as the file owner.  The group name will default to how the Linux "install" command handles assigning the group.  The optional "Linux File Owner on Store Creation" custom parameter setting for a specific certificate store can override this value for a specific store.  See the [Creating Certificate Store Types](#creating-certificate-store-types) section for more information on creating RemoteFile certificate store types.
 * Allowed values - Any valid user id that the destination Linux server will recognize
-* Default Value - blank (the ID associated with the Keyfactor certificate store will be used).  
+* Default Value - blank (if this and the LinuxFileOwnerOnStoreCreation certificate store setting are both left blank, the owner of the parent folder will be used).  
 
 </details>
 
@@ -1365,14 +1365,6 @@ When scheduling discovery jobs in Keyfactor Command, there are a few fields that
 The IP address or DNS of the server hosting the certificate store.  For more information, see [Client Machine ](#client-machine-instructions)
 
 </details>
-
-<details>
-<summary>Store Path</summary>
-
-For Linux orchestrated servers, "StorePath" will begin with a forward slash (/) and contain the full path and file name, including file extension if one exists (i.e. /folder/path/storename.ext).  For Windows orchestrated servers, it should be the full path and file name, including file extension if one exists, beginning with a drive letter (i.e. c:\folder\path\storename.ext).  
-
-</details>
-
 <details>
 <summary>Server Username/Password</summary>
 
