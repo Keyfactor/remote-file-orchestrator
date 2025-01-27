@@ -54,6 +54,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
         internal ServerTypeEnum ServerType { get; set; }
         internal List<string> DiscoveredStores { get; set; }
         internal string UploadFilePath { get; set; }
+        internal bool IncludePortInSPN { get; set; }
         
         private Pkcs12Store CertificateStore;
         private ILogger logger;
@@ -61,7 +62,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
 
         internal RemoteCertificateStore() { }
 
-        internal RemoteCertificateStore(string server, string serverId, string serverPassword, string storeFileAndPath, string storePassword, Dictionary<string, object> jobProperties)
+        internal RemoteCertificateStore(string server, string serverId, string serverPassword, string storeFileAndPath, string storePassword, bool includePortInSPN)
         {
             logger = LogHandler.GetClassLogger(this.GetType());
             logger.MethodEntry(LogLevel.Debug);
@@ -77,6 +78,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             StorePassword = storePassword;
             ServerType = StorePath.Substring(0, 1) == "/" ? ServerTypeEnum.Linux : ServerTypeEnum.Windows;
             UploadFilePath = !string.IsNullOrEmpty(ApplicationSettings.SeparateUploadFilePath) && ServerType == ServerTypeEnum.Linux ? ApplicationSettings.SeparateUploadFilePath : StorePath;
+            IncludePortInSPN = includePortInSPN;
             logger.LogDebug($"UploadFilePath: {UploadFilePath}");
 
             if (!IsValueSafeRegex(StorePath + StoreFileName))
@@ -452,9 +454,14 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             bool treatAsLocal = Server.ToLower().EndsWith(LOCAL_MACHINE_SUFFIX);
 
             if (ServerType == ServerTypeEnum.Linux || RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+            {
                 RemoteHandler = treatAsLocal ? new LinuxLocalHandler() as IRemoteHandler : new SSHHandler(Server, ServerId, ServerPassword, ServerType == ServerTypeEnum.Linux, sudoImpersonatedUser) as IRemoteHandler;
+            }
             else
+            {
                 RemoteHandler = new WinRMHandler(Server, ServerId, ServerPassword, treatAsLocal);
+                ((WinRMHandler)RemoteHandler).SetIncludeSPN(IncludePortInSPN);
+            }
 
             logger.MethodExit(LogLevel.Debug);
         }
