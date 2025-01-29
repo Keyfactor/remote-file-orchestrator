@@ -142,6 +142,11 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
             }
         }
 
+        public void SetIncludeSPN(bool includePortInSPN)
+        {
+            connectionInfo.IncludePortInSPN = includePortInSPN;
+        }
+
         private byte[] RunCommandBinary(string commandText)
         {
             _logger.MethodEntry(LogLevel.Debug);
