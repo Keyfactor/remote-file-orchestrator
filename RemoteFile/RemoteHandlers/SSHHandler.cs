@@ -340,10 +340,11 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
 
             if (IsStoreServerLinux)
             {
-                SplitStorePathFile(path, out path, out _);
+                string pathOnly = string.Empty;
+                SplitStorePathFile(path, out pathOnly, out _);
 
-                linuxFilePermissions = string.IsNullOrEmpty(linuxFilePermissions) ? GetFolderPermissions(path) : linuxFilePermissions;
-                linuxFileOwner = string.IsNullOrEmpty(linuxFileOwner) ? GetFolderOwner(path) : linuxFileOwner;
+                linuxFilePermissions = string.IsNullOrEmpty(linuxFilePermissions) ? GetFolderPermissions(pathOnly) : linuxFilePermissions;
+                linuxFileOwner = string.IsNullOrEmpty(linuxFileOwner) ? GetFolderOwner(pathOnly) : linuxFileOwner;
 
                 AreLinuxPermissionsValid(linuxFilePermissions);
                 RunCommand($"install -m {linuxFilePermissions} -o {linuxFileOwner} {linuxFileGroup} /dev/null {path}", null, ApplicationSettings.UseSudo, null);
