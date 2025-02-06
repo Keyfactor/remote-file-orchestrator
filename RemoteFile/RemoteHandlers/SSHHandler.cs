@@ -340,6 +340,12 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
 
             if (IsStoreServerLinux)
             {
+                string pathOnly = string.Empty;
+                SplitStorePathFile(path, out pathOnly, out _);
+
+                linuxFilePermissions = string.IsNullOrEmpty(linuxFilePermissions) ? GetFolderPermissions(pathOnly) : linuxFilePermissions;
+                linuxFileOwner = string.IsNullOrEmpty(linuxFileOwner) ? GetFolderOwner(pathOnly) : linuxFileOwner;
+
                 AreLinuxPermissionsValid(linuxFilePermissions);
                 RunCommand($"install -m {linuxFilePermissions} -o {linuxFileOwner} {linuxFileGroup} /dev/null {path}", null, ApplicationSettings.UseSudo, null);
             }
@@ -379,9 +385,41 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
 
         public override void RemoveCertificateFile(string path, string fileName)
         {
+            _logger.MethodEntry(LogLevel.Debug);
             _logger.LogDebug($"RemoveCertificateFile: {path} {fileName}");
 
             RunCommand($"rm {path}{fileName}", null, ApplicationSettings.UseSudo, null);
+
+            _logger.MethodExit(LogLevel.Debug);
+        }
+
+        private string GetFolderPermissions(string path)
+        {
+            _logger.MethodEntry(LogLevel.Debug);
+
+            try
+            {
+                return RunCommand($"stat -c '%a' {path}", null, ApplicationSettings.UseSudo, null).Replace($"\n",string.Empty);
+            }
+            finally
+            {
+                _logger.MethodExit(LogLevel.Debug);
+            }
+        }
+
+        private string GetFolderOwner(string path)
+        {
+            _logger.MethodEntry(LogLevel.Debug);
+
+            try
+            {
+                return RunCommand($"stat -c '%U' {path}", null, ApplicationSettings.UseSudo, null).Replace($"\n", string.Empty);
+            }
+            finally
+            {
+
+                _logger.MethodExit(LogLevel.Debug);
+            }
         }
 
         private void KeyboardAuthentication_AuthenticationPrompt(object sender, AuthenticationPromptEventArgs e)
