@@ -51,8 +51,11 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
                 string sudoImpersonatedUser = properties.SudoImpersonatedUser == null || string.IsNullOrEmpty(properties.SudoImpersonatedUser.Value) ?
                     ApplicationSettings.DefaultSudoImpersonatedUser :
                     properties.SudoImpersonatedUser.Value;
+                bool includePortInSPN = properties.IncludePortInSPN == null || string.IsNullOrEmpty(properties.IncludePortInSPN.Value) ?
+                    false :
+                    Convert.ToBoolean(properties.IncludePortInSPN.Value);
 
-                certificateStore = new RemoteCertificateStore(config.CertificateStoreDetails.ClientMachine, userName, userPassword, config.CertificateStoreDetails.StorePath, storePassword, config.JobProperties);
+                certificateStore = new RemoteCertificateStore(config.CertificateStoreDetails.ClientMachine, userName, userPassword, config.CertificateStoreDetails.StorePath, storePassword, includePortInSPN);
                 certificateStore.Initialize(sudoImpersonatedUser);
                 certificateStore.LoadCertificateStore(certificateStoreSerializer, true);
 
