@@ -28,17 +28,19 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
     {
         private ConnectionInfo Connection { get; set; }
         private string SudoImpersonatedUser { get; set; }
+        private ApplicationSettings.FileTransferProtocolEnum FileTransferProtocol { get; set; }
         private bool IsStoreServerLinux { get; set; }
         private string UserId { get; set; }
         private string Password { get; set; }
         private SshClient sshClient;
 
-        internal SSHHandler(string server, string serverLogin, string serverPassword, bool isStoreServerLinux, string sudoImpersonatedUser)
+        internal SSHHandler(string server, string serverLogin, string serverPassword, bool isStoreServerLinux, ApplicationSettings.FileTransferProtocolEnum fileTransferProtocol, string sudoImpersonatedUser)
         {
             _logger.MethodEntry(LogLevel.Debug);
             
             Server = server;
             SudoImpersonatedUser = sudoImpersonatedUser;
+            FileTransferProtocol = fileTransferProtocol;
             IsStoreServerLinux = isStoreServerLinux;
             UserId = serverLogin;
             Password = serverPassword;
@@ -167,7 +169,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
 
             bool scpError = false;
 
-            if (ApplicationSettings.FileTransferProtocol == ApplicationSettings.FileTransferProtocolEnum.Both || ApplicationSettings.FileTransferProtocol == ApplicationSettings.FileTransferProtocolEnum.SCP)
+            if (FileTransferProtocol == ApplicationSettings.FileTransferProtocolEnum.Both || FileTransferProtocol == ApplicationSettings.FileTransferProtocolEnum.SCP)
             {
                 using (ScpClient client = new ScpClient(Connection))
                 {
@@ -186,7 +188,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
                         scpError = true;
                         _logger.LogError("Exception during SCP upload...");
                         _logger.LogError($"Upload Exception: {RemoteFileException.FlattenExceptionMessages(ex, ex.Message)}");
-                        if (ApplicationSettings.FileTransferProtocol == ApplicationSettings.FileTransferProtocolEnum.Both)
+                        if (FileTransferProtocol == ApplicationSettings.FileTransferProtocolEnum.Both)
                             _logger.LogDebug($"SCP upload failed.  Attempting with SFTP protocol...");
                         else
                             throw new RemoteFileException("Error attempting SCP file transfer to {Connection.Host} using login {Connection.Username} and connection method {Connection.AuthenticationMethods[0].Name}.  Please contact your company's system administrator to verify connection and permission settings.", ex);
@@ -198,7 +200,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
                 }
             }
 
-            if ((ApplicationSettings.FileTransferProtocol == ApplicationSettings.FileTransferProtocolEnum.Both && scpError) || ApplicationSettings.FileTransferProtocol == ApplicationSettings.FileTransferProtocolEnum.SFTP)
+            if ((FileTransferProtocol == ApplicationSettings.FileTransferProtocolEnum.Both && scpError) || FileTransferProtocol == ApplicationSettings.FileTransferProtocolEnum.SFTP)
             {
                 using (SftpClient client = new SftpClient(Connection))
                 {
@@ -256,7 +258,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
 
             bool scpError = false;
 
-            if (ApplicationSettings.FileTransferProtocol == ApplicationSettings.FileTransferProtocolEnum.Both || ApplicationSettings.FileTransferProtocol == ApplicationSettings.FileTransferProtocolEnum.SCP)
+            if (FileTransferProtocol == ApplicationSettings.FileTransferProtocolEnum.Both || FileTransferProtocol == ApplicationSettings.FileTransferProtocolEnum.SCP)
             {
                 using (ScpClient client = new ScpClient(Connection))
                 {
@@ -276,7 +278,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
                         scpError = true;
                         _logger.LogError("Exception during SCP download...");
                         _logger.LogError($"Upload Exception: {RemoteFileException.FlattenExceptionMessages(ex, ex.Message)}");
-                        if (ApplicationSettings.FileTransferProtocol == ApplicationSettings.FileTransferProtocolEnum.Both)
+                        if (FileTransferProtocol == ApplicationSettings.FileTransferProtocolEnum.Both)
                             _logger.LogDebug($"SCP download failed.  Attempting with SFTP protocol...");
                         else
                             throw new RemoteFileException($"Error attempting SCP file transfer from {Connection.Host} using login {Connection.Username} and connection method {Connection.AuthenticationMethods[0].Name}.  Please contact your company's system administrator to verify connection and permission settings.", ex);
@@ -288,7 +290,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
                 }
             }
 
-            if ((ApplicationSettings.FileTransferProtocol == ApplicationSettings.FileTransferProtocolEnum.Both && scpError) || ApplicationSettings.FileTransferProtocol == ApplicationSettings.FileTransferProtocolEnum.SFTP)
+            if ((FileTransferProtocol == ApplicationSettings.FileTransferProtocolEnum.Both && scpError) || FileTransferProtocol == ApplicationSettings.FileTransferProtocolEnum.SFTP)
             {
                 using (SftpClient client = new SftpClient(Connection))
                 {
@@ -340,6 +342,12 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
 
             if (IsStoreServerLinux)
             {
+                string pathOnly = string.Empty;
+                SplitStorePathFile(path, out pathOnly, out _);
+
+                linuxFilePermissions = string.IsNullOrEmpty(linuxFilePermissions) ? GetFolderPermissions(pathOnly) : linuxFilePermissions;
+                linuxFileOwner = string.IsNullOrEmpty(linuxFileOwner) ? GetFolderOwner(pathOnly) : linuxFileOwner;
+
                 AreLinuxPermissionsValid(linuxFilePermissions);
                 RunCommand($"install -m {linuxFilePermissions} -o {linuxFileOwner} {linuxFileGroup} /dev/null {path}", null, ApplicationSettings.UseSudo, null);
             }
@@ -379,9 +387,41 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
 
         public override void RemoveCertificateFile(string path, string fileName)
         {
+            _logger.MethodEntry(LogLevel.Debug);
             _logger.LogDebug($"RemoveCertificateFile: {path} {fileName}");
 
             RunCommand($"rm {path}{fileName}", null, ApplicationSettings.UseSudo, null);
+
+            _logger.MethodExit(LogLevel.Debug);
+        }
+
+        private string GetFolderPermissions(string path)
+        {
+            _logger.MethodEntry(LogLevel.Debug);
+
+            try
+            {
+                return RunCommand($"stat -c '%a' {path}", null, ApplicationSettings.UseSudo, null).Replace($"\n",string.Empty);
+            }
+            finally
+            {
+                _logger.MethodExit(LogLevel.Debug);
+            }
+        }
+
+        private string GetFolderOwner(string path)
+        {
+            _logger.MethodEntry(LogLevel.Debug);
+
+            try
+            {
+                return RunCommand($"stat -c '%U' {path}", null, ApplicationSettings.UseSudo, null).Replace($"\n", string.Empty);
+            }
+            finally
+            {
+
+                _logger.MethodExit(LogLevel.Debug);
+            }
         }
 
         private void KeyboardAuthentication_AuthenticationPrompt(object sender, AuthenticationPromptEventArgs e)
