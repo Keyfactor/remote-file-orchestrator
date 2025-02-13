@@ -55,7 +55,13 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
                     false :
                     Convert.ToBoolean(properties.IncludePortInSPN.Value);
 
-                certificateStore = new RemoteCertificateStore(config.CertificateStoreDetails.ClientMachine, userName, userPassword, config.CertificateStoreDetails.StorePath, storePassword, includePortInSPN);
+                ApplicationSettings.FileTransferProtocolEnum fileTransferProtocol = ApplicationSettings.FileTransferProtocol;
+                if (properties.FileTransferProtocol != null && !string.IsNullOrEmpty(properties.FileTransferProtocol.Value))
+                {
+                    Enum.TryParse(properties.FileTransferProtocol.Value, out fileTransferProtocol);
+                }
+
+                certificateStore = new RemoteCertificateStore(config.CertificateStoreDetails.ClientMachine, userName, userPassword, config.CertificateStoreDetails.StorePath, storePassword, fileTransferProtocol, includePortInSPN);
                 certificateStore.Initialize(sudoImpersonatedUser);
                 certificateStore.LoadCertificateStore(certificateStoreSerializer, true);
 
