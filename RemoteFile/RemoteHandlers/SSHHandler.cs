@@ -176,6 +176,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
                     try
                     {
                         _logger.LogDebug($"SCP connection attempt to {Connection.Host} using login {Connection.Username} and connection method {Connection.AuthenticationMethods[0].Name}");
+                        client.OperationTimeout = System.TimeSpan.FromSeconds(60);
                         client.Connect();
 
                         using (MemoryStream stream = new MemoryStream(certBytes))
@@ -207,6 +208,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
                     try
                     {
                         _logger.LogDebug($"SFTP connection attempt to {Connection.Host} using login {Connection.Username} and connection method {Connection.AuthenticationMethods[0].Name}");
+                        client.OperationTimeout = System.TimeSpan.FromSeconds(60);
                         client.Connect();
 
                         using (MemoryStream stream = new MemoryStream(certBytes))
@@ -265,6 +267,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
                     try
                     {
                         _logger.LogDebug($"SCP connection attempt from {Connection.Host} using login {Connection.Username} and connection method {Connection.AuthenticationMethods[0].Name}");
+                        client.OperationTimeout = System.TimeSpan.FromSeconds(60); 
                         client.Connect();
 
                         using (MemoryStream stream = new MemoryStream())
@@ -297,6 +300,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
                     try
                     {
                         _logger.LogDebug($"SFTP connection attempt from {Connection.Host} using login {Connection.Username} and connection method {Connection.AuthenticationMethods[0].Name}");
+                        client.OperationTimeout = System.TimeSpan.FromSeconds(60);
                         client.Connect();
 
                         using (MemoryStream stream = new MemoryStream())
