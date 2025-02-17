@@ -259,6 +259,7 @@ The Remote File Universal Orchestrator extension implements 6 Certificate Store 
     | SudoImpersonatingUser | Sudo Impersonating User | The SudoImpersonatingUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'. | String |  | 🔲 Unchecked |
     | RemoveRootCertificate | Remove Root Certificate from Chain | Remove root certificate from chain when adding/renewing a certificate in a store. | Bool | False | 🔲 Unchecked |
     | IncludePortInSPN | Include Port in SPN for WinRM | Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations. | Bool | False | 🔲 Unchecked |
+    | FileTransferProtocol | File Transfer Protocol to Use | Which protocol should be used when uploading/downloading files - SCP, SFTP, or Both (try one, and then if necessary, the other). | MultipleChoice | SCP,SFTP,Both | 🔲 Unchecked |
 
     The Custom Fields tab should look like this:
 
@@ -332,6 +333,7 @@ The Remote File Universal Orchestrator extension implements 6 Certificate Store 
     | IgnorePrivateKeyOnInventory | Ignore Private Key On Inventory | The IgnorePrivateKeyOnInventory field should contain a boolean value ('true' or 'false') indicating whether to disregard the private key during inventory. Setting this to 'true' will allow inventory for the store without needing to supply the location of the private key or the password if the key is encrypted.  However, doing this makes the store in effect inventory-only and no management jobs will be able to be run for this store. Example: 'true' to ignore the private key or 'false' to include it. | Bool | false | 🔲 Unchecked |
     | RemoveRootCertificate | Remove Root Certificate from Chain | Remove root certificate from chain when adding/renewing a certificate in a store. | Bool | False | 🔲 Unchecked |
     | IncludePortInSPN | Include Port in SPN for WinRM | Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations. | Bool | False | 🔲 Unchecked |
+    | FileTransferProtocol | File Transfer Protocol to Use | Which protocol should be used when uploading/downloading files - SCP, SFTP, or Both (try one, and then if necessary, the other). | MultipleChoice | SCP,SFTP,Both | 🔲 Unchecked |
 
     The Custom Fields tab should look like this:
 
@@ -401,6 +403,7 @@ The Remote File Universal Orchestrator extension implements 6 Certificate Store 
     | SudoImpersonatingUser | Sudo Impersonating User | The SudoImpersonatingUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'. | String |  | 🔲 Unchecked |
     | RemoveRootCertificate | Remove Root Certificate from Chain | Remove root certificate from chain when adding/renewing a certificate in a store. | Bool | False | 🔲 Unchecked |
     | IncludePortInSPN | Include Port in SPN for WinRM | Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations. | Bool | False | 🔲 Unchecked |
+    | FileTransferProtocol | File Transfer Protocol to Use | Which protocol should be used when uploading/downloading files - SCP, SFTP, or Both (try one, and then if necessary, the other). | MultipleChoice | SCP,SFTP,Both | 🔲 Unchecked |
 
     The Custom Fields tab should look like this:
 
@@ -471,6 +474,7 @@ The Remote File Universal Orchestrator extension implements 6 Certificate Store 
     | SeparatePrivateKeyFilePath | Separate Private Key File Location | The SeparatePrivateKeyFilePath field should contain the full path and file name where the separate private key file will be stored if it is to be kept outside the main certificate file. Example: '/path/to/privatekey.der'. | String |  | 🔲 Unchecked |
     | RemoveRootCertificate | Remove Root Certificate from Chain | Remove root certificate from chain when adding/renewing a certificate in a store. | Bool | False | 🔲 Unchecked |
     | IncludePortInSPN | Include Port in SPN for WinRM | Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations. | Bool | False | 🔲 Unchecked |
+    | FileTransferProtocol | File Transfer Protocol to Use | Which protocol should be used when uploading/downloading files - SCP, SFTP, or Both (try one, and then if necessary, the other). | MultipleChoice | SCP,SFTP,Both | 🔲 Unchecked |
 
     The Custom Fields tab should look like this:
 
@@ -540,6 +544,7 @@ The Remote File Universal Orchestrator extension implements 6 Certificate Store 
     | SudoImpersonatingUser | Sudo Impersonating User | The SudoImpersonatingUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'. | String |  | 🔲 Unchecked |
     | RemoveRootCertificate | Remove Root Certificate from Chain | Remove root certificate from chain when adding/renewing a certificate in a store. | Bool | False | 🔲 Unchecked |
     | IncludePortInSPN | Include Port in SPN for WinRM | Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations. | Bool | False | 🔲 Unchecked |
+    | FileTransferProtocol | File Transfer Protocol to Use | Which protocol should be used when uploading/downloading files - SCP, SFTP, or Both (try one, and then if necessary, the other). | MultipleChoice | SCP,SFTP,Both | 🔲 Unchecked |
 
     The Custom Fields tab should look like this:
 
@@ -610,6 +615,7 @@ The Remote File Universal Orchestrator extension implements 6 Certificate Store 
     | WorkFolder | Location to use for creation/removal of work files | The WorkFolder field should contain the path on the managed server where temporary work files can be created, modified, and deleted during Inventory and Management jobs. Example: '/path/to/workfolder'. | String |  | ✅ Checked |
     | RemoveRootCertificate | Remove Root Certificate from Chain | Remove root certificate from chain when adding/renewing a certificate in a store. | Bool | False | 🔲 Unchecked |
     | IncludePortInSPN | Include Port in SPN for WinRM | Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations. | Bool | False | 🔲 Unchecked |
+    | FileTransferProtocol | File Transfer Protocol to Use | Which protocol should be used when uploading/downloading files - SCP, SFTP, or Both (try one, and then if necessary, the other). | MultipleChoice | SCP,SFTP,Both | 🔲 Unchecked |
 
     The Custom Fields tab should look like this:
 
@@ -784,6 +790,7 @@ The Remote File Universal Orchestrator extension implements 6 Certificate Store 
         | SudoImpersonatingUser | The SudoImpersonatingUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'. |
         | RemoveRootCertificate | Remove root certificate from chain when adding/renewing a certificate in a store. |
         | IncludePortInSPN | Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations. |
+        | FileTransferProtocol | Which protocol should be used when uploading/downloading files - SCP, SFTP, or Both (try one, and then if necessary, the other). |
         | Store Password | Password used to secure the Certificate Store |
 
         
@@ -831,6 +838,7 @@ The Remote File Universal Orchestrator extension implements 6 Certificate Store 
         | SudoImpersonatingUser | The SudoImpersonatingUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'. |
         | RemoveRootCertificate | Remove root certificate from chain when adding/renewing a certificate in a store. |
         | IncludePortInSPN | Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations. |
+        | FileTransferProtocol | Which protocol should be used when uploading/downloading files - SCP, SFTP, or Both (try one, and then if necessary, the other). |
         | Store Password | Password used to secure the Certificate Store |
 
         
@@ -892,6 +900,7 @@ The Remote File Universal Orchestrator extension implements 6 Certificate Store 
         | IgnorePrivateKeyOnInventory | The IgnorePrivateKeyOnInventory field should contain a boolean value ('true' or 'false') indicating whether to disregard the private key during inventory. Setting this to 'true' will allow inventory for the store without needing to supply the location of the private key or the password if the key is encrypted.  However, doing this makes the store in effect inventory-only and no management jobs will be able to be run for this store. Example: 'true' to ignore the private key or 'false' to include it. |
         | RemoveRootCertificate | Remove root certificate from chain when adding/renewing a certificate in a store. |
         | IncludePortInSPN | Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations. |
+        | FileTransferProtocol | Which protocol should be used when uploading/downloading files - SCP, SFTP, or Both (try one, and then if necessary, the other). |
         | Store Password | Password used to secure the Certificate Store.  For stores with PKCS#8 private keys, set the password for encrypted private keys (BEGIN ENCRYPTED PRIVATE KEY) or 'No Value' for unencrypted private keys (BEGIN PRIVATE KEY).  If managing a store with a PKCS#1 private key (BEGIN RSA PRIVATE KEY), this value MUST be set to 'No Value' |
 
         
@@ -943,6 +952,7 @@ The Remote File Universal Orchestrator extension implements 6 Certificate Store 
         | IgnorePrivateKeyOnInventory | The IgnorePrivateKeyOnInventory field should contain a boolean value ('true' or 'false') indicating whether to disregard the private key during inventory. Setting this to 'true' will allow inventory for the store without needing to supply the location of the private key or the password if the key is encrypted.  However, doing this makes the store in effect inventory-only and no management jobs will be able to be run for this store. Example: 'true' to ignore the private key or 'false' to include it. |
         | RemoveRootCertificate | Remove root certificate from chain when adding/renewing a certificate in a store. |
         | IncludePortInSPN | Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations. |
+        | FileTransferProtocol | Which protocol should be used when uploading/downloading files - SCP, SFTP, or Both (try one, and then if necessary, the other). |
         | Store Password | Password used to secure the Certificate Store.  For stores with PKCS#8 private keys, set the password for encrypted private keys (BEGIN ENCRYPTED PRIVATE KEY) or 'No Value' for unencrypted private keys (BEGIN PRIVATE KEY).  If managing a store with a PKCS#1 private key (BEGIN RSA PRIVATE KEY), this value MUST be set to 'No Value' |
 
         
@@ -1000,6 +1010,7 @@ The Remote File Universal Orchestrator extension implements 6 Certificate Store 
         | SudoImpersonatingUser | The SudoImpersonatingUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'. |
         | RemoveRootCertificate | Remove root certificate from chain when adding/renewing a certificate in a store. |
         | IncludePortInSPN | Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations. |
+        | FileTransferProtocol | Which protocol should be used when uploading/downloading files - SCP, SFTP, or Both (try one, and then if necessary, the other). |
         | Store Password | Password used to secure the Certificate Store |
 
         
@@ -1047,6 +1058,7 @@ The Remote File Universal Orchestrator extension implements 6 Certificate Store 
         | SudoImpersonatingUser | The SudoImpersonatingUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'. |
         | RemoveRootCertificate | Remove root certificate from chain when adding/renewing a certificate in a store. |
         | IncludePortInSPN | Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations. |
+        | FileTransferProtocol | Which protocol should be used when uploading/downloading files - SCP, SFTP, or Both (try one, and then if necessary, the other). |
         | Store Password | Password used to secure the Certificate Store |
 
         
@@ -1105,6 +1117,7 @@ The Remote File Universal Orchestrator extension implements 6 Certificate Store 
         | SeparatePrivateKeyFilePath | The SeparatePrivateKeyFilePath field should contain the full path and file name where the separate private key file will be stored if it is to be kept outside the main certificate file. Example: '/path/to/privatekey.der'. |
         | RemoveRootCertificate | Remove root certificate from chain when adding/renewing a certificate in a store. |
         | IncludePortInSPN | Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations. |
+        | FileTransferProtocol | Which protocol should be used when uploading/downloading files - SCP, SFTP, or Both (try one, and then if necessary, the other). |
         | Store Password | Password used to secure the Certificate Store |
 
         
@@ -1153,6 +1166,7 @@ The Remote File Universal Orchestrator extension implements 6 Certificate Store 
         | SeparatePrivateKeyFilePath | The SeparatePrivateKeyFilePath field should contain the full path and file name where the separate private key file will be stored if it is to be kept outside the main certificate file. Example: '/path/to/privatekey.der'. |
         | RemoveRootCertificate | Remove root certificate from chain when adding/renewing a certificate in a store. |
         | IncludePortInSPN | Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations. |
+        | FileTransferProtocol | Which protocol should be used when uploading/downloading files - SCP, SFTP, or Both (try one, and then if necessary, the other). |
         | Store Password | Password used to secure the Certificate Store |
 
         
@@ -1210,6 +1224,7 @@ The Remote File Universal Orchestrator extension implements 6 Certificate Store 
         | SudoImpersonatingUser | The SudoImpersonatingUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'. |
         | RemoveRootCertificate | Remove root certificate from chain when adding/renewing a certificate in a store. |
         | IncludePortInSPN | Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations. |
+        | FileTransferProtocol | Which protocol should be used when uploading/downloading files - SCP, SFTP, or Both (try one, and then if necessary, the other). |
         | Store Password | Password used to secure the Certificate Store |
 
         
@@ -1257,6 +1272,7 @@ The Remote File Universal Orchestrator extension implements 6 Certificate Store 
         | SudoImpersonatingUser | The SudoImpersonatingUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'. |
         | RemoveRootCertificate | Remove root certificate from chain when adding/renewing a certificate in a store. |
         | IncludePortInSPN | Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations. |
+        | FileTransferProtocol | Which protocol should be used when uploading/downloading files - SCP, SFTP, or Both (try one, and then if necessary, the other). |
         | Store Password | Password used to secure the Certificate Store |
 
         
@@ -1315,6 +1331,7 @@ The Remote File Universal Orchestrator extension implements 6 Certificate Store 
         | WorkFolder | The WorkFolder field should contain the path on the managed server where temporary work files can be created, modified, and deleted during Inventory and Management jobs. Example: '/path/to/workfolder'. |
         | RemoveRootCertificate | Remove root certificate from chain when adding/renewing a certificate in a store. |
         | IncludePortInSPN | Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations. |
+        | FileTransferProtocol | Which protocol should be used when uploading/downloading files - SCP, SFTP, or Both (try one, and then if necessary, the other). |
         | Store Password | Password used to secure the Certificate Store |
 
         
@@ -1363,6 +1380,7 @@ The Remote File Universal Orchestrator extension implements 6 Certificate Store 
         | WorkFolder | The WorkFolder field should contain the path on the managed server where temporary work files can be created, modified, and deleted during Inventory and Management jobs. Example: '/path/to/workfolder'. |
         | RemoveRootCertificate | Remove root certificate from chain when adding/renewing a certificate in a store. |
         | IncludePortInSPN | Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations. |
+        | FileTransferProtocol | Which protocol should be used when uploading/downloading files - SCP, SFTP, or Both (try one, and then if necessary, the other). |
         | Store Password | Password used to secure the Certificate Store |
 
         
