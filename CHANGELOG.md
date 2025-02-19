@@ -1,3 +1,11 @@
+v2.10.0
+- Added support for Eliptical Curve (EC) private keys for RFPEM.
+- For Linux hosted certificate stores, added ability to inherit file permissions and ownership when creating new stores by modifying default behavior when config.json and certificate store permissions/ownership settings are left empty.
+- Added new optional custom field to store type definitions - IncludePortInSPN - which will set this option when creating remote Powershell connections.
+- Added new optional custom field to store type definitions - FileTransferProtocol - which will act as a store level override to the config.json setting.
+- Fixed documentation error in Discovery section
+- Added RemoveRootCertificate custom field to integration-manifest.json.  This option was previously added in v2.8.0 but never added to the integration-manifest.json.
+
 v2.9.1 
 - Bug Fix: Use AES encryption when creating PKCS12 files instead of less secure defaults
 
