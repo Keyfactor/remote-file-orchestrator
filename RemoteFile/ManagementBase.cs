@@ -53,8 +53,17 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
                 bool removeRootCertificate = properties.RemoveRootCertificate == null || string.IsNullOrEmpty(properties.RemoveRootCertificate.Value) ?
                     false :
                     Convert.ToBoolean(properties.RemoveRootCertificate.Value);
+                bool includePortInSPN = properties.IncludePortInSPN == null || string.IsNullOrEmpty(properties.IncludePortInSPN.Value) ?
+                    false :
+                    Convert.ToBoolean(properties.IncludePortInSPN.Value);
 
-                certificateStore = new RemoteCertificateStore(config.CertificateStoreDetails.ClientMachine, userName, userPassword, config.CertificateStoreDetails.StorePath, storePassword, config.JobProperties);
+                ApplicationSettings.FileTransferProtocolEnum fileTransferProtocol = ApplicationSettings.FileTransferProtocol;
+                if (properties.FileTransferProtocol != null && !string.IsNullOrEmpty(properties.FileTransferProtocol.Value))
+                {
+                    Enum.TryParse(properties.FileTransferProtocol.Value, out fileTransferProtocol);
+                }
+
+                certificateStore = new RemoteCertificateStore(config.CertificateStoreDetails.ClientMachine, userName, userPassword, config.CertificateStoreDetails.StorePath, storePassword, fileTransferProtocol, includePortInSPN);
                 certificateStore.Initialize(sudoImpersonatedUser);
 
                 PathFile storePathFile = RemoteCertificateStore.SplitStorePathFile(config.CertificateStoreDetails.StorePath);
@@ -135,7 +144,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
                 ApplicationSettings.DefaultOwnerOnStoreCreation :
                 properties.LinuxFileOwnerOnStoreCreation.Value;
 
-            certificateStore.CreateCertificateStore(certificateStoreSerializer, config.CertificateStoreDetails.StorePath, linuxFilePermissions, string.IsNullOrEmpty(linuxFileOwner) ? config.ServerUsername : linuxFileOwner);
+            certificateStore.CreateCertificateStore(certificateStoreSerializer, config.CertificateStoreDetails.StorePath, linuxFilePermissions, linuxFileOwner);
         }
     }
 }

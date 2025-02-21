@@ -87,6 +87,33 @@
                             "Type": "String",
                             "DefaultValue": "",
                             "Description": "The SudoImpersonatingUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'."
+                        },
+                        {
+                            "Name": "RemoveRootCertificate",
+                            "DisplayName": "Remove Root Certificate from Chain",
+                            "Required": false,
+                            "DependsOn": "",
+                            "Type": "Bool",
+                            "DefaultValue": "False",
+                            "Description": "Remove root certificate from chain when adding/renewing a certificate in a store."
+                        },
+                        {
+                            "Name": "IncludePortInSPN",
+                            "DisplayName": "Include Port in SPN for WinRM",
+                            "Required": false,
+                            "DependsOn": "",
+                            "Type": "Bool",
+                            "DefaultValue": "False",
+                            "Description": "Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations."
+                        },
+                        {
+                            "Name": "FileTransferProtocol",
+                            "DisplayName": "File Transfer Protocol to Use",
+                            "Required": false,
+                            "DependsOn": "",
+                            "Type": "MultipleChoice",
+                            "DefaultValue": "SCP,SFTP,Both",
+                            "Description": "Which protocol should be used when uploading/downloading files - SCP, SFTP, or Both (try one, and then if necessary, the other)."
                         }
                     ],
                     "EntryParameters": [],
@@ -201,6 +228,33 @@
                             "Type": "Bool",
                             "DefaultValue": "false",
                             "Description": "The IgnorePrivateKeyOnInventory field should contain a boolean value ('true' or 'false') indicating whether to disregard the private key during inventory. Setting this to 'true' will allow inventory for the store without needing to supply the location of the private key or the password if the key is encrypted.  However, doing this makes the store in effect inventory-only and no management jobs will be able to be run for this store. Example: 'true' to ignore the private key or 'false' to include it."
+                        },
+                        {
+                            "Name": "RemoveRootCertificate",
+                            "DisplayName": "Remove Root Certificate from Chain",
+                            "Required": false,
+                            "DependsOn": "",
+                            "Type": "Bool",
+                            "DefaultValue": "False",
+                            "Description": "Remove root certificate from chain when adding/renewing a certificate in a store."
+                        },
+                        {
+                            "Name": "IncludePortInSPN",
+                            "DisplayName": "Include Port in SPN for WinRM",
+                            "Required": false,
+                            "DependsOn": "",
+                            "Type": "Bool",
+                            "DefaultValue": "False",
+                            "Description": "Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations."
+                        },
+                        {
+                            "Name": "FileTransferProtocol",
+                            "DisplayName": "File Transfer Protocol to Use",
+                            "Required": false,
+                            "DependsOn": "",
+                            "Type": "MultipleChoice",
+                            "DefaultValue": "SCP,SFTP,Both",
+                            "Description": "Which protocol should be used when uploading/downloading files - SCP, SFTP, or Both (try one, and then if necessary, the other)."
                         }
                     ],
                     "EntryParameters": [],
@@ -279,6 +333,33 @@
                             "Type": "String",
                             "DefaultValue": "",
                             "Description": "The SudoImpersonatingUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'."
+                        },
+                        {
+                            "Name": "RemoveRootCertificate",
+                            "DisplayName": "Remove Root Certificate from Chain",
+                            "Required": false,
+                            "DependsOn": "",
+                            "Type": "Bool",
+                            "DefaultValue": "False",
+                            "Description": "Remove root certificate from chain when adding/renewing a certificate in a store."
+                        },
+                        {
+                            "Name": "IncludePortInSPN",
+                            "DisplayName": "Include Port in SPN for WinRM",
+                            "Required": false,
+                            "DependsOn": "",
+                            "Type": "Bool",
+                            "DefaultValue": "False",
+                            "Description": "Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations."
+                        },
+                        {
+                            "Name": "FileTransferProtocol",
+                            "DisplayName": "File Transfer Protocol to Use",
+                            "Required": false,
+                            "DependsOn": "",
+                            "Type": "MultipleChoice",
+                            "DefaultValue": "SCP,SFTP,Both",
+                            "Description": "Which protocol should be used when uploading/downloading files - SCP, SFTP, or Both (try one, and then if necessary, the other)."
                         }
                     ],
                     "EntryParameters": [],
@@ -366,6 +447,33 @@
                             "Type": "String",
                             "DefaultValue": "",
                             "Description": "The SeparatePrivateKeyFilePath field should contain the full path and file name where the separate private key file will be stored if it is to be kept outside the main certificate file. Example: '/path/to/privatekey.der'."
+                        },
+                        {
+                            "Name": "RemoveRootCertificate",
+                            "DisplayName": "Remove Root Certificate from Chain",
+                            "Required": false,
+                            "DependsOn": "",
+                            "Type": "Bool",
+                            "DefaultValue": "False",
+                            "Description": "Remove root certificate from chain when adding/renewing a certificate in a store."
+                        },
+                        {
+                            "Name": "IncludePortInSPN",
+                            "DisplayName": "Include Port in SPN for WinRM",
+                            "Required": false,
+                            "DependsOn": "",
+                            "Type": "Bool",
+                            "DefaultValue": "False",
+                            "Description": "Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations."
+                        },
+                        {
+                            "Name": "FileTransferProtocol",
+                            "DisplayName": "File Transfer Protocol to Use",
+                            "Required": false,
+                            "DependsOn": "",
+                            "Type": "MultipleChoice",
+                            "DefaultValue": "SCP,SFTP,Both",
+                            "Description": "Which protocol should be used when uploading/downloading files - SCP, SFTP, or Both (try one, and then if necessary, the other)."
                         }
                     ],
                     "EntryParameters": [],
@@ -444,6 +552,33 @@
                             "Type": "String",
                             "DefaultValue": "",
                             "Description": "The SudoImpersonatingUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'."
+                        },
+                        {
+                            "Name": "RemoveRootCertificate",
+                            "DisplayName": "Remove Root Certificate from Chain",
+                            "Required": false,
+                            "DependsOn": "",
+                            "Type": "Bool",
+                            "DefaultValue": "False",
+                            "Description": "Remove root certificate from chain when adding/renewing a certificate in a store."
+                        },
+                        {
+                            "Name": "IncludePortInSPN",
+                            "DisplayName": "Include Port in SPN for WinRM",
+                            "Required": false,
+                            "DependsOn": "",
+                            "Type": "Bool",
+                            "DefaultValue": "False",
+                            "Description": "Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations."
+                        },
+                        {
+                            "Name": "FileTransferProtocol",
+                            "DisplayName": "File Transfer Protocol to Use",
+                            "Required": false,
+                            "DependsOn": "",
+                            "Type": "MultipleChoice",
+                            "DefaultValue": "SCP,SFTP,Both",
+                            "Description": "Which protocol should be used when uploading/downloading files - SCP, SFTP, or Both (try one, and then if necessary, the other)."
                         }
                     ],
                     "EntryParameters": [],
@@ -531,6 +666,33 @@
                             "Type": "String",
                             "DefaultValue": "",
                             "Description": "The WorkFolder field should contain the path on the managed server where temporary work files can be created, modified, and deleted during Inventory and Management jobs. Example: '/path/to/workfolder'."
+                        },
+                        {
+                            "Name": "RemoveRootCertificate",
+                            "DisplayName": "Remove Root Certificate from Chain",
+                            "Required": false,
+                            "DependsOn": "",
+                            "Type": "Bool",
+                            "DefaultValue": "False",
+                            "Description": "Remove root certificate from chain when adding/renewing a certificate in a store."
+                        },
+                        {
+                            "Name": "IncludePortInSPN",
+                            "DisplayName": "Include Port in SPN for WinRM",
+                            "Required": false,
+                            "DependsOn": "",
+                            "Type": "Bool",
+                            "DefaultValue": "False",
+                            "Description": "Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations."
+                        },
+                        {
+                            "Name": "FileTransferProtocol",
+                            "DisplayName": "File Transfer Protocol to Use",
+                            "Required": false,
+                            "DependsOn": "",
+                            "Type": "MultipleChoice",
+                            "DefaultValue": "SCP,SFTP,Both",
+                            "Description": "Which protocol should be used when uploading/downloading files - SCP, SFTP, or Both (try one, and then if necessary, the other)."
                         }
                     ],
                     "EntryParameters": [],
