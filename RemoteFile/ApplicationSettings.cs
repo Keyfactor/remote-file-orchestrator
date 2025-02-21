@@ -25,7 +25,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             Both
         }
 
-        private const string DEFAULT_LINUX_PERMISSION_SETTING = "600";
+        private const string DEFAULT_LINUX_PERMISSION_SETTING = "";
         private const string DEFAULT_OWNER_SETTING = "";
         private const string DEFAULT_SUDO_IMPERSONATION_SETTING = "";
 
