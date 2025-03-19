@@ -148,7 +148,7 @@ Use cases supported:
 This integration is compatible with Keyfactor Universal Orchestrator version 10.4 and later.
 
 ## Support
-The Remote File Universal Orchestrator extension is supported by Keyfactor for Keyfactor customers. If you have a support issue, please open a support ticket with your Keyfactor representative. If you have a support issue, please open a support ticket via the Keyfactor Support Portal at https://support.keyfactor.com. 
+The Remote File Universal Orchestrator extension If you have a support issue, please open a support ticket by either contacting your Keyfactor representative or via the Keyfactor Support Portal at https://support.keyfactor.com. 
  
 > To report a problem or suggest a new feature, use the **[Issues](../../issues)** tab. If you want to contribute actual bug fixes or proposed enhancements, use the **[Pull requests](../../pulls)** tab.
 
@@ -247,6 +247,8 @@ The Remote File Universal Orchestrator extension implements 6 Certificate Store 
 
     ![RFJKS Advanced Tab](docsource/images/RFJKS-advanced-store-type-dialog.png)
 
+    > For Keyfactor **Command versions 24.4 and later**, a Certificate Format dropdown is available with PFX and PEM options. Ensure that **PFX** is selected, as this determines the format of new and renewed certificates sent to the Orchestrator during a Management job. Currently, all Keyfactor-supported Orchestrator extensions support only PFX.
+
     #### Custom Fields Tab
     Custom fields operate at the certificate store level and are used to control how the orchestrator connects to the remote target server containing the certificate store to be managed. The following custom fields should be added to the store type:
 
@@ -316,6 +318,8 @@ The Remote File Universal Orchestrator extension implements 6 Certificate Store 
     The Advanced tab should look like this:
 
     ![RFPEM Advanced Tab](docsource/images/RFPEM-advanced-store-type-dialog.png)
+
+    > For Keyfactor **Command versions 24.4 and later**, a Certificate Format dropdown is available with PFX and PEM options. Ensure that **PFX** is selected, as this determines the format of new and renewed certificates sent to the Orchestrator during a Management job. Currently, all Keyfactor-supported Orchestrator extensions support only PFX.
 
     #### Custom Fields Tab
     Custom fields operate at the certificate store level and are used to control how the orchestrator connects to the remote target server containing the certificate store to be managed. The following custom fields should be added to the store type:
@@ -391,6 +395,8 @@ The Remote File Universal Orchestrator extension implements 6 Certificate Store 
 
     ![RFPkcs12 Advanced Tab](docsource/images/RFPkcs12-advanced-store-type-dialog.png)
 
+    > For Keyfactor **Command versions 24.4 and later**, a Certificate Format dropdown is available with PFX and PEM options. Ensure that **PFX** is selected, as this determines the format of new and renewed certificates sent to the Orchestrator during a Management job. Currently, all Keyfactor-supported Orchestrator extensions support only PFX.
+
     #### Custom Fields Tab
     Custom fields operate at the certificate store level and are used to control how the orchestrator connects to the remote target server containing the certificate store to be managed. The following custom fields should be added to the store type:
 
@@ -460,6 +466,8 @@ The Remote File Universal Orchestrator extension implements 6 Certificate Store 
     The Advanced tab should look like this:
 
     ![RFDER Advanced Tab](docsource/images/RFDER-advanced-store-type-dialog.png)
+
+    > For Keyfactor **Command versions 24.4 and later**, a Certificate Format dropdown is available with PFX and PEM options. Ensure that **PFX** is selected, as this determines the format of new and renewed certificates sent to the Orchestrator during a Management job. Currently, all Keyfactor-supported Orchestrator extensions support only PFX.
 
     #### Custom Fields Tab
     Custom fields operate at the certificate store level and are used to control how the orchestrator connects to the remote target server containing the certificate store to be managed. The following custom fields should be added to the store type:
@@ -532,6 +540,8 @@ The Remote File Universal Orchestrator extension implements 6 Certificate Store 
 
     ![RFKDB Advanced Tab](docsource/images/RFKDB-advanced-store-type-dialog.png)
 
+    > For Keyfactor **Command versions 24.4 and later**, a Certificate Format dropdown is available with PFX and PEM options. Ensure that **PFX** is selected, as this determines the format of new and renewed certificates sent to the Orchestrator during a Management job. Currently, all Keyfactor-supported Orchestrator extensions support only PFX.
+
     #### Custom Fields Tab
     Custom fields operate at the certificate store level and are used to control how the orchestrator connects to the remote target server containing the certificate store to be managed. The following custom fields should be added to the store type:
 
@@ -601,6 +611,8 @@ The Remote File Universal Orchestrator extension implements 6 Certificate Store 
     The Advanced tab should look like this:
 
     ![RFORA Advanced Tab](docsource/images/RFORA-advanced-store-type-dialog.png)
+
+    > For Keyfactor **Command versions 24.4 and later**, a Certificate Format dropdown is available with PFX and PEM options. Ensure that **PFX** is selected, as this determines the format of new and renewed certificates sent to the Orchestrator during a Management job. Currently, all Keyfactor-supported Orchestrator extensions support only PFX.
 
     #### Custom Fields Tab
     Custom fields operate at the certificate store level and are used to control how the orchestrator connects to the remote target server containing the certificate store to be managed. The following custom fields should be added to the store type:
