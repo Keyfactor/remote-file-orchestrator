@@ -54,7 +54,8 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
                 bool includePortInSPN = properties.IncludePortInSPN == null || string.IsNullOrEmpty(properties.IncludePortInSPN.Value) ?
                     false :
                     Convert.ToBoolean(properties.IncludePortInSPN.Value);
-
+                int sshPort;
+                int sshPort = (properties.SSHPort != null && !string.IsNullOrEmpty(properties.SSHPort.Value) && int.TryParse(properties.SSHPort.Value, _)) ? )
                 ApplicationSettings.FileTransferProtocolEnum fileTransferProtocol = ApplicationSettings.FileTransferProtocol;
                 if (properties.FileTransferProtocol != null && !string.IsNullOrEmpty(properties.FileTransferProtocol.Value))
                 {

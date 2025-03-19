@@ -34,7 +34,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
         private string Password { get; set; }
         private SshClient sshClient;
 
-        internal SSHHandler(string server, string serverLogin, string serverPassword, bool isStoreServerLinux, ApplicationSettings.FileTransferProtocolEnum fileTransferProtocol, string sudoImpersonatedUser)
+        internal SSHHandler(string server, string serverLogin, int port, string serverPassword, bool isStoreServerLinux, ApplicationSettings.FileTransferProtocolEnum fileTransferProtocol, string sudoImpersonatedUser)
         {
             _logger.MethodEntry(LogLevel.Debug);
             

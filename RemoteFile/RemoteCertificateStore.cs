@@ -56,6 +56,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
         internal string UploadFilePath { get; set; }
         internal ApplicationSettings.FileTransferProtocolEnum FileTransferProtocol { get; set; }
         internal bool IncludePortInSPN { get; set; }
+        internal int SSHPort { get; set; }
         
         private Pkcs12Store CertificateStore;
         private ILogger logger;
@@ -63,7 +64,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
 
         internal RemoteCertificateStore() { }
 
-        internal RemoteCertificateStore(string server, string serverId, string serverPassword, string storeFileAndPath, string storePassword, ApplicationSettings.FileTransferProtocolEnum fileTransferProtocol, bool includePortInSPN)
+        internal RemoteCertificateStore(string server, string serverId, string serverPassword, string storeFileAndPath, string storePassword, ApplicationSettings.FileTransferProtocolEnum fileTransferProtocol, int sshPort, bool includePortInSPN)
         {
             logger = LogHandler.GetClassLogger(this.GetType());
             logger.MethodEntry(LogLevel.Debug);
@@ -80,6 +81,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             ServerType = StorePath.Substring(0, 1) == "/" ? ServerTypeEnum.Linux : ServerTypeEnum.Windows;
             UploadFilePath = !string.IsNullOrEmpty(ApplicationSettings.SeparateUploadFilePath) && ServerType == ServerTypeEnum.Linux ? ApplicationSettings.SeparateUploadFilePath : StorePath;
             FileTransferProtocol = fileTransferProtocol;
+            SSHPort = sshPort;
             IncludePortInSPN = includePortInSPN;
             logger.LogDebug($"UploadFilePath: {UploadFilePath}");
 
