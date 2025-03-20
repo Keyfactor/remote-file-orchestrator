@@ -28,42 +28,18 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
         public JobResult ProcessJob(InventoryJobConfiguration config, SubmitInventoryUpdate submitInventory)
         {
             ILogger logger = LogHandler.GetClassLogger(this.GetType());
-            logger.LogDebug($"Begin {config.Capability} for job id {config.JobId}...");
-            logger.LogDebug($"Server: { config.CertificateStoreDetails.ClientMachine }");
-            logger.LogDebug($"Store Path: { config.CertificateStoreDetails.StorePath }");
-            logger.LogDebug($"Job Properties:");
-            foreach (KeyValuePair<string, object> keyValue in config.JobProperties ?? new Dictionary<string,object>())
-            {
-                logger.LogDebug($"    {keyValue.Key}: {keyValue.Value}");
-            }
 
             ICertificateStoreSerializer certificateStoreSerializer = GetCertificateStoreSerializer(config.CertificateStoreDetails.Properties);
             List<CurrentInventoryItem> inventoryItems = new List<CurrentInventoryItem>();
 
             try
             {
-                string userName = PAMUtilities.ResolvePAMField(_resolver, logger, "Server User Name", config.ServerUsername);
-                string userPassword = PAMUtilities.ResolvePAMField(_resolver, logger, "Server Password", config.ServerPassword);
-                string storePassword = PAMUtilities.ResolvePAMField(_resolver, logger, "Store Password", config.CertificateStoreDetails.StorePassword);
-
                 ApplicationSettings.Initialize(this.GetType().Assembly.Location);
-                dynamic properties = JsonConvert.DeserializeObject(config.CertificateStoreDetails.Properties.ToString());
-                string sudoImpersonatedUser = properties.SudoImpersonatedUser == null || string.IsNullOrEmpty(properties.SudoImpersonatedUser.Value) ?
-                    ApplicationSettings.DefaultSudoImpersonatedUser :
-                    properties.SudoImpersonatedUser.Value;
-                bool includePortInSPN = properties.IncludePortInSPN == null || string.IsNullOrEmpty(properties.IncludePortInSPN.Value) ?
-                    false :
-                    Convert.ToBoolean(properties.IncludePortInSPN.Value);
-                int sshPort;
-                int sshPort = (properties.SSHPort != null && !string.IsNullOrEmpty(properties.SSHPort.Value) && int.TryParse(properties.SSHPort.Value, _)) ? )
-                ApplicationSettings.FileTransferProtocolEnum fileTransferProtocol = ApplicationSettings.FileTransferProtocol;
-                if (properties.FileTransferProtocol != null && !string.IsNullOrEmpty(properties.FileTransferProtocol.Value))
-                {
-                    Enum.TryParse(properties.FileTransferProtocol.Value, out fileTransferProtocol);
-                }
 
-                certificateStore = new RemoteCertificateStore(config.CertificateStoreDetails.ClientMachine, userName, userPassword, config.CertificateStoreDetails.StorePath, storePassword, fileTransferProtocol, includePortInSPN);
-                certificateStore.Initialize(sudoImpersonatedUser);
+                SetJobProperties(config, config.CertificateStoreDetails, logger);
+
+                certificateStore = new RemoteCertificateStore(config.CertificateStoreDetails.ClientMachine, UserName, UserPassword, config.CertificateStoreDetails.StorePath, StorePassword, FileTransferProtocol, SSHPort, IncludePortInSPN);
+                certificateStore.Initialize(SudoImpersonatedUser);
                 certificateStore.LoadCertificateStore(certificateStoreSerializer, true);
 
                 List<X509Certificate2Collection> collections = certificateStore.GetCertificateChains();
