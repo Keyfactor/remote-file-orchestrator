@@ -86,7 +86,7 @@
                       "DependsOn": "",
                       "Type": "String",
                       "DefaultValue": "",
-                      "Description": "The SudoImpersonatingUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'.  Overrides [config.json](#post-installation) DefaultSudoImpersonatedUser setting.  Overrides DefaultSudoImpersonatedUser [config.json](#post-installation) setting."
+                      "Description": "The SudoImpersonatingUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'.  Overrides DefaultSudoImpersonatedUser [config.json](#post-installation) setting."
                     },
                     {
                       "Name": "RemoveRootCertificate",
@@ -350,7 +350,7 @@
                       "DependsOn": "",
                       "Type": "String",
                       "DefaultValue": "",
-                      "Description": "The SudoImpersonatingUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'.  Overrides [config.json](#post-installation) DefaultSudoImpersonatedUser setting.  Overrides DefaultSudoImpersonatedUser [config.json](#post-installation) setting."
+                      "Description": "The SudoImpersonatingUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'.  Overrides DefaultSudoImpersonatedUser [config.json](#post-installation) setting."
                     },
                     {
                       "Name": "RemoveRootCertificate",
