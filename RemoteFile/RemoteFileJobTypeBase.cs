@@ -54,9 +54,13 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
                 ApplicationSettings.DefaultSudoImpersonatedUser :
                 properties.SudoImpersonatedUser.Value;
 
-            SSHPort = (properties.SSHPort == null || string.IsNullOrEmpty(properties.SSHPort.Value) || !int.TryParse(properties.SSHPort.Value, out int notUsed)) ?
+            SSHPort = properties.SSHPort == null || string.IsNullOrEmpty(properties.SSHPort.Value) || !int.TryParse(properties.SSHPort.Value, out int notUsed) ?
                 ApplicationSettings.SSHPort :
                 properties.SSHPort;
+
+            RemoveRootCertificate = properties.RemoveRootCertificate == null || string.IsNullOrEmpty(properties.RemoveRootCertificate.Value) ?
+                false :
+                Convert.ToBoolean(properties.RemoveRootCertificate.Value);
 
             IncludePortInSPN = properties.IncludePortInSPN == null || string.IsNullOrEmpty(properties.IncludePortInSPN.Value) ?
                 false :
@@ -74,9 +78,12 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
                     FileTransferProtocol = fileTransferProtocol;
             }
 
-            KeyType = !config.JobProperties.ContainsKey("keyType") || config.JobProperties["keyType"] == null || string.IsNullOrEmpty(config.JobProperties["keyType"].ToString()) ? string.Empty : config.JobProperties["keyType"].ToString();
-            KeySize = !config.JobProperties.ContainsKey("keySize") || config.JobProperties["keySize"] == null || string.IsNullOrEmpty(config.JobProperties["keySize"].ToString()) || !int.TryParse(config.JobProperties["keySize"].ToString(), out int notUsed2) ? 2048 : Convert.ToInt32(config.JobProperties["keySize"]);
-            SubjectText = !config.JobProperties.ContainsKey("subjectText") || config.JobProperties["subjectText"] == null || string.IsNullOrEmpty(config.JobProperties["subjectText"].ToString()) ? string.Empty : config.JobProperties["subjectText"].ToString();
+            if (config.JobProperties != null)
+            {
+                KeyType = !config.JobProperties.ContainsKey("keyType") || config.JobProperties["keyType"] == null || string.IsNullOrEmpty(config.JobProperties["keyType"].ToString()) ? string.Empty : config.JobProperties["keyType"].ToString();
+                KeySize = !config.JobProperties.ContainsKey("keySize") || config.JobProperties["keySize"] == null || string.IsNullOrEmpty(config.JobProperties["keySize"].ToString()) || !int.TryParse(config.JobProperties["keySize"].ToString(), out int notUsed2) ? 2048 : Convert.ToInt32(config.JobProperties["keySize"]);
+                SubjectText = !config.JobProperties.ContainsKey("subjectText") || config.JobProperties["subjectText"] == null || string.IsNullOrEmpty(config.JobProperties["subjectText"].ToString()) ? string.Empty : config.JobProperties["subjectText"].ToString();
+            }        
         }
     }
 }
