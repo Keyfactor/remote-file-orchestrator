@@ -148,7 +148,7 @@ Use cases supported:
 This integration is compatible with Keyfactor Universal Orchestrator version 10.4 and later.
 
 ## Support
-The Remote File Universal Orchestrator extension is supported by Keyfactor for Keyfactor customers. If you have a support issue, please open a support ticket with your Keyfactor representative. If you have a support issue, please open a support ticket via the Keyfactor Support Portal at https://support.keyfactor.com. 
+The Remote File Universal Orchestrator extension If you have a support issue, please open a support ticket by either contacting your Keyfactor representative or via the Keyfactor Support Portal at https://support.keyfactor.com. 
  
 > To report a problem or suggest a new feature, use the **[Issues](../../issues)** tab. If you want to contribute actual bug fixes or proposed enhancements, use the **[Pull requests](../../pulls)** tab.
 
@@ -247,6 +247,8 @@ The Remote File Universal Orchestrator extension implements 6 Certificate Store 
 
     ![RFJKS Advanced Tab](docsource/images/RFJKS-advanced-store-type-dialog.png)
 
+    > For Keyfactor **Command versions 24.4 and later**, a Certificate Format dropdown is available with PFX and PEM options. Ensure that **PFX** is selected, as this determines the format of new and renewed certificates sent to the Orchestrator during a Management job. Currently, all Keyfactor-supported Orchestrator extensions support only PFX.
+
     #### Custom Fields Tab
     Custom fields operate at the certificate store level and are used to control how the orchestrator connects to the remote target server containing the certificate store to be managed. The following custom fields should be added to the store type:
 
@@ -259,7 +261,8 @@ The Remote File Universal Orchestrator extension implements 6 Certificate Store 
     | SudoImpersonatingUser | Sudo Impersonating User | The SudoImpersonatingUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'. | String |  | 🔲 Unchecked |
     | RemoveRootCertificate | Remove Root Certificate from Chain | Remove root certificate from chain when adding/renewing a certificate in a store. | Bool | False | 🔲 Unchecked |
     | IncludePortInSPN | Include Port in SPN for WinRM | Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations. | Bool | False | 🔲 Unchecked |
-    | FileTransferProtocol | File Transfer Protocol to Use | Which protocol should be used when uploading/downloading files - SCP, SFTP, or Both (try one, and then if necessary, the other). | MultipleChoice | SCP,SFTP,Both | 🔲 Unchecked |
+    | FileTransferProtocol | File Transfer Protocol to Use | Which protocol should be used when uploading/downloading files - SCP, SFTP, or Both (try one, and then if necessary, the other). | MultipleChoice | ,SCP,SFTP,Both | 🔲 Unchecked |
+    | SSHPort | SSH Port | Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overwrites config.json setting. | String |  | 🔲 Unchecked |
 
     The Custom Fields tab should look like this:
 
@@ -317,6 +320,8 @@ The Remote File Universal Orchestrator extension implements 6 Certificate Store 
 
     ![RFPEM Advanced Tab](docsource/images/RFPEM-advanced-store-type-dialog.png)
 
+    > For Keyfactor **Command versions 24.4 and later**, a Certificate Format dropdown is available with PFX and PEM options. Ensure that **PFX** is selected, as this determines the format of new and renewed certificates sent to the Orchestrator during a Management job. Currently, all Keyfactor-supported Orchestrator extensions support only PFX.
+
     #### Custom Fields Tab
     Custom fields operate at the certificate store level and are used to control how the orchestrator connects to the remote target server containing the certificate store to be managed. The following custom fields should be added to the store type:
 
@@ -333,7 +338,8 @@ The Remote File Universal Orchestrator extension implements 6 Certificate Store 
     | IgnorePrivateKeyOnInventory | Ignore Private Key On Inventory | The IgnorePrivateKeyOnInventory field should contain a boolean value ('true' or 'false') indicating whether to disregard the private key during inventory. Setting this to 'true' will allow inventory for the store without needing to supply the location of the private key or the password if the key is encrypted.  However, doing this makes the store in effect inventory-only and no management jobs will be able to be run for this store. Example: 'true' to ignore the private key or 'false' to include it. | Bool | false | 🔲 Unchecked |
     | RemoveRootCertificate | Remove Root Certificate from Chain | Remove root certificate from chain when adding/renewing a certificate in a store. | Bool | False | 🔲 Unchecked |
     | IncludePortInSPN | Include Port in SPN for WinRM | Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations. | Bool | False | 🔲 Unchecked |
-    | FileTransferProtocol | File Transfer Protocol to Use | Which protocol should be used when uploading/downloading files - SCP, SFTP, or Both (try one, and then if necessary, the other). | MultipleChoice | SCP,SFTP,Both | 🔲 Unchecked |
+    | FileTransferProtocol | File Transfer Protocol to Use | Which protocol should be used when uploading/downloading files - SCP, SFTP, or Both (try one, and then if necessary, the other). | MultipleChoice | ,SCP,SFTP,Both | 🔲 Unchecked |
+    | SSHPort | SSH Port | Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overwrites config.json setting. | String |  | 🔲 Unchecked |
 
     The Custom Fields tab should look like this:
 
@@ -391,6 +397,8 @@ The Remote File Universal Orchestrator extension implements 6 Certificate Store 
 
     ![RFPkcs12 Advanced Tab](docsource/images/RFPkcs12-advanced-store-type-dialog.png)
 
+    > For Keyfactor **Command versions 24.4 and later**, a Certificate Format dropdown is available with PFX and PEM options. Ensure that **PFX** is selected, as this determines the format of new and renewed certificates sent to the Orchestrator during a Management job. Currently, all Keyfactor-supported Orchestrator extensions support only PFX.
+
     #### Custom Fields Tab
     Custom fields operate at the certificate store level and are used to control how the orchestrator connects to the remote target server containing the certificate store to be managed. The following custom fields should be added to the store type:
 
@@ -403,7 +411,8 @@ The Remote File Universal Orchestrator extension implements 6 Certificate Store 
     | SudoImpersonatingUser | Sudo Impersonating User | The SudoImpersonatingUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'. | String |  | 🔲 Unchecked |
     | RemoveRootCertificate | Remove Root Certificate from Chain | Remove root certificate from chain when adding/renewing a certificate in a store. | Bool | False | 🔲 Unchecked |
     | IncludePortInSPN | Include Port in SPN for WinRM | Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations. | Bool | False | 🔲 Unchecked |
-    | FileTransferProtocol | File Transfer Protocol to Use | Which protocol should be used when uploading/downloading files - SCP, SFTP, or Both (try one, and then if necessary, the other). | MultipleChoice | SCP,SFTP,Both | 🔲 Unchecked |
+    | FileTransferProtocol | File Transfer Protocol to Use | Which protocol should be used when uploading/downloading files - SCP, SFTP, or Both (try one, and then if necessary, the other). | MultipleChoice | ,SCP,SFTP,Both | 🔲 Unchecked |
+    | SSHPort | SSH Port | Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overwrites config.json setting. | String |  | 🔲 Unchecked |
 
     The Custom Fields tab should look like this:
 
@@ -461,6 +470,8 @@ The Remote File Universal Orchestrator extension implements 6 Certificate Store 
 
     ![RFDER Advanced Tab](docsource/images/RFDER-advanced-store-type-dialog.png)
 
+    > For Keyfactor **Command versions 24.4 and later**, a Certificate Format dropdown is available with PFX and PEM options. Ensure that **PFX** is selected, as this determines the format of new and renewed certificates sent to the Orchestrator during a Management job. Currently, all Keyfactor-supported Orchestrator extensions support only PFX.
+
     #### Custom Fields Tab
     Custom fields operate at the certificate store level and are used to control how the orchestrator connects to the remote target server containing the certificate store to be managed. The following custom fields should be added to the store type:
 
@@ -474,7 +485,8 @@ The Remote File Universal Orchestrator extension implements 6 Certificate Store 
     | SeparatePrivateKeyFilePath | Separate Private Key File Location | The SeparatePrivateKeyFilePath field should contain the full path and file name where the separate private key file will be stored if it is to be kept outside the main certificate file. Example: '/path/to/privatekey.der'. | String |  | 🔲 Unchecked |
     | RemoveRootCertificate | Remove Root Certificate from Chain | Remove root certificate from chain when adding/renewing a certificate in a store. | Bool | False | 🔲 Unchecked |
     | IncludePortInSPN | Include Port in SPN for WinRM | Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations. | Bool | False | 🔲 Unchecked |
-    | FileTransferProtocol | File Transfer Protocol to Use | Which protocol should be used when uploading/downloading files - SCP, SFTP, or Both (try one, and then if necessary, the other). | MultipleChoice | SCP,SFTP,Both | 🔲 Unchecked |
+    | FileTransferProtocol | File Transfer Protocol to Use | Which protocol should be used when uploading/downloading files - SCP, SFTP, or Both (try one, and then if necessary, the other). | MultipleChoice | ,SCP,SFTP,Both | 🔲 Unchecked |
+    | SSHPort | SSH Port | Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overwrites config.json setting. | String |  | 🔲 Unchecked |
 
     The Custom Fields tab should look like this:
 
@@ -532,6 +544,8 @@ The Remote File Universal Orchestrator extension implements 6 Certificate Store 
 
     ![RFKDB Advanced Tab](docsource/images/RFKDB-advanced-store-type-dialog.png)
 
+    > For Keyfactor **Command versions 24.4 and later**, a Certificate Format dropdown is available with PFX and PEM options. Ensure that **PFX** is selected, as this determines the format of new and renewed certificates sent to the Orchestrator during a Management job. Currently, all Keyfactor-supported Orchestrator extensions support only PFX.
+
     #### Custom Fields Tab
     Custom fields operate at the certificate store level and are used to control how the orchestrator connects to the remote target server containing the certificate store to be managed. The following custom fields should be added to the store type:
 
@@ -544,7 +558,8 @@ The Remote File Universal Orchestrator extension implements 6 Certificate Store 
     | SudoImpersonatingUser | Sudo Impersonating User | The SudoImpersonatingUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'. | String |  | 🔲 Unchecked |
     | RemoveRootCertificate | Remove Root Certificate from Chain | Remove root certificate from chain when adding/renewing a certificate in a store. | Bool | False | 🔲 Unchecked |
     | IncludePortInSPN | Include Port in SPN for WinRM | Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations. | Bool | False | 🔲 Unchecked |
-    | FileTransferProtocol | File Transfer Protocol to Use | Which protocol should be used when uploading/downloading files - SCP, SFTP, or Both (try one, and then if necessary, the other). | MultipleChoice | SCP,SFTP,Both | 🔲 Unchecked |
+    | FileTransferProtocol | File Transfer Protocol to Use | Which protocol should be used when uploading/downloading files - SCP, SFTP, or Both (try one, and then if necessary, the other). | MultipleChoice | ,SCP,SFTP,Both | 🔲 Unchecked |
+    | SSHPort | SSH Port | Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overwrites config.json setting. | String |  | 🔲 Unchecked |
 
     The Custom Fields tab should look like this:
 
@@ -602,6 +617,8 @@ The Remote File Universal Orchestrator extension implements 6 Certificate Store 
 
     ![RFORA Advanced Tab](docsource/images/RFORA-advanced-store-type-dialog.png)
 
+    > For Keyfactor **Command versions 24.4 and later**, a Certificate Format dropdown is available with PFX and PEM options. Ensure that **PFX** is selected, as this determines the format of new and renewed certificates sent to the Orchestrator during a Management job. Currently, all Keyfactor-supported Orchestrator extensions support only PFX.
+
     #### Custom Fields Tab
     Custom fields operate at the certificate store level and are used to control how the orchestrator connects to the remote target server containing the certificate store to be managed. The following custom fields should be added to the store type:
 
@@ -615,7 +632,8 @@ The Remote File Universal Orchestrator extension implements 6 Certificate Store 
     | WorkFolder | Location to use for creation/removal of work files | The WorkFolder field should contain the path on the managed server where temporary work files can be created, modified, and deleted during Inventory and Management jobs. Example: '/path/to/workfolder'. | String |  | ✅ Checked |
     | RemoveRootCertificate | Remove Root Certificate from Chain | Remove root certificate from chain when adding/renewing a certificate in a store. | Bool | False | 🔲 Unchecked |
     | IncludePortInSPN | Include Port in SPN for WinRM | Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations. | Bool | False | 🔲 Unchecked |
-    | FileTransferProtocol | File Transfer Protocol to Use | Which protocol should be used when uploading/downloading files - SCP, SFTP, or Both (try one, and then if necessary, the other). | MultipleChoice | SCP,SFTP,Both | 🔲 Unchecked |
+    | FileTransferProtocol | File Transfer Protocol to Use | Which protocol should be used when uploading/downloading files - SCP, SFTP, or Both (try one, and then if necessary, the other). | MultipleChoice | ,SCP,SFTP,Both | 🔲 Unchecked |
+    | SSHPort | SSH Port | Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overwrites config.json setting. | String |  | 🔲 Unchecked |
 
     The Custom Fields tab should look like this:
 
@@ -682,7 +700,8 @@ The Remote File Orchestrator Extension uses a JSON configuration file.  It is lo
    "SeparateUploadFilePath": "",  
    "FileTransferProtocol":  "SCP",  
    "DefaultLinuxPermissionsOnStoreCreation": "600",  
-   "DefaultOwnerOnStoreCreation": ""  
+   "DefaultOwnerOnStoreCreation": "",
+   "SSHPort": ""
 }  
 
 <details>
@@ -757,6 +776,15 @@ The Remote File Orchestrator Extension uses a JSON configuration file.  It is lo
 
 </details>
 
+<details>  
+<summary><b>SSHPort</b> (Applicable for Linux hosted certificate stores only)</summary>
+
+* This optional value should be an integer value representing the port that SSH is listening on
+* Allowed values - Any valid integer representing a valid port
+* Default Value - 22.  
+
+</details>
+
 
 ## Defining Certificate Stores
 
@@ -791,6 +819,7 @@ The Remote File Universal Orchestrator extension implements 6 Certificate Store 
         | RemoveRootCertificate | Remove root certificate from chain when adding/renewing a certificate in a store. |
         | IncludePortInSPN | Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations. |
         | FileTransferProtocol | Which protocol should be used when uploading/downloading files - SCP, SFTP, or Both (try one, and then if necessary, the other). |
+        | SSHPort | Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overwrites config.json setting. |
         | Store Password | Password used to secure the Certificate Store |
 
         
@@ -839,6 +868,7 @@ The Remote File Universal Orchestrator extension implements 6 Certificate Store 
         | RemoveRootCertificate | Remove root certificate from chain when adding/renewing a certificate in a store. |
         | IncludePortInSPN | Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations. |
         | FileTransferProtocol | Which protocol should be used when uploading/downloading files - SCP, SFTP, or Both (try one, and then if necessary, the other). |
+        | SSHPort | Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overwrites config.json setting. |
         | Store Password | Password used to secure the Certificate Store |
 
         
@@ -901,6 +931,7 @@ The Remote File Universal Orchestrator extension implements 6 Certificate Store 
         | RemoveRootCertificate | Remove root certificate from chain when adding/renewing a certificate in a store. |
         | IncludePortInSPN | Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations. |
         | FileTransferProtocol | Which protocol should be used when uploading/downloading files - SCP, SFTP, or Both (try one, and then if necessary, the other). |
+        | SSHPort | Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overwrites config.json setting. |
         | Store Password | Password used to secure the Certificate Store.  For stores with PKCS#8 private keys, set the password for encrypted private keys (BEGIN ENCRYPTED PRIVATE KEY) or 'No Value' for unencrypted private keys (BEGIN PRIVATE KEY).  If managing a store with a PKCS#1 private key (BEGIN RSA PRIVATE KEY), this value MUST be set to 'No Value' |
 
         
@@ -953,6 +984,7 @@ The Remote File Universal Orchestrator extension implements 6 Certificate Store 
         | RemoveRootCertificate | Remove root certificate from chain when adding/renewing a certificate in a store. |
         | IncludePortInSPN | Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations. |
         | FileTransferProtocol | Which protocol should be used when uploading/downloading files - SCP, SFTP, or Both (try one, and then if necessary, the other). |
+        | SSHPort | Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overwrites config.json setting. |
         | Store Password | Password used to secure the Certificate Store.  For stores with PKCS#8 private keys, set the password for encrypted private keys (BEGIN ENCRYPTED PRIVATE KEY) or 'No Value' for unencrypted private keys (BEGIN PRIVATE KEY).  If managing a store with a PKCS#1 private key (BEGIN RSA PRIVATE KEY), this value MUST be set to 'No Value' |
 
         
@@ -1011,6 +1043,7 @@ The Remote File Universal Orchestrator extension implements 6 Certificate Store 
         | RemoveRootCertificate | Remove root certificate from chain when adding/renewing a certificate in a store. |
         | IncludePortInSPN | Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations. |
         | FileTransferProtocol | Which protocol should be used when uploading/downloading files - SCP, SFTP, or Both (try one, and then if necessary, the other). |
+        | SSHPort | Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overwrites config.json setting. |
         | Store Password | Password used to secure the Certificate Store |
 
         
@@ -1059,6 +1092,7 @@ The Remote File Universal Orchestrator extension implements 6 Certificate Store 
         | RemoveRootCertificate | Remove root certificate from chain when adding/renewing a certificate in a store. |
         | IncludePortInSPN | Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations. |
         | FileTransferProtocol | Which protocol should be used when uploading/downloading files - SCP, SFTP, or Both (try one, and then if necessary, the other). |
+        | SSHPort | Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overwrites config.json setting. |
         | Store Password | Password used to secure the Certificate Store |
 
         
@@ -1118,6 +1152,7 @@ The Remote File Universal Orchestrator extension implements 6 Certificate Store 
         | RemoveRootCertificate | Remove root certificate from chain when adding/renewing a certificate in a store. |
         | IncludePortInSPN | Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations. |
         | FileTransferProtocol | Which protocol should be used when uploading/downloading files - SCP, SFTP, or Both (try one, and then if necessary, the other). |
+        | SSHPort | Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overwrites config.json setting. |
         | Store Password | Password used to secure the Certificate Store |
 
         
@@ -1167,6 +1202,7 @@ The Remote File Universal Orchestrator extension implements 6 Certificate Store 
         | RemoveRootCertificate | Remove root certificate from chain when adding/renewing a certificate in a store. |
         | IncludePortInSPN | Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations. |
         | FileTransferProtocol | Which protocol should be used when uploading/downloading files - SCP, SFTP, or Both (try one, and then if necessary, the other). |
+        | SSHPort | Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overwrites config.json setting. |
         | Store Password | Password used to secure the Certificate Store |
 
         
@@ -1225,6 +1261,7 @@ The Remote File Universal Orchestrator extension implements 6 Certificate Store 
         | RemoveRootCertificate | Remove root certificate from chain when adding/renewing a certificate in a store. |
         | IncludePortInSPN | Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations. |
         | FileTransferProtocol | Which protocol should be used when uploading/downloading files - SCP, SFTP, or Both (try one, and then if necessary, the other). |
+        | SSHPort | Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overwrites config.json setting. |
         | Store Password | Password used to secure the Certificate Store |
 
         
@@ -1273,6 +1310,7 @@ The Remote File Universal Orchestrator extension implements 6 Certificate Store 
         | RemoveRootCertificate | Remove root certificate from chain when adding/renewing a certificate in a store. |
         | IncludePortInSPN | Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations. |
         | FileTransferProtocol | Which protocol should be used when uploading/downloading files - SCP, SFTP, or Both (try one, and then if necessary, the other). |
+        | SSHPort | Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overwrites config.json setting. |
         | Store Password | Password used to secure the Certificate Store |
 
         
@@ -1332,6 +1370,7 @@ The Remote File Universal Orchestrator extension implements 6 Certificate Store 
         | RemoveRootCertificate | Remove root certificate from chain when adding/renewing a certificate in a store. |
         | IncludePortInSPN | Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations. |
         | FileTransferProtocol | Which protocol should be used when uploading/downloading files - SCP, SFTP, or Both (try one, and then if necessary, the other). |
+        | SSHPort | Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overwrites config.json setting. |
         | Store Password | Password used to secure the Certificate Store |
 
         
@@ -1381,6 +1420,7 @@ The Remote File Universal Orchestrator extension implements 6 Certificate Store 
         | RemoveRootCertificate | Remove root certificate from chain when adding/renewing a certificate in a store. |
         | IncludePortInSPN | Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations. |
         | FileTransferProtocol | Which protocol should be used when uploading/downloading files - SCP, SFTP, or Both (try one, and then if necessary, the other). |
+        | SSHPort | Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overwrites config.json setting. |
         | Store Password | Password used to secure the Certificate Store |
 
         
