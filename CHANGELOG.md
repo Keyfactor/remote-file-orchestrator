@@ -1,3 +1,7 @@
+v2.11.0
+- Added ability to set SSH port when managing Linux servers
+- Bug Fix - Issue adding new certificate with private key to RFPEM store on Windows
+
 v2.10.0
 - Added support for Eliptical Curve (EC) private keys for RFPEM.
 - For Linux hosted certificate stores, added ability to inherit file permissions and ownership when creating new stores by modifying default behavior when config.json and certificate store permissions/ownership settings are left empty.
