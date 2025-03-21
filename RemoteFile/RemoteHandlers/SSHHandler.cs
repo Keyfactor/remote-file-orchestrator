@@ -34,7 +34,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
         private string Password { get; set; }
         private SshClient sshClient;
 
-        internal SSHHandler(string server, string serverLogin, string serverPassword, bool isStoreServerLinux, ApplicationSettings.FileTransferProtocolEnum fileTransferProtocol, string sudoImpersonatedUser)
+        internal SSHHandler(string server, string serverLogin, string serverPassword, bool isStoreServerLinux, ApplicationSettings.FileTransferProtocolEnum fileTransferProtocol, int sshPort, string sudoImpersonatedUser)
         {
             _logger.MethodEntry(LogLevel.Debug);
             
@@ -49,7 +49,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
             {
                 KeyboardInteractiveAuthenticationMethod keyboardAuthentication = new KeyboardInteractiveAuthenticationMethod(UserId);
                 keyboardAuthentication.AuthenticationPrompt += KeyboardAuthentication_AuthenticationPrompt;
-                Connection = new ConnectionInfo(server, serverLogin, new PasswordAuthenticationMethod(serverLogin, serverPassword), keyboardAuthentication);
+                Connection = new ConnectionInfo(server, sshPort, serverLogin, new PasswordAuthenticationMethod(serverLogin, serverPassword), keyboardAuthentication);
             }
             else
             {
@@ -70,7 +70,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
                     }
                 }
 
-                Connection = new ConnectionInfo(server, serverLogin, new PrivateKeyAuthenticationMethod(serverLogin, privateKeyFile)); 
+                Connection = new ConnectionInfo(server, sshPort, serverLogin, new PrivateKeyAuthenticationMethod(serverLogin, privateKeyFile)); 
             }
 
             try
