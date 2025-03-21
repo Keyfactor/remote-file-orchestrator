@@ -68,7 +68,7 @@
                       "DependsOn": "",
                       "Type": "String",
                       "DefaultValue": "",
-                      "Description": "The LinuxFilePermissionsOnStoreCreation field should contain a three-digit value between 000 and 777 representing the Linux file permissions to be set for the certificate store upon creation. Example: '600' or '755'.  Overrides DefaultLinuxPermissionOnStoreCreation config.json setting."
+                      "Description": "The LinuxFilePermissionsOnStoreCreation field should contain a three-digit value between 000 and 777 representing the Linux file permissions to be set for the certificate store upon creation. Example: '600' or '755'.  Overrides DefaultLinuxPermissionOnStoreCreation [config.json setting](#post-installation)]."
                     },
                     {
                       "Name": "LinuxFileOwnerOnStoreCreation",
