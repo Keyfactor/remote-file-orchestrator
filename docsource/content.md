@@ -74,7 +74,8 @@ The Remote File Orchestrator Extension uses a JSON configuration file.  It is lo
    "SeparateUploadFilePath": "",  
    "FileTransferProtocol":  "SCP",  
    "DefaultLinuxPermissionsOnStoreCreation": "600",  
-   "DefaultOwnerOnStoreCreation": ""  
+   "DefaultOwnerOnStoreCreation": "",
+   "SSHPort": ""
 }  
 
 <details>
@@ -149,6 +150,14 @@ The Remote File Orchestrator Extension uses a JSON configuration file.  It is lo
 
 </details>
 
+<details>  
+<summary><b>SSHPort</b> (Applicable for Linux hosted certificate stores only)</summary>
+
+* This optional value should be an integer value representing the port that SSH is listening on
+* Allowed values - Any valid integer representing a valid port
+* Default Value - 22.  
+
+</details>
 
 ## Discovery
 

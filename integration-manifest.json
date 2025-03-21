@@ -40,82 +40,91 @@
                             "IsPAMEligible": true
                         }
                     },
-                    "Properties": [
-                        {
-                            "Name": "ServerUsername",
-                            "DisplayName": "Server Username",
-                            "Type": "Secret",
-                            "DependsOn": "",
-                            "DefaultValue": "",
-                            "Required": false,
-                            "IsPAMEligible": true,
-                            "Description": "A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value*"
-                        },
-                        {
-                            "Name": "ServerPassword",
-                            "DisplayName": "Server Password",
-                            "Type": "Secret",
-                            "DependsOn": "",
-                            "DefaultValue": "",
-                            "Required": false,
-                            "IsPAMEligible": true,
-                            "Description": "A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value*"
-                        },
-                        {
-                            "Name": "LinuxFilePermissionsOnStoreCreation",
-                            "DisplayName": "Linux File Permissions on Store Creation",
-                            "Required": false,
-                            "DependsOn": "",
-                            "Type": "String",
-                            "DefaultValue": "",
-                            "Description": "The LinuxFilePermissionsOnStoreCreation field should contain a three-digit value between 000 and 777 representing the Linux file permissions to be set for the certificate store upon creation. Example: '600' or '755'."
-                        },
-                        {
-                            "Name": "LinuxFileOwnerOnStoreCreation",
-                            "DisplayName": "Linux File Owner on Store Creation",
-                            "Required": false,
-                            "DependsOn": "",
-                            "Type": "String",
-                            "DefaultValue": "",
-                            "Description": "The LinuxFileOwnerOnStoreCreation field should contain a valid user ID recognized by the destination Linux server, optionally followed by a colon and a group ID if the group owner differs. Example: 'userID' or 'userID:groupID'."
-                        },
-                        {
-                            "Name": "SudoImpersonatingUser",
-                            "DisplayName": "Sudo Impersonating User",
-                            "Required": false,
-                            "DependsOn": "",
-                            "Type": "String",
-                            "DefaultValue": "",
-                            "Description": "The SudoImpersonatingUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'."
-                        },
-                        {
-                            "Name": "RemoveRootCertificate",
-                            "DisplayName": "Remove Root Certificate from Chain",
-                            "Required": false,
-                            "DependsOn": "",
-                            "Type": "Bool",
-                            "DefaultValue": "False",
-                            "Description": "Remove root certificate from chain when adding/renewing a certificate in a store."
-                        },
-                        {
-                            "Name": "IncludePortInSPN",
-                            "DisplayName": "Include Port in SPN for WinRM",
-                            "Required": false,
-                            "DependsOn": "",
-                            "Type": "Bool",
-                            "DefaultValue": "False",
-                            "Description": "Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations."
-                        },
-                        {
-                            "Name": "FileTransferProtocol",
-                            "DisplayName": "File Transfer Protocol to Use",
-                            "Required": false,
-                            "DependsOn": "",
-                            "Type": "MultipleChoice",
-                            "DefaultValue": "SCP,SFTP,Both",
-                            "Description": "Which protocol should be used when uploading/downloading files - SCP, SFTP, or Both (try one, and then if necessary, the other)."
-                        }
-                    ],
+                  "Properties": [
+                    {
+                      "Name": "ServerUsername",
+                      "DisplayName": "Server Username",
+                      "Type": "Secret",
+                      "DependsOn": "",
+                      "DefaultValue": "",
+                      "Required": false,
+                      "IsPAMEligible": true,
+                      "Description": "A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value*"
+                    },
+                    {
+                      "Name": "ServerPassword",
+                      "DisplayName": "Server Password",
+                      "Type": "Secret",
+                      "DependsOn": "",
+                      "DefaultValue": "",
+                      "Required": false,
+                      "IsPAMEligible": true,
+                      "Description": "A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value*"
+                    },
+                    {
+                      "Name": "LinuxFilePermissionsOnStoreCreation",
+                      "DisplayName": "Linux File Permissions on Store Creation",
+                      "Required": false,
+                      "DependsOn": "",
+                      "Type": "String",
+                      "DefaultValue": "",
+                      "Description": "The LinuxFilePermissionsOnStoreCreation field should contain a three-digit value between 000 and 777 representing the Linux file permissions to be set for the certificate store upon creation. Example: '600' or '755'.  Overrides DefaultLinuxPermissionOnStoreCreation [config.json setting](#post-installation)]."
+                    },
+                    {
+                      "Name": "LinuxFileOwnerOnStoreCreation",
+                      "DisplayName": "Linux File Owner on Store Creation",
+                      "Required": false,
+                      "DependsOn": "",
+                      "Type": "String",
+                      "DefaultValue": "",
+                      "Description": "The LinuxFileOwnerOnStoreCreation field should contain a valid user ID recognized by the destination Linux server, optionally followed by a colon and a group ID if the group owner differs. Example: 'userID' or 'userID:groupID'.  Overrides DefaultOwnerOnStoreCreation config.json setting."
+                    },
+                    {
+                      "Name": "SudoImpersonatingUser",
+                      "DisplayName": "Sudo Impersonating User",
+                      "Required": false,
+                      "DependsOn": "",
+                      "Type": "String",
+                      "DefaultValue": "",
+                      "Description": "The SudoImpersonatingUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'.  Overrides config.json DefaultSudoImpersonatedUser setting.  Overrides DefaultSudoImpersonatedUser config.json setting."
+                    },
+                    {
+                      "Name": "RemoveRootCertificate",
+                      "DisplayName": "Remove Root Certificate from Chain",
+                      "Required": false,
+                      "DependsOn": "",
+                      "Type": "Bool",
+                      "DefaultValue": "False",
+                      "Description": "Remove root certificate from chain when adding/renewing a certificate in a store."
+                    },
+                    {
+                      "Name": "IncludePortInSPN",
+                      "DisplayName": "Include Port in SPN for WinRM",
+                      "Required": false,
+                      "DependsOn": "",
+                      "Type": "Bool",
+                      "DefaultValue": "False",
+                      "Description": "Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations."
+                    },
+                    {
+                      "Name": "FileTransferProtocol",
+                      "DisplayName": "File Transfer Protocol to Use",
+                      "Required": false,
+                      "DependsOn": "",
+                      "Type": "MultipleChoice",
+                      "DefaultValue": ",SCP,SFTP,Both",
+                      "Description": "Which protocol should be used when uploading/downloading files - SCP, SFTP, or Both (try one, and then if necessary, the other).  Overrides FileTransferProtocol config.json setting."
+                    },
+                    {
+                      "Name": "SSHPort",
+                      "DisplayName": "SSH Port",
+                      "Required": false,
+                      "DependsOn": "",
+                      "Type": "String",
+                      "DefaultValue": "",
+                      "Description": "Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort config.json setting."
+                    }
+                  ],
                     "EntryParameters": [],
                     "ClientMachineDescription": "The IP address or DNS of the server hosting the certificate store.  For more information, see [Client Machine ](#client-machine-instructions)",
                     "StorePathDescription": "The full path and file name, including file extension if one exists where the certificate store file is located.  For Linux orchestrated servers, StorePath will begin with a forward slash (i.e. /folder/path/storename.ext).  For Windows orchestrated servers, it should begin with a drive letter (i.e. c:\\folder\\path\\storename.ext)."
@@ -145,118 +154,127 @@
                             "IsPAMEligible": true
                         }
                     },
-                    "Properties": [
-                        {
-                            "Name": "ServerUsername",
-                            "DisplayName": "Server Username",
-                            "Type": "Secret",
-                            "DependsOn": "",
-                            "DefaultValue": "",
-                            "Required": false,
-                            "IsPAMEligible": true,
-                            "Description": "A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value*"
-                        },
-                        {
-                            "Name": "ServerPassword",
-                            "DisplayName": "Server Password",
-                            "Type": "Secret",
-                            "DependsOn": "",
-                            "DefaultValue": "",
-                            "Required": false,
-                            "IsPAMEligible": true,
-                            "Description": "A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value*"
-                        },
-                        {
-                            "Name": "LinuxFilePermissionsOnStoreCreation",
-                            "DisplayName": "Linux File Permissions on Store Creation",
-                            "Required": false,
-                            "DependsOn": "",
-                            "Type": "String",
-                            "DefaultValue": "",
-                            "Description": "The LinuxFilePermissionsOnStoreCreation field should contain a three-digit value between 000 and 777 representing the Linux file permissions to be set for the certificate store upon creation. Example: '600' or '755'."
-                        },
-                        {
-                            "Name": "LinuxFileOwnerOnStoreCreation",
-                            "DisplayName": "Linux File Owner on Store Creation",
-                            "Required": false,
-                            "DependsOn": "",
-                            "Type": "String",
-                            "DefaultValue": "",
-                            "Description": "The LinuxFileOwnerOnStoreCreation field should contain a valid user ID recognized by the destination Linux server, optionally followed by a colon and a group ID if the group owner differs. Example: 'userID' or 'userID:groupID'."
-                        },
-                        {
-                            "Name": "SudoImpersonatingUser",
-                            "DisplayName": "Sudo Impersonating User",
-                            "Required": false,
-                            "DependsOn": "",
-                            "Type": "String",
-                            "DefaultValue": "",
-                            "Description": "The SudoImpersonatingUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'."
-                        },
-                        {
-                            "Name": "IsTrustStore",
-                            "DisplayName": "Trust Store",
-                            "Required": false,
-                            "DependsOn": "",
-                            "Type": "Bool",
-                            "DefaultValue": "false",
-                            "Description": "The IsTrustStore field should contain a boolean value ('true' or 'false') indicating whether the store will be identified as a trust store, which can hold multiple certificates without private keys. Example: 'true' for a trust store or 'false' for a store with a single certificate and private key."
-                        },
-                        {
-                            "Name": "IncludesChain",
-                            "DisplayName": "Store Includes Chain",
-                            "Required": false,
-                            "DependsOn": "",
-                            "Type": "Bool",
-                            "DefaultValue": "false",
-                            "Description": "The IncludesChain field should contain a boolean value ('true' or 'false') indicating whether the certificate store includes the full certificate chain along with the end entity certificate. Example: 'true' to include the full chain or 'false' to exclude it."
-                        },
-                        {
-                            "Name": "SeparatePrivateKeyFilePath",
-                            "DisplayName": "Separate Private Key File Location",
-                            "Required": false,
-                            "DependsOn": "",
-                            "Type": "String",
-                            "DefaultValue": "",
-                            "Description": "The SeparatePrivateKeyFilePath field should contain the full path and file name where the separate private key file will be stored if it is to be kept outside the main certificate file. Example: '/path/to/privatekey.pem'."
-                        },
-                        {
-                            "Name": "IgnorePrivateKeyOnInventory",
-                            "DisplayName": "Ignore Private Key On Inventory",
-                            "Required": false,
-                            "DependsOn": "",
-                            "Type": "Bool",
-                            "DefaultValue": "false",
-                            "Description": "The IgnorePrivateKeyOnInventory field should contain a boolean value ('true' or 'false') indicating whether to disregard the private key during inventory. Setting this to 'true' will allow inventory for the store without needing to supply the location of the private key or the password if the key is encrypted.  However, doing this makes the store in effect inventory-only and no management jobs will be able to be run for this store. Example: 'true' to ignore the private key or 'false' to include it."
-                        },
-                        {
-                            "Name": "RemoveRootCertificate",
-                            "DisplayName": "Remove Root Certificate from Chain",
-                            "Required": false,
-                            "DependsOn": "",
-                            "Type": "Bool",
-                            "DefaultValue": "False",
-                            "Description": "Remove root certificate from chain when adding/renewing a certificate in a store."
-                        },
-                        {
-                            "Name": "IncludePortInSPN",
-                            "DisplayName": "Include Port in SPN for WinRM",
-                            "Required": false,
-                            "DependsOn": "",
-                            "Type": "Bool",
-                            "DefaultValue": "False",
-                            "Description": "Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations."
-                        },
-                        {
-                            "Name": "FileTransferProtocol",
-                            "DisplayName": "File Transfer Protocol to Use",
-                            "Required": false,
-                            "DependsOn": "",
-                            "Type": "MultipleChoice",
-                            "DefaultValue": "SCP,SFTP,Both",
-                            "Description": "Which protocol should be used when uploading/downloading files - SCP, SFTP, or Both (try one, and then if necessary, the other)."
-                        }
-                    ],
+                  "Properties": [
+                    {
+                      "Name": "ServerUsername",
+                      "DisplayName": "Server Username",
+                      "Type": "Secret",
+                      "DependsOn": "",
+                      "DefaultValue": "",
+                      "Required": false,
+                      "IsPAMEligible": true,
+                      "Description": "A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value*"
+                    },
+                    {
+                      "Name": "ServerPassword",
+                      "DisplayName": "Server Password",
+                      "Type": "Secret",
+                      "DependsOn": "",
+                      "DefaultValue": "",
+                      "Required": false,
+                      "IsPAMEligible": true,
+                      "Description": "A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value*"
+                    },
+                    {
+                      "Name": "LinuxFilePermissionsOnStoreCreation",
+                      "DisplayName": "Linux File Permissions on Store Creation",
+                      "Required": false,
+                      "DependsOn": "",
+                      "Type": "String",
+                      "DefaultValue": "",
+                      "Description": "The LinuxFilePermissionsOnStoreCreation field should contain a three-digit value between 000 and 777 representing the Linux file permissions to be set for the certificate store upon creation. Example: '600' or '755'.  Overrides DefaultLinuxPermissionOnStoreCreation config.json setting."
+                    },
+                    {
+                      "Name": "LinuxFileOwnerOnStoreCreation",
+                      "DisplayName": "Linux File Owner on Store Creation",
+                      "Required": false,
+                      "DependsOn": "",
+                      "Type": "String",
+                      "DefaultValue": "",
+                      "Description": "The LinuxFileOwnerOnStoreCreation field should contain a valid user ID recognized by the destination Linux server, optionally followed by a colon and a group ID if the group owner differs. Example: 'userID' or 'userID:groupID'.  Overrides DefaultOwnerOnStoreCreation config.json setting."
+                    },
+                    {
+                      "Name": "SudoImpersonatingUser",
+                      "DisplayName": "Sudo Impersonating User",
+                      "Required": false,
+                      "DependsOn": "",
+                      "Type": "String",
+                      "DefaultValue": "",
+                      "Description": "The SudoImpersonatingUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'.  Overrides config.json DefaultSudoImpersonatedUser setting.  Overrides DefaultSudoImpersonatedUser config.json setting."
+                    },
+                    {
+                      "Name": "IsTrustStore",
+                      "DisplayName": "Trust Store",
+                      "Required": false,
+                      "DependsOn": "",
+                      "Type": "Bool",
+                      "DefaultValue": "false",
+                      "Description": "The IsTrustStore field should contain a boolean value ('true' or 'false') indicating whether the store will be identified as a trust store, which can hold multiple certificates without private keys. Example: 'true' for a trust store or 'false' for a store with a single certificate and private key."
+                    },
+                    {
+                      "Name": "IncludesChain",
+                      "DisplayName": "Store Includes Chain",
+                      "Required": false,
+                      "DependsOn": "",
+                      "Type": "Bool",
+                      "DefaultValue": "false",
+                      "Description": "The IncludesChain field should contain a boolean value ('true' or 'false') indicating whether the certificate store includes the full certificate chain along with the end entity certificate. Example: 'true' to include the full chain or 'false' to exclude it."
+                    },
+                    {
+                      "Name": "SeparatePrivateKeyFilePath",
+                      "DisplayName": "Separate Private Key File Location",
+                      "Required": false,
+                      "DependsOn": "",
+                      "Type": "String",
+                      "DefaultValue": "",
+                      "Description": "The SeparatePrivateKeyFilePath field should contain the full path and file name where the separate private key file will be stored if it is to be kept outside the main certificate file. Example: '/path/to/privatekey.pem'."
+                    },
+                    {
+                      "Name": "IgnorePrivateKeyOnInventory",
+                      "DisplayName": "Ignore Private Key On Inventory",
+                      "Required": false,
+                      "DependsOn": "",
+                      "Type": "Bool",
+                      "DefaultValue": "false",
+                      "Description": "The IgnorePrivateKeyOnInventory field should contain a boolean value ('true' or 'false') indicating whether to disregard the private key during inventory. Setting this to 'true' will allow inventory for the store without needing to supply the location of the private key or the password if the key is encrypted.  However, doing this makes the store in effect inventory-only and no management jobs will be able to be run for this store. Example: 'true' to ignore the private key or 'false' to include it."
+                    },
+                    {
+                      "Name": "RemoveRootCertificate",
+                      "DisplayName": "Remove Root Certificate from Chain",
+                      "Required": false,
+                      "DependsOn": "",
+                      "Type": "Bool",
+                      "DefaultValue": "False",
+                      "Description": "Remove root certificate from chain when adding/renewing a certificate in a store."
+                    },
+                    {
+                      "Name": "IncludePortInSPN",
+                      "DisplayName": "Include Port in SPN for WinRM",
+                      "Required": false,
+                      "DependsOn": "",
+                      "Type": "Bool",
+                      "DefaultValue": "False",
+                      "Description": "Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations."
+                    },
+                    {
+                      "Name": "FileTransferProtocol",
+                      "DisplayName": "File Transfer Protocol to Use",
+                      "Required": false,
+                      "DependsOn": "",
+                      "Type": "MultipleChoice",
+                      "DefaultValue": ",SCP,SFTP,Both",
+                      "Description": "Which protocol should be used when uploading/downloading files - SCP, SFTP, or Both (try one, and then if necessary, the other).  Overrides FileTransferProtocol config.json setting."
+                    },
+                    {
+                      "Name": "SSHPort",
+                      "DisplayName": "SSH Port",
+                      "Required": false,
+                      "DependsOn": "",
+                      "Type": "String",
+                      "DefaultValue": "",
+                      "Description": "Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort config.json setting."
+                    }
+                  ],
                     "EntryParameters": [],
                     "ClientMachineDescription": "The Client Machine field should contain the DNS name or IP address of the remote orchestrated server for Linux orchestrated servers, formatted as a URL (protocol://dns-or-ip:port) for Windows orchestrated servers, or '1.1.1.1|LocalMachine' for local agents. Example: 'https://myserver.mydomain.com:5986' or '1.1.1.1|LocalMachine' for local access.",
                     "StorePathDescription": "The Store Path field should contain the full path and file name, including file extension if applicable, beginning with a forward slash (/) for Linux orchestrated servers or a drive letter (i.e., c:\\folder\\path\\storename.ext) for Windows orchestrated servers. Example: '/folder/path/storename.pem' or 'c:\\folder\\path\\storename.pem'."
@@ -286,82 +304,91 @@
                             "IsPAMEligible": true
                         }
                     },
-                    "Properties": [
-                        {
-                            "Name": "ServerUsername",
-                            "DisplayName": "Server Username",
-                            "Type": "Secret",
-                            "DependsOn": "",
-                            "DefaultValue": "",
-                            "Required": false,
-                            "IsPAMEligible": true,
-                            "Description": "A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value*"
-                        },
-                        {
-                            "Name": "ServerPassword",
-                            "DisplayName": "Server Password",
-                            "Type": "Secret",
-                            "DependsOn": "",
-                            "DefaultValue": "",
-                            "Required": false,
-                            "IsPAMEligible": true,
-                            "Description": "A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value*"
-                        },
-                        {
-                            "Name": "LinuxFilePermissionsOnStoreCreation",
-                            "DisplayName": "Linux File Permissions on Store Creation",
-                            "Required": false,
-                            "DependsOn": "",
-                            "Type": "String",
-                            "DefaultValue": "",
-                            "Description": "The LinuxFilePermissionsOnStoreCreation field should contain a three-digit value between 000 and 777 representing the Linux file permissions to be set for the certificate store upon creation. Example: '600' or '755'."
-                        },
-                        {
-                            "Name": "LinuxFileOwnerOnStoreCreation",
-                            "DisplayName": "Linux File Owner on Store Creation",
-                            "Required": false,
-                            "DependsOn": "",
-                            "Type": "String",
-                            "DefaultValue": "",
-                            "Description": "The LinuxFileOwnerOnStoreCreation field should contain a valid user ID recognized by the destination Linux server, optionally followed by a colon and a group ID if the group owner differs. Example: 'userID' or 'userID:groupID'."
-                        },
-                        {
-                            "Name": "SudoImpersonatingUser",
-                            "DisplayName": "Sudo Impersonating User",
-                            "Required": false,
-                            "DependsOn": "",
-                            "Type": "String",
-                            "DefaultValue": "",
-                            "Description": "The SudoImpersonatingUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'."
-                        },
-                        {
-                            "Name": "RemoveRootCertificate",
-                            "DisplayName": "Remove Root Certificate from Chain",
-                            "Required": false,
-                            "DependsOn": "",
-                            "Type": "Bool",
-                            "DefaultValue": "False",
-                            "Description": "Remove root certificate from chain when adding/renewing a certificate in a store."
-                        },
-                        {
-                            "Name": "IncludePortInSPN",
-                            "DisplayName": "Include Port in SPN for WinRM",
-                            "Required": false,
-                            "DependsOn": "",
-                            "Type": "Bool",
-                            "DefaultValue": "False",
-                            "Description": "Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations."
-                        },
-                        {
-                            "Name": "FileTransferProtocol",
-                            "DisplayName": "File Transfer Protocol to Use",
-                            "Required": false,
-                            "DependsOn": "",
-                            "Type": "MultipleChoice",
-                            "DefaultValue": "SCP,SFTP,Both",
-                            "Description": "Which protocol should be used when uploading/downloading files - SCP, SFTP, or Both (try one, and then if necessary, the other)."
-                        }
-                    ],
+                  "Properties": [
+                    {
+                      "Name": "ServerUsername",
+                      "DisplayName": "Server Username",
+                      "Type": "Secret",
+                      "DependsOn": "",
+                      "DefaultValue": "",
+                      "Required": false,
+                      "IsPAMEligible": true,
+                      "Description": "A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value*"
+                    },
+                    {
+                      "Name": "ServerPassword",
+                      "DisplayName": "Server Password",
+                      "Type": "Secret",
+                      "DependsOn": "",
+                      "DefaultValue": "",
+                      "Required": false,
+                      "IsPAMEligible": true,
+                      "Description": "A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value*"
+                    },
+                    {
+                      "Name": "LinuxFilePermissionsOnStoreCreation",
+                      "DisplayName": "Linux File Permissions on Store Creation",
+                      "Required": false,
+                      "DependsOn": "",
+                      "Type": "String",
+                      "DefaultValue": "",
+                      "Description": "The LinuxFilePermissionsOnStoreCreation field should contain a three-digit value between 000 and 777 representing the Linux file permissions to be set for the certificate store upon creation. Example: '600' or '755'.  Overrides DefaultLinuxPermissionOnStoreCreation config.json setting."
+                    },
+                    {
+                      "Name": "LinuxFileOwnerOnStoreCreation",
+                      "DisplayName": "Linux File Owner on Store Creation",
+                      "Required": false,
+                      "DependsOn": "",
+                      "Type": "String",
+                      "DefaultValue": "",
+                      "Description": "The LinuxFileOwnerOnStoreCreation field should contain a valid user ID recognized by the destination Linux server, optionally followed by a colon and a group ID if the group owner differs. Example: 'userID' or 'userID:groupID'.  Overrides DefaultOwnerOnStoreCreation config.json setting."
+                    },
+                    {
+                      "Name": "SudoImpersonatingUser",
+                      "DisplayName": "Sudo Impersonating User",
+                      "Required": false,
+                      "DependsOn": "",
+                      "Type": "String",
+                      "DefaultValue": "",
+                      "Description": "The SudoImpersonatingUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'.  Overrides config.json DefaultSudoImpersonatedUser setting.  Overrides DefaultSudoImpersonatedUser config.json setting."
+                    },
+                    {
+                      "Name": "RemoveRootCertificate",
+                      "DisplayName": "Remove Root Certificate from Chain",
+                      "Required": false,
+                      "DependsOn": "",
+                      "Type": "Bool",
+                      "DefaultValue": "False",
+                      "Description": "Remove root certificate from chain when adding/renewing a certificate in a store."
+                    },
+                    {
+                      "Name": "IncludePortInSPN",
+                      "DisplayName": "Include Port in SPN for WinRM",
+                      "Required": false,
+                      "DependsOn": "",
+                      "Type": "Bool",
+                      "DefaultValue": "False",
+                      "Description": "Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations."
+                    },
+                    {
+                      "Name": "FileTransferProtocol",
+                      "DisplayName": "File Transfer Protocol to Use",
+                      "Required": false,
+                      "DependsOn": "",
+                      "Type": "MultipleChoice",
+                      "DefaultValue": ",SCP,SFTP,Both",
+                      "Description": "Which protocol should be used when uploading/downloading files - SCP, SFTP, or Both (try one, and then if necessary, the other).  Overrides FileTransferProtocol config.json setting."
+                    },
+                    {
+                      "Name": "SSHPort",
+                      "DisplayName": "SSH Port",
+                      "Required": false,
+                      "DependsOn": "",
+                      "Type": "String",
+                      "DefaultValue": "",
+                      "Description": "Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort config.json setting."
+                    }
+                  ],
                     "EntryParameters": [],
                     "ClientMachineDescription": "The Client Machine field should contain the DNS name or IP address of the remote orchestrated server for Linux orchestrated servers, formatted as a URL (protocol://dns-or-ip:port) for Windows orchestrated servers, or '1.1.1.1|LocalMachine' for local agents. Example: 'https://myserver.mydomain.com:5986' or '1.1.1.1|LocalMachine' for local access.",
                     "StorePathDescription": "The Store Path field should contain the full path and file name, including file extension if applicable, beginning with a forward slash (/) for Linux orchestrated servers or a drive letter (i.e., c:\\folder\\path\\storename.p12) for Windows orchestrated servers. Example: '/folder/path/storename.p12' or 'c:\\folder\\path\\storename.p12'."
@@ -391,91 +418,100 @@
                             "IsPAMEligible": true
                         }
                     },
-                    "Properties": [
-                        {
-                            "Name": "ServerUsername",
-                            "DisplayName": "Server Username",
-                            "Type": "Secret",
-                            "DependsOn": "",
-                            "DefaultValue": "",
-                            "Required": false,
-                            "IsPAMEligible": true,
-                            "Description": "A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value*"
-                        },
-                        {
-                            "Name": "ServerPassword",
-                            "DisplayName": "Server Password",
-                            "Type": "Secret",
-                            "DependsOn": "",
-                            "DefaultValue": "",
-                            "Required": false,
-                            "IsPAMEligible": true,
-                            "Description": "A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value*"
-                        },
-                        {
-                            "Name": "LinuxFilePermissionsOnStoreCreation",
-                            "DisplayName": "Linux File Permissions on Store Creation",
-                            "Required": false,
-                            "DependsOn": "",
-                            "Type": "String",
-                            "DefaultValue": "",
-                            "Description": "The LinuxFilePermissionsOnStoreCreation field should contain a three-digit value between 000 and 777 representing the Linux file permissions to be set for the certificate store upon creation. Example: '600' or '755'."
-                        },
-                        {
-                            "Name": "LinuxFileOwnerOnStoreCreation",
-                            "DisplayName": "Linux File Owner on Store Creation",
-                            "Required": false,
-                            "DependsOn": "",
-                            "Type": "String",
-                            "DefaultValue": "",
-                            "Description": "The LinuxFileOwnerOnStoreCreation field should contain a valid user ID recognized by the destination Linux server, optionally followed by a colon and a group ID if the group owner differs. Example: 'userID' or 'userID:groupID'."
-                        },
-                        {
-                            "Name": "SudoImpersonatingUser",
-                            "DisplayName": "Sudo Impersonating User",
-                            "Required": false,
-                            "DependsOn": "",
-                            "Type": "String",
-                            "DefaultValue": "",
-                            "Description": "The SudoImpersonatingUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'."
-                        },
-                        {
-                            "Name": "SeparatePrivateKeyFilePath",
-                            "DisplayName": "Separate Private Key File Location",
-                            "Required": false,
-                            "DependsOn": "",
-                            "Type": "String",
-                            "DefaultValue": "",
-                            "Description": "The SeparatePrivateKeyFilePath field should contain the full path and file name where the separate private key file will be stored if it is to be kept outside the main certificate file. Example: '/path/to/privatekey.der'."
-                        },
-                        {
-                            "Name": "RemoveRootCertificate",
-                            "DisplayName": "Remove Root Certificate from Chain",
-                            "Required": false,
-                            "DependsOn": "",
-                            "Type": "Bool",
-                            "DefaultValue": "False",
-                            "Description": "Remove root certificate from chain when adding/renewing a certificate in a store."
-                        },
-                        {
-                            "Name": "IncludePortInSPN",
-                            "DisplayName": "Include Port in SPN for WinRM",
-                            "Required": false,
-                            "DependsOn": "",
-                            "Type": "Bool",
-                            "DefaultValue": "False",
-                            "Description": "Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations."
-                        },
-                        {
-                            "Name": "FileTransferProtocol",
-                            "DisplayName": "File Transfer Protocol to Use",
-                            "Required": false,
-                            "DependsOn": "",
-                            "Type": "MultipleChoice",
-                            "DefaultValue": "SCP,SFTP,Both",
-                            "Description": "Which protocol should be used when uploading/downloading files - SCP, SFTP, or Both (try one, and then if necessary, the other)."
-                        }
-                    ],
+                  "Properties": [
+                    {
+                      "Name": "ServerUsername",
+                      "DisplayName": "Server Username",
+                      "Type": "Secret",
+                      "DependsOn": "",
+                      "DefaultValue": "",
+                      "Required": false,
+                      "IsPAMEligible": true,
+                      "Description": "A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value*"
+                    },
+                    {
+                      "Name": "ServerPassword",
+                      "DisplayName": "Server Password",
+                      "Type": "Secret",
+                      "DependsOn": "",
+                      "DefaultValue": "",
+                      "Required": false,
+                      "IsPAMEligible": true,
+                      "Description": "A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value*"
+                    },
+                    {
+                      "Name": "LinuxFilePermissionsOnStoreCreation",
+                      "DisplayName": "Linux File Permissions on Store Creation",
+                      "Required": false,
+                      "DependsOn": "",
+                      "Type": "String",
+                      "DefaultValue": "",
+                      "Description": "The LinuxFilePermissionsOnStoreCreation field should contain a three-digit value between 000 and 777 representing the Linux file permissions to be set for the certificate store upon creation. Example: '600' or '755'.  Overrides DefaultLinuxPermissionOnStoreCreation config.json setting."
+                    },
+                    {
+                      "Name": "LinuxFileOwnerOnStoreCreation",
+                      "DisplayName": "Linux File Owner on Store Creation",
+                      "Required": false,
+                      "DependsOn": "",
+                      "Type": "String",
+                      "DefaultValue": "",
+                      "Description": "The LinuxFileOwnerOnStoreCreation field should contain a valid user ID recognized by the destination Linux server, optionally followed by a colon and a group ID if the group owner differs. Example: 'userID' or 'userID:groupID'.  Overrides DefaultOwnerOnStoreCreation config.json setting."
+                    },
+                    {
+                      "Name": "SudoImpersonatingUser",
+                      "DisplayName": "Sudo Impersonating User",
+                      "Required": false,
+                      "DependsOn": "",
+                      "Type": "String",
+                      "DefaultValue": "",
+                      "Description": "The SudoImpersonatingUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'.  Overrides config.json DefaultSudoImpersonatedUser setting.  Overrides DefaultSudoImpersonatedUser config.json setting."
+                    },
+                    {
+                      "Name": "SeparatePrivateKeyFilePath",
+                      "DisplayName": "Separate Private Key File Location",
+                      "Required": false,
+                      "DependsOn": "",
+                      "Type": "String",
+                      "DefaultValue": "",
+                      "Description": "The SeparatePrivateKeyFilePath field should contain the full path and file name where the separate private key file will be stored if it is to be kept outside the main certificate file. Example: '/path/to/privatekey.der'."
+                    },
+                    {
+                      "Name": "RemoveRootCertificate",
+                      "DisplayName": "Remove Root Certificate from Chain",
+                      "Required": false,
+                      "DependsOn": "",
+                      "Type": "Bool",
+                      "DefaultValue": "False",
+                      "Description": "Remove root certificate from chain when adding/renewing a certificate in a store."
+                    },
+                    {
+                      "Name": "IncludePortInSPN",
+                      "DisplayName": "Include Port in SPN for WinRM",
+                      "Required": false,
+                      "DependsOn": "",
+                      "Type": "Bool",
+                      "DefaultValue": "False",
+                      "Description": "Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations."
+                    },
+                    {
+                      "Name": "FileTransferProtocol",
+                      "DisplayName": "File Transfer Protocol to Use",
+                      "Required": false,
+                      "DependsOn": "",
+                      "Type": "MultipleChoice",
+                      "DefaultValue": ",SCP,SFTP,Both",
+                      "Description": "Which protocol should be used when uploading/downloading files - SCP, SFTP, or Both (try one, and then if necessary, the other).  Overrides FileTransferProtocol config.json setting."
+                    },
+                    {
+                      "Name": "SSHPort",
+                      "DisplayName": "SSH Port",
+                      "Required": false,
+                      "DependsOn": "",
+                      "Type": "String",
+                      "DefaultValue": "",
+                      "Description": "Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort config.json setting."
+                    }
+                  ],
                     "EntryParameters": [],
                     "ClientMachineDescription": "The Client Machine field should contain the DNS name or IP address of the remote orchestrated server for Linux orchestrated servers, formatted as a URL (protocol://dns-or-ip:port) for Windows orchestrated servers, or '1.1.1.1|LocalMachine' for local agents. Example: 'https://myserver.mydomain.com:5986' or '1.1.1.1|LocalMachine' for local access.",
                     "StorePathDescription": "The Store Path field should contain the full path and file name, including file extension if applicable, beginning with a forward slash (/) for Linux orchestrated servers or a drive letter (i.e., c:\\folder\\path\\storename.der) for Windows orchestrated servers. Example: '/folder/path/storename.der' or 'c:\\folder\\path\\storename.der'."
@@ -505,82 +541,91 @@
                             "IsPAMEligible": true
                         }
                     },
-                    "Properties": [
-                        {
-                            "Name": "ServerUsername",
-                            "DisplayName": "Server Username",
-                            "Type": "Secret",
-                            "DependsOn": "",
-                            "DefaultValue": "",
-                            "Required": false,
-                            "IsPAMEligible": true,
-                            "Description": "A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value*"
-                        },
-                        {
-                            "Name": "ServerPassword",
-                            "DisplayName": "Server Password",
-                            "Type": "Secret",
-                            "DependsOn": "",
-                            "DefaultValue": "",
-                            "Required": false,
-                            "IsPAMEligible": true,
-                            "Description": "A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value*"
-                        },
-                        {
-                            "Name": "LinuxFilePermissionsOnStoreCreation",
-                            "DisplayName": "Linux File Permissions on Store Creation",
-                            "Required": false,
-                            "DependsOn": "",
-                            "Type": "String",
-                            "DefaultValue": "",
-                            "Description": "The LinuxFilePermissionsOnStoreCreation field should contain a three-digit value between 000 and 777 representing the Linux file permissions to be set for the certificate store upon creation. Example: '600' or '755'."
-                        },
-                        {
-                            "Name": "LinuxFileOwnerOnStoreCreation",
-                            "DisplayName": "Linux File Owner on Store Creation",
-                            "Required": false,
-                            "DependsOn": "",
-                            "Type": "String",
-                            "DefaultValue": "",
-                            "Description": "The LinuxFileOwnerOnStoreCreation field should contain a valid user ID recognized by the destination Linux server, optionally followed by a colon and a group ID if the group owner differs. Example: 'userID' or 'userID:groupID'."
-                        },
-                        {
-                            "Name": "SudoImpersonatingUser",
-                            "DisplayName": "Sudo Impersonating User",
-                            "Required": false,
-                            "DependsOn": "",
-                            "Type": "String",
-                            "DefaultValue": "",
-                            "Description": "The SudoImpersonatingUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'."
-                        },
-                        {
-                            "Name": "RemoveRootCertificate",
-                            "DisplayName": "Remove Root Certificate from Chain",
-                            "Required": false,
-                            "DependsOn": "",
-                            "Type": "Bool",
-                            "DefaultValue": "False",
-                            "Description": "Remove root certificate from chain when adding/renewing a certificate in a store."
-                        },
-                        {
-                            "Name": "IncludePortInSPN",
-                            "DisplayName": "Include Port in SPN for WinRM",
-                            "Required": false,
-                            "DependsOn": "",
-                            "Type": "Bool",
-                            "DefaultValue": "False",
-                            "Description": "Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations."
-                        },
-                        {
-                            "Name": "FileTransferProtocol",
-                            "DisplayName": "File Transfer Protocol to Use",
-                            "Required": false,
-                            "DependsOn": "",
-                            "Type": "MultipleChoice",
-                            "DefaultValue": "SCP,SFTP,Both",
-                            "Description": "Which protocol should be used when uploading/downloading files - SCP, SFTP, or Both (try one, and then if necessary, the other)."
-                        }
-                    ],
+                  "Properties": [
+                    {
+                      "Name": "ServerUsername",
+                      "DisplayName": "Server Username",
+                      "Type": "Secret",
+                      "DependsOn": "",
+                      "DefaultValue": "",
+                      "Required": false,
+                      "IsPAMEligible": true,
+                      "Description": "A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value*"
+                    },
+                    {
+                      "Name": "ServerPassword",
+                      "DisplayName": "Server Password",
+                      "Type": "Secret",
+                      "DependsOn": "",
+                      "DefaultValue": "",
+                      "Required": false,
+                      "IsPAMEligible": true,
+                      "Description": "A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value*"
+                    },
+                    {
+                      "Name": "LinuxFilePermissionsOnStoreCreation",
+                      "DisplayName": "Linux File Permissions on Store Creation",
+                      "Required": false,
+                      "DependsOn": "",
+                      "Type": "String",
+                      "DefaultValue": "",
+                      "Description": "The LinuxFilePermissionsOnStoreCreation field should contain a three-digit value between 000 and 777 representing the Linux file permissions to be set for the certificate store upon creation. Example: '600' or '755'.  Overrides DefaultLinuxPermissionOnStoreCreation config.json setting."
+                    },
+                    {
+                      "Name": "LinuxFileOwnerOnStoreCreation",
+                      "DisplayName": "Linux File Owner on Store Creation",
+                      "Required": false,
+                      "DependsOn": "",
+                      "Type": "String",
+                      "DefaultValue": "",
+                      "Description": "The LinuxFileOwnerOnStoreCreation field should contain a valid user ID recognized by the destination Linux server, optionally followed by a colon and a group ID if the group owner differs. Example: 'userID' or 'userID:groupID'.  Overrides DefaultOwnerOnStoreCreation config.json setting."
+                    },
+                    {
+                      "Name": "SudoImpersonatingUser",
+                      "DisplayName": "Sudo Impersonating User",
+                      "Required": false,
+                      "DependsOn": "",
+                      "Type": "String",
+                      "DefaultValue": "",
+                      "Description": "The SudoImpersonatingUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'.  Overrides config.json DefaultSudoImpersonatedUser setting.  Overrides DefaultSudoImpersonatedUser config.json setting."
+                    },
+                    {
+                      "Name": "RemoveRootCertificate",
+                      "DisplayName": "Remove Root Certificate from Chain",
+                      "Required": false,
+                      "DependsOn": "",
+                      "Type": "Bool",
+                      "DefaultValue": "False",
+                      "Description": "Remove root certificate from chain when adding/renewing a certificate in a store."
+                    },
+                    {
+                      "Name": "IncludePortInSPN",
+                      "DisplayName": "Include Port in SPN for WinRM",
+                      "Required": false,
+                      "DependsOn": "",
+                      "Type": "Bool",
+                      "DefaultValue": "False",
+                      "Description": "Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations."
+                    },
+                    {
+                      "Name": "FileTransferProtocol",
+                      "DisplayName": "File Transfer Protocol to Use",
+                      "Required": false,
+                      "DependsOn": "",
+                      "Type": "MultipleChoice",
+                      "DefaultValue": ",SCP,SFTP,Both",
+                      "Description": "Which protocol should be used when uploading/downloading files - SCP, SFTP, or Both (try one, and then if necessary, the other).  Overrides FileTransferProtocol config.json setting."
+                    },
+                    {
+                      "Name": "SSHPort",
+                      "DisplayName": "SSH Port",
+                      "Required": false,
+                      "DependsOn": "",
+                      "Type": "String",
+                      "DefaultValue": "",
+                      "Description": "Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort config.json setting."
+                    }
+                  ],
                     "EntryParameters": [],
                     "ClientMachineDescription": "The Client Machine field should contain the DNS name or IP address of the remote orchestrated server for Linux orchestrated servers, formatted as a URL (protocol://dns-or-ip:port) for Windows orchestrated servers, or '1.1.1.1|LocalMachine' for local agents. Example: 'https://myserver.mydomain.com:5986' or '1.1.1.1|LocalMachine' for local access.",
                     "StorePathDescription": "The Store Path field should contain the full path and file name, including file extension if applicable, beginning with a forward slash (/) for Linux orchestrated servers or a drive letter (i.e., c:\\folder\\path\\storename.kdb) for Windows orchestrated servers. Example: '/folder/path/storename.kdb' or 'c:\\folder\\path\\storename.kdb'."
@@ -610,91 +655,100 @@
                             "IsPAMEligible": true
                         }
                     },
-                    "Properties": [
-                        {
-                            "Name": "ServerUsername",
-                            "DisplayName": "Server Username",
-                            "Type": "Secret",
-                            "DependsOn": "",
-                            "DefaultValue": "",
-                            "Required": false,
-                            "IsPAMEligible": true,
-                            "Description": "A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value*"
-                        },
-                        {
-                            "Name": "ServerPassword",
-                            "DisplayName": "Server Password",
-                            "Type": "Secret",
-                            "DependsOn": "",
-                            "DefaultValue": "",
-                            "Required": false,
-                            "IsPAMEligible": true,
-                            "Description": "A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value*"
-                        },
-                        {
-                            "Name": "LinuxFilePermissionsOnStoreCreation",
-                            "DisplayName": "Linux File Permissions on Store Creation",
-                            "Required": false,
-                            "DependsOn": "",
-                            "Type": "String",
-                            "DefaultValue": "",
-                            "Description": "The LinuxFilePermissionsOnStoreCreation field should contain a three-digit value between 000 and 777 representing the Linux file permissions to be set for the certificate store upon creation. Example: '600' or '755'."
-                        },
-                        {
-                            "Name": "LinuxFileOwnerOnStoreCreation",
-                            "DisplayName": "Linux File Owner on Store Creation",
-                            "Required": false,
-                            "DependsOn": "",
-                            "Type": "String",
-                            "DefaultValue": "",
-                            "Description": "The LinuxFileOwnerOnStoreCreation field should contain a valid user ID recognized by the destination Linux server, optionally followed by a colon and a group ID if the group owner differs. Example: 'userID' or 'userID:groupID'."
-                        },
-                        {
-                            "Name": "SudoImpersonatingUser",
-                            "DisplayName": "Sudo Impersonating User",
-                            "Required": false,
-                            "DependsOn": "",
-                            "Type": "String",
-                            "DefaultValue": "",
-                            "Description": "The SudoImpersonatingUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'."
-                        },
-                        {
-                            "Name": "WorkFolder",
-                            "DisplayName": "Location to use for creation/removal of work files",
-                            "Required": true,
-                            "DependsOn": "",
-                            "Type": "String",
-                            "DefaultValue": "",
-                            "Description": "The WorkFolder field should contain the path on the managed server where temporary work files can be created, modified, and deleted during Inventory and Management jobs. Example: '/path/to/workfolder'."
-                        },
-                        {
-                            "Name": "RemoveRootCertificate",
-                            "DisplayName": "Remove Root Certificate from Chain",
-                            "Required": false,
-                            "DependsOn": "",
-                            "Type": "Bool",
-                            "DefaultValue": "False",
-                            "Description": "Remove root certificate from chain when adding/renewing a certificate in a store."
-                        },
-                        {
-                            "Name": "IncludePortInSPN",
-                            "DisplayName": "Include Port in SPN for WinRM",
-                            "Required": false,
-                            "DependsOn": "",
-                            "Type": "Bool",
-                            "DefaultValue": "False",
-                            "Description": "Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations."
-                        },
-                        {
-                            "Name": "FileTransferProtocol",
-                            "DisplayName": "File Transfer Protocol to Use",
-                            "Required": false,
-                            "DependsOn": "",
-                            "Type": "MultipleChoice",
-                            "DefaultValue": "SCP,SFTP,Both",
-                            "Description": "Which protocol should be used when uploading/downloading files - SCP, SFTP, or Both (try one, and then if necessary, the other)."
-                        }
-                    ],
+                  "Properties": [
+                    {
+                      "Name": "ServerUsername",
+                      "DisplayName": "Server Username",
+                      "Type": "Secret",
+                      "DependsOn": "",
+                      "DefaultValue": "",
+                      "Required": false,
+                      "IsPAMEligible": true,
+                      "Description": "A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value*"
+                    },
+                    {
+                      "Name": "ServerPassword",
+                      "DisplayName": "Server Password",
+                      "Type": "Secret",
+                      "DependsOn": "",
+                      "DefaultValue": "",
+                      "Required": false,
+                      "IsPAMEligible": true,
+                      "Description": "A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value*"
+                    },
+                    {
+                      "Name": "LinuxFilePermissionsOnStoreCreation",
+                      "DisplayName": "Linux File Permissions on Store Creation",
+                      "Required": false,
+                      "DependsOn": "",
+                      "Type": "String",
+                      "DefaultValue": "",
+                      "Description": "The LinuxFilePermissionsOnStoreCreation field should contain a three-digit value between 000 and 777 representing the Linux file permissions to be set for the certificate store upon creation. Example: '600' or '755'.  Overrides DefaultLinuxPermissionOnStoreCreation config.json setting."
+                    },
+                    {
+                      "Name": "LinuxFileOwnerOnStoreCreation",
+                      "DisplayName": "Linux File Owner on Store Creation",
+                      "Required": false,
+                      "DependsOn": "",
+                      "Type": "String",
+                      "DefaultValue": "",
+                      "Description": "The LinuxFileOwnerOnStoreCreation field should contain a valid user ID recognized by the destination Linux server, optionally followed by a colon and a group ID if the group owner differs. Example: 'userID' or 'userID:groupID'.  Overrides DefaultOwnerOnStoreCreation config.json setting."
+                    },
+                    {
+                      "Name": "SudoImpersonatingUser",
+                      "DisplayName": "Sudo Impersonating User",
+                      "Required": false,
+                      "DependsOn": "",
+                      "Type": "String",
+                      "DefaultValue": "",
+                      "Description": "The SudoImpersonatingUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'.  Overrides config.json DefaultSudoImpersonatedUser setting.  Overrides DefaultSudoImpersonatedUser config.json setting."
+                    },
+                    {
+                      "Name": "WorkFolder",
+                      "DisplayName": "Location to use for creation/removal of work files",
+                      "Required": true,
+                      "DependsOn": "",
+                      "Type": "String",
+                      "DefaultValue": "",
+                      "Description": "The WorkFolder field should contain the path on the managed server where temporary work files can be created, modified, and deleted during Inventory and Management jobs. Example: '/path/to/workfolder'."
+                    },
+                    {
+                      "Name": "RemoveRootCertificate",
+                      "DisplayName": "Remove Root Certificate from Chain",
+                      "Required": false,
+                      "DependsOn": "",
+                      "Type": "Bool",
+                      "DefaultValue": "False",
+                      "Description": "Remove root certificate from chain when adding/renewing a certificate in a store."
+                    },
+                    {
+                      "Name": "IncludePortInSPN",
+                      "DisplayName": "Include Port in SPN for WinRM",
+                      "Required": false,
+                      "DependsOn": "",
+                      "Type": "Bool",
+                      "DefaultValue": "False",
+                      "Description": "Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations."
+                    },
+                    {
+                      "Name": "FileTransferProtocol",
+                      "DisplayName": "File Transfer Protocol to Use",
+                      "Required": false,
+                      "DependsOn": "",
+                      "Type": "MultipleChoice",
+                      "DefaultValue": ",SCP,SFTP,Both",
+                      "Description": "Which protocol should be used when uploading/downloading files - SCP, SFTP, or Both (try one, and then if necessary, the other).  Overrides FileTransferProtocol config.json setting."
+                    },
+                    {
+                      "Name": "SSHPort",
+                      "DisplayName": "SSH Port",
+                      "Required": false,
+                      "DependsOn": "",
+                      "Type": "String",
+                      "DefaultValue": "",
+                      "Description": "Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort config.json setting."
+                    }
+                  ],
                     "EntryParameters": [],
                     "ClientMachineDescription": "The Client Machine field should contain the DNS name or IP address of the remote orchestrated server for Linux orchestrated servers, formatted as a URL (protocol://dns-or-ip:port) for Windows orchestrated servers, or '1.1.1.1|LocalMachine' for local agents. Example: 'https://myserver.mydomain.com:5986' or '1.1.1.1|LocalMachine' for local access.",
                     "StorePathDescription": "The Store Path field should contain the full path and file name of the Oracle Wallet, including the 'eWallet.p12' file name by convention. Example: '/path/to/eWallet.p12' or 'c:\\path\\to\\eWallet.p12'."

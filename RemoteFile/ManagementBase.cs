@@ -28,43 +28,17 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
         public JobResult ProcessJob(ManagementJobConfiguration config)
         {
             ILogger logger = LogHandler.GetClassLogger(this.GetType());
-            logger.LogDebug($"Begin {config.Capability} for job id {config.JobId}...");
-            logger.LogDebug($"Server: {config.CertificateStoreDetails.ClientMachine}");
-            logger.LogDebug($"Store Path: {config.CertificateStoreDetails.StorePath}");
-            logger.LogDebug($"Job Properties:");
-            foreach (KeyValuePair<string, object> keyValue in config.JobProperties == null ? new Dictionary<string, object>() : config.JobProperties)
-            {
-                logger.LogDebug($"    {keyValue.Key}: {keyValue.Value}");
-            }
 
             ICertificateStoreSerializer certificateStoreSerializer = GetCertificateStoreSerializer(config.CertificateStoreDetails.Properties);
 
             try
             {
-                string userName = PAMUtilities.ResolvePAMField(_resolver, logger, "Server User Name", config.ServerUsername);
-                string userPassword = PAMUtilities.ResolvePAMField(_resolver, logger, "Server Password", config.ServerPassword);
-                string storePassword = PAMUtilities.ResolvePAMField(_resolver, logger, "Store Password", config.CertificateStoreDetails.StorePassword);
-
                 ApplicationSettings.Initialize(this.GetType().Assembly.Location);
-                dynamic properties = JsonConvert.DeserializeObject(config.CertificateStoreDetails.Properties.ToString());
-                string sudoImpersonatedUser = properties.SudoImpersonatedUser == null || string.IsNullOrEmpty(properties.SudoImpersonatedUser.Value) ?
-                    ApplicationSettings.DefaultSudoImpersonatedUser :
-                    properties.SudoImpersonatedUser.Value;
-                bool removeRootCertificate = properties.RemoveRootCertificate == null || string.IsNullOrEmpty(properties.RemoveRootCertificate.Value) ?
-                    false :
-                    Convert.ToBoolean(properties.RemoveRootCertificate.Value);
-                bool includePortInSPN = properties.IncludePortInSPN == null || string.IsNullOrEmpty(properties.IncludePortInSPN.Value) ?
-                    false :
-                    Convert.ToBoolean(properties.IncludePortInSPN.Value);
 
-                ApplicationSettings.FileTransferProtocolEnum fileTransferProtocol = ApplicationSettings.FileTransferProtocol;
-                if (properties.FileTransferProtocol != null && !string.IsNullOrEmpty(properties.FileTransferProtocol.Value))
-                {
-                    Enum.TryParse(properties.FileTransferProtocol.Value, out fileTransferProtocol);
-                }
+                SetJobProperties(config, config.CertificateStoreDetails, logger);
 
-                certificateStore = new RemoteCertificateStore(config.CertificateStoreDetails.ClientMachine, userName, userPassword, config.CertificateStoreDetails.StorePath, storePassword, fileTransferProtocol, includePortInSPN);
-                certificateStore.Initialize(sudoImpersonatedUser);
+                certificateStore = new RemoteCertificateStore(config.CertificateStoreDetails.ClientMachine, UserName, UserPassword, config.CertificateStoreDetails.StorePath, StorePassword, FileTransferProtocol, SSHPort, IncludePortInSPN);
+                certificateStore.Initialize(SudoImpersonatedUser);
 
                 PathFile storePathFile = RemoteCertificateStore.SplitStorePathFile(config.CertificateStoreDetails.StorePath);
 
@@ -80,8 +54,8 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
                                 throw new RemoteFileException($"Certificate store {config.CertificateStoreDetails.StorePath} does not exist on server {config.CertificateStoreDetails.ClientMachine}.");
                         }
                         certificateStore.LoadCertificateStore(certificateStoreSerializer, false);
-                        certificateStore.AddCertificate((config.JobCertificate.Alias ?? new X509Certificate2(Convert.FromBase64String(config.JobCertificate.Contents), config.JobCertificate.PrivateKeyPassword, X509KeyStorageFlags.EphemeralKeySet).Thumbprint), config.JobCertificate.Contents, config.Overwrite, config.JobCertificate.PrivateKeyPassword, removeRootCertificate);
-                        certificateStore.SaveCertificateStore(certificateStoreSerializer.SerializeRemoteCertificateStore(certificateStore.GetCertificateStore(), storePathFile.Path, storePathFile.File, storePassword, certificateStore.RemoteHandler));
+                        certificateStore.AddCertificate((config.JobCertificate.Alias ?? new X509Certificate2(Convert.FromBase64String(config.JobCertificate.Contents), config.JobCertificate.PrivateKeyPassword, X509KeyStorageFlags.EphemeralKeySet).Thumbprint), config.JobCertificate.Contents, config.Overwrite, config.JobCertificate.PrivateKeyPassword, RemoveRootCertificate);
+                        certificateStore.SaveCertificateStore(certificateStoreSerializer.SerializeRemoteCertificateStore(certificateStore.GetCertificateStore(), storePathFile.Path, storePathFile.File, StorePassword, certificateStore.RemoteHandler));
 
                         logger.LogDebug($"END add Operation for {config.CertificateStoreDetails.StorePath} on {config.CertificateStoreDetails.ClientMachine}.");
                         break;
@@ -96,7 +70,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
                         {
                             certificateStore.LoadCertificateStore(certificateStoreSerializer, false);
                             certificateStore.DeleteCertificateByAlias(config.JobCertificate.Alias);
-                            certificateStore.SaveCertificateStore(certificateStoreSerializer.SerializeRemoteCertificateStore(certificateStore.GetCertificateStore(), storePathFile.Path, storePathFile.File, storePassword, certificateStore.RemoteHandler));
+                            certificateStore.SaveCertificateStore(certificateStoreSerializer.SerializeRemoteCertificateStore(certificateStore.GetCertificateStore(), storePathFile.Path, storePathFile.File, StorePassword, certificateStore.RemoteHandler));
                         }
                         logger.LogDebug($"END Delete Operation for {config.CertificateStoreDetails.StorePath} on {config.CertificateStoreDetails.ClientMachine}.");
                         break;
