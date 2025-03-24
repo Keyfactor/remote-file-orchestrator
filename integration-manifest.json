@@ -709,7 +709,7 @@
                       "Required": true,
                       "DependsOn": "",
                       "Type": "String",
-                      "DefaultValue": "",
+                      "DefaultValue": "./",
                       "Description": "The WorkFolder field should contain the path on the managed server where temporary work files can be created, modified, and deleted during Inventory and Management jobs. Example: '/path/to/workfolder'."
                     },
                     {
