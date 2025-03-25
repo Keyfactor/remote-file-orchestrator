@@ -294,7 +294,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.PEM
         {
             foreach (string begDelim in PrivateKeyDelimetersPkcs8)
             {
-                if (string.IsNullOrEmpty(storeContents) || storeContents.Contains(begDelim))
+                if (string.IsNullOrEmpty(storeContents) || storeContents.Length < 10 || storeContents.Contains(begDelim))
                 {
                     privateKeyBegDelim = begDelim;
                     return PrivateKeyTypeEnum.PKCS8;
