@@ -7,4 +7,5 @@
   "FileTransferProtocol": "SCP",
   "DefaultLinuxPermissionsOnStoreCreation": "600",
   "DefaultOwnerOnStoreCreation": "",
+  "SSHPort":  ""
 }
