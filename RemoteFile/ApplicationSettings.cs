@@ -28,6 +28,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
         private const string DEFAULT_LINUX_PERMISSION_SETTING = "";
         private const string DEFAULT_OWNER_SETTING = "";
         private const string DEFAULT_SUDO_IMPERSONATION_SETTING = "";
+        private const int DEFAULT_SSH_PORT = 22;
 
         private static Dictionary<string,string> configuration;
 
@@ -40,6 +41,24 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
         public static string DefaultSudoImpersonatedUser { get { return configuration.ContainsKey("DefaultSudoImpersonatedUser") ? configuration["DefaultSudoImpersonatedUser"] : DEFAULT_SUDO_IMPERSONATION_SETTING; } }
         public static bool CreateCSROnDevice { get { return configuration.ContainsKey("CreateCSROnDevice") ? configuration["CreateCSROnDevice"]?.ToUpper() == "Y" : false; } }
         public static string TempFilePathForODKG { get { return configuration.ContainsKey("TempFilePathForODKG") ? configuration["TempFilePathForODKG"] : string.Empty; } }
+        public static int SSHPort
+        {
+            get
+            {
+                if (configuration.ContainsKey("SSHPort") && !string.IsNullOrEmpty(configuration["SSHPort"]))
+                {
+                    int sshPort;
+                    if (int.TryParse(configuration["SSHPort"], out sshPort))
+                        return sshPort;
+                    else
+                        throw new RemoteFileException($"Invalid optional config.json SSHPort value of {configuration["SSHPort"]}.  If present, this must be an integer value.");
+                }
+                else
+                {
+                    return DEFAULT_SSH_PORT;
+                }
+            }
+        }
         public static FileTransferProtocolEnum FileTransferProtocol 
         { 
             get 
