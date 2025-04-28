@@ -96,7 +96,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             logger.MethodExit(LogLevel.Debug);
         }
 
-        internal RemoteCertificateStore(string server, string serverId, string serverPassword, ServerTypeEnum serverType)
+        internal RemoteCertificateStore(string server, string serverId, string serverPassword, ServerTypeEnum serverType, int sshPort)
         {
             logger = LogHandler.GetClassLogger(this.GetType());
             logger.MethodEntry(LogLevel.Debug);
@@ -105,6 +105,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             ServerId = serverId;
             ServerPassword = serverPassword ?? string.Empty;
             ServerType = serverType;
+            SSHPort = sshPort;
 
             logger.MethodExit(LogLevel.Debug);
         }
