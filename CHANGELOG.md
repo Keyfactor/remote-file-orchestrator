@@ -1,5 +1,6 @@
 v2.11.1
 - Bug Fix: added ability to set SSH port when managing Linux servers to Discovery jobs
+- Added "@" as a valid character for Linux file paths
 
 v2.11.0
 - Added ability to set SSH port when managing Linux servers
