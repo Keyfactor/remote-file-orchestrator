@@ -270,7 +270,7 @@ The Remote File Universal Orchestrator extension implements 6 Certificate Store 
 
 
 
-    </details>
+
 </details>
 
 <details><summary>RFPEM (RFPEM)</summary>
@@ -347,7 +347,7 @@ The Remote File Universal Orchestrator extension implements 6 Certificate Store 
 
 
 
-    </details>
+
 </details>
 
 <details><summary>RFPkcs12 (RFPkcs12)</summary>
@@ -420,7 +420,7 @@ The Remote File Universal Orchestrator extension implements 6 Certificate Store 
 
 
 
-    </details>
+
 </details>
 
 <details><summary>RFDER (RFDER)</summary>
@@ -494,7 +494,7 @@ The Remote File Universal Orchestrator extension implements 6 Certificate Store 
 
 
 
-    </details>
+
 </details>
 
 <details><summary>RFKDB (RFKDB)</summary>
@@ -567,7 +567,7 @@ The Remote File Universal Orchestrator extension implements 6 Certificate Store 
 
 
 
-    </details>
+
 </details>
 
 <details><summary>RFORA (RFORA)</summary>
@@ -641,7 +641,7 @@ The Remote File Universal Orchestrator extension implements 6 Certificate Store 
 
 
 
-    </details>
+
 </details>
 
 
@@ -650,6 +650,7 @@ The Remote File Universal Orchestrator extension implements 6 Certificate Store 
 1. **Download the latest Remote File Universal Orchestrator extension from GitHub.** 
 
     Navigate to the [Remote File Universal Orchestrator extension GitHub version page](https://github.com/Keyfactor/remote-file-orchestrator/releases/latest). Refer to the compatibility matrix below to determine whether the `net6.0` or `net8.0` asset should be downloaded. Then, click the corresponding asset to download the zip archive.
+
     | Universal Orchestrator Version | Latest .NET version installed on the Universal Orchestrator server | `rollForward` condition in `Orchestrator.runtimeconfig.json` | `remote-file-orchestrator` .NET version to download |
     | --------- | ----------- | ----------- | ----------- |
     | Older than `11.0.0` | | | `net6.0` |
@@ -686,7 +687,7 @@ The Remote File Universal Orchestrator extension implements 6 Certificate Store 
     To configure a PAM provider, [reference the Keyfactor Integration Catalog](https://keyfactor.github.io/integrations-catalog/content/pam) to select an extension, and follow the associated instructions to install it on the Universal Orchestrator (remote).
 
 
-> The above installation steps can be supplimented by the [official Command documentation](https://software.keyfactor.com/Core-OnPrem/Current/Content/InstallingAgents/NetCoreOrchestrator/CustomExtensions.htm?Highlight=extensions).
+> The above installation steps can be supplemented by the [official Command documentation](https://software.keyfactor.com/Core-OnPrem/Current/Content/InstallingAgents/NetCoreOrchestrator/CustomExtensions.htm?Highlight=extensions).
 
 
 ## Post Installation
@@ -793,6 +794,8 @@ The Remote File Universal Orchestrator extension implements 6 Certificate Store 
 <details><summary>RFJKS (RFJKS)</summary>
 
 
+### Store Creation
+
 * **Manually with the Command UI**
 
     <details><summary>Create Certificate Stores manually in the UI</summary>
@@ -804,6 +807,7 @@ The Remote File Universal Orchestrator extension implements 6 Certificate Store 
     2. **Add a Certificate Store.**
 
         Click the Add button to add a new Certificate Store. Use the table below to populate the **Attributes** in the **Add** form.
+
         | Attribute | Description |
         | --------- | ----------- |
         | Category | Select "RFJKS" or the customized certificate store name from the previous step. |
@@ -820,26 +824,8 @@ The Remote File Universal Orchestrator extension implements 6 Certificate Store 
         | IncludePortInSPN | Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations. |
         | FileTransferProtocol | Which protocol should be used when uploading/downloading files - SCP, SFTP, or Both (try one, and then if necessary, the other).  Overrides FileTransferProtocol [config.json](#post-installation) setting. |
         | SSHPort | Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting. |
-        | Store Password | Password used to secure the Certificate Store |
-
-        
-
-        <details><summary>Attributes eligible for retrieval by a PAM Provider on the Universal Orchestrator</summary>
-
-        If a PAM provider was installed _on the Universal Orchestrator_ in the [Installation](#Installation) section, the following parameters can be configured for retrieval _on the Universal Orchestrator_.
-        | Attribute | Description |
-        | --------- | ----------- |
-        | ServerUsername | A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value* |
-        | ServerPassword | A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value* |
-        | Store Password | Password used to secure the Certificate Store |
-
-        Please refer to the **Universal Orchestrator (remote)** usage section ([PAM providers on the Keyfactor Integration Catalog](https://keyfactor.github.io/integrations-catalog/content/pam)) for your selected PAM provider for instructions on how to load attributes orchestrator-side.
-
-        > Any secret can be rendered by a PAM provider _installed on the Keyfactor Command server_. The above parameters are specific to attributes that can be fetched by an installed PAM provider running on the Universal Orchestrator server itself. 
-        </details>
-        
-
     </details>
+
 
 * **Using kfutil**
     
@@ -853,6 +839,7 @@ The Remote File Universal Orchestrator extension implements 6 Certificate Store 
     2. **Populate the generated CSV file**
 
         Open the CSV file, and reference the table below to populate parameters for each **Attribute**.
+
         | Attribute | Description |
         | --------- | ----------- |
         | Category | Select "RFJKS" or the customized certificate store name from the previous step. |
@@ -869,37 +856,38 @@ The Remote File Universal Orchestrator extension implements 6 Certificate Store 
         | IncludePortInSPN | Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations. |
         | FileTransferProtocol | Which protocol should be used when uploading/downloading files - SCP, SFTP, or Both (try one, and then if necessary, the other).  Overrides FileTransferProtocol [config.json](#post-installation) setting. |
         | SSHPort | Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting. |
-        | Store Password | Password used to secure the Certificate Store |
-
-        
-
-        <details><summary>Attributes eligible for retrieval by a PAM Provider on the Universal Orchestrator</summary>
-
-        If a PAM provider was installed _on the Universal Orchestrator_ in the [Installation](#Installation) section, the following parameters can be configured for retrieval _on the Universal Orchestrator_.
-        | Attribute | Description |
-        | --------- | ----------- |
-        | ServerUsername | A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value* |
-        | ServerPassword | A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value* |
-        | Store Password | Password used to secure the Certificate Store |
-
-        > Any secret can be rendered by a PAM provider _installed on the Keyfactor Command server_. The above parameters are specific to attributes that can be fetched by an installed PAM provider running on the Universal Orchestrator server itself. 
-        </details>
-        
-
-    3. **Import the CSV file to create the certificate stores** 
+    3. **Import the CSV file to create the certificate stores**
 
         ```shell
         kfutil stores import csv --store-type-name RFJKS --file RFJKS.csv
         ```
+
+* **PAM Provider Eligible Fields**
+    <details><summary>Attributes eligible for retrieval by a PAM Provider on the Universal Orchestrator</summary>
+
+    If a PAM provider was installed _on the Universal Orchestrator_ in the [Installation](#Installation) section, the following parameters can be configured for retrieval _on the Universal Orchestrator_.
+
+    | Attribute | Description |
+    | --------- | ----------- |
+    | ServerUsername | A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value* |
+    | ServerPassword | A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value* |
+    | StorePassword | Password to use when reading/writing to store |
+
+    Please refer to the **Universal Orchestrator (remote)** usage section ([PAM providers on the Keyfactor Integration Catalog](https://keyfactor.github.io/integrations-catalog/content/pam)) for your selected PAM provider for instructions on how to load attributes orchestrator-side.
+
+    > Any secret can be rendered by a PAM provider _installed on the Keyfactor Command server_. The above parameters are specific to attributes that can be fetched by an installed PAM provider running on the Universal Orchestrator server itself.
     </details>
 
-> The content in this section can be supplimented by the [official Command documentation](https://software.keyfactor.com/Core-OnPrem/Current/Content/ReferenceGuide/Certificate%20Stores.htm?Highlight=certificate%20store).
+
+> The content in this section can be supplemented by the [official Command documentation](https://software.keyfactor.com/Core-OnPrem/Current/Content/ReferenceGuide/Certificate%20Stores.htm?Highlight=certificate%20store).
 
 
 </details>
 
 <details><summary>RFPEM (RFPEM)</summary>
 
+
+### Store Creation
 
 * **Manually with the Command UI**
 
@@ -912,6 +900,7 @@ The Remote File Universal Orchestrator extension implements 6 Certificate Store 
     2. **Add a Certificate Store.**
 
         Click the Add button to add a new Certificate Store. Use the table below to populate the **Attributes** in the **Add** form.
+
         | Attribute | Description |
         | --------- | ----------- |
         | Category | Select "RFPEM" or the customized certificate store name from the previous step. |
@@ -932,26 +921,8 @@ The Remote File Universal Orchestrator extension implements 6 Certificate Store 
         | IncludePortInSPN | Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations. |
         | FileTransferProtocol | Which protocol should be used when uploading/downloading files - SCP, SFTP, or Both (try one, and then if necessary, the other).  Overrides FileTransferProtocol [config.json](#post-installation) setting. |
         | SSHPort | Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting. |
-        | Store Password | Password used to secure the Certificate Store.  For stores with PKCS#8 private keys, set the password for encrypted private keys (BEGIN ENCRYPTED PRIVATE KEY) or 'No Value' for unencrypted private keys (BEGIN PRIVATE KEY).  If managing a store with a PKCS#1 private key (BEGIN RSA PRIVATE KEY), this value MUST be set to 'No Value' |
-
-        
-
-        <details><summary>Attributes eligible for retrieval by a PAM Provider on the Universal Orchestrator</summary>
-
-        If a PAM provider was installed _on the Universal Orchestrator_ in the [Installation](#Installation) section, the following parameters can be configured for retrieval _on the Universal Orchestrator_.
-        | Attribute | Description |
-        | --------- | ----------- |
-        | ServerUsername | A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value* |
-        | ServerPassword | A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value* |
-        | Store Password | Password used to secure the Certificate Store.  For stores with PKCS#8 private keys, set the password for encrypted private keys (BEGIN ENCRYPTED PRIVATE KEY) or 'No Value' for unencrypted private keys (BEGIN PRIVATE KEY).  If managing a store with a PKCS#1 private key (BEGIN RSA PRIVATE KEY), this value MUST be set to 'No Value' |
-
-        Please refer to the **Universal Orchestrator (remote)** usage section ([PAM providers on the Keyfactor Integration Catalog](https://keyfactor.github.io/integrations-catalog/content/pam)) for your selected PAM provider for instructions on how to load attributes orchestrator-side.
-
-        > Any secret can be rendered by a PAM provider _installed on the Keyfactor Command server_. The above parameters are specific to attributes that can be fetched by an installed PAM provider running on the Universal Orchestrator server itself. 
-        </details>
-        
-
     </details>
+
 
 * **Using kfutil**
     
@@ -965,6 +936,7 @@ The Remote File Universal Orchestrator extension implements 6 Certificate Store 
     2. **Populate the generated CSV file**
 
         Open the CSV file, and reference the table below to populate parameters for each **Attribute**.
+
         | Attribute | Description |
         | --------- | ----------- |
         | Category | Select "RFPEM" or the customized certificate store name from the previous step. |
@@ -985,37 +957,38 @@ The Remote File Universal Orchestrator extension implements 6 Certificate Store 
         | IncludePortInSPN | Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations. |
         | FileTransferProtocol | Which protocol should be used when uploading/downloading files - SCP, SFTP, or Both (try one, and then if necessary, the other).  Overrides FileTransferProtocol [config.json](#post-installation) setting. |
         | SSHPort | Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting. |
-        | Store Password | Password used to secure the Certificate Store.  For stores with PKCS#8 private keys, set the password for encrypted private keys (BEGIN ENCRYPTED PRIVATE KEY) or 'No Value' for unencrypted private keys (BEGIN PRIVATE KEY).  If managing a store with a PKCS#1 private key (BEGIN RSA PRIVATE KEY), this value MUST be set to 'No Value' |
-
-        
-
-        <details><summary>Attributes eligible for retrieval by a PAM Provider on the Universal Orchestrator</summary>
-
-        If a PAM provider was installed _on the Universal Orchestrator_ in the [Installation](#Installation) section, the following parameters can be configured for retrieval _on the Universal Orchestrator_.
-        | Attribute | Description |
-        | --------- | ----------- |
-        | ServerUsername | A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value* |
-        | ServerPassword | A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value* |
-        | Store Password | Password used to secure the Certificate Store.  For stores with PKCS#8 private keys, set the password for encrypted private keys (BEGIN ENCRYPTED PRIVATE KEY) or 'No Value' for unencrypted private keys (BEGIN PRIVATE KEY).  If managing a store with a PKCS#1 private key (BEGIN RSA PRIVATE KEY), this value MUST be set to 'No Value' |
-
-        > Any secret can be rendered by a PAM provider _installed on the Keyfactor Command server_. The above parameters are specific to attributes that can be fetched by an installed PAM provider running on the Universal Orchestrator server itself. 
-        </details>
-        
-
-    3. **Import the CSV file to create the certificate stores** 
+    3. **Import the CSV file to create the certificate stores**
 
         ```shell
         kfutil stores import csv --store-type-name RFPEM --file RFPEM.csv
         ```
+
+* **PAM Provider Eligible Fields**
+    <details><summary>Attributes eligible for retrieval by a PAM Provider on the Universal Orchestrator</summary>
+
+    If a PAM provider was installed _on the Universal Orchestrator_ in the [Installation](#Installation) section, the following parameters can be configured for retrieval _on the Universal Orchestrator_.
+
+    | Attribute | Description |
+    | --------- | ----------- |
+    | ServerUsername | A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value* |
+    | ServerPassword | A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value* |
+    | StorePassword | Password to use when reading/writing to store |
+
+    Please refer to the **Universal Orchestrator (remote)** usage section ([PAM providers on the Keyfactor Integration Catalog](https://keyfactor.github.io/integrations-catalog/content/pam)) for your selected PAM provider for instructions on how to load attributes orchestrator-side.
+
+    > Any secret can be rendered by a PAM provider _installed on the Keyfactor Command server_. The above parameters are specific to attributes that can be fetched by an installed PAM provider running on the Universal Orchestrator server itself.
     </details>
 
-> The content in this section can be supplimented by the [official Command documentation](https://software.keyfactor.com/Core-OnPrem/Current/Content/ReferenceGuide/Certificate%20Stores.htm?Highlight=certificate%20store).
+
+> The content in this section can be supplemented by the [official Command documentation](https://software.keyfactor.com/Core-OnPrem/Current/Content/ReferenceGuide/Certificate%20Stores.htm?Highlight=certificate%20store).
 
 
 </details>
 
 <details><summary>RFPkcs12 (RFPkcs12)</summary>
 
+
+### Store Creation
 
 * **Manually with the Command UI**
 
@@ -1028,6 +1001,7 @@ The Remote File Universal Orchestrator extension implements 6 Certificate Store 
     2. **Add a Certificate Store.**
 
         Click the Add button to add a new Certificate Store. Use the table below to populate the **Attributes** in the **Add** form.
+
         | Attribute | Description |
         | --------- | ----------- |
         | Category | Select "RFPkcs12" or the customized certificate store name from the previous step. |
@@ -1044,26 +1018,8 @@ The Remote File Universal Orchestrator extension implements 6 Certificate Store 
         | IncludePortInSPN | Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations. |
         | FileTransferProtocol | Which protocol should be used when uploading/downloading files - SCP, SFTP, or Both (try one, and then if necessary, the other).  Overrides FileTransferProtocol [config.json](#post-installation) setting. |
         | SSHPort | Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting. |
-        | Store Password | Password used to secure the Certificate Store |
-
-        
-
-        <details><summary>Attributes eligible for retrieval by a PAM Provider on the Universal Orchestrator</summary>
-
-        If a PAM provider was installed _on the Universal Orchestrator_ in the [Installation](#Installation) section, the following parameters can be configured for retrieval _on the Universal Orchestrator_.
-        | Attribute | Description |
-        | --------- | ----------- |
-        | ServerUsername | A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value* |
-        | ServerPassword | A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value* |
-        | Store Password | Password used to secure the Certificate Store |
-
-        Please refer to the **Universal Orchestrator (remote)** usage section ([PAM providers on the Keyfactor Integration Catalog](https://keyfactor.github.io/integrations-catalog/content/pam)) for your selected PAM provider for instructions on how to load attributes orchestrator-side.
-
-        > Any secret can be rendered by a PAM provider _installed on the Keyfactor Command server_. The above parameters are specific to attributes that can be fetched by an installed PAM provider running on the Universal Orchestrator server itself. 
-        </details>
-        
-
     </details>
+
 
 * **Using kfutil**
     
@@ -1077,6 +1033,7 @@ The Remote File Universal Orchestrator extension implements 6 Certificate Store 
     2. **Populate the generated CSV file**
 
         Open the CSV file, and reference the table below to populate parameters for each **Attribute**.
+
         | Attribute | Description |
         | --------- | ----------- |
         | Category | Select "RFPkcs12" or the customized certificate store name from the previous step. |
@@ -1093,37 +1050,38 @@ The Remote File Universal Orchestrator extension implements 6 Certificate Store 
         | IncludePortInSPN | Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations. |
         | FileTransferProtocol | Which protocol should be used when uploading/downloading files - SCP, SFTP, or Both (try one, and then if necessary, the other).  Overrides FileTransferProtocol [config.json](#post-installation) setting. |
         | SSHPort | Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting. |
-        | Store Password | Password used to secure the Certificate Store |
-
-        
-
-        <details><summary>Attributes eligible for retrieval by a PAM Provider on the Universal Orchestrator</summary>
-
-        If a PAM provider was installed _on the Universal Orchestrator_ in the [Installation](#Installation) section, the following parameters can be configured for retrieval _on the Universal Orchestrator_.
-        | Attribute | Description |
-        | --------- | ----------- |
-        | ServerUsername | A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value* |
-        | ServerPassword | A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value* |
-        | Store Password | Password used to secure the Certificate Store |
-
-        > Any secret can be rendered by a PAM provider _installed on the Keyfactor Command server_. The above parameters are specific to attributes that can be fetched by an installed PAM provider running on the Universal Orchestrator server itself. 
-        </details>
-        
-
-    3. **Import the CSV file to create the certificate stores** 
+    3. **Import the CSV file to create the certificate stores**
 
         ```shell
         kfutil stores import csv --store-type-name RFPkcs12 --file RFPkcs12.csv
         ```
+
+* **PAM Provider Eligible Fields**
+    <details><summary>Attributes eligible for retrieval by a PAM Provider on the Universal Orchestrator</summary>
+
+    If a PAM provider was installed _on the Universal Orchestrator_ in the [Installation](#Installation) section, the following parameters can be configured for retrieval _on the Universal Orchestrator_.
+
+    | Attribute | Description |
+    | --------- | ----------- |
+    | ServerUsername | A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value* |
+    | ServerPassword | A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value* |
+    | StorePassword | Password to use when reading/writing to store |
+
+    Please refer to the **Universal Orchestrator (remote)** usage section ([PAM providers on the Keyfactor Integration Catalog](https://keyfactor.github.io/integrations-catalog/content/pam)) for your selected PAM provider for instructions on how to load attributes orchestrator-side.
+
+    > Any secret can be rendered by a PAM provider _installed on the Keyfactor Command server_. The above parameters are specific to attributes that can be fetched by an installed PAM provider running on the Universal Orchestrator server itself.
     </details>
 
-> The content in this section can be supplimented by the [official Command documentation](https://software.keyfactor.com/Core-OnPrem/Current/Content/ReferenceGuide/Certificate%20Stores.htm?Highlight=certificate%20store).
+
+> The content in this section can be supplemented by the [official Command documentation](https://software.keyfactor.com/Core-OnPrem/Current/Content/ReferenceGuide/Certificate%20Stores.htm?Highlight=certificate%20store).
 
 
 </details>
 
 <details><summary>RFDER (RFDER)</summary>
 
+
+### Store Creation
 
 * **Manually with the Command UI**
 
@@ -1136,6 +1094,7 @@ The Remote File Universal Orchestrator extension implements 6 Certificate Store 
     2. **Add a Certificate Store.**
 
         Click the Add button to add a new Certificate Store. Use the table below to populate the **Attributes** in the **Add** form.
+
         | Attribute | Description |
         | --------- | ----------- |
         | Category | Select "RFDER" or the customized certificate store name from the previous step. |
@@ -1153,26 +1112,8 @@ The Remote File Universal Orchestrator extension implements 6 Certificate Store 
         | IncludePortInSPN | Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations. |
         | FileTransferProtocol | Which protocol should be used when uploading/downloading files - SCP, SFTP, or Both (try one, and then if necessary, the other).  Overrides FileTransferProtocol [config.json](#post-installation) setting. |
         | SSHPort | Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting. |
-        | Store Password | Password used to secure the Certificate Store |
-
-        
-
-        <details><summary>Attributes eligible for retrieval by a PAM Provider on the Universal Orchestrator</summary>
-
-        If a PAM provider was installed _on the Universal Orchestrator_ in the [Installation](#Installation) section, the following parameters can be configured for retrieval _on the Universal Orchestrator_.
-        | Attribute | Description |
-        | --------- | ----------- |
-        | ServerUsername | A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value* |
-        | ServerPassword | A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value* |
-        | Store Password | Password used to secure the Certificate Store |
-
-        Please refer to the **Universal Orchestrator (remote)** usage section ([PAM providers on the Keyfactor Integration Catalog](https://keyfactor.github.io/integrations-catalog/content/pam)) for your selected PAM provider for instructions on how to load attributes orchestrator-side.
-
-        > Any secret can be rendered by a PAM provider _installed on the Keyfactor Command server_. The above parameters are specific to attributes that can be fetched by an installed PAM provider running on the Universal Orchestrator server itself. 
-        </details>
-        
-
     </details>
+
 
 * **Using kfutil**
     
@@ -1186,6 +1127,7 @@ The Remote File Universal Orchestrator extension implements 6 Certificate Store 
     2. **Populate the generated CSV file**
 
         Open the CSV file, and reference the table below to populate parameters for each **Attribute**.
+
         | Attribute | Description |
         | --------- | ----------- |
         | Category | Select "RFDER" or the customized certificate store name from the previous step. |
@@ -1203,37 +1145,38 @@ The Remote File Universal Orchestrator extension implements 6 Certificate Store 
         | IncludePortInSPN | Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations. |
         | FileTransferProtocol | Which protocol should be used when uploading/downloading files - SCP, SFTP, or Both (try one, and then if necessary, the other).  Overrides FileTransferProtocol [config.json](#post-installation) setting. |
         | SSHPort | Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting. |
-        | Store Password | Password used to secure the Certificate Store |
-
-        
-
-        <details><summary>Attributes eligible for retrieval by a PAM Provider on the Universal Orchestrator</summary>
-
-        If a PAM provider was installed _on the Universal Orchestrator_ in the [Installation](#Installation) section, the following parameters can be configured for retrieval _on the Universal Orchestrator_.
-        | Attribute | Description |
-        | --------- | ----------- |
-        | ServerUsername | A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value* |
-        | ServerPassword | A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value* |
-        | Store Password | Password used to secure the Certificate Store |
-
-        > Any secret can be rendered by a PAM provider _installed on the Keyfactor Command server_. The above parameters are specific to attributes that can be fetched by an installed PAM provider running on the Universal Orchestrator server itself. 
-        </details>
-        
-
-    3. **Import the CSV file to create the certificate stores** 
+    3. **Import the CSV file to create the certificate stores**
 
         ```shell
         kfutil stores import csv --store-type-name RFDER --file RFDER.csv
         ```
+
+* **PAM Provider Eligible Fields**
+    <details><summary>Attributes eligible for retrieval by a PAM Provider on the Universal Orchestrator</summary>
+
+    If a PAM provider was installed _on the Universal Orchestrator_ in the [Installation](#Installation) section, the following parameters can be configured for retrieval _on the Universal Orchestrator_.
+
+    | Attribute | Description |
+    | --------- | ----------- |
+    | ServerUsername | A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value* |
+    | ServerPassword | A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value* |
+    | StorePassword | Password to use when reading/writing to store |
+
+    Please refer to the **Universal Orchestrator (remote)** usage section ([PAM providers on the Keyfactor Integration Catalog](https://keyfactor.github.io/integrations-catalog/content/pam)) for your selected PAM provider for instructions on how to load attributes orchestrator-side.
+
+    > Any secret can be rendered by a PAM provider _installed on the Keyfactor Command server_. The above parameters are specific to attributes that can be fetched by an installed PAM provider running on the Universal Orchestrator server itself.
     </details>
 
-> The content in this section can be supplimented by the [official Command documentation](https://software.keyfactor.com/Core-OnPrem/Current/Content/ReferenceGuide/Certificate%20Stores.htm?Highlight=certificate%20store).
+
+> The content in this section can be supplemented by the [official Command documentation](https://software.keyfactor.com/Core-OnPrem/Current/Content/ReferenceGuide/Certificate%20Stores.htm?Highlight=certificate%20store).
 
 
 </details>
 
 <details><summary>RFKDB (RFKDB)</summary>
 
+
+### Store Creation
 
 * **Manually with the Command UI**
 
@@ -1246,6 +1189,7 @@ The Remote File Universal Orchestrator extension implements 6 Certificate Store 
     2. **Add a Certificate Store.**
 
         Click the Add button to add a new Certificate Store. Use the table below to populate the **Attributes** in the **Add** form.
+
         | Attribute | Description |
         | --------- | ----------- |
         | Category | Select "RFKDB" or the customized certificate store name from the previous step. |
@@ -1262,26 +1206,8 @@ The Remote File Universal Orchestrator extension implements 6 Certificate Store 
         | IncludePortInSPN | Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations. |
         | FileTransferProtocol | Which protocol should be used when uploading/downloading files - SCP, SFTP, or Both (try one, and then if necessary, the other).  Overrides FileTransferProtocol [config.json](#post-installation) setting. |
         | SSHPort | Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting. |
-        | Store Password | Password used to secure the Certificate Store |
-
-        
-
-        <details><summary>Attributes eligible for retrieval by a PAM Provider on the Universal Orchestrator</summary>
-
-        If a PAM provider was installed _on the Universal Orchestrator_ in the [Installation](#Installation) section, the following parameters can be configured for retrieval _on the Universal Orchestrator_.
-        | Attribute | Description |
-        | --------- | ----------- |
-        | ServerUsername | A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value* |
-        | ServerPassword | A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value* |
-        | Store Password | Password used to secure the Certificate Store |
-
-        Please refer to the **Universal Orchestrator (remote)** usage section ([PAM providers on the Keyfactor Integration Catalog](https://keyfactor.github.io/integrations-catalog/content/pam)) for your selected PAM provider for instructions on how to load attributes orchestrator-side.
-
-        > Any secret can be rendered by a PAM provider _installed on the Keyfactor Command server_. The above parameters are specific to attributes that can be fetched by an installed PAM provider running on the Universal Orchestrator server itself. 
-        </details>
-        
-
     </details>
+
 
 * **Using kfutil**
     
@@ -1295,6 +1221,7 @@ The Remote File Universal Orchestrator extension implements 6 Certificate Store 
     2. **Populate the generated CSV file**
 
         Open the CSV file, and reference the table below to populate parameters for each **Attribute**.
+
         | Attribute | Description |
         | --------- | ----------- |
         | Category | Select "RFKDB" or the customized certificate store name from the previous step. |
@@ -1311,37 +1238,38 @@ The Remote File Universal Orchestrator extension implements 6 Certificate Store 
         | IncludePortInSPN | Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations. |
         | FileTransferProtocol | Which protocol should be used when uploading/downloading files - SCP, SFTP, or Both (try one, and then if necessary, the other).  Overrides FileTransferProtocol [config.json](#post-installation) setting. |
         | SSHPort | Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting. |
-        | Store Password | Password used to secure the Certificate Store |
-
-        
-
-        <details><summary>Attributes eligible for retrieval by a PAM Provider on the Universal Orchestrator</summary>
-
-        If a PAM provider was installed _on the Universal Orchestrator_ in the [Installation](#Installation) section, the following parameters can be configured for retrieval _on the Universal Orchestrator_.
-        | Attribute | Description |
-        | --------- | ----------- |
-        | ServerUsername | A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value* |
-        | ServerPassword | A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value* |
-        | Store Password | Password used to secure the Certificate Store |
-
-        > Any secret can be rendered by a PAM provider _installed on the Keyfactor Command server_. The above parameters are specific to attributes that can be fetched by an installed PAM provider running on the Universal Orchestrator server itself. 
-        </details>
-        
-
-    3. **Import the CSV file to create the certificate stores** 
+    3. **Import the CSV file to create the certificate stores**
 
         ```shell
         kfutil stores import csv --store-type-name RFKDB --file RFKDB.csv
         ```
+
+* **PAM Provider Eligible Fields**
+    <details><summary>Attributes eligible for retrieval by a PAM Provider on the Universal Orchestrator</summary>
+
+    If a PAM provider was installed _on the Universal Orchestrator_ in the [Installation](#Installation) section, the following parameters can be configured for retrieval _on the Universal Orchestrator_.
+
+    | Attribute | Description |
+    | --------- | ----------- |
+    | ServerUsername | A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value* |
+    | ServerPassword | A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value* |
+    | StorePassword | Password to use when reading/writing to store |
+
+    Please refer to the **Universal Orchestrator (remote)** usage section ([PAM providers on the Keyfactor Integration Catalog](https://keyfactor.github.io/integrations-catalog/content/pam)) for your selected PAM provider for instructions on how to load attributes orchestrator-side.
+
+    > Any secret can be rendered by a PAM provider _installed on the Keyfactor Command server_. The above parameters are specific to attributes that can be fetched by an installed PAM provider running on the Universal Orchestrator server itself.
     </details>
 
-> The content in this section can be supplimented by the [official Command documentation](https://software.keyfactor.com/Core-OnPrem/Current/Content/ReferenceGuide/Certificate%20Stores.htm?Highlight=certificate%20store).
+
+> The content in this section can be supplemented by the [official Command documentation](https://software.keyfactor.com/Core-OnPrem/Current/Content/ReferenceGuide/Certificate%20Stores.htm?Highlight=certificate%20store).
 
 
 </details>
 
 <details><summary>RFORA (RFORA)</summary>
 
+
+### Store Creation
 
 * **Manually with the Command UI**
 
@@ -1354,6 +1282,7 @@ The Remote File Universal Orchestrator extension implements 6 Certificate Store 
     2. **Add a Certificate Store.**
 
         Click the Add button to add a new Certificate Store. Use the table below to populate the **Attributes** in the **Add** form.
+
         | Attribute | Description |
         | --------- | ----------- |
         | Category | Select "RFORA" or the customized certificate store name from the previous step. |
@@ -1371,26 +1300,8 @@ The Remote File Universal Orchestrator extension implements 6 Certificate Store 
         | IncludePortInSPN | Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations. |
         | FileTransferProtocol | Which protocol should be used when uploading/downloading files - SCP, SFTP, or Both (try one, and then if necessary, the other).  Overrides FileTransferProtocol [config.json](#post-installation) setting. |
         | SSHPort | Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting. |
-        | Store Password | Password used to secure the Certificate Store |
-
-        
-
-        <details><summary>Attributes eligible for retrieval by a PAM Provider on the Universal Orchestrator</summary>
-
-        If a PAM provider was installed _on the Universal Orchestrator_ in the [Installation](#Installation) section, the following parameters can be configured for retrieval _on the Universal Orchestrator_.
-        | Attribute | Description |
-        | --------- | ----------- |
-        | ServerUsername | A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value* |
-        | ServerPassword | A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value* |
-        | Store Password | Password used to secure the Certificate Store |
-
-        Please refer to the **Universal Orchestrator (remote)** usage section ([PAM providers on the Keyfactor Integration Catalog](https://keyfactor.github.io/integrations-catalog/content/pam)) for your selected PAM provider for instructions on how to load attributes orchestrator-side.
-
-        > Any secret can be rendered by a PAM provider _installed on the Keyfactor Command server_. The above parameters are specific to attributes that can be fetched by an installed PAM provider running on the Universal Orchestrator server itself. 
-        </details>
-        
-
     </details>
+
 
 * **Using kfutil**
     
@@ -1404,6 +1315,7 @@ The Remote File Universal Orchestrator extension implements 6 Certificate Store 
     2. **Populate the generated CSV file**
 
         Open the CSV file, and reference the table below to populate parameters for each **Attribute**.
+
         | Attribute | Description |
         | --------- | ----------- |
         | Category | Select "RFORA" or the customized certificate store name from the previous step. |
@@ -1421,31 +1333,30 @@ The Remote File Universal Orchestrator extension implements 6 Certificate Store 
         | IncludePortInSPN | Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations. |
         | FileTransferProtocol | Which protocol should be used when uploading/downloading files - SCP, SFTP, or Both (try one, and then if necessary, the other).  Overrides FileTransferProtocol [config.json](#post-installation) setting. |
         | SSHPort | Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting. |
-        | Store Password | Password used to secure the Certificate Store |
-
-        
-
-        <details><summary>Attributes eligible for retrieval by a PAM Provider on the Universal Orchestrator</summary>
-
-        If a PAM provider was installed _on the Universal Orchestrator_ in the [Installation](#Installation) section, the following parameters can be configured for retrieval _on the Universal Orchestrator_.
-        | Attribute | Description |
-        | --------- | ----------- |
-        | ServerUsername | A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value* |
-        | ServerPassword | A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value* |
-        | Store Password | Password used to secure the Certificate Store |
-
-        > Any secret can be rendered by a PAM provider _installed on the Keyfactor Command server_. The above parameters are specific to attributes that can be fetched by an installed PAM provider running on the Universal Orchestrator server itself. 
-        </details>
-        
-
-    3. **Import the CSV file to create the certificate stores** 
+    3. **Import the CSV file to create the certificate stores**
 
         ```shell
         kfutil stores import csv --store-type-name RFORA --file RFORA.csv
         ```
+
+* **PAM Provider Eligible Fields**
+    <details><summary>Attributes eligible for retrieval by a PAM Provider on the Universal Orchestrator</summary>
+
+    If a PAM provider was installed _on the Universal Orchestrator_ in the [Installation](#Installation) section, the following parameters can be configured for retrieval _on the Universal Orchestrator_.
+
+    | Attribute | Description |
+    | --------- | ----------- |
+    | ServerUsername | A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value* |
+    | ServerPassword | A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value* |
+    | StorePassword | Password to use when reading/writing to store |
+
+    Please refer to the **Universal Orchestrator (remote)** usage section ([PAM providers on the Keyfactor Integration Catalog](https://keyfactor.github.io/integrations-catalog/content/pam)) for your selected PAM provider for instructions on how to load attributes orchestrator-side.
+
+    > Any secret can be rendered by a PAM provider _installed on the Keyfactor Command server_. The above parameters are specific to attributes that can be fetched by an installed PAM provider running on the Universal Orchestrator server itself.
     </details>
 
-> The content in this section can be supplimented by the [official Command documentation](https://software.keyfactor.com/Core-OnPrem/Current/Content/ReferenceGuide/Certificate%20Stores.htm?Highlight=certificate%20store).
+
+> The content in this section can be supplemented by the [official Command documentation](https://software.keyfactor.com/Core-OnPrem/Current/Content/ReferenceGuide/Certificate%20Stores.htm?Highlight=certificate%20store).
 
 
 </details>
