@@ -149,11 +149,11 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             logger.MethodEntry(LogLevel.Debug);
 
             if (!AreValuesSafeRegex(paths))
-                throw new RemoteFileException(@"Invalid/unsafe directories to search value supplied.  Only alphanumeric, /, and \ characters are allowed.");
+                throw new RemoteFileException(@"Invalid/unsafe directories to search value supplied.  Only alphanumeric characters are allowed along with special characters of @ and / (Linux) and : and \ (Windows).");
             if (!AreValuesSafeRegex(extensions))
-                throw new RemoteFileException(@"Invalid/unsafe file extension value supplied.  Only alphanumeric, /, and \ characters are allowed.");
+                throw new RemoteFileException(@"Invalid/unsafe file extension value supplied.  Only alphanumeric characters are allowed along with special characters of @ and / (Linux) and : and \ (Windows).");
             if (!AreValuesSafeRegex(files))
-                throw new RemoteFileException(@"Invalid/unsafe file name value supplied.  Only alphanumeric, /, and \ characters are allowed.");
+                throw new RemoteFileException(@"Invalid/unsafe file name value supplied.  Only alphanumeric characters are allowed along with special characters of @ and / (Linux) and : and \ (Windows).");
 
             logger.MethodExit(LogLevel.Debug);
 
@@ -511,7 +511,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
         {
             logger.MethodEntry(LogLevel.Debug);
 
-            Regex regex = new Regex(ServerType == ServerTypeEnum.Linux ? $@"^[\d\s\w-_/.]*$" : $@"^[\d\s\w-_/.:)(\\\\]*$");
+            Regex regex = new Regex(ServerType == ServerTypeEnum.Linux ? $@"^[\d\s\w-_/@.]*$" : $@"^[\d\s\w-_/.:)(\\\\]*$");
 
             logger.MethodExit(LogLevel.Debug);
 
