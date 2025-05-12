@@ -194,7 +194,7 @@ Please reference [Post Installation](#post-installation) for more information on
 Please consult with your company's system administrator for more information on configuring SSH/SFTP/SCP or WinRM in your environment.
 
 
-## Create Certificate Store Types
+## Certificate Store Types
 
 To use the Remote File Universal Orchestrator extension, you **must** create the Certificate Store Types required for your usecase. This only needs to happen _once_ per Keyfactor Command instance.
 
@@ -203,12 +203,38 @@ The Remote File Universal Orchestrator extension implements 6 Certificate Store 
 <details><summary>RFJKS (RFJKS)</summary>
 
 
-* **Create RFJKS using kfutil**:
 
-    ```shell
-    # RFJKS
-    kfutil store-types create RFJKS
-    ```
+### Supported Operations
+
+| Operation    | Is Supported                                                                                                           |
+|--------------|------------------------------------------------------------------------------------------------------------------------|
+| Add          | ✅ Checked        |
+| Remove       | ✅ Checked     |
+| Discovery    | ✅ Checked  |
+| Reenrollment | 🔲 Unchecked |
+| Create       | ✅ Checked     |
+
+### Creation Using kfutil:
+`kfutil` is a custom CLI for the Keyfactor Command API and can be used to created certificate store types.
+For more information on [kfutil](https://github.com/Keyfactor/kfutil) check out the [docs](https://github.com/Keyfactor/kfutil?tab=readme-ov-file#quickstart)
+
+#### Using online definition from GitHub:
+This will reach out to GitHub and pull the latest store-type definition
+```shell
+# RFJKS
+kfutil store-types create RFJKS
+```
+
+#### Offline creation using integration-manifest file:
+If required, it is possible to create store types from the [integration-manifest.json](./integration-manifest.json) included in this repo.
+You would first download the [integration-manifest.json](./integration-manifest.json) and then run the following command
+in your offline environment.
+```shell
+kfutil store-types create --from-file integration-manifest.json
+```
+
+### Manual Creation
+If you do not wish to use the `kfutil` CLI then certificate store types can be creating in the web UI as described below.
 
 * **Create RFJKS manually in the Command UI**:
     <details><summary>Create RFJKS manually in the Command UI</summary>
@@ -270,18 +296,43 @@ The Remote File Universal Orchestrator extension implements 6 Certificate Store 
 
 
 
-
 </details>
 
 <details><summary>RFPEM (RFPEM)</summary>
 
 
-* **Create RFPEM using kfutil**:
 
-    ```shell
-    # RFPEM
-    kfutil store-types create RFPEM
-    ```
+### Supported Operations
+
+| Operation    | Is Supported                                                                                                           |
+|--------------|------------------------------------------------------------------------------------------------------------------------|
+| Add          | ✅ Checked        |
+| Remove       | ✅ Checked     |
+| Discovery    | ✅ Checked  |
+| Reenrollment | 🔲 Unchecked |
+| Create       | ✅ Checked     |
+
+### Creation Using kfutil:
+`kfutil` is a custom CLI for the Keyfactor Command API and can be used to created certificate store types.
+For more information on [kfutil](https://github.com/Keyfactor/kfutil) check out the [docs](https://github.com/Keyfactor/kfutil?tab=readme-ov-file#quickstart)
+
+#### Using online definition from GitHub:
+This will reach out to GitHub and pull the latest store-type definition
+```shell
+# RFPEM
+kfutil store-types create RFPEM
+```
+
+#### Offline creation using integration-manifest file:
+If required, it is possible to create store types from the [integration-manifest.json](./integration-manifest.json) included in this repo.
+You would first download the [integration-manifest.json](./integration-manifest.json) and then run the following command
+in your offline environment.
+```shell
+kfutil store-types create --from-file integration-manifest.json
+```
+
+### Manual Creation
+If you do not wish to use the `kfutil` CLI then certificate store types can be creating in the web UI as described below.
 
 * **Create RFPEM manually in the Command UI**:
     <details><summary>Create RFPEM manually in the Command UI</summary>
@@ -347,18 +398,43 @@ The Remote File Universal Orchestrator extension implements 6 Certificate Store 
 
 
 
-
 </details>
 
 <details><summary>RFPkcs12 (RFPkcs12)</summary>
 
 
-* **Create RFPkcs12 using kfutil**:
 
-    ```shell
-    # RFPkcs12
-    kfutil store-types create RFPkcs12
-    ```
+### Supported Operations
+
+| Operation    | Is Supported                                                                                                           |
+|--------------|------------------------------------------------------------------------------------------------------------------------|
+| Add          | ✅ Checked        |
+| Remove       | ✅ Checked     |
+| Discovery    | ✅ Checked  |
+| Reenrollment | 🔲 Unchecked |
+| Create       | ✅ Checked     |
+
+### Creation Using kfutil:
+`kfutil` is a custom CLI for the Keyfactor Command API and can be used to created certificate store types.
+For more information on [kfutil](https://github.com/Keyfactor/kfutil) check out the [docs](https://github.com/Keyfactor/kfutil?tab=readme-ov-file#quickstart)
+
+#### Using online definition from GitHub:
+This will reach out to GitHub and pull the latest store-type definition
+```shell
+# RFPkcs12
+kfutil store-types create RFPkcs12
+```
+
+#### Offline creation using integration-manifest file:
+If required, it is possible to create store types from the [integration-manifest.json](./integration-manifest.json) included in this repo.
+You would first download the [integration-manifest.json](./integration-manifest.json) and then run the following command
+in your offline environment.
+```shell
+kfutil store-types create --from-file integration-manifest.json
+```
+
+### Manual Creation
+If you do not wish to use the `kfutil` CLI then certificate store types can be creating in the web UI as described below.
 
 * **Create RFPkcs12 manually in the Command UI**:
     <details><summary>Create RFPkcs12 manually in the Command UI</summary>
@@ -420,18 +496,43 @@ The Remote File Universal Orchestrator extension implements 6 Certificate Store 
 
 
 
-
 </details>
 
 <details><summary>RFDER (RFDER)</summary>
 
 
-* **Create RFDER using kfutil**:
 
-    ```shell
-    # RFDER
-    kfutil store-types create RFDER
-    ```
+### Supported Operations
+
+| Operation    | Is Supported                                                                                                           |
+|--------------|------------------------------------------------------------------------------------------------------------------------|
+| Add          | ✅ Checked        |
+| Remove       | ✅ Checked     |
+| Discovery    | ✅ Checked  |
+| Reenrollment | 🔲 Unchecked |
+| Create       | ✅ Checked     |
+
+### Creation Using kfutil:
+`kfutil` is a custom CLI for the Keyfactor Command API and can be used to created certificate store types.
+For more information on [kfutil](https://github.com/Keyfactor/kfutil) check out the [docs](https://github.com/Keyfactor/kfutil?tab=readme-ov-file#quickstart)
+
+#### Using online definition from GitHub:
+This will reach out to GitHub and pull the latest store-type definition
+```shell
+# RFDER
+kfutil store-types create RFDER
+```
+
+#### Offline creation using integration-manifest file:
+If required, it is possible to create store types from the [integration-manifest.json](./integration-manifest.json) included in this repo.
+You would first download the [integration-manifest.json](./integration-manifest.json) and then run the following command
+in your offline environment.
+```shell
+kfutil store-types create --from-file integration-manifest.json
+```
+
+### Manual Creation
+If you do not wish to use the `kfutil` CLI then certificate store types can be creating in the web UI as described below.
 
 * **Create RFDER manually in the Command UI**:
     <details><summary>Create RFDER manually in the Command UI</summary>
@@ -494,18 +595,43 @@ The Remote File Universal Orchestrator extension implements 6 Certificate Store 
 
 
 
-
 </details>
 
 <details><summary>RFKDB (RFKDB)</summary>
 
 
-* **Create RFKDB using kfutil**:
 
-    ```shell
-    # RFKDB
-    kfutil store-types create RFKDB
-    ```
+### Supported Operations
+
+| Operation    | Is Supported                                                                                                           |
+|--------------|------------------------------------------------------------------------------------------------------------------------|
+| Add          | ✅ Checked        |
+| Remove       | ✅ Checked     |
+| Discovery    | ✅ Checked  |
+| Reenrollment | 🔲 Unchecked |
+| Create       | ✅ Checked     |
+
+### Creation Using kfutil:
+`kfutil` is a custom CLI for the Keyfactor Command API and can be used to created certificate store types.
+For more information on [kfutil](https://github.com/Keyfactor/kfutil) check out the [docs](https://github.com/Keyfactor/kfutil?tab=readme-ov-file#quickstart)
+
+#### Using online definition from GitHub:
+This will reach out to GitHub and pull the latest store-type definition
+```shell
+# RFKDB
+kfutil store-types create RFKDB
+```
+
+#### Offline creation using integration-manifest file:
+If required, it is possible to create store types from the [integration-manifest.json](./integration-manifest.json) included in this repo.
+You would first download the [integration-manifest.json](./integration-manifest.json) and then run the following command
+in your offline environment.
+```shell
+kfutil store-types create --from-file integration-manifest.json
+```
+
+### Manual Creation
+If you do not wish to use the `kfutil` CLI then certificate store types can be creating in the web UI as described below.
 
 * **Create RFKDB manually in the Command UI**:
     <details><summary>Create RFKDB manually in the Command UI</summary>
@@ -567,18 +693,43 @@ The Remote File Universal Orchestrator extension implements 6 Certificate Store 
 
 
 
-
 </details>
 
 <details><summary>RFORA (RFORA)</summary>
 
 
-* **Create RFORA using kfutil**:
 
-    ```shell
-    # RFORA
-    kfutil store-types create RFORA
-    ```
+### Supported Operations
+
+| Operation    | Is Supported                                                                                                           |
+|--------------|------------------------------------------------------------------------------------------------------------------------|
+| Add          | ✅ Checked        |
+| Remove       | ✅ Checked     |
+| Discovery    | ✅ Checked  |
+| Reenrollment | 🔲 Unchecked |
+| Create       | ✅ Checked     |
+
+### Creation Using kfutil:
+`kfutil` is a custom CLI for the Keyfactor Command API and can be used to created certificate store types.
+For more information on [kfutil](https://github.com/Keyfactor/kfutil) check out the [docs](https://github.com/Keyfactor/kfutil?tab=readme-ov-file#quickstart)
+
+#### Using online definition from GitHub:
+This will reach out to GitHub and pull the latest store-type definition
+```shell
+# RFORA
+kfutil store-types create RFORA
+```
+
+#### Offline creation using integration-manifest file:
+If required, it is possible to create store types from the [integration-manifest.json](./integration-manifest.json) included in this repo.
+You would first download the [integration-manifest.json](./integration-manifest.json) and then run the following command
+in your offline environment.
+```shell
+kfutil store-types create --from-file integration-manifest.json
+```
+
+### Manual Creation
+If you do not wish to use the `kfutil` CLI then certificate store types can be creating in the web UI as described below.
 
 * **Create RFORA manually in the Command UI**:
     <details><summary>Create RFORA manually in the Command UI</summary>
@@ -638,7 +789,6 @@ The Remote File Universal Orchestrator extension implements 6 Certificate Store 
     The Custom Fields tab should look like this:
 
     ![RFORA Custom Fields Tab](docsource/images/RFORA-custom-fields-store-type-dialog.png)
-
 
 
 
