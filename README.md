@@ -59,91 +59,17 @@ certificates and certificate store files.
 
 The Remote File Universal Orchestrator extension implements 6 Certificate Store Types. Depending on your use case, you may elect to use one, or all of these Certificate Store Types. Descriptions of each are provided below.
 
-<details><summary>RFJKS (RFJKS)</summary>
+- [RFJKS](#RFJKS)
 
+- [RFPEM](#RFPEM)
 
-### RFJKS
+- [RFPkcs12](#RFPkcs12)
 
-The RFJKS store type can be used to manage java keystores of types JKS or PKCS12.  If creating a new java keystore and adding a certificate all via Keyfactor Command, the created java keystore will be of type PKCS12, as java keystores of type JKS have been deprecated as of JDK 9.
+- [RFDER](#RFDER)
 
-Use cases supported:
-1. One-to-many trust entries - A trust entry is defined as a single certificate without a private key in a certificate store.  Each trust entry is identified with a custom alias.
-2. One-to-many key entries - One-to-many certificates with private keys and optionally the full certificate chain.  Each certificate is identified with a custom alias.
-3. A mix of trust and key entries.
-</details>
+- [RFKDB](#RFKDB)
 
-<details><summary>RFPEM (RFPEM)</summary>
-
-
-### RFPEM
-
-The RFPEM store type can be used to manage PEM encoded files.
-
-Use cases supported:
-1. Trust stores - A file with one-to-many certificates (no private keys, no certificate chains).
-2. Single certificate stores with private key in the file.
-3. Single certificate stores with certificate chain and private key in the file.
-4. Single certificate stores with private key in an external file.
-5. Single certificate stores with certificate chain in the file and private key in an external file
-
-NOTE: PEM stores may only have one private key (internal or external) associated with the store, as only one certificate/chain/private key combination can be stored in a PEM store supported by RFPEM.  Private keys will be stored in encrypted or unencrypted PKCS#8 format (BEGIN [ENCRYPTED] PRIVATE KEY) based on the Store Password set on the Keyfactor Command Certificate Store unless managing a PEM store that currently contains a private key in PKCS#1 format (BEGIN RSA PRIVATE KEY or BEGIN EC PRIVATE KEY).  Store password MUST be set to "No Password" if managing a store with a PKCS#1 private key, as encrypted PKCS#1 keys are not supported with this integration.
-</details>
-
-<details><summary>RFPkcs12 (RFPkcs12)</summary>
-
-
-### RFPkcs12
-
-The RFPkcs12 store type can be used to manage any PKCS#12 compliant file format INCLUDING java keystores of type PKCS12.
-
-Use cases supported:
-1. One-to-many trust entries -  A trust entry is defined as a single certificate without a private key in a certificate store.  Each trust entry MUST BE identified with a custom friendly name/alias.
-2. One-to-many key entries - One-to-many certificates with private keys and optionally the full certificate chain.  Each certificate MUST BE identified with a custom friendly name/alias.
-3. A mix of trust and key entries.  Each entry MUST BE identified with a custom friendly name/alias.
-4. Single certificate stores with a blank/missing friendly name/alias.  Any management add job will replace the current certificate entry and will keep the friendly name/alias blank.  The Keyfactor Command certificate store will show the current certificate thumbprint as the entry's alias.
-
-Use cases not supported:
-1. Multiple key and/or trust entries with a mix of existing and non existing friendly names/aliases.
-2. Multiple key and/or trust entries with blank friendly names/aliases
-</details>
-
-<details><summary>RFDER (RFDER)</summary>
-
-
-### RFDER
-
-The RFDER store type can be used to manage DER encoded files.
-
-Use cases supported:
-1. Single certificate stores with private key in an external file.
-2. Single certificate stores with no private key.
-</details>
-
-<details><summary>RFKDB (RFKDB)</summary>
-
-
-### RFKDB
-
-The RFKDB store type can be used to manage IBM Key Database Files (KDB) files.  The IBM utility, GSKCAPICMD, is used to read and write certificates from and to the target store and is therefore required to be installed on the server where each KDB certificate store being managed resides, and its location MUST be in the system $Path.
-
-Use cases supported:
-1. One-to-many trust entries - A trust entry is defined as a single certificate without a private key in a certificate store.  Each trust entry is identified with a custom alias.
-2. One-to-many key entries - One-to-many certificates with private keys and optionally the full certificate chain.  Each certificate is identified with a custom alias.
-3. A mix of trust and key entries.
-</details>
-
-<details><summary>RFORA (RFORA)</summary>
-
-
-### RFORA
-
-The RFORA store type can be used to manage Pkcs12 Oracle Wallets.  Please note that while this should work for Pkcs12 Oracle Wallets installed on both Windows and Linux servers, this has only been tested on wallets installed on Windows.  Please note, when entering the Store Path for an Oracle Wallet in Keyfactor Command, make sure to INCLUDE the eWallet.p12 file name that by convention is the name of the Pkcs12 wallet file that gets created.
-
-Use cases supported:
-1. One-to-many trust entries - A trust entry is defined as a single certificate without a private key in a certificate store.  Each trust entry is identified with a custom alias.
-2. One-to-many key entries - One-to-many certificates with private keys and optionally the full certificate chain.  Each certificate is identified with a custom alias.
-3. A mix of trust and key entries.
-</details>
+- [RFORA](#RFORA)
 
 
 ## Compatibility
@@ -151,8 +77,8 @@ Use cases supported:
 This integration is compatible with Keyfactor Universal Orchestrator version 10.4 and later.
 
 ## Support
-The Remote File Universal Orchestrator extension If you have a support issue, please open a support ticket by either contacting your Keyfactor representative or via the Keyfactor Support Portal at https://support.keyfactor.com. 
- 
+The Remote File Universal Orchestrator extension If you have a support issue, please open a support ticket by either contacting your Keyfactor representative or via the Keyfactor Support Portal at https://support.keyfactor.com.
+
 > To report a problem or suggest a new feature, use the **[Issues](../../issues)** tab. If you want to contribute actual bug fixes or proposed enhancements, use the **[Pull requests](../../pulls)** tab.
 
 ## Requirements & Prerequisites
@@ -239,8 +165,17 @@ The Remote File Universal Orchestrator extension implements 6 Certificate Store 
 <details><summary>RFJKS (RFJKS)</summary>
 
 
+### RFJKS
 
-### Supported Operations
+The RFJKS store type can be used to manage java keystores of types JKS or PKCS12.  If creating a new java keystore and adding a certificate all via Keyfactor Command, the created java keystore will be of type PKCS12, as java keystores of type JKS have been deprecated as of JDK 9.
+
+Use cases supported:
+1. One-to-many trust entries - A trust entry is defined as a single certificate without a private key in a certificate store.  Each trust entry is identified with a custom alias.
+2. One-to-many key entries - One-to-many certificates with private keys and optionally the full certificate chain.  Each certificate is identified with a custom alias.
+3. A mix of trust and key entries.
+
+
+#### Supported Operations
 
 | Operation    | Is Supported                                                                                                           |
 |--------------|------------------------------------------------------------------------------------------------------------------------|
@@ -250,95 +185,112 @@ The Remote File Universal Orchestrator extension implements 6 Certificate Store 
 | Reenrollment | 🔲 Unchecked |
 | Create       | ✅ Checked     |
 
-### Creation Using kfutil:
+#### Creation Using kfutil:
 `kfutil` is a custom CLI for the Keyfactor Command API and can be used to created certificate store types.
 For more information on [kfutil](https://github.com/Keyfactor/kfutil) check out the [docs](https://github.com/Keyfactor/kfutil?tab=readme-ov-file#quickstart)
+   <details><summary>Click to expand RFJKS kfutil details</summary>
 
-#### Using online definition from GitHub:
-This will reach out to GitHub and pull the latest store-type definition
-```shell
-# RFJKS
-kfutil store-types create RFJKS
-```
+   ##### Using online definition from GitHub:
+   This will reach out to GitHub and pull the latest store-type definition
+   ```shell
+   # RFJKS
+   kfutil store-types create RFJKS
+   ```
 
-#### Offline creation using integration-manifest file:
-If required, it is possible to create store types from the [integration-manifest.json](./integration-manifest.json) included in this repo.
-You would first download the [integration-manifest.json](./integration-manifest.json) and then run the following command
-in your offline environment.
-```shell
-kfutil store-types create --from-file integration-manifest.json
-```
+   ##### Offline creation using integration-manifest file:
+   If required, it is possible to create store types from the [integration-manifest.json](./integration-manifest.json) included in this repo.
+   You would first download the [integration-manifest.json](./integration-manifest.json) and then run the following command
+   in your offline environment.
+   ```shell
+   kfutil store-types create --from-file integration-manifest.json
+   ```
+   </details>
 
-### Manual Creation
+
+#### Manual Creation
 If you do not wish to use the `kfutil` CLI then certificate store types can be creating in the web UI as described below.
 
-* **Create RFJKS manually in the Command UI**:
-    <details><summary>Create RFJKS manually in the Command UI</summary>
 
-    Create a store type called `RFJKS` with the attributes in the tables below:
+   <details><summary>Click to expand manual RFJKS details</summary>
 
-    #### Basic Tab
-    | Attribute | Value | Description |
-    | --------- | ----- | ----- |
-    | Name | RFJKS | Display name for the store type (may be customized) |
-    | Short Name | RFJKS | Short display name for the store type |
-    | Capability | RFJKS | Store type name orchestrator will register with. Check the box to allow entry of value |
-    | Supports Add | ✅ Checked | Check the box. Indicates that the Store Type supports Management Add |
-    | Supports Remove | ✅ Checked | Check the box. Indicates that the Store Type supports Management Remove |
-    | Supports Discovery | ✅ Checked | Check the box. Indicates that the Store Type supports Discovery |
-    | Supports Reenrollment | 🔲 Unchecked |  Indicates that the Store Type supports Reenrollment |
-    | Supports Create | ✅ Checked | Check the box. Indicates that the Store Type supports store creation |
-    | Needs Server | ✅ Checked | Determines if a target server name is required when creating store |
-    | Blueprint Allowed | 🔲 Unchecked | Determines if store type may be included in an Orchestrator blueprint |
-    | Uses PowerShell | 🔲 Unchecked | Determines if underlying implementation is PowerShell |
-    | Requires Store Password | ✅ Checked | Enables users to optionally specify a store password when defining a Certificate Store. |
-    | Supports Entry Password | 🔲 Unchecked | Determines if an individual entry within a store can have a password. |
+   Create a store type called `RFJKS` with the attributes in the tables below:
 
-    The Basic tab should look like this:
+   ##### Basic Tab
+   | Attribute | Value | Description |
+   | --------- | ----- | ----- |
+   | Name | RFJKS | Display name for the store type (may be customized) |
+   | Short Name | RFJKS | Short display name for the store type |
+   | Capability | RFJKS | Store type name orchestrator will register with. Check the box to allow entry of value |
+   | Supports Add | ✅ Checked | Check the box. Indicates that the Store Type supports Management Add |
+   | Supports Remove | ✅ Checked | Check the box. Indicates that the Store Type supports Management Remove |
+   | Supports Discovery | ✅ Checked | Check the box. Indicates that the Store Type supports Discovery |
+   | Supports Reenrollment | 🔲 Unchecked |  Indicates that the Store Type supports Reenrollment |
+   | Supports Create | ✅ Checked | Check the box. Indicates that the Store Type supports store creation |
+   | Needs Server | ✅ Checked | Determines if a target server name is required when creating store |
+   | Blueprint Allowed | 🔲 Unchecked | Determines if store type may be included in an Orchestrator blueprint |
+   | Uses PowerShell | 🔲 Unchecked | Determines if underlying implementation is PowerShell |
+   | Requires Store Password | ✅ Checked | Enables users to optionally specify a store password when defining a Certificate Store. |
+   | Supports Entry Password | 🔲 Unchecked | Determines if an individual entry within a store can have a password. |
 
-    ![RFJKS Basic Tab](docsource/images/RFJKS-basic-store-type-dialog.png)
+   The Basic tab should look like this:
 
-    #### Advanced Tab
-    | Attribute | Value | Description |
-    | --------- | ----- | ----- |
-    | Supports Custom Alias | Required | Determines if an individual entry within a store can have a custom Alias. |
-    | Private Key Handling | Optional | This determines if Keyfactor can send the private key associated with a certificate to the store. Required because IIS certificates without private keys would be invalid. |
-    | PFX Password Style | Default | 'Default' - PFX password is randomly generated, 'Custom' - PFX password may be specified when the enrollment job is created (Requires the Allow Custom Password application setting to be enabled.) |
+   ![RFJKS Basic Tab](docsource/images/RFJKS-basic-store-type-dialog.png)
 
-    The Advanced tab should look like this:
+   ##### Advanced Tab
+   | Attribute | Value | Description |
+   | --------- | ----- | ----- |
+   | Supports Custom Alias | Required | Determines if an individual entry within a store can have a custom Alias. |
+   | Private Key Handling | Optional | This determines if Keyfactor can send the private key associated with a certificate to the store. Required because IIS certificates without private keys would be invalid. |
+   | PFX Password Style | Default | 'Default' - PFX password is randomly generated, 'Custom' - PFX password may be specified when the enrollment job is created (Requires the Allow Custom Password application setting to be enabled.) |
 
-    ![RFJKS Advanced Tab](docsource/images/RFJKS-advanced-store-type-dialog.png)
+   The Advanced tab should look like this:
 
-    > For Keyfactor **Command versions 24.4 and later**, a Certificate Format dropdown is available with PFX and PEM options. Ensure that **PFX** is selected, as this determines the format of new and renewed certificates sent to the Orchestrator during a Management job. Currently, all Keyfactor-supported Orchestrator extensions support only PFX.
+   ![RFJKS Advanced Tab](docsource/images/RFJKS-advanced-store-type-dialog.png)
 
-    #### Custom Fields Tab
-    Custom fields operate at the certificate store level and are used to control how the orchestrator connects to the remote target server containing the certificate store to be managed. The following custom fields should be added to the store type:
+   > For Keyfactor **Command versions 24.4 and later**, a Certificate Format dropdown is available with PFX and PEM options. Ensure that **PFX** is selected, as this determines the format of new and renewed certificates sent to the Orchestrator during a Management job. Currently, all Keyfactor-supported Orchestrator extensions support only PFX.
 
-    | Name | Display Name | Description | Type | Default Value/Options | Required |
-    | ---- | ------------ | ---- | --------------------- | -------- | ----------- |
-    | ServerUsername | Server Username | A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value* | Secret |  | 🔲 Unchecked |
-    | ServerPassword | Server Password | A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value* | Secret |  | 🔲 Unchecked |
-    | LinuxFilePermissionsOnStoreCreation | Linux File Permissions on Store Creation | The LinuxFilePermissionsOnStoreCreation field should contain a three-digit value between 000 and 777 representing the Linux file permissions to be set for the certificate store upon creation. Example: '600' or '755'.  Overrides DefaultLinuxPermissionOnStoreCreation [config.json](#post-installation) setting. | String |  | 🔲 Unchecked |
-    | LinuxFileOwnerOnStoreCreation | Linux File Owner on Store Creation | The LinuxFileOwnerOnStoreCreation field should contain a valid user ID recognized by the destination Linux server, optionally followed by a colon and a group ID if the group owner differs. Example: 'userID' or 'userID:groupID'.  Overrides DefaultOwnerOnStoreCreation [config.json](#post-installation) setting. | String |  | 🔲 Unchecked |
-    | SudoImpersonatingUser | Sudo Impersonating User | The SudoImpersonatingUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'.  Overrides DefaultSudoImpersonatedUser [config.json](#post-installation) setting. | String |  | 🔲 Unchecked |
-    | RemoveRootCertificate | Remove Root Certificate from Chain | Remove root certificate from chain when adding/renewing a certificate in a store. | Bool | False | 🔲 Unchecked |
-    | IncludePortInSPN | Include Port in SPN for WinRM | Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations. | Bool | False | 🔲 Unchecked |
-    | FileTransferProtocol | File Transfer Protocol to Use | Which protocol should be used when uploading/downloading files - SCP, SFTP, or Both (try one, and then if necessary, the other).  Overrides FileTransferProtocol [config.json](#post-installation) setting. | MultipleChoice | ,SCP,SFTP,Both | 🔲 Unchecked |
-    | SSHPort | SSH Port | Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting. | String |  | 🔲 Unchecked |
+   ##### Custom Fields Tab
+   Custom fields operate at the certificate store level and are used to control how the orchestrator connects to the remote target server containing the certificate store to be managed. The following custom fields should be added to the store type:
 
-    The Custom Fields tab should look like this:
+   | Name | Display Name | Description | Type | Default Value/Options | Required |
+   | ---- | ------------ | ---- | --------------------- | -------- | ----------- |
+   | ServerUsername | Server Username | A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value* | Secret |  | 🔲 Unchecked |
+   | ServerPassword | Server Password | A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value* | Secret |  | 🔲 Unchecked |
+   | LinuxFilePermissionsOnStoreCreation | Linux File Permissions on Store Creation | The LinuxFilePermissionsOnStoreCreation field should contain a three-digit value between 000 and 777 representing the Linux file permissions to be set for the certificate store upon creation. Example: '600' or '755'.  Overrides DefaultLinuxPermissionOnStoreCreation [config.json](#post-installation) setting. | String |  | 🔲 Unchecked |
+   | LinuxFileOwnerOnStoreCreation | Linux File Owner on Store Creation | The LinuxFileOwnerOnStoreCreation field should contain a valid user ID recognized by the destination Linux server, optionally followed by a colon and a group ID if the group owner differs. Example: 'userID' or 'userID:groupID'.  Overrides DefaultOwnerOnStoreCreation [config.json](#post-installation) setting. | String |  | 🔲 Unchecked |
+   | SudoImpersonatingUser | Sudo Impersonating User | The SudoImpersonatingUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'.  Overrides DefaultSudoImpersonatedUser [config.json](#post-installation) setting. | String |  | 🔲 Unchecked |
+   | RemoveRootCertificate | Remove Root Certificate from Chain | Remove root certificate from chain when adding/renewing a certificate in a store. | Bool | False | 🔲 Unchecked |
+   | IncludePortInSPN | Include Port in SPN for WinRM | Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations. | Bool | False | 🔲 Unchecked |
+   | FileTransferProtocol | File Transfer Protocol to Use | Which protocol should be used when uploading/downloading files - SCP, SFTP, or Both (try one, and then if necessary, the other).  Overrides FileTransferProtocol [config.json](#post-installation) setting. | MultipleChoice | ,SCP,SFTP,Both | 🔲 Unchecked |
+   | SSHPort | SSH Port | Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting. | String |  | 🔲 Unchecked |
 
-    ![RFJKS Custom Fields Tab](docsource/images/RFJKS-custom-fields-store-type-dialog.png)
+   The Custom Fields tab should look like this:
+
+   ![RFJKS Custom Fields Tab](docsource/images/RFJKS-custom-fields-store-type-dialog.png)
 
 
-
+   </details>
 </details>
+&nbsp;
 
 <details><summary>RFPEM (RFPEM)</summary>
 
 
+### RFPEM
 
-### Supported Operations
+The RFPEM store type can be used to manage PEM encoded files.
+
+Use cases supported:
+1. Trust stores - A file with one-to-many certificates (no private keys, no certificate chains).
+2. Single certificate stores with private key in the file.
+3. Single certificate stores with certificate chain and private key in the file.
+4. Single certificate stores with private key in an external file.
+5. Single certificate stores with certificate chain in the file and private key in an external file
+
+NOTE: PEM stores may only have one private key (internal or external) associated with the store, as only one certificate/chain/private key combination can be stored in a PEM store supported by RFPEM.  Private keys will be stored in encrypted or unencrypted PKCS#8 format (BEGIN [ENCRYPTED] PRIVATE KEY) based on the Store Password set on the Keyfactor Command Certificate Store unless managing a PEM store that currently contains a private key in PKCS#1 format (BEGIN RSA PRIVATE KEY or BEGIN EC PRIVATE KEY).  Store password MUST be set to "No Password" if managing a store with a PKCS#1 private key, as encrypted PKCS#1 keys are not supported with this integration.
+
+
+#### Supported Operations
 
 | Operation    | Is Supported                                                                                                           |
 |--------------|------------------------------------------------------------------------------------------------------------------------|
@@ -348,99 +300,117 @@ If you do not wish to use the `kfutil` CLI then certificate store types can be c
 | Reenrollment | 🔲 Unchecked |
 | Create       | ✅ Checked     |
 
-### Creation Using kfutil:
+#### Creation Using kfutil:
 `kfutil` is a custom CLI for the Keyfactor Command API and can be used to created certificate store types.
 For more information on [kfutil](https://github.com/Keyfactor/kfutil) check out the [docs](https://github.com/Keyfactor/kfutil?tab=readme-ov-file#quickstart)
+   <details><summary>Click to expand RFPEM kfutil details</summary>
 
-#### Using online definition from GitHub:
-This will reach out to GitHub and pull the latest store-type definition
-```shell
-# RFPEM
-kfutil store-types create RFPEM
-```
+   ##### Using online definition from GitHub:
+   This will reach out to GitHub and pull the latest store-type definition
+   ```shell
+   # RFPEM
+   kfutil store-types create RFPEM
+   ```
 
-#### Offline creation using integration-manifest file:
-If required, it is possible to create store types from the [integration-manifest.json](./integration-manifest.json) included in this repo.
-You would first download the [integration-manifest.json](./integration-manifest.json) and then run the following command
-in your offline environment.
-```shell
-kfutil store-types create --from-file integration-manifest.json
-```
+   ##### Offline creation using integration-manifest file:
+   If required, it is possible to create store types from the [integration-manifest.json](./integration-manifest.json) included in this repo.
+   You would first download the [integration-manifest.json](./integration-manifest.json) and then run the following command
+   in your offline environment.
+   ```shell
+   kfutil store-types create --from-file integration-manifest.json
+   ```
+   </details>
 
-### Manual Creation
+
+#### Manual Creation
 If you do not wish to use the `kfutil` CLI then certificate store types can be creating in the web UI as described below.
 
-* **Create RFPEM manually in the Command UI**:
-    <details><summary>Create RFPEM manually in the Command UI</summary>
 
-    Create a store type called `RFPEM` with the attributes in the tables below:
+   <details><summary>Click to expand manual RFPEM details</summary>
 
-    #### Basic Tab
-    | Attribute | Value | Description |
-    | --------- | ----- | ----- |
-    | Name | RFPEM | Display name for the store type (may be customized) |
-    | Short Name | RFPEM | Short display name for the store type |
-    | Capability | RFPEM | Store type name orchestrator will register with. Check the box to allow entry of value |
-    | Supports Add | ✅ Checked | Check the box. Indicates that the Store Type supports Management Add |
-    | Supports Remove | ✅ Checked | Check the box. Indicates that the Store Type supports Management Remove |
-    | Supports Discovery | ✅ Checked | Check the box. Indicates that the Store Type supports Discovery |
-    | Supports Reenrollment | 🔲 Unchecked |  Indicates that the Store Type supports Reenrollment |
-    | Supports Create | ✅ Checked | Check the box. Indicates that the Store Type supports store creation |
-    | Needs Server | ✅ Checked | Determines if a target server name is required when creating store |
-    | Blueprint Allowed | 🔲 Unchecked | Determines if store type may be included in an Orchestrator blueprint |
-    | Uses PowerShell | 🔲 Unchecked | Determines if underlying implementation is PowerShell |
-    | Requires Store Password | ✅ Checked | Enables users to optionally specify a store password when defining a Certificate Store. |
-    | Supports Entry Password | 🔲 Unchecked | Determines if an individual entry within a store can have a password. |
+   Create a store type called `RFPEM` with the attributes in the tables below:
 
-    The Basic tab should look like this:
+   ##### Basic Tab
+   | Attribute | Value | Description |
+   | --------- | ----- | ----- |
+   | Name | RFPEM | Display name for the store type (may be customized) |
+   | Short Name | RFPEM | Short display name for the store type |
+   | Capability | RFPEM | Store type name orchestrator will register with. Check the box to allow entry of value |
+   | Supports Add | ✅ Checked | Check the box. Indicates that the Store Type supports Management Add |
+   | Supports Remove | ✅ Checked | Check the box. Indicates that the Store Type supports Management Remove |
+   | Supports Discovery | ✅ Checked | Check the box. Indicates that the Store Type supports Discovery |
+   | Supports Reenrollment | 🔲 Unchecked |  Indicates that the Store Type supports Reenrollment |
+   | Supports Create | ✅ Checked | Check the box. Indicates that the Store Type supports store creation |
+   | Needs Server | ✅ Checked | Determines if a target server name is required when creating store |
+   | Blueprint Allowed | 🔲 Unchecked | Determines if store type may be included in an Orchestrator blueprint |
+   | Uses PowerShell | 🔲 Unchecked | Determines if underlying implementation is PowerShell |
+   | Requires Store Password | ✅ Checked | Enables users to optionally specify a store password when defining a Certificate Store. |
+   | Supports Entry Password | 🔲 Unchecked | Determines if an individual entry within a store can have a password. |
 
-    ![RFPEM Basic Tab](docsource/images/RFPEM-basic-store-type-dialog.png)
+   The Basic tab should look like this:
 
-    #### Advanced Tab
-    | Attribute | Value | Description |
-    | --------- | ----- | ----- |
-    | Supports Custom Alias | Forbidden | Determines if an individual entry within a store can have a custom Alias. |
-    | Private Key Handling | Optional | This determines if Keyfactor can send the private key associated with a certificate to the store. Required because IIS certificates without private keys would be invalid. |
-    | PFX Password Style | Default | 'Default' - PFX password is randomly generated, 'Custom' - PFX password may be specified when the enrollment job is created (Requires the Allow Custom Password application setting to be enabled.) |
+   ![RFPEM Basic Tab](docsource/images/RFPEM-basic-store-type-dialog.png)
 
-    The Advanced tab should look like this:
+   ##### Advanced Tab
+   | Attribute | Value | Description |
+   | --------- | ----- | ----- |
+   | Supports Custom Alias | Forbidden | Determines if an individual entry within a store can have a custom Alias. |
+   | Private Key Handling | Optional | This determines if Keyfactor can send the private key associated with a certificate to the store. Required because IIS certificates without private keys would be invalid. |
+   | PFX Password Style | Default | 'Default' - PFX password is randomly generated, 'Custom' - PFX password may be specified when the enrollment job is created (Requires the Allow Custom Password application setting to be enabled.) |
 
-    ![RFPEM Advanced Tab](docsource/images/RFPEM-advanced-store-type-dialog.png)
+   The Advanced tab should look like this:
 
-    > For Keyfactor **Command versions 24.4 and later**, a Certificate Format dropdown is available with PFX and PEM options. Ensure that **PFX** is selected, as this determines the format of new and renewed certificates sent to the Orchestrator during a Management job. Currently, all Keyfactor-supported Orchestrator extensions support only PFX.
+   ![RFPEM Advanced Tab](docsource/images/RFPEM-advanced-store-type-dialog.png)
 
-    #### Custom Fields Tab
-    Custom fields operate at the certificate store level and are used to control how the orchestrator connects to the remote target server containing the certificate store to be managed. The following custom fields should be added to the store type:
+   > For Keyfactor **Command versions 24.4 and later**, a Certificate Format dropdown is available with PFX and PEM options. Ensure that **PFX** is selected, as this determines the format of new and renewed certificates sent to the Orchestrator during a Management job. Currently, all Keyfactor-supported Orchestrator extensions support only PFX.
 
-    | Name | Display Name | Description | Type | Default Value/Options | Required |
-    | ---- | ------------ | ---- | --------------------- | -------- | ----------- |
-    | ServerUsername | Server Username | A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value* | Secret |  | 🔲 Unchecked |
-    | ServerPassword | Server Password | A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value* | Secret |  | 🔲 Unchecked |
-    | LinuxFilePermissionsOnStoreCreation | Linux File Permissions on Store Creation | The LinuxFilePermissionsOnStoreCreation field should contain a three-digit value between 000 and 777 representing the Linux file permissions to be set for the certificate store upon creation. Example: '600' or '755'.  Overrides DefaultLinuxPermissionOnStoreCreation [config.json](#post-installation) setting. | String |  | 🔲 Unchecked |
-    | LinuxFileOwnerOnStoreCreation | Linux File Owner on Store Creation | The LinuxFileOwnerOnStoreCreation field should contain a valid user ID recognized by the destination Linux server, optionally followed by a colon and a group ID if the group owner differs. Example: 'userID' or 'userID:groupID'.  Overrides DefaultOwnerOnStoreCreation [config.json](#post-installation) setting. | String |  | 🔲 Unchecked |
-    | SudoImpersonatingUser | Sudo Impersonating User | The SudoImpersonatingUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'.  Overrides [config.json](#post-installation) DefaultSudoImpersonatedUser setting.. | String |  | 🔲 Unchecked |
-    | IsTrustStore | Trust Store | The IsTrustStore field should contain a boolean value ('true' or 'false') indicating whether the store will be identified as a trust store, which can hold multiple certificates without private keys. Example: 'true' for a trust store or 'false' for a store with a single certificate and private key. | Bool | false | 🔲 Unchecked |
-    | IncludesChain | Store Includes Chain | The IncludesChain field should contain a boolean value ('true' or 'false') indicating whether the certificate store includes the full certificate chain along with the end entity certificate. Example: 'true' to include the full chain or 'false' to exclude it. | Bool | false | 🔲 Unchecked |
-    | SeparatePrivateKeyFilePath | Separate Private Key File Location | The SeparatePrivateKeyFilePath field should contain the full path and file name where the separate private key file will be stored if it is to be kept outside the main certificate file. Example: '/path/to/privatekey.pem'. | String |  | 🔲 Unchecked |
-    | IgnorePrivateKeyOnInventory | Ignore Private Key On Inventory | The IgnorePrivateKeyOnInventory field should contain a boolean value ('true' or 'false') indicating whether to disregard the private key during inventory. Setting this to 'true' will allow inventory for the store without needing to supply the location of the private key or the password if the key is encrypted.  However, doing this makes the store in effect inventory-only and no management jobs will be able to be run for this store. Example: 'true' to ignore the private key or 'false' to include it. | Bool | false | 🔲 Unchecked |
-    | RemoveRootCertificate | Remove Root Certificate from Chain | Remove root certificate from chain when adding/renewing a certificate in a store. | Bool | False | 🔲 Unchecked |
-    | IncludePortInSPN | Include Port in SPN for WinRM | Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations. | Bool | False | 🔲 Unchecked |
-    | FileTransferProtocol | File Transfer Protocol to Use | Which protocol should be used when uploading/downloading files - SCP, SFTP, or Both (try one, and then if necessary, the other).  Overrides FileTransferProtocol [config.json](#post-installation) setting. | MultipleChoice | ,SCP,SFTP,Both | 🔲 Unchecked |
-    | SSHPort | SSH Port | Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting. | String |  | 🔲 Unchecked |
+   ##### Custom Fields Tab
+   Custom fields operate at the certificate store level and are used to control how the orchestrator connects to the remote target server containing the certificate store to be managed. The following custom fields should be added to the store type:
 
-    The Custom Fields tab should look like this:
+   | Name | Display Name | Description | Type | Default Value/Options | Required |
+   | ---- | ------------ | ---- | --------------------- | -------- | ----------- |
+   | ServerUsername | Server Username | A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value* | Secret |  | 🔲 Unchecked |
+   | ServerPassword | Server Password | A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value* | Secret |  | 🔲 Unchecked |
+   | LinuxFilePermissionsOnStoreCreation | Linux File Permissions on Store Creation | The LinuxFilePermissionsOnStoreCreation field should contain a three-digit value between 000 and 777 representing the Linux file permissions to be set for the certificate store upon creation. Example: '600' or '755'.  Overrides DefaultLinuxPermissionOnStoreCreation [config.json](#post-installation) setting. | String |  | 🔲 Unchecked |
+   | LinuxFileOwnerOnStoreCreation | Linux File Owner on Store Creation | The LinuxFileOwnerOnStoreCreation field should contain a valid user ID recognized by the destination Linux server, optionally followed by a colon and a group ID if the group owner differs. Example: 'userID' or 'userID:groupID'.  Overrides DefaultOwnerOnStoreCreation [config.json](#post-installation) setting. | String |  | 🔲 Unchecked |
+   | SudoImpersonatingUser | Sudo Impersonating User | The SudoImpersonatingUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'.  Overrides [config.json](#post-installation) DefaultSudoImpersonatedUser setting.. | String |  | 🔲 Unchecked |
+   | IsTrustStore | Trust Store | The IsTrustStore field should contain a boolean value ('true' or 'false') indicating whether the store will be identified as a trust store, which can hold multiple certificates without private keys. Example: 'true' for a trust store or 'false' for a store with a single certificate and private key. | Bool | false | 🔲 Unchecked |
+   | IncludesChain | Store Includes Chain | The IncludesChain field should contain a boolean value ('true' or 'false') indicating whether the certificate store includes the full certificate chain along with the end entity certificate. Example: 'true' to include the full chain or 'false' to exclude it. | Bool | false | 🔲 Unchecked |
+   | SeparatePrivateKeyFilePath | Separate Private Key File Location | The SeparatePrivateKeyFilePath field should contain the full path and file name where the separate private key file will be stored if it is to be kept outside the main certificate file. Example: '/path/to/privatekey.pem'. | String |  | 🔲 Unchecked |
+   | IgnorePrivateKeyOnInventory | Ignore Private Key On Inventory | The IgnorePrivateKeyOnInventory field should contain a boolean value ('true' or 'false') indicating whether to disregard the private key during inventory. Setting this to 'true' will allow inventory for the store without needing to supply the location of the private key or the password if the key is encrypted.  However, doing this makes the store in effect inventory-only and no management jobs will be able to be run for this store. Example: 'true' to ignore the private key or 'false' to include it. | Bool | false | 🔲 Unchecked |
+   | RemoveRootCertificate | Remove Root Certificate from Chain | Remove root certificate from chain when adding/renewing a certificate in a store. | Bool | False | 🔲 Unchecked |
+   | IncludePortInSPN | Include Port in SPN for WinRM | Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations. | Bool | False | 🔲 Unchecked |
+   | FileTransferProtocol | File Transfer Protocol to Use | Which protocol should be used when uploading/downloading files - SCP, SFTP, or Both (try one, and then if necessary, the other).  Overrides FileTransferProtocol [config.json](#post-installation) setting. | MultipleChoice | ,SCP,SFTP,Both | 🔲 Unchecked |
+   | SSHPort | SSH Port | Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting. | String |  | 🔲 Unchecked |
 
-    ![RFPEM Custom Fields Tab](docsource/images/RFPEM-custom-fields-store-type-dialog.png)
+   The Custom Fields tab should look like this:
+
+   ![RFPEM Custom Fields Tab](docsource/images/RFPEM-custom-fields-store-type-dialog.png)
 
 
-
+   </details>
 </details>
+&nbsp;
 
 <details><summary>RFPkcs12 (RFPkcs12)</summary>
 
 
+### RFPkcs12
 
-### Supported Operations
+The RFPkcs12 store type can be used to manage any PKCS#12 compliant file format INCLUDING java keystores of type PKCS12.
+
+Use cases supported:
+1. One-to-many trust entries -  A trust entry is defined as a single certificate without a private key in a certificate store.  Each trust entry MUST BE identified with a custom friendly name/alias.
+2. One-to-many key entries - One-to-many certificates with private keys and optionally the full certificate chain.  Each certificate MUST BE identified with a custom friendly name/alias.
+3. A mix of trust and key entries.  Each entry MUST BE identified with a custom friendly name/alias.
+4. Single certificate stores with a blank/missing friendly name/alias.  Any management add job will replace the current certificate entry and will keep the friendly name/alias blank.  The Keyfactor Command certificate store will show the current certificate thumbprint as the entry's alias.
+
+Use cases not supported:
+1. Multiple key and/or trust entries with a mix of existing and non existing friendly names/aliases.
+2. Multiple key and/or trust entries with blank friendly names/aliases
+
+
+#### Supported Operations
 
 | Operation    | Is Supported                                                                                                           |
 |--------------|------------------------------------------------------------------------------------------------------------------------|
@@ -450,95 +420,107 @@ If you do not wish to use the `kfutil` CLI then certificate store types can be c
 | Reenrollment | 🔲 Unchecked |
 | Create       | ✅ Checked     |
 
-### Creation Using kfutil:
+#### Creation Using kfutil:
 `kfutil` is a custom CLI for the Keyfactor Command API and can be used to created certificate store types.
 For more information on [kfutil](https://github.com/Keyfactor/kfutil) check out the [docs](https://github.com/Keyfactor/kfutil?tab=readme-ov-file#quickstart)
+   <details><summary>Click to expand RFPkcs12 kfutil details</summary>
 
-#### Using online definition from GitHub:
-This will reach out to GitHub and pull the latest store-type definition
-```shell
-# RFPkcs12
-kfutil store-types create RFPkcs12
-```
+   ##### Using online definition from GitHub:
+   This will reach out to GitHub and pull the latest store-type definition
+   ```shell
+   # RFPkcs12
+   kfutil store-types create RFPkcs12
+   ```
 
-#### Offline creation using integration-manifest file:
-If required, it is possible to create store types from the [integration-manifest.json](./integration-manifest.json) included in this repo.
-You would first download the [integration-manifest.json](./integration-manifest.json) and then run the following command
-in your offline environment.
-```shell
-kfutil store-types create --from-file integration-manifest.json
-```
+   ##### Offline creation using integration-manifest file:
+   If required, it is possible to create store types from the [integration-manifest.json](./integration-manifest.json) included in this repo.
+   You would first download the [integration-manifest.json](./integration-manifest.json) and then run the following command
+   in your offline environment.
+   ```shell
+   kfutil store-types create --from-file integration-manifest.json
+   ```
+   </details>
 
-### Manual Creation
+
+#### Manual Creation
 If you do not wish to use the `kfutil` CLI then certificate store types can be creating in the web UI as described below.
 
-* **Create RFPkcs12 manually in the Command UI**:
-    <details><summary>Create RFPkcs12 manually in the Command UI</summary>
 
-    Create a store type called `RFPkcs12` with the attributes in the tables below:
+   <details><summary>Click to expand manual RFPkcs12 details</summary>
 
-    #### Basic Tab
-    | Attribute | Value | Description |
-    | --------- | ----- | ----- |
-    | Name | RFPkcs12 | Display name for the store type (may be customized) |
-    | Short Name | RFPkcs12 | Short display name for the store type |
-    | Capability | RFPkcs12 | Store type name orchestrator will register with. Check the box to allow entry of value |
-    | Supports Add | ✅ Checked | Check the box. Indicates that the Store Type supports Management Add |
-    | Supports Remove | ✅ Checked | Check the box. Indicates that the Store Type supports Management Remove |
-    | Supports Discovery | ✅ Checked | Check the box. Indicates that the Store Type supports Discovery |
-    | Supports Reenrollment | 🔲 Unchecked |  Indicates that the Store Type supports Reenrollment |
-    | Supports Create | ✅ Checked | Check the box. Indicates that the Store Type supports store creation |
-    | Needs Server | ✅ Checked | Determines if a target server name is required when creating store |
-    | Blueprint Allowed | 🔲 Unchecked | Determines if store type may be included in an Orchestrator blueprint |
-    | Uses PowerShell | 🔲 Unchecked | Determines if underlying implementation is PowerShell |
-    | Requires Store Password | ✅ Checked | Enables users to optionally specify a store password when defining a Certificate Store. |
-    | Supports Entry Password | 🔲 Unchecked | Determines if an individual entry within a store can have a password. |
+   Create a store type called `RFPkcs12` with the attributes in the tables below:
 
-    The Basic tab should look like this:
+   ##### Basic Tab
+   | Attribute | Value | Description |
+   | --------- | ----- | ----- |
+   | Name | RFPkcs12 | Display name for the store type (may be customized) |
+   | Short Name | RFPkcs12 | Short display name for the store type |
+   | Capability | RFPkcs12 | Store type name orchestrator will register with. Check the box to allow entry of value |
+   | Supports Add | ✅ Checked | Check the box. Indicates that the Store Type supports Management Add |
+   | Supports Remove | ✅ Checked | Check the box. Indicates that the Store Type supports Management Remove |
+   | Supports Discovery | ✅ Checked | Check the box. Indicates that the Store Type supports Discovery |
+   | Supports Reenrollment | 🔲 Unchecked |  Indicates that the Store Type supports Reenrollment |
+   | Supports Create | ✅ Checked | Check the box. Indicates that the Store Type supports store creation |
+   | Needs Server | ✅ Checked | Determines if a target server name is required when creating store |
+   | Blueprint Allowed | 🔲 Unchecked | Determines if store type may be included in an Orchestrator blueprint |
+   | Uses PowerShell | 🔲 Unchecked | Determines if underlying implementation is PowerShell |
+   | Requires Store Password | ✅ Checked | Enables users to optionally specify a store password when defining a Certificate Store. |
+   | Supports Entry Password | 🔲 Unchecked | Determines if an individual entry within a store can have a password. |
 
-    ![RFPkcs12 Basic Tab](docsource/images/RFPkcs12-basic-store-type-dialog.png)
+   The Basic tab should look like this:
 
-    #### Advanced Tab
-    | Attribute | Value | Description |
-    | --------- | ----- | ----- |
-    | Supports Custom Alias | Required | Determines if an individual entry within a store can have a custom Alias. |
-    | Private Key Handling | Optional | This determines if Keyfactor can send the private key associated with a certificate to the store. Required because IIS certificates without private keys would be invalid. |
-    | PFX Password Style | Default | 'Default' - PFX password is randomly generated, 'Custom' - PFX password may be specified when the enrollment job is created (Requires the Allow Custom Password application setting to be enabled.) |
+   ![RFPkcs12 Basic Tab](docsource/images/RFPkcs12-basic-store-type-dialog.png)
 
-    The Advanced tab should look like this:
+   ##### Advanced Tab
+   | Attribute | Value | Description |
+   | --------- | ----- | ----- |
+   | Supports Custom Alias | Required | Determines if an individual entry within a store can have a custom Alias. |
+   | Private Key Handling | Optional | This determines if Keyfactor can send the private key associated with a certificate to the store. Required because IIS certificates without private keys would be invalid. |
+   | PFX Password Style | Default | 'Default' - PFX password is randomly generated, 'Custom' - PFX password may be specified when the enrollment job is created (Requires the Allow Custom Password application setting to be enabled.) |
 
-    ![RFPkcs12 Advanced Tab](docsource/images/RFPkcs12-advanced-store-type-dialog.png)
+   The Advanced tab should look like this:
 
-    > For Keyfactor **Command versions 24.4 and later**, a Certificate Format dropdown is available with PFX and PEM options. Ensure that **PFX** is selected, as this determines the format of new and renewed certificates sent to the Orchestrator during a Management job. Currently, all Keyfactor-supported Orchestrator extensions support only PFX.
+   ![RFPkcs12 Advanced Tab](docsource/images/RFPkcs12-advanced-store-type-dialog.png)
 
-    #### Custom Fields Tab
-    Custom fields operate at the certificate store level and are used to control how the orchestrator connects to the remote target server containing the certificate store to be managed. The following custom fields should be added to the store type:
+   > For Keyfactor **Command versions 24.4 and later**, a Certificate Format dropdown is available with PFX and PEM options. Ensure that **PFX** is selected, as this determines the format of new and renewed certificates sent to the Orchestrator during a Management job. Currently, all Keyfactor-supported Orchestrator extensions support only PFX.
 
-    | Name | Display Name | Description | Type | Default Value/Options | Required |
-    | ---- | ------------ | ---- | --------------------- | -------- | ----------- |
-    | ServerUsername | Server Username | A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value* | Secret |  | 🔲 Unchecked |
-    | ServerPassword | Server Password | A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value* | Secret |  | 🔲 Unchecked |
-    | LinuxFilePermissionsOnStoreCreation | Linux File Permissions on Store Creation | The LinuxFilePermissionsOnStoreCreation field should contain a three-digit value between 000 and 777 representing the Linux file permissions to be set for the certificate store upon creation. Example: '600' or '755'.  Overrides DefaultLinuxPermissionOnStoreCreation [config.json](#post-installation) setting. | String |  | 🔲 Unchecked |
-    | LinuxFileOwnerOnStoreCreation | Linux File Owner on Store Creation | The LinuxFileOwnerOnStoreCreation field should contain a valid user ID recognized by the destination Linux server, optionally followed by a colon and a group ID if the group owner differs. Example: 'userID' or 'userID:groupID'.  Overrides DefaultOwnerOnStoreCreation [config.json](#post-installation) setting. | String |  | 🔲 Unchecked |
-    | SudoImpersonatingUser | Sudo Impersonating User | The SudoImpersonatingUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'.  Overrides DefaultSudoImpersonatedUser [config.json](#post-installation) setting. | String |  | 🔲 Unchecked |
-    | RemoveRootCertificate | Remove Root Certificate from Chain | Remove root certificate from chain when adding/renewing a certificate in a store. | Bool | False | 🔲 Unchecked |
-    | IncludePortInSPN | Include Port in SPN for WinRM | Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations. | Bool | False | 🔲 Unchecked |
-    | FileTransferProtocol | File Transfer Protocol to Use | Which protocol should be used when uploading/downloading files - SCP, SFTP, or Both (try one, and then if necessary, the other).  Overrides FileTransferProtocol [config.json](#post-installation) setting. | MultipleChoice | ,SCP,SFTP,Both | 🔲 Unchecked |
-    | SSHPort | SSH Port | Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting. | String |  | 🔲 Unchecked |
+   ##### Custom Fields Tab
+   Custom fields operate at the certificate store level and are used to control how the orchestrator connects to the remote target server containing the certificate store to be managed. The following custom fields should be added to the store type:
 
-    The Custom Fields tab should look like this:
+   | Name | Display Name | Description | Type | Default Value/Options | Required |
+   | ---- | ------------ | ---- | --------------------- | -------- | ----------- |
+   | ServerUsername | Server Username | A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value* | Secret |  | 🔲 Unchecked |
+   | ServerPassword | Server Password | A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value* | Secret |  | 🔲 Unchecked |
+   | LinuxFilePermissionsOnStoreCreation | Linux File Permissions on Store Creation | The LinuxFilePermissionsOnStoreCreation field should contain a three-digit value between 000 and 777 representing the Linux file permissions to be set for the certificate store upon creation. Example: '600' or '755'.  Overrides DefaultLinuxPermissionOnStoreCreation [config.json](#post-installation) setting. | String |  | 🔲 Unchecked |
+   | LinuxFileOwnerOnStoreCreation | Linux File Owner on Store Creation | The LinuxFileOwnerOnStoreCreation field should contain a valid user ID recognized by the destination Linux server, optionally followed by a colon and a group ID if the group owner differs. Example: 'userID' or 'userID:groupID'.  Overrides DefaultOwnerOnStoreCreation [config.json](#post-installation) setting. | String |  | 🔲 Unchecked |
+   | SudoImpersonatingUser | Sudo Impersonating User | The SudoImpersonatingUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'.  Overrides DefaultSudoImpersonatedUser [config.json](#post-installation) setting. | String |  | 🔲 Unchecked |
+   | RemoveRootCertificate | Remove Root Certificate from Chain | Remove root certificate from chain when adding/renewing a certificate in a store. | Bool | False | 🔲 Unchecked |
+   | IncludePortInSPN | Include Port in SPN for WinRM | Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations. | Bool | False | 🔲 Unchecked |
+   | FileTransferProtocol | File Transfer Protocol to Use | Which protocol should be used when uploading/downloading files - SCP, SFTP, or Both (try one, and then if necessary, the other).  Overrides FileTransferProtocol [config.json](#post-installation) setting. | MultipleChoice | ,SCP,SFTP,Both | 🔲 Unchecked |
+   | SSHPort | SSH Port | Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting. | String |  | 🔲 Unchecked |
 
-    ![RFPkcs12 Custom Fields Tab](docsource/images/RFPkcs12-custom-fields-store-type-dialog.png)
+   The Custom Fields tab should look like this:
+
+   ![RFPkcs12 Custom Fields Tab](docsource/images/RFPkcs12-custom-fields-store-type-dialog.png)
 
 
-
+   </details>
 </details>
+&nbsp;
 
 <details><summary>RFDER (RFDER)</summary>
 
 
+### RFDER
 
-### Supported Operations
+The RFDER store type can be used to manage DER encoded files.
+
+Use cases supported:
+1. Single certificate stores with private key in an external file.
+2. Single certificate stores with no private key.
+
+
+#### Supported Operations
 
 | Operation    | Is Supported                                                                                                           |
 |--------------|------------------------------------------------------------------------------------------------------------------------|
@@ -548,96 +530,109 @@ If you do not wish to use the `kfutil` CLI then certificate store types can be c
 | Reenrollment | 🔲 Unchecked |
 | Create       | ✅ Checked     |
 
-### Creation Using kfutil:
+#### Creation Using kfutil:
 `kfutil` is a custom CLI for the Keyfactor Command API and can be used to created certificate store types.
 For more information on [kfutil](https://github.com/Keyfactor/kfutil) check out the [docs](https://github.com/Keyfactor/kfutil?tab=readme-ov-file#quickstart)
+   <details><summary>Click to expand RFDER kfutil details</summary>
 
-#### Using online definition from GitHub:
-This will reach out to GitHub and pull the latest store-type definition
-```shell
-# RFDER
-kfutil store-types create RFDER
-```
+   ##### Using online definition from GitHub:
+   This will reach out to GitHub and pull the latest store-type definition
+   ```shell
+   # RFDER
+   kfutil store-types create RFDER
+   ```
 
-#### Offline creation using integration-manifest file:
-If required, it is possible to create store types from the [integration-manifest.json](./integration-manifest.json) included in this repo.
-You would first download the [integration-manifest.json](./integration-manifest.json) and then run the following command
-in your offline environment.
-```shell
-kfutil store-types create --from-file integration-manifest.json
-```
+   ##### Offline creation using integration-manifest file:
+   If required, it is possible to create store types from the [integration-manifest.json](./integration-manifest.json) included in this repo.
+   You would first download the [integration-manifest.json](./integration-manifest.json) and then run the following command
+   in your offline environment.
+   ```shell
+   kfutil store-types create --from-file integration-manifest.json
+   ```
+   </details>
 
-### Manual Creation
+
+#### Manual Creation
 If you do not wish to use the `kfutil` CLI then certificate store types can be creating in the web UI as described below.
 
-* **Create RFDER manually in the Command UI**:
-    <details><summary>Create RFDER manually in the Command UI</summary>
 
-    Create a store type called `RFDER` with the attributes in the tables below:
+   <details><summary>Click to expand manual RFDER details</summary>
 
-    #### Basic Tab
-    | Attribute | Value | Description |
-    | --------- | ----- | ----- |
-    | Name | RFDER | Display name for the store type (may be customized) |
-    | Short Name | RFDER | Short display name for the store type |
-    | Capability | RFDER | Store type name orchestrator will register with. Check the box to allow entry of value |
-    | Supports Add | ✅ Checked | Check the box. Indicates that the Store Type supports Management Add |
-    | Supports Remove | ✅ Checked | Check the box. Indicates that the Store Type supports Management Remove |
-    | Supports Discovery | ✅ Checked | Check the box. Indicates that the Store Type supports Discovery |
-    | Supports Reenrollment | 🔲 Unchecked |  Indicates that the Store Type supports Reenrollment |
-    | Supports Create | ✅ Checked | Check the box. Indicates that the Store Type supports store creation |
-    | Needs Server | ✅ Checked | Determines if a target server name is required when creating store |
-    | Blueprint Allowed | 🔲 Unchecked | Determines if store type may be included in an Orchestrator blueprint |
-    | Uses PowerShell | 🔲 Unchecked | Determines if underlying implementation is PowerShell |
-    | Requires Store Password | ✅ Checked | Enables users to optionally specify a store password when defining a Certificate Store. |
-    | Supports Entry Password | 🔲 Unchecked | Determines if an individual entry within a store can have a password. |
+   Create a store type called `RFDER` with the attributes in the tables below:
 
-    The Basic tab should look like this:
+   ##### Basic Tab
+   | Attribute | Value | Description |
+   | --------- | ----- | ----- |
+   | Name | RFDER | Display name for the store type (may be customized) |
+   | Short Name | RFDER | Short display name for the store type |
+   | Capability | RFDER | Store type name orchestrator will register with. Check the box to allow entry of value |
+   | Supports Add | ✅ Checked | Check the box. Indicates that the Store Type supports Management Add |
+   | Supports Remove | ✅ Checked | Check the box. Indicates that the Store Type supports Management Remove |
+   | Supports Discovery | ✅ Checked | Check the box. Indicates that the Store Type supports Discovery |
+   | Supports Reenrollment | 🔲 Unchecked |  Indicates that the Store Type supports Reenrollment |
+   | Supports Create | ✅ Checked | Check the box. Indicates that the Store Type supports store creation |
+   | Needs Server | ✅ Checked | Determines if a target server name is required when creating store |
+   | Blueprint Allowed | 🔲 Unchecked | Determines if store type may be included in an Orchestrator blueprint |
+   | Uses PowerShell | 🔲 Unchecked | Determines if underlying implementation is PowerShell |
+   | Requires Store Password | ✅ Checked | Enables users to optionally specify a store password when defining a Certificate Store. |
+   | Supports Entry Password | 🔲 Unchecked | Determines if an individual entry within a store can have a password. |
 
-    ![RFDER Basic Tab](docsource/images/RFDER-basic-store-type-dialog.png)
+   The Basic tab should look like this:
 
-    #### Advanced Tab
-    | Attribute | Value | Description |
-    | --------- | ----- | ----- |
-    | Supports Custom Alias | Forbidden | Determines if an individual entry within a store can have a custom Alias. |
-    | Private Key Handling | Optional | This determines if Keyfactor can send the private key associated with a certificate to the store. Required because IIS certificates without private keys would be invalid. |
-    | PFX Password Style | Default | 'Default' - PFX password is randomly generated, 'Custom' - PFX password may be specified when the enrollment job is created (Requires the Allow Custom Password application setting to be enabled.) |
+   ![RFDER Basic Tab](docsource/images/RFDER-basic-store-type-dialog.png)
 
-    The Advanced tab should look like this:
+   ##### Advanced Tab
+   | Attribute | Value | Description |
+   | --------- | ----- | ----- |
+   | Supports Custom Alias | Forbidden | Determines if an individual entry within a store can have a custom Alias. |
+   | Private Key Handling | Optional | This determines if Keyfactor can send the private key associated with a certificate to the store. Required because IIS certificates without private keys would be invalid. |
+   | PFX Password Style | Default | 'Default' - PFX password is randomly generated, 'Custom' - PFX password may be specified when the enrollment job is created (Requires the Allow Custom Password application setting to be enabled.) |
 
-    ![RFDER Advanced Tab](docsource/images/RFDER-advanced-store-type-dialog.png)
+   The Advanced tab should look like this:
 
-    > For Keyfactor **Command versions 24.4 and later**, a Certificate Format dropdown is available with PFX and PEM options. Ensure that **PFX** is selected, as this determines the format of new and renewed certificates sent to the Orchestrator during a Management job. Currently, all Keyfactor-supported Orchestrator extensions support only PFX.
+   ![RFDER Advanced Tab](docsource/images/RFDER-advanced-store-type-dialog.png)
 
-    #### Custom Fields Tab
-    Custom fields operate at the certificate store level and are used to control how the orchestrator connects to the remote target server containing the certificate store to be managed. The following custom fields should be added to the store type:
+   > For Keyfactor **Command versions 24.4 and later**, a Certificate Format dropdown is available with PFX and PEM options. Ensure that **PFX** is selected, as this determines the format of new and renewed certificates sent to the Orchestrator during a Management job. Currently, all Keyfactor-supported Orchestrator extensions support only PFX.
 
-    | Name | Display Name | Description | Type | Default Value/Options | Required |
-    | ---- | ------------ | ---- | --------------------- | -------- | ----------- |
-    | ServerUsername | Server Username | A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value* | Secret |  | 🔲 Unchecked |
-    | ServerPassword | Server Password | A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value* | Secret |  | 🔲 Unchecked |
-    | LinuxFilePermissionsOnStoreCreation | Linux File Permissions on Store Creation | The LinuxFilePermissionsOnStoreCreation field should contain a three-digit value between 000 and 777 representing the Linux file permissions to be set for the certificate store upon creation. Example: '600' or '755'.  Overrides DefaultLinuxPermissionOnStoreCreation [config.json](#post-installation) setting. | String |  | 🔲 Unchecked |
-    | LinuxFileOwnerOnStoreCreation | Linux File Owner on Store Creation | The LinuxFileOwnerOnStoreCreation field should contain a valid user ID recognized by the destination Linux server, optionally followed by a colon and a group ID if the group owner differs. Example: 'userID' or 'userID:groupID'.  Overrides DefaultOwnerOnStoreCreation [config.json](#post-installation) setting. | String |  | 🔲 Unchecked |
-    | SudoImpersonatingUser | Sudo Impersonating User | The SudoImpersonatingUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'.  Overrides [config.json](#post-installation) DefaultSudoImpersonatedUser setting. | String |  | 🔲 Unchecked |
-    | SeparatePrivateKeyFilePath | Separate Private Key File Location | The SeparatePrivateKeyFilePath field should contain the full path and file name where the separate private key file will be stored if it is to be kept outside the main certificate file. Example: '/path/to/privatekey.der'. | String |  | 🔲 Unchecked |
-    | RemoveRootCertificate | Remove Root Certificate from Chain | Remove root certificate from chain when adding/renewing a certificate in a store. | Bool | False | 🔲 Unchecked |
-    | IncludePortInSPN | Include Port in SPN for WinRM | Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations. | Bool | False | 🔲 Unchecked |
-    | FileTransferProtocol | File Transfer Protocol to Use | Which protocol should be used when uploading/downloading files - SCP, SFTP, or Both (try one, and then if necessary, the other).  Overrides FileTransferProtocol [config.json](#post-installation) setting. | MultipleChoice | ,SCP,SFTP,Both | 🔲 Unchecked |
-    | SSHPort | SSH Port | Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting. | String |  | 🔲 Unchecked |
+   ##### Custom Fields Tab
+   Custom fields operate at the certificate store level and are used to control how the orchestrator connects to the remote target server containing the certificate store to be managed. The following custom fields should be added to the store type:
 
-    The Custom Fields tab should look like this:
+   | Name | Display Name | Description | Type | Default Value/Options | Required |
+   | ---- | ------------ | ---- | --------------------- | -------- | ----------- |
+   | ServerUsername | Server Username | A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value* | Secret |  | 🔲 Unchecked |
+   | ServerPassword | Server Password | A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value* | Secret |  | 🔲 Unchecked |
+   | LinuxFilePermissionsOnStoreCreation | Linux File Permissions on Store Creation | The LinuxFilePermissionsOnStoreCreation field should contain a three-digit value between 000 and 777 representing the Linux file permissions to be set for the certificate store upon creation. Example: '600' or '755'.  Overrides DefaultLinuxPermissionOnStoreCreation [config.json](#post-installation) setting. | String |  | 🔲 Unchecked |
+   | LinuxFileOwnerOnStoreCreation | Linux File Owner on Store Creation | The LinuxFileOwnerOnStoreCreation field should contain a valid user ID recognized by the destination Linux server, optionally followed by a colon and a group ID if the group owner differs. Example: 'userID' or 'userID:groupID'.  Overrides DefaultOwnerOnStoreCreation [config.json](#post-installation) setting. | String |  | 🔲 Unchecked |
+   | SudoImpersonatingUser | Sudo Impersonating User | The SudoImpersonatingUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'.  Overrides [config.json](#post-installation) DefaultSudoImpersonatedUser setting. | String |  | 🔲 Unchecked |
+   | SeparatePrivateKeyFilePath | Separate Private Key File Location | The SeparatePrivateKeyFilePath field should contain the full path and file name where the separate private key file will be stored if it is to be kept outside the main certificate file. Example: '/path/to/privatekey.der'. | String |  | 🔲 Unchecked |
+   | RemoveRootCertificate | Remove Root Certificate from Chain | Remove root certificate from chain when adding/renewing a certificate in a store. | Bool | False | 🔲 Unchecked |
+   | IncludePortInSPN | Include Port in SPN for WinRM | Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations. | Bool | False | 🔲 Unchecked |
+   | FileTransferProtocol | File Transfer Protocol to Use | Which protocol should be used when uploading/downloading files - SCP, SFTP, or Both (try one, and then if necessary, the other).  Overrides FileTransferProtocol [config.json](#post-installation) setting. | MultipleChoice | ,SCP,SFTP,Both | 🔲 Unchecked |
+   | SSHPort | SSH Port | Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting. | String |  | 🔲 Unchecked |
 
-    ![RFDER Custom Fields Tab](docsource/images/RFDER-custom-fields-store-type-dialog.png)
+   The Custom Fields tab should look like this:
+
+   ![RFDER Custom Fields Tab](docsource/images/RFDER-custom-fields-store-type-dialog.png)
 
 
-
+   </details>
 </details>
+&nbsp;
 
 <details><summary>RFKDB (RFKDB)</summary>
 
 
+### RFKDB
 
-### Supported Operations
+The RFKDB store type can be used to manage IBM Key Database Files (KDB) files.  The IBM utility, GSKCAPICMD, is used to read and write certificates from and to the target store and is therefore required to be installed on the server where each KDB certificate store being managed resides, and its location MUST be in the system $Path.
+
+Use cases supported:
+1. One-to-many trust entries - A trust entry is defined as a single certificate without a private key in a certificate store.  Each trust entry is identified with a custom alias.
+2. One-to-many key entries - One-to-many certificates with private keys and optionally the full certificate chain.  Each certificate is identified with a custom alias.
+3. A mix of trust and key entries.
+
+
+#### Supported Operations
 
 | Operation    | Is Supported                                                                                                           |
 |--------------|------------------------------------------------------------------------------------------------------------------------|
@@ -647,95 +642,108 @@ If you do not wish to use the `kfutil` CLI then certificate store types can be c
 | Reenrollment | 🔲 Unchecked |
 | Create       | ✅ Checked     |
 
-### Creation Using kfutil:
+#### Creation Using kfutil:
 `kfutil` is a custom CLI for the Keyfactor Command API and can be used to created certificate store types.
 For more information on [kfutil](https://github.com/Keyfactor/kfutil) check out the [docs](https://github.com/Keyfactor/kfutil?tab=readme-ov-file#quickstart)
+   <details><summary>Click to expand RFKDB kfutil details</summary>
 
-#### Using online definition from GitHub:
-This will reach out to GitHub and pull the latest store-type definition
-```shell
-# RFKDB
-kfutil store-types create RFKDB
-```
+   ##### Using online definition from GitHub:
+   This will reach out to GitHub and pull the latest store-type definition
+   ```shell
+   # RFKDB
+   kfutil store-types create RFKDB
+   ```
 
-#### Offline creation using integration-manifest file:
-If required, it is possible to create store types from the [integration-manifest.json](./integration-manifest.json) included in this repo.
-You would first download the [integration-manifest.json](./integration-manifest.json) and then run the following command
-in your offline environment.
-```shell
-kfutil store-types create --from-file integration-manifest.json
-```
+   ##### Offline creation using integration-manifest file:
+   If required, it is possible to create store types from the [integration-manifest.json](./integration-manifest.json) included in this repo.
+   You would first download the [integration-manifest.json](./integration-manifest.json) and then run the following command
+   in your offline environment.
+   ```shell
+   kfutil store-types create --from-file integration-manifest.json
+   ```
+   </details>
 
-### Manual Creation
+
+#### Manual Creation
 If you do not wish to use the `kfutil` CLI then certificate store types can be creating in the web UI as described below.
 
-* **Create RFKDB manually in the Command UI**:
-    <details><summary>Create RFKDB manually in the Command UI</summary>
 
-    Create a store type called `RFKDB` with the attributes in the tables below:
+   <details><summary>Click to expand manual RFKDB details</summary>
 
-    #### Basic Tab
-    | Attribute | Value | Description |
-    | --------- | ----- | ----- |
-    | Name | RFKDB | Display name for the store type (may be customized) |
-    | Short Name | RFKDB | Short display name for the store type |
-    | Capability | RFKDB | Store type name orchestrator will register with. Check the box to allow entry of value |
-    | Supports Add | ✅ Checked | Check the box. Indicates that the Store Type supports Management Add |
-    | Supports Remove | ✅ Checked | Check the box. Indicates that the Store Type supports Management Remove |
-    | Supports Discovery | ✅ Checked | Check the box. Indicates that the Store Type supports Discovery |
-    | Supports Reenrollment | 🔲 Unchecked |  Indicates that the Store Type supports Reenrollment |
-    | Supports Create | ✅ Checked | Check the box. Indicates that the Store Type supports store creation |
-    | Needs Server | ✅ Checked | Determines if a target server name is required when creating store |
-    | Blueprint Allowed | 🔲 Unchecked | Determines if store type may be included in an Orchestrator blueprint |
-    | Uses PowerShell | 🔲 Unchecked | Determines if underlying implementation is PowerShell |
-    | Requires Store Password | ✅ Checked | Enables users to optionally specify a store password when defining a Certificate Store. |
-    | Supports Entry Password | 🔲 Unchecked | Determines if an individual entry within a store can have a password. |
+   Create a store type called `RFKDB` with the attributes in the tables below:
 
-    The Basic tab should look like this:
+   ##### Basic Tab
+   | Attribute | Value | Description |
+   | --------- | ----- | ----- |
+   | Name | RFKDB | Display name for the store type (may be customized) |
+   | Short Name | RFKDB | Short display name for the store type |
+   | Capability | RFKDB | Store type name orchestrator will register with. Check the box to allow entry of value |
+   | Supports Add | ✅ Checked | Check the box. Indicates that the Store Type supports Management Add |
+   | Supports Remove | ✅ Checked | Check the box. Indicates that the Store Type supports Management Remove |
+   | Supports Discovery | ✅ Checked | Check the box. Indicates that the Store Type supports Discovery |
+   | Supports Reenrollment | 🔲 Unchecked |  Indicates that the Store Type supports Reenrollment |
+   | Supports Create | ✅ Checked | Check the box. Indicates that the Store Type supports store creation |
+   | Needs Server | ✅ Checked | Determines if a target server name is required when creating store |
+   | Blueprint Allowed | 🔲 Unchecked | Determines if store type may be included in an Orchestrator blueprint |
+   | Uses PowerShell | 🔲 Unchecked | Determines if underlying implementation is PowerShell |
+   | Requires Store Password | ✅ Checked | Enables users to optionally specify a store password when defining a Certificate Store. |
+   | Supports Entry Password | 🔲 Unchecked | Determines if an individual entry within a store can have a password. |
 
-    ![RFKDB Basic Tab](docsource/images/RFKDB-basic-store-type-dialog.png)
+   The Basic tab should look like this:
 
-    #### Advanced Tab
-    | Attribute | Value | Description |
-    | --------- | ----- | ----- |
-    | Supports Custom Alias | Required | Determines if an individual entry within a store can have a custom Alias. |
-    | Private Key Handling | Optional | This determines if Keyfactor can send the private key associated with a certificate to the store. Required because IIS certificates without private keys would be invalid. |
-    | PFX Password Style | Default | 'Default' - PFX password is randomly generated, 'Custom' - PFX password may be specified when the enrollment job is created (Requires the Allow Custom Password application setting to be enabled.) |
+   ![RFKDB Basic Tab](docsource/images/RFKDB-basic-store-type-dialog.png)
 
-    The Advanced tab should look like this:
+   ##### Advanced Tab
+   | Attribute | Value | Description |
+   | --------- | ----- | ----- |
+   | Supports Custom Alias | Required | Determines if an individual entry within a store can have a custom Alias. |
+   | Private Key Handling | Optional | This determines if Keyfactor can send the private key associated with a certificate to the store. Required because IIS certificates without private keys would be invalid. |
+   | PFX Password Style | Default | 'Default' - PFX password is randomly generated, 'Custom' - PFX password may be specified when the enrollment job is created (Requires the Allow Custom Password application setting to be enabled.) |
 
-    ![RFKDB Advanced Tab](docsource/images/RFKDB-advanced-store-type-dialog.png)
+   The Advanced tab should look like this:
 
-    > For Keyfactor **Command versions 24.4 and later**, a Certificate Format dropdown is available with PFX and PEM options. Ensure that **PFX** is selected, as this determines the format of new and renewed certificates sent to the Orchestrator during a Management job. Currently, all Keyfactor-supported Orchestrator extensions support only PFX.
+   ![RFKDB Advanced Tab](docsource/images/RFKDB-advanced-store-type-dialog.png)
 
-    #### Custom Fields Tab
-    Custom fields operate at the certificate store level and are used to control how the orchestrator connects to the remote target server containing the certificate store to be managed. The following custom fields should be added to the store type:
+   > For Keyfactor **Command versions 24.4 and later**, a Certificate Format dropdown is available with PFX and PEM options. Ensure that **PFX** is selected, as this determines the format of new and renewed certificates sent to the Orchestrator during a Management job. Currently, all Keyfactor-supported Orchestrator extensions support only PFX.
 
-    | Name | Display Name | Description | Type | Default Value/Options | Required |
-    | ---- | ------------ | ---- | --------------------- | -------- | ----------- |
-    | ServerUsername | Server Username | A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value* | Secret |  | 🔲 Unchecked |
-    | ServerPassword | Server Password | A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value* | Secret |  | 🔲 Unchecked |
-    | LinuxFilePermissionsOnStoreCreation | Linux File Permissions on Store Creation | The LinuxFilePermissionsOnStoreCreation field should contain a three-digit value between 000 and 777 representing the Linux file permissions to be set for the certificate store upon creation. Example: '600' or '755'.  Overrides DefaultLinuxPermissionOnStoreCreation [config.json](#post-installation) setting. | String |  | 🔲 Unchecked |
-    | LinuxFileOwnerOnStoreCreation | Linux File Owner on Store Creation | The LinuxFileOwnerOnStoreCreation field should contain a valid user ID recognized by the destination Linux server, optionally followed by a colon and a group ID if the group owner differs. Example: 'userID' or 'userID:groupID'.  Overrides DefaultOwnerOnStoreCreation [config.json](#post-installation) setting. | String |  | 🔲 Unchecked |
-    | SudoImpersonatingUser | Sudo Impersonating User | The SudoImpersonatingUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'.  Overrides [config.json](#post-installation) DefaultSudoImpersonatedUser setting. | String |  | 🔲 Unchecked |
-    | RemoveRootCertificate | Remove Root Certificate from Chain | Remove root certificate from chain when adding/renewing a certificate in a store. | Bool | False | 🔲 Unchecked |
-    | IncludePortInSPN | Include Port in SPN for WinRM | Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations. | Bool | False | 🔲 Unchecked |
-    | FileTransferProtocol | File Transfer Protocol to Use | Which protocol should be used when uploading/downloading files - SCP, SFTP, or Both (try one, and then if necessary, the other).  Overrides FileTransferProtocol [config.json](#post-installation) setting. | MultipleChoice | ,SCP,SFTP,Both | 🔲 Unchecked |
-    | SSHPort | SSH Port | Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting. | String |  | 🔲 Unchecked |
+   ##### Custom Fields Tab
+   Custom fields operate at the certificate store level and are used to control how the orchestrator connects to the remote target server containing the certificate store to be managed. The following custom fields should be added to the store type:
 
-    The Custom Fields tab should look like this:
+   | Name | Display Name | Description | Type | Default Value/Options | Required |
+   | ---- | ------------ | ---- | --------------------- | -------- | ----------- |
+   | ServerUsername | Server Username | A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value* | Secret |  | 🔲 Unchecked |
+   | ServerPassword | Server Password | A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value* | Secret |  | 🔲 Unchecked |
+   | LinuxFilePermissionsOnStoreCreation | Linux File Permissions on Store Creation | The LinuxFilePermissionsOnStoreCreation field should contain a three-digit value between 000 and 777 representing the Linux file permissions to be set for the certificate store upon creation. Example: '600' or '755'.  Overrides DefaultLinuxPermissionOnStoreCreation [config.json](#post-installation) setting. | String |  | 🔲 Unchecked |
+   | LinuxFileOwnerOnStoreCreation | Linux File Owner on Store Creation | The LinuxFileOwnerOnStoreCreation field should contain a valid user ID recognized by the destination Linux server, optionally followed by a colon and a group ID if the group owner differs. Example: 'userID' or 'userID:groupID'.  Overrides DefaultOwnerOnStoreCreation [config.json](#post-installation) setting. | String |  | 🔲 Unchecked |
+   | SudoImpersonatingUser | Sudo Impersonating User | The SudoImpersonatingUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'.  Overrides [config.json](#post-installation) DefaultSudoImpersonatedUser setting. | String |  | 🔲 Unchecked |
+   | RemoveRootCertificate | Remove Root Certificate from Chain | Remove root certificate from chain when adding/renewing a certificate in a store. | Bool | False | 🔲 Unchecked |
+   | IncludePortInSPN | Include Port in SPN for WinRM | Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations. | Bool | False | 🔲 Unchecked |
+   | FileTransferProtocol | File Transfer Protocol to Use | Which protocol should be used when uploading/downloading files - SCP, SFTP, or Both (try one, and then if necessary, the other).  Overrides FileTransferProtocol [config.json](#post-installation) setting. | MultipleChoice | ,SCP,SFTP,Both | 🔲 Unchecked |
+   | SSHPort | SSH Port | Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting. | String |  | 🔲 Unchecked |
 
-    ![RFKDB Custom Fields Tab](docsource/images/RFKDB-custom-fields-store-type-dialog.png)
+   The Custom Fields tab should look like this:
+
+   ![RFKDB Custom Fields Tab](docsource/images/RFKDB-custom-fields-store-type-dialog.png)
 
 
-
+   </details>
 </details>
+&nbsp;
 
 <details><summary>RFORA (RFORA)</summary>
 
 
+### RFORA
 
-### Supported Operations
+The RFORA store type can be used to manage Pkcs12 Oracle Wallets.  Please note that while this should work for Pkcs12 Oracle Wallets installed on both Windows and Linux servers, this has only been tested on wallets installed on Windows.  Please note, when entering the Store Path for an Oracle Wallet in Keyfactor Command, make sure to INCLUDE the eWallet.p12 file name that by convention is the name of the Pkcs12 wallet file that gets created.
+
+Use cases supported:
+1. One-to-many trust entries - A trust entry is defined as a single certificate without a private key in a certificate store.  Each trust entry is identified with a custom alias.
+2. One-to-many key entries - One-to-many certificates with private keys and optionally the full certificate chain.  Each certificate is identified with a custom alias.
+3. A mix of trust and key entries.
+
+
+#### Supported Operations
 
 | Operation    | Is Supported                                                                                                           |
 |--------------|------------------------------------------------------------------------------------------------------------------------|
@@ -745,105 +753,109 @@ If you do not wish to use the `kfutil` CLI then certificate store types can be c
 | Reenrollment | 🔲 Unchecked |
 | Create       | ✅ Checked     |
 
-### Creation Using kfutil:
+#### Creation Using kfutil:
 `kfutil` is a custom CLI for the Keyfactor Command API and can be used to created certificate store types.
 For more information on [kfutil](https://github.com/Keyfactor/kfutil) check out the [docs](https://github.com/Keyfactor/kfutil?tab=readme-ov-file#quickstart)
+   <details><summary>Click to expand RFORA kfutil details</summary>
 
-#### Using online definition from GitHub:
-This will reach out to GitHub and pull the latest store-type definition
-```shell
-# RFORA
-kfutil store-types create RFORA
-```
+   ##### Using online definition from GitHub:
+   This will reach out to GitHub and pull the latest store-type definition
+   ```shell
+   # RFORA
+   kfutil store-types create RFORA
+   ```
 
-#### Offline creation using integration-manifest file:
-If required, it is possible to create store types from the [integration-manifest.json](./integration-manifest.json) included in this repo.
-You would first download the [integration-manifest.json](./integration-manifest.json) and then run the following command
-in your offline environment.
-```shell
-kfutil store-types create --from-file integration-manifest.json
-```
+   ##### Offline creation using integration-manifest file:
+   If required, it is possible to create store types from the [integration-manifest.json](./integration-manifest.json) included in this repo.
+   You would first download the [integration-manifest.json](./integration-manifest.json) and then run the following command
+   in your offline environment.
+   ```shell
+   kfutil store-types create --from-file integration-manifest.json
+   ```
+   </details>
 
-### Manual Creation
+
+#### Manual Creation
 If you do not wish to use the `kfutil` CLI then certificate store types can be creating in the web UI as described below.
 
-* **Create RFORA manually in the Command UI**:
-    <details><summary>Create RFORA manually in the Command UI</summary>
 
-    Create a store type called `RFORA` with the attributes in the tables below:
+   <details><summary>Click to expand manual RFORA details</summary>
 
-    #### Basic Tab
-    | Attribute | Value | Description |
-    | --------- | ----- | ----- |
-    | Name | RFORA | Display name for the store type (may be customized) |
-    | Short Name | RFORA | Short display name for the store type |
-    | Capability | RFORA | Store type name orchestrator will register with. Check the box to allow entry of value |
-    | Supports Add | ✅ Checked | Check the box. Indicates that the Store Type supports Management Add |
-    | Supports Remove | ✅ Checked | Check the box. Indicates that the Store Type supports Management Remove |
-    | Supports Discovery | ✅ Checked | Check the box. Indicates that the Store Type supports Discovery |
-    | Supports Reenrollment | 🔲 Unchecked |  Indicates that the Store Type supports Reenrollment |
-    | Supports Create | ✅ Checked | Check the box. Indicates that the Store Type supports store creation |
-    | Needs Server | ✅ Checked | Determines if a target server name is required when creating store |
-    | Blueprint Allowed | 🔲 Unchecked | Determines if store type may be included in an Orchestrator blueprint |
-    | Uses PowerShell | 🔲 Unchecked | Determines if underlying implementation is PowerShell |
-    | Requires Store Password | ✅ Checked | Enables users to optionally specify a store password when defining a Certificate Store. |
-    | Supports Entry Password | 🔲 Unchecked | Determines if an individual entry within a store can have a password. |
+   Create a store type called `RFORA` with the attributes in the tables below:
 
-    The Basic tab should look like this:
+   ##### Basic Tab
+   | Attribute | Value | Description |
+   | --------- | ----- | ----- |
+   | Name | RFORA | Display name for the store type (may be customized) |
+   | Short Name | RFORA | Short display name for the store type |
+   | Capability | RFORA | Store type name orchestrator will register with. Check the box to allow entry of value |
+   | Supports Add | ✅ Checked | Check the box. Indicates that the Store Type supports Management Add |
+   | Supports Remove | ✅ Checked | Check the box. Indicates that the Store Type supports Management Remove |
+   | Supports Discovery | ✅ Checked | Check the box. Indicates that the Store Type supports Discovery |
+   | Supports Reenrollment | 🔲 Unchecked |  Indicates that the Store Type supports Reenrollment |
+   | Supports Create | ✅ Checked | Check the box. Indicates that the Store Type supports store creation |
+   | Needs Server | ✅ Checked | Determines if a target server name is required when creating store |
+   | Blueprint Allowed | 🔲 Unchecked | Determines if store type may be included in an Orchestrator blueprint |
+   | Uses PowerShell | 🔲 Unchecked | Determines if underlying implementation is PowerShell |
+   | Requires Store Password | ✅ Checked | Enables users to optionally specify a store password when defining a Certificate Store. |
+   | Supports Entry Password | 🔲 Unchecked | Determines if an individual entry within a store can have a password. |
 
-    ![RFORA Basic Tab](docsource/images/RFORA-basic-store-type-dialog.png)
+   The Basic tab should look like this:
 
-    #### Advanced Tab
-    | Attribute | Value | Description |
-    | --------- | ----- | ----- |
-    | Supports Custom Alias | Required | Determines if an individual entry within a store can have a custom Alias. |
-    | Private Key Handling | Optional | This determines if Keyfactor can send the private key associated with a certificate to the store. Required because IIS certificates without private keys would be invalid. |
-    | PFX Password Style | Default | 'Default' - PFX password is randomly generated, 'Custom' - PFX password may be specified when the enrollment job is created (Requires the Allow Custom Password application setting to be enabled.) |
+   ![RFORA Basic Tab](docsource/images/RFORA-basic-store-type-dialog.png)
 
-    The Advanced tab should look like this:
+   ##### Advanced Tab
+   | Attribute | Value | Description |
+   | --------- | ----- | ----- |
+   | Supports Custom Alias | Required | Determines if an individual entry within a store can have a custom Alias. |
+   | Private Key Handling | Optional | This determines if Keyfactor can send the private key associated with a certificate to the store. Required because IIS certificates without private keys would be invalid. |
+   | PFX Password Style | Default | 'Default' - PFX password is randomly generated, 'Custom' - PFX password may be specified when the enrollment job is created (Requires the Allow Custom Password application setting to be enabled.) |
 
-    ![RFORA Advanced Tab](docsource/images/RFORA-advanced-store-type-dialog.png)
+   The Advanced tab should look like this:
 
-    > For Keyfactor **Command versions 24.4 and later**, a Certificate Format dropdown is available with PFX and PEM options. Ensure that **PFX** is selected, as this determines the format of new and renewed certificates sent to the Orchestrator during a Management job. Currently, all Keyfactor-supported Orchestrator extensions support only PFX.
+   ![RFORA Advanced Tab](docsource/images/RFORA-advanced-store-type-dialog.png)
 
-    #### Custom Fields Tab
-    Custom fields operate at the certificate store level and are used to control how the orchestrator connects to the remote target server containing the certificate store to be managed. The following custom fields should be added to the store type:
+   > For Keyfactor **Command versions 24.4 and later**, a Certificate Format dropdown is available with PFX and PEM options. Ensure that **PFX** is selected, as this determines the format of new and renewed certificates sent to the Orchestrator during a Management job. Currently, all Keyfactor-supported Orchestrator extensions support only PFX.
 
-    | Name | Display Name | Description | Type | Default Value/Options | Required |
-    | ---- | ------------ | ---- | --------------------- | -------- | ----------- |
-    | ServerUsername | Server Username | A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value* | Secret |  | 🔲 Unchecked |
-    | ServerPassword | Server Password | A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value* | Secret |  | 🔲 Unchecked |
-    | LinuxFilePermissionsOnStoreCreation | Linux File Permissions on Store Creation | The LinuxFilePermissionsOnStoreCreation field should contain a three-digit value between 000 and 777 representing the Linux file permissions to be set for the certificate store upon creation. Example: '600' or '755'.  Overrides DefaultLinuxPermissionOnStoreCreation [config.json](#post-installation) setting. | String |  | 🔲 Unchecked |
-    | LinuxFileOwnerOnStoreCreation | Linux File Owner on Store Creation | The LinuxFileOwnerOnStoreCreation field should contain a valid user ID recognized by the destination Linux server, optionally followed by a colon and a group ID if the group owner differs. Example: 'userID' or 'userID:groupID'.  Overrides DefaultOwnerOnStoreCreation [config.json](#post-installation) setting. | String |  | 🔲 Unchecked |
-    | SudoImpersonatingUser | Sudo Impersonating User | The SudoImpersonatingUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'.  Overrides [config.json](#post-installation) DefaultSudoImpersonatedUser setting. | String |  | 🔲 Unchecked |
-    | WorkFolder | Location to use for creation/removal of work files | The WorkFolder field should contain the path on the managed server where temporary work files can be created, modified, and deleted during Inventory and Management jobs. Example: '/path/to/workfolder'. | String |  | ✅ Checked |
-    | RemoveRootCertificate | Remove Root Certificate from Chain | Remove root certificate from chain when adding/renewing a certificate in a store. | Bool | False | 🔲 Unchecked |
-    | IncludePortInSPN | Include Port in SPN for WinRM | Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations. | Bool | False | 🔲 Unchecked |
-    | FileTransferProtocol | File Transfer Protocol to Use | Which protocol should be used when uploading/downloading files - SCP, SFTP, or Both (try one, and then if necessary, the other).  Overrides FileTransferProtocol [config.json](#post-installation) setting. | MultipleChoice | ,SCP,SFTP,Both | 🔲 Unchecked |
-    | SSHPort | SSH Port | Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting. | String |  | 🔲 Unchecked |
+   ##### Custom Fields Tab
+   Custom fields operate at the certificate store level and are used to control how the orchestrator connects to the remote target server containing the certificate store to be managed. The following custom fields should be added to the store type:
 
-    The Custom Fields tab should look like this:
+   | Name | Display Name | Description | Type | Default Value/Options | Required |
+   | ---- | ------------ | ---- | --------------------- | -------- | ----------- |
+   | ServerUsername | Server Username | A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value* | Secret |  | 🔲 Unchecked |
+   | ServerPassword | Server Password | A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value* | Secret |  | 🔲 Unchecked |
+   | LinuxFilePermissionsOnStoreCreation | Linux File Permissions on Store Creation | The LinuxFilePermissionsOnStoreCreation field should contain a three-digit value between 000 and 777 representing the Linux file permissions to be set for the certificate store upon creation. Example: '600' or '755'.  Overrides DefaultLinuxPermissionOnStoreCreation [config.json](#post-installation) setting. | String |  | 🔲 Unchecked |
+   | LinuxFileOwnerOnStoreCreation | Linux File Owner on Store Creation | The LinuxFileOwnerOnStoreCreation field should contain a valid user ID recognized by the destination Linux server, optionally followed by a colon and a group ID if the group owner differs. Example: 'userID' or 'userID:groupID'.  Overrides DefaultOwnerOnStoreCreation [config.json](#post-installation) setting. | String |  | 🔲 Unchecked |
+   | SudoImpersonatingUser | Sudo Impersonating User | The SudoImpersonatingUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'.  Overrides [config.json](#post-installation) DefaultSudoImpersonatedUser setting. | String |  | 🔲 Unchecked |
+   | WorkFolder | Location to use for creation/removal of work files | The WorkFolder field should contain the path on the managed server where temporary work files can be created, modified, and deleted during Inventory and Management jobs. Example: '/path/to/workfolder'. | String |  | ✅ Checked |
+   | RemoveRootCertificate | Remove Root Certificate from Chain | Remove root certificate from chain when adding/renewing a certificate in a store. | Bool | False | 🔲 Unchecked |
+   | IncludePortInSPN | Include Port in SPN for WinRM | Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations. | Bool | False | 🔲 Unchecked |
+   | FileTransferProtocol | File Transfer Protocol to Use | Which protocol should be used when uploading/downloading files - SCP, SFTP, or Both (try one, and then if necessary, the other).  Overrides FileTransferProtocol [config.json](#post-installation) setting. | MultipleChoice | ,SCP,SFTP,Both | 🔲 Unchecked |
+   | SSHPort | SSH Port | Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting. | String |  | 🔲 Unchecked |
 
-    ![RFORA Custom Fields Tab](docsource/images/RFORA-custom-fields-store-type-dialog.png)
+   The Custom Fields tab should look like this:
+
+   ![RFORA Custom Fields Tab](docsource/images/RFORA-custom-fields-store-type-dialog.png)
 
 
-
+   </details>
 </details>
+&nbsp;
 
 
 ## Installation
 
-1. **Download the latest Remote File Universal Orchestrator extension from GitHub.** 
+1. **Download the latest Remote File Universal Orchestrator extension from GitHub.**
 
     Navigate to the [Remote File Universal Orchestrator extension GitHub version page](https://github.com/Keyfactor/remote-file-orchestrator/releases/latest). Refer to the compatibility matrix below to determine whether the `net6.0` or `net8.0` asset should be downloaded. Then, click the corresponding asset to download the zip archive.
 
-    | Universal Orchestrator Version | Latest .NET version installed on the Universal Orchestrator server | `rollForward` condition in `Orchestrator.runtimeconfig.json` | `remote-file-orchestrator` .NET version to download |
-    | --------- | ----------- | ----------- | ----------- |
-    | Older than `11.0.0` | | | `net6.0` |
-    | Between `11.0.0` and `11.5.1` (inclusive) | `net6.0` | | `net6.0` | 
-    | Between `11.0.0` and `11.5.1` (inclusive) | `net8.0` | `Disable` | `net6.0` | 
-    | Between `11.0.0` and `11.5.1` (inclusive) | `net8.0` | `LatestMajor` | `net8.0` | 
-    | `11.6` _and_ newer | `net8.0` | | `net8.0` |
+   | Universal Orchestrator Version | Latest .NET version installed on the Universal Orchestrator server | `rollForward` condition in `Orchestrator.runtimeconfig.json` | `remote-file-orchestrator` .NET version to download |
+   | --------- | ----------- | ----------- | ----------- |
+   | Older than `11.0.0` | | | `net6.0` |
+   | Between `11.0.0` and `11.5.1` (inclusive) | `net6.0` | | `net6.0` |
+   | Between `11.0.0` and `11.5.1` (inclusive) | `net8.0` | `Disable` | `net6.0` |
+   | Between `11.0.0` and `11.5.1` (inclusive) | `net8.0` | `LatestMajor` | `net8.0` |
+   | `11.6` _and_ newer | `net8.0` | | `net8.0` |
 
     Unzip the archive containing extension assemblies to a known location.
 
@@ -853,9 +865,9 @@ If you do not wish to use the `kfutil` CLI then certificate store types can be c
 
     * **Default on Windows** - `C:\Program Files\Keyfactor\Keyfactor Orchestrator\extensions`
     * **Default on Linux** - `/opt/keyfactor/orchestrator/extensions`
-    
+
 3. **Create a new directory for the Remote File Universal Orchestrator extension inside the extensions directory.**
-        
+
     Create a new directory called `remote-file-orchestrator`.
     > The directory name does not need to match any names used elsewhere; it just has to be unique within the extensions directory.
 
@@ -866,11 +878,11 @@ If you do not wish to use the `kfutil` CLI then certificate store types can be c
     Refer to [Starting/Restarting the Universal Orchestrator service](https://software.keyfactor.com/Core-OnPrem/Current/Content/InstallingAgents/NetCoreOrchestrator/StarttheService.htm).
 
 
-6. **(optional) PAM Integration** 
+6. **(optional) PAM Integration**
 
     The Remote File Universal Orchestrator extension is compatible with all supported Keyfactor PAM extensions to resolve PAM-eligible secrets. PAM extensions running on Universal Orchestrators enable secure retrieval of secrets from a connected PAM provider.
 
-    To configure a PAM provider, [reference the Keyfactor Integration Catalog](https://keyfactor.github.io/integrations-catalog/content/pam) to select an extension, and follow the associated instructions to install it on the Universal Orchestrator (remote).
+    To configure a PAM provider, [reference the Keyfactor Integration Catalog](https://keyfactor.github.io/integrations-catalog/content/pam) to select an extension and follow the associated instructions to install it on the Universal Orchestrator (remote).
 
 
 > The above installation steps can be supplemented by the [official Command documentation](https://software.keyfactor.com/Core-OnPrem/Current/Content/InstallingAgents/NetCoreOrchestrator/CustomExtensions.htm?Highlight=extensions).
@@ -916,87 +928,94 @@ The Remote File Universal Orchestrator extension implements 6 Certificate Store 
 
 ### Store Creation
 
-* **Manually with the Command UI**
+#### Manually with the Command UI
 
-    <details><summary>Create Certificate Stores manually in the UI</summary>
+<details><summary>Click to expand details</summary>
 
-    1. **Navigate to the _Certificate Stores_ page in Keyfactor Command.**
+1. **Navigate to the _Certificate Stores_ page in Keyfactor Command.**
 
-        Log into Keyfactor Command, toggle the _Locations_ dropdown, and click _Certificate Stores_.
+    Log into Keyfactor Command, toggle the _Locations_ dropdown, and click _Certificate Stores_.
 
-    2. **Add a Certificate Store.**
+2. **Add a Certificate Store.**
 
-        Click the Add button to add a new Certificate Store. Use the table below to populate the **Attributes** in the **Add** form.
+    Click the Add button to add a new Certificate Store. Use the table below to populate the **Attributes** in the **Add** form.
 
-        | Attribute | Description |
-        | --------- | ----------- |
-        | Category | Select "RFJKS" or the customized certificate store name from the previous step. |
-        | Container | Optional container to associate certificate store with. |
-        | Client Machine | The IP address or DNS of the server hosting the certificate store.  For more information, see [Client Machine ](#client-machine-instructions) |
-        | Store Path | The full path and file name, including file extension if one exists where the certificate store file is located.  For Linux orchestrated servers, StorePath will begin with a forward slash (i.e. /folder/path/storename.ext).  For Windows orchestrated servers, it should begin with a drive letter (i.e. c:\folder\path\storename.ext). |
-        | Orchestrator | Select an approved orchestrator capable of managing `RFJKS` certificates. Specifically, one with the `RFJKS` capability. |
-        | ServerUsername | A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value* |
-        | ServerPassword | A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value* |
-        | LinuxFilePermissionsOnStoreCreation | The LinuxFilePermissionsOnStoreCreation field should contain a three-digit value between 000 and 777 representing the Linux file permissions to be set for the certificate store upon creation. Example: '600' or '755'.  Overrides DefaultLinuxPermissionOnStoreCreation [config.json](#post-installation) setting. |
-        | LinuxFileOwnerOnStoreCreation | The LinuxFileOwnerOnStoreCreation field should contain a valid user ID recognized by the destination Linux server, optionally followed by a colon and a group ID if the group owner differs. Example: 'userID' or 'userID:groupID'.  Overrides DefaultOwnerOnStoreCreation [config.json](#post-installation) setting. |
-        | SudoImpersonatingUser | The SudoImpersonatingUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'.  Overrides DefaultSudoImpersonatedUser [config.json](#post-installation) setting. |
-        | RemoveRootCertificate | Remove root certificate from chain when adding/renewing a certificate in a store. |
-        | IncludePortInSPN | Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations. |
-        | FileTransferProtocol | Which protocol should be used when uploading/downloading files - SCP, SFTP, or Both (try one, and then if necessary, the other).  Overrides FileTransferProtocol [config.json](#post-installation) setting. |
-        | SSHPort | Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting. |
-    </details>
+   | Attribute | Description |
+   | --------- | ----------- |
+   | Category | Select "RFJKS" or the customized certificate store name from the previous step. |
+   | Container | Optional container to associate certificate store with. |
+   | Client Machine | The IP address or DNS of the server hosting the certificate store.  For more information, see [Client Machine ](#client-machine-instructions) |
+   | Store Path | The full path and file name, including file extension if one exists where the certificate store file is located.  For Linux orchestrated servers, StorePath will begin with a forward slash (i.e. /folder/path/storename.ext).  For Windows orchestrated servers, it should begin with a drive letter (i.e. c:\folder\path\storename.ext). |
+   | Orchestrator | Select an approved orchestrator capable of managing `RFJKS` certificates. Specifically, one with the `RFJKS` capability. |
+   | ServerUsername | A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value* |
+   | ServerPassword | A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value* |
+   | LinuxFilePermissionsOnStoreCreation | The LinuxFilePermissionsOnStoreCreation field should contain a three-digit value between 000 and 777 representing the Linux file permissions to be set for the certificate store upon creation. Example: '600' or '755'.  Overrides DefaultLinuxPermissionOnStoreCreation [config.json](#post-installation) setting. |
+   | LinuxFileOwnerOnStoreCreation | The LinuxFileOwnerOnStoreCreation field should contain a valid user ID recognized by the destination Linux server, optionally followed by a colon and a group ID if the group owner differs. Example: 'userID' or 'userID:groupID'.  Overrides DefaultOwnerOnStoreCreation [config.json](#post-installation) setting. |
+   | SudoImpersonatingUser | The SudoImpersonatingUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'.  Overrides DefaultSudoImpersonatedUser [config.json](#post-installation) setting. |
+   | RemoveRootCertificate | Remove root certificate from chain when adding/renewing a certificate in a store. |
+   | IncludePortInSPN | Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations. |
+   | FileTransferProtocol | Which protocol should be used when uploading/downloading files - SCP, SFTP, or Both (try one, and then if necessary, the other).  Overrides FileTransferProtocol [config.json](#post-installation) setting. |
+   | SSHPort | Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting. |
+
+</details>
 
 
-* **Using kfutil**
-    
-    <details><summary>Create Certificate Stores with kfutil</summary>
-    
-    1. **Generate a CSV template for the RFJKS certificate store**
 
-        ```shell
-        kfutil stores import generate-template --store-type-name RFJKS --outpath RFJKS.csv
-        ```
-    2. **Populate the generated CSV file**
+#### Using kfutil CLI
 
-        Open the CSV file, and reference the table below to populate parameters for each **Attribute**.
+<details><summary>Click to expand details</summary>
 
-        | Attribute | Description |
-        | --------- | ----------- |
-        | Category | Select "RFJKS" or the customized certificate store name from the previous step. |
-        | Container | Optional container to associate certificate store with. |
-        | Client Machine | The IP address or DNS of the server hosting the certificate store.  For more information, see [Client Machine ](#client-machine-instructions) |
-        | Store Path | The full path and file name, including file extension if one exists where the certificate store file is located.  For Linux orchestrated servers, StorePath will begin with a forward slash (i.e. /folder/path/storename.ext).  For Windows orchestrated servers, it should begin with a drive letter (i.e. c:\folder\path\storename.ext). |
-        | Orchestrator | Select an approved orchestrator capable of managing `RFJKS` certificates. Specifically, one with the `RFJKS` capability. |
-        | ServerUsername | A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value* |
-        | ServerPassword | A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value* |
-        | LinuxFilePermissionsOnStoreCreation | The LinuxFilePermissionsOnStoreCreation field should contain a three-digit value between 000 and 777 representing the Linux file permissions to be set for the certificate store upon creation. Example: '600' or '755'.  Overrides DefaultLinuxPermissionOnStoreCreation [config.json](#post-installation) setting. |
-        | LinuxFileOwnerOnStoreCreation | The LinuxFileOwnerOnStoreCreation field should contain a valid user ID recognized by the destination Linux server, optionally followed by a colon and a group ID if the group owner differs. Example: 'userID' or 'userID:groupID'.  Overrides DefaultOwnerOnStoreCreation [config.json](#post-installation) setting. |
-        | SudoImpersonatingUser | The SudoImpersonatingUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'.  Overrides DefaultSudoImpersonatedUser [config.json](#post-installation) setting. |
-        | RemoveRootCertificate | Remove root certificate from chain when adding/renewing a certificate in a store. |
-        | IncludePortInSPN | Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations. |
-        | FileTransferProtocol | Which protocol should be used when uploading/downloading files - SCP, SFTP, or Both (try one, and then if necessary, the other).  Overrides FileTransferProtocol [config.json](#post-installation) setting. |
-        | SSHPort | Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting. |
-    3. **Import the CSV file to create the certificate stores**
+1. **Generate a CSV template for the RFJKS certificate store**
 
-        ```shell
-        kfutil stores import csv --store-type-name RFJKS --file RFJKS.csv
-        ```
+    ```shell
+    kfutil stores import generate-template --store-type-name RFJKS --outpath RFJKS.csv
+    ```
+2. **Populate the generated CSV file**
 
-* **PAM Provider Eligible Fields**
-    <details><summary>Attributes eligible for retrieval by a PAM Provider on the Universal Orchestrator</summary>
+    Open the CSV file, and reference the table below to populate parameters for each **Attribute**.
 
-    If a PAM provider was installed _on the Universal Orchestrator_ in the [Installation](#Installation) section, the following parameters can be configured for retrieval _on the Universal Orchestrator_.
+   | Attribute | Description |
+   | --------- | ----------- |
+   | Category | Select "RFJKS" or the customized certificate store name from the previous step. |
+   | Container | Optional container to associate certificate store with. |
+   | Client Machine | The IP address or DNS of the server hosting the certificate store.  For more information, see [Client Machine ](#client-machine-instructions) |
+   | Store Path | The full path and file name, including file extension if one exists where the certificate store file is located.  For Linux orchestrated servers, StorePath will begin with a forward slash (i.e. /folder/path/storename.ext).  For Windows orchestrated servers, it should begin with a drive letter (i.e. c:\folder\path\storename.ext). |
+   | Orchestrator | Select an approved orchestrator capable of managing `RFJKS` certificates. Specifically, one with the `RFJKS` capability. |
+   | Properties.ServerUsername | A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value* |
+   | Properties.ServerPassword | A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value* |
+   | Properties.LinuxFilePermissionsOnStoreCreation | The LinuxFilePermissionsOnStoreCreation field should contain a three-digit value between 000 and 777 representing the Linux file permissions to be set for the certificate store upon creation. Example: '600' or '755'.  Overrides DefaultLinuxPermissionOnStoreCreation [config.json](#post-installation) setting. |
+   | Properties.LinuxFileOwnerOnStoreCreation | The LinuxFileOwnerOnStoreCreation field should contain a valid user ID recognized by the destination Linux server, optionally followed by a colon and a group ID if the group owner differs. Example: 'userID' or 'userID:groupID'.  Overrides DefaultOwnerOnStoreCreation [config.json](#post-installation) setting. |
+   | Properties.SudoImpersonatingUser | The SudoImpersonatingUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'.  Overrides DefaultSudoImpersonatedUser [config.json](#post-installation) setting. |
+   | Properties.RemoveRootCertificate | Remove root certificate from chain when adding/renewing a certificate in a store. |
+   | Properties.IncludePortInSPN | Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations. |
+   | Properties.FileTransferProtocol | Which protocol should be used when uploading/downloading files - SCP, SFTP, or Both (try one, and then if necessary, the other).  Overrides FileTransferProtocol [config.json](#post-installation) setting. |
+   | Properties.SSHPort | Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting. |
 
-    | Attribute | Description |
-    | --------- | ----------- |
-    | ServerUsername | A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value* |
-    | ServerPassword | A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value* |
-    | StorePassword | Password to use when reading/writing to store |
+3. **Import the CSV file to create the certificate stores**
 
-    Please refer to the **Universal Orchestrator (remote)** usage section ([PAM providers on the Keyfactor Integration Catalog](https://keyfactor.github.io/integrations-catalog/content/pam)) for your selected PAM provider for instructions on how to load attributes orchestrator-side.
+    ```shell
+    kfutil stores import csv --store-type-name RFJKS --file RFJKS.csv
+    ```
 
-    > Any secret can be rendered by a PAM provider _installed on the Keyfactor Command server_. The above parameters are specific to attributes that can be fetched by an installed PAM provider running on the Universal Orchestrator server itself.
-    </details>
+</details>
+
+
+#### PAM Provider Eligible Fields
+<details><summary>Attributes eligible for retrieval by a PAM Provider on the Universal Orchestrator</summary>
+
+If a PAM provider was installed _on the Universal Orchestrator_ in the [Installation](#Installation) section, the following parameters can be configured for retrieval _on the Universal Orchestrator_.
+
+   | Attribute | Description |
+   | --------- | ----------- |
+   | ServerUsername | A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value* |
+   | ServerPassword | A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value* |
+   | StorePassword | Password to use when reading/writing to store |
+
+Please refer to the **Universal Orchestrator (remote)** usage section ([PAM providers on the Keyfactor Integration Catalog](https://keyfactor.github.io/integrations-catalog/content/pam)) for your selected PAM provider for instructions on how to load attributes orchestrator-side.
+> Any secret can be rendered by a PAM provider _installed on the Keyfactor Command server_. The above parameters are specific to attributes that can be fetched by an installed PAM provider running on the Universal Orchestrator server itself.
+
+</details>
+
 
 
 > The content in this section can be supplemented by the [official Command documentation](https://software.keyfactor.com/Core-OnPrem/Current/Content/ReferenceGuide/Certificate%20Stores.htm?Highlight=certificate%20store).
@@ -1009,95 +1028,102 @@ The Remote File Universal Orchestrator extension implements 6 Certificate Store 
 
 ### Store Creation
 
-* **Manually with the Command UI**
+#### Manually with the Command UI
 
-    <details><summary>Create Certificate Stores manually in the UI</summary>
+<details><summary>Click to expand details</summary>
 
-    1. **Navigate to the _Certificate Stores_ page in Keyfactor Command.**
+1. **Navigate to the _Certificate Stores_ page in Keyfactor Command.**
 
-        Log into Keyfactor Command, toggle the _Locations_ dropdown, and click _Certificate Stores_.
+    Log into Keyfactor Command, toggle the _Locations_ dropdown, and click _Certificate Stores_.
 
-    2. **Add a Certificate Store.**
+2. **Add a Certificate Store.**
 
-        Click the Add button to add a new Certificate Store. Use the table below to populate the **Attributes** in the **Add** form.
+    Click the Add button to add a new Certificate Store. Use the table below to populate the **Attributes** in the **Add** form.
 
-        | Attribute | Description |
-        | --------- | ----------- |
-        | Category | Select "RFPEM" or the customized certificate store name from the previous step. |
-        | Container | Optional container to associate certificate store with. |
-        | Client Machine | The Client Machine field should contain the DNS name or IP address of the remote orchestrated server for Linux orchestrated servers, formatted as a URL (protocol://dns-or-ip:port) for Windows orchestrated servers, or '1.1.1.1|LocalMachine' for local agents. Example: 'https://myserver.mydomain.com:5986' or '1.1.1.1|LocalMachine' for local access. |
-        | Store Path | The Store Path field should contain the full path and file name, including file extension if applicable, beginning with a forward slash (/) for Linux orchestrated servers or a drive letter (i.e., c:\folder\path\storename.ext) for Windows orchestrated servers. Example: '/folder/path/storename.pem' or 'c:\folder\path\storename.pem'. |
-        | Orchestrator | Select an approved orchestrator capable of managing `RFPEM` certificates. Specifically, one with the `RFPEM` capability. |
-        | ServerUsername | A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value* |
-        | ServerPassword | A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value* |
-        | LinuxFilePermissionsOnStoreCreation | The LinuxFilePermissionsOnStoreCreation field should contain a three-digit value between 000 and 777 representing the Linux file permissions to be set for the certificate store upon creation. Example: '600' or '755'.  Overrides DefaultLinuxPermissionOnStoreCreation [config.json](#post-installation) setting. |
-        | LinuxFileOwnerOnStoreCreation | The LinuxFileOwnerOnStoreCreation field should contain a valid user ID recognized by the destination Linux server, optionally followed by a colon and a group ID if the group owner differs. Example: 'userID' or 'userID:groupID'.  Overrides DefaultOwnerOnStoreCreation [config.json](#post-installation) setting. |
-        | SudoImpersonatingUser | The SudoImpersonatingUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'.  Overrides [config.json](#post-installation) DefaultSudoImpersonatedUser setting.. |
-        | IsTrustStore | The IsTrustStore field should contain a boolean value ('true' or 'false') indicating whether the store will be identified as a trust store, which can hold multiple certificates without private keys. Example: 'true' for a trust store or 'false' for a store with a single certificate and private key. |
-        | IncludesChain | The IncludesChain field should contain a boolean value ('true' or 'false') indicating whether the certificate store includes the full certificate chain along with the end entity certificate. Example: 'true' to include the full chain or 'false' to exclude it. |
-        | SeparatePrivateKeyFilePath | The SeparatePrivateKeyFilePath field should contain the full path and file name where the separate private key file will be stored if it is to be kept outside the main certificate file. Example: '/path/to/privatekey.pem'. |
-        | IgnorePrivateKeyOnInventory | The IgnorePrivateKeyOnInventory field should contain a boolean value ('true' or 'false') indicating whether to disregard the private key during inventory. Setting this to 'true' will allow inventory for the store without needing to supply the location of the private key or the password if the key is encrypted.  However, doing this makes the store in effect inventory-only and no management jobs will be able to be run for this store. Example: 'true' to ignore the private key or 'false' to include it. |
-        | RemoveRootCertificate | Remove root certificate from chain when adding/renewing a certificate in a store. |
-        | IncludePortInSPN | Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations. |
-        | FileTransferProtocol | Which protocol should be used when uploading/downloading files - SCP, SFTP, or Both (try one, and then if necessary, the other).  Overrides FileTransferProtocol [config.json](#post-installation) setting. |
-        | SSHPort | Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting. |
-    </details>
+   | Attribute | Description |
+   | --------- | ----------- |
+   | Category | Select "RFPEM" or the customized certificate store name from the previous step. |
+   | Container | Optional container to associate certificate store with. |
+   | Client Machine | The Client Machine field should contain the DNS name or IP address of the remote orchestrated server for Linux orchestrated servers, formatted as a URL (protocol://dns-or-ip:port) for Windows orchestrated servers, or '1.1.1.1|LocalMachine' for local agents. Example: 'https://myserver.mydomain.com:5986' or '1.1.1.1|LocalMachine' for local access. |
+   | Store Path | The Store Path field should contain the full path and file name, including file extension if applicable, beginning with a forward slash (/) for Linux orchestrated servers or a drive letter (i.e., c:\folder\path\storename.ext) for Windows orchestrated servers. Example: '/folder/path/storename.pem' or 'c:\folder\path\storename.pem'. |
+   | Orchestrator | Select an approved orchestrator capable of managing `RFPEM` certificates. Specifically, one with the `RFPEM` capability. |
+   | ServerUsername | A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value* |
+   | ServerPassword | A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value* |
+   | LinuxFilePermissionsOnStoreCreation | The LinuxFilePermissionsOnStoreCreation field should contain a three-digit value between 000 and 777 representing the Linux file permissions to be set for the certificate store upon creation. Example: '600' or '755'.  Overrides DefaultLinuxPermissionOnStoreCreation [config.json](#post-installation) setting. |
+   | LinuxFileOwnerOnStoreCreation | The LinuxFileOwnerOnStoreCreation field should contain a valid user ID recognized by the destination Linux server, optionally followed by a colon and a group ID if the group owner differs. Example: 'userID' or 'userID:groupID'.  Overrides DefaultOwnerOnStoreCreation [config.json](#post-installation) setting. |
+   | SudoImpersonatingUser | The SudoImpersonatingUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'.  Overrides [config.json](#post-installation) DefaultSudoImpersonatedUser setting.. |
+   | IsTrustStore | The IsTrustStore field should contain a boolean value ('true' or 'false') indicating whether the store will be identified as a trust store, which can hold multiple certificates without private keys. Example: 'true' for a trust store or 'false' for a store with a single certificate and private key. |
+   | IncludesChain | The IncludesChain field should contain a boolean value ('true' or 'false') indicating whether the certificate store includes the full certificate chain along with the end entity certificate. Example: 'true' to include the full chain or 'false' to exclude it. |
+   | SeparatePrivateKeyFilePath | The SeparatePrivateKeyFilePath field should contain the full path and file name where the separate private key file will be stored if it is to be kept outside the main certificate file. Example: '/path/to/privatekey.pem'. |
+   | IgnorePrivateKeyOnInventory | The IgnorePrivateKeyOnInventory field should contain a boolean value ('true' or 'false') indicating whether to disregard the private key during inventory. Setting this to 'true' will allow inventory for the store without needing to supply the location of the private key or the password if the key is encrypted.  However, doing this makes the store in effect inventory-only and no management jobs will be able to be run for this store. Example: 'true' to ignore the private key or 'false' to include it. |
+   | RemoveRootCertificate | Remove root certificate from chain when adding/renewing a certificate in a store. |
+   | IncludePortInSPN | Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations. |
+   | FileTransferProtocol | Which protocol should be used when uploading/downloading files - SCP, SFTP, or Both (try one, and then if necessary, the other).  Overrides FileTransferProtocol [config.json](#post-installation) setting. |
+   | SSHPort | Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting. |
+
+</details>
 
 
-* **Using kfutil**
-    
-    <details><summary>Create Certificate Stores with kfutil</summary>
-    
-    1. **Generate a CSV template for the RFPEM certificate store**
 
-        ```shell
-        kfutil stores import generate-template --store-type-name RFPEM --outpath RFPEM.csv
-        ```
-    2. **Populate the generated CSV file**
+#### Using kfutil CLI
 
-        Open the CSV file, and reference the table below to populate parameters for each **Attribute**.
+<details><summary>Click to expand details</summary>
 
-        | Attribute | Description |
-        | --------- | ----------- |
-        | Category | Select "RFPEM" or the customized certificate store name from the previous step. |
-        | Container | Optional container to associate certificate store with. |
-        | Client Machine | The Client Machine field should contain the DNS name or IP address of the remote orchestrated server for Linux orchestrated servers, formatted as a URL (protocol://dns-or-ip:port) for Windows orchestrated servers, or '1.1.1.1|LocalMachine' for local agents. Example: 'https://myserver.mydomain.com:5986' or '1.1.1.1|LocalMachine' for local access. |
-        | Store Path | The Store Path field should contain the full path and file name, including file extension if applicable, beginning with a forward slash (/) for Linux orchestrated servers or a drive letter (i.e., c:\folder\path\storename.ext) for Windows orchestrated servers. Example: '/folder/path/storename.pem' or 'c:\folder\path\storename.pem'. |
-        | Orchestrator | Select an approved orchestrator capable of managing `RFPEM` certificates. Specifically, one with the `RFPEM` capability. |
-        | ServerUsername | A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value* |
-        | ServerPassword | A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value* |
-        | LinuxFilePermissionsOnStoreCreation | The LinuxFilePermissionsOnStoreCreation field should contain a three-digit value between 000 and 777 representing the Linux file permissions to be set for the certificate store upon creation. Example: '600' or '755'.  Overrides DefaultLinuxPermissionOnStoreCreation [config.json](#post-installation) setting. |
-        | LinuxFileOwnerOnStoreCreation | The LinuxFileOwnerOnStoreCreation field should contain a valid user ID recognized by the destination Linux server, optionally followed by a colon and a group ID if the group owner differs. Example: 'userID' or 'userID:groupID'.  Overrides DefaultOwnerOnStoreCreation [config.json](#post-installation) setting. |
-        | SudoImpersonatingUser | The SudoImpersonatingUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'.  Overrides [config.json](#post-installation) DefaultSudoImpersonatedUser setting.. |
-        | IsTrustStore | The IsTrustStore field should contain a boolean value ('true' or 'false') indicating whether the store will be identified as a trust store, which can hold multiple certificates without private keys. Example: 'true' for a trust store or 'false' for a store with a single certificate and private key. |
-        | IncludesChain | The IncludesChain field should contain a boolean value ('true' or 'false') indicating whether the certificate store includes the full certificate chain along with the end entity certificate. Example: 'true' to include the full chain or 'false' to exclude it. |
-        | SeparatePrivateKeyFilePath | The SeparatePrivateKeyFilePath field should contain the full path and file name where the separate private key file will be stored if it is to be kept outside the main certificate file. Example: '/path/to/privatekey.pem'. |
-        | IgnorePrivateKeyOnInventory | The IgnorePrivateKeyOnInventory field should contain a boolean value ('true' or 'false') indicating whether to disregard the private key during inventory. Setting this to 'true' will allow inventory for the store without needing to supply the location of the private key or the password if the key is encrypted.  However, doing this makes the store in effect inventory-only and no management jobs will be able to be run for this store. Example: 'true' to ignore the private key or 'false' to include it. |
-        | RemoveRootCertificate | Remove root certificate from chain when adding/renewing a certificate in a store. |
-        | IncludePortInSPN | Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations. |
-        | FileTransferProtocol | Which protocol should be used when uploading/downloading files - SCP, SFTP, or Both (try one, and then if necessary, the other).  Overrides FileTransferProtocol [config.json](#post-installation) setting. |
-        | SSHPort | Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting. |
-    3. **Import the CSV file to create the certificate stores**
+1. **Generate a CSV template for the RFPEM certificate store**
 
-        ```shell
-        kfutil stores import csv --store-type-name RFPEM --file RFPEM.csv
-        ```
+    ```shell
+    kfutil stores import generate-template --store-type-name RFPEM --outpath RFPEM.csv
+    ```
+2. **Populate the generated CSV file**
 
-* **PAM Provider Eligible Fields**
-    <details><summary>Attributes eligible for retrieval by a PAM Provider on the Universal Orchestrator</summary>
+    Open the CSV file, and reference the table below to populate parameters for each **Attribute**.
 
-    If a PAM provider was installed _on the Universal Orchestrator_ in the [Installation](#Installation) section, the following parameters can be configured for retrieval _on the Universal Orchestrator_.
+   | Attribute | Description |
+   | --------- | ----------- |
+   | Category | Select "RFPEM" or the customized certificate store name from the previous step. |
+   | Container | Optional container to associate certificate store with. |
+   | Client Machine | The Client Machine field should contain the DNS name or IP address of the remote orchestrated server for Linux orchestrated servers, formatted as a URL (protocol://dns-or-ip:port) for Windows orchestrated servers, or '1.1.1.1|LocalMachine' for local agents. Example: 'https://myserver.mydomain.com:5986' or '1.1.1.1|LocalMachine' for local access. |
+   | Store Path | The Store Path field should contain the full path and file name, including file extension if applicable, beginning with a forward slash (/) for Linux orchestrated servers or a drive letter (i.e., c:\folder\path\storename.ext) for Windows orchestrated servers. Example: '/folder/path/storename.pem' or 'c:\folder\path\storename.pem'. |
+   | Orchestrator | Select an approved orchestrator capable of managing `RFPEM` certificates. Specifically, one with the `RFPEM` capability. |
+   | Properties.ServerUsername | A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value* |
+   | Properties.ServerPassword | A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value* |
+   | Properties.LinuxFilePermissionsOnStoreCreation | The LinuxFilePermissionsOnStoreCreation field should contain a three-digit value between 000 and 777 representing the Linux file permissions to be set for the certificate store upon creation. Example: '600' or '755'.  Overrides DefaultLinuxPermissionOnStoreCreation [config.json](#post-installation) setting. |
+   | Properties.LinuxFileOwnerOnStoreCreation | The LinuxFileOwnerOnStoreCreation field should contain a valid user ID recognized by the destination Linux server, optionally followed by a colon and a group ID if the group owner differs. Example: 'userID' or 'userID:groupID'.  Overrides DefaultOwnerOnStoreCreation [config.json](#post-installation) setting. |
+   | Properties.SudoImpersonatingUser | The SudoImpersonatingUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'.  Overrides [config.json](#post-installation) DefaultSudoImpersonatedUser setting.. |
+   | Properties.IsTrustStore | The IsTrustStore field should contain a boolean value ('true' or 'false') indicating whether the store will be identified as a trust store, which can hold multiple certificates without private keys. Example: 'true' for a trust store or 'false' for a store with a single certificate and private key. |
+   | Properties.IncludesChain | The IncludesChain field should contain a boolean value ('true' or 'false') indicating whether the certificate store includes the full certificate chain along with the end entity certificate. Example: 'true' to include the full chain or 'false' to exclude it. |
+   | Properties.SeparatePrivateKeyFilePath | The SeparatePrivateKeyFilePath field should contain the full path and file name where the separate private key file will be stored if it is to be kept outside the main certificate file. Example: '/path/to/privatekey.pem'. |
+   | Properties.IgnorePrivateKeyOnInventory | The IgnorePrivateKeyOnInventory field should contain a boolean value ('true' or 'false') indicating whether to disregard the private key during inventory. Setting this to 'true' will allow inventory for the store without needing to supply the location of the private key or the password if the key is encrypted.  However, doing this makes the store in effect inventory-only and no management jobs will be able to be run for this store. Example: 'true' to ignore the private key or 'false' to include it. |
+   | Properties.RemoveRootCertificate | Remove root certificate from chain when adding/renewing a certificate in a store. |
+   | Properties.IncludePortInSPN | Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations. |
+   | Properties.FileTransferProtocol | Which protocol should be used when uploading/downloading files - SCP, SFTP, or Both (try one, and then if necessary, the other).  Overrides FileTransferProtocol [config.json](#post-installation) setting. |
+   | Properties.SSHPort | Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting. |
 
-    | Attribute | Description |
-    | --------- | ----------- |
-    | ServerUsername | A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value* |
-    | ServerPassword | A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value* |
-    | StorePassword | Password to use when reading/writing to store |
+3. **Import the CSV file to create the certificate stores**
 
-    Please refer to the **Universal Orchestrator (remote)** usage section ([PAM providers on the Keyfactor Integration Catalog](https://keyfactor.github.io/integrations-catalog/content/pam)) for your selected PAM provider for instructions on how to load attributes orchestrator-side.
+    ```shell
+    kfutil stores import csv --store-type-name RFPEM --file RFPEM.csv
+    ```
 
-    > Any secret can be rendered by a PAM provider _installed on the Keyfactor Command server_. The above parameters are specific to attributes that can be fetched by an installed PAM provider running on the Universal Orchestrator server itself.
-    </details>
+</details>
+
+
+#### PAM Provider Eligible Fields
+<details><summary>Attributes eligible for retrieval by a PAM Provider on the Universal Orchestrator</summary>
+
+If a PAM provider was installed _on the Universal Orchestrator_ in the [Installation](#Installation) section, the following parameters can be configured for retrieval _on the Universal Orchestrator_.
+
+   | Attribute | Description |
+   | --------- | ----------- |
+   | ServerUsername | A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value* |
+   | ServerPassword | A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value* |
+   | StorePassword | Password to use when reading/writing to store |
+
+Please refer to the **Universal Orchestrator (remote)** usage section ([PAM providers on the Keyfactor Integration Catalog](https://keyfactor.github.io/integrations-catalog/content/pam)) for your selected PAM provider for instructions on how to load attributes orchestrator-side.
+> Any secret can be rendered by a PAM provider _installed on the Keyfactor Command server_. The above parameters are specific to attributes that can be fetched by an installed PAM provider running on the Universal Orchestrator server itself.
+
+</details>
+
 
 
 > The content in this section can be supplemented by the [official Command documentation](https://software.keyfactor.com/Core-OnPrem/Current/Content/ReferenceGuide/Certificate%20Stores.htm?Highlight=certificate%20store).
@@ -1110,87 +1136,94 @@ The Remote File Universal Orchestrator extension implements 6 Certificate Store 
 
 ### Store Creation
 
-* **Manually with the Command UI**
+#### Manually with the Command UI
 
-    <details><summary>Create Certificate Stores manually in the UI</summary>
+<details><summary>Click to expand details</summary>
 
-    1. **Navigate to the _Certificate Stores_ page in Keyfactor Command.**
+1. **Navigate to the _Certificate Stores_ page in Keyfactor Command.**
 
-        Log into Keyfactor Command, toggle the _Locations_ dropdown, and click _Certificate Stores_.
+    Log into Keyfactor Command, toggle the _Locations_ dropdown, and click _Certificate Stores_.
 
-    2. **Add a Certificate Store.**
+2. **Add a Certificate Store.**
 
-        Click the Add button to add a new Certificate Store. Use the table below to populate the **Attributes** in the **Add** form.
+    Click the Add button to add a new Certificate Store. Use the table below to populate the **Attributes** in the **Add** form.
 
-        | Attribute | Description |
-        | --------- | ----------- |
-        | Category | Select "RFPkcs12" or the customized certificate store name from the previous step. |
-        | Container | Optional container to associate certificate store with. |
-        | Client Machine | The Client Machine field should contain the DNS name or IP address of the remote orchestrated server for Linux orchestrated servers, formatted as a URL (protocol://dns-or-ip:port) for Windows orchestrated servers, or '1.1.1.1|LocalMachine' for local agents. Example: 'https://myserver.mydomain.com:5986' or '1.1.1.1|LocalMachine' for local access. |
-        | Store Path | The Store Path field should contain the full path and file name, including file extension if applicable, beginning with a forward slash (/) for Linux orchestrated servers or a drive letter (i.e., c:\folder\path\storename.p12) for Windows orchestrated servers. Example: '/folder/path/storename.p12' or 'c:\folder\path\storename.p12'. |
-        | Orchestrator | Select an approved orchestrator capable of managing `RFPkcs12` certificates. Specifically, one with the `RFPkcs12` capability. |
-        | ServerUsername | A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value* |
-        | ServerPassword | A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value* |
-        | LinuxFilePermissionsOnStoreCreation | The LinuxFilePermissionsOnStoreCreation field should contain a three-digit value between 000 and 777 representing the Linux file permissions to be set for the certificate store upon creation. Example: '600' or '755'.  Overrides DefaultLinuxPermissionOnStoreCreation [config.json](#post-installation) setting. |
-        | LinuxFileOwnerOnStoreCreation | The LinuxFileOwnerOnStoreCreation field should contain a valid user ID recognized by the destination Linux server, optionally followed by a colon and a group ID if the group owner differs. Example: 'userID' or 'userID:groupID'.  Overrides DefaultOwnerOnStoreCreation [config.json](#post-installation) setting. |
-        | SudoImpersonatingUser | The SudoImpersonatingUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'.  Overrides DefaultSudoImpersonatedUser [config.json](#post-installation) setting. |
-        | RemoveRootCertificate | Remove root certificate from chain when adding/renewing a certificate in a store. |
-        | IncludePortInSPN | Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations. |
-        | FileTransferProtocol | Which protocol should be used when uploading/downloading files - SCP, SFTP, or Both (try one, and then if necessary, the other).  Overrides FileTransferProtocol [config.json](#post-installation) setting. |
-        | SSHPort | Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting. |
-    </details>
+   | Attribute | Description |
+   | --------- | ----------- |
+   | Category | Select "RFPkcs12" or the customized certificate store name from the previous step. |
+   | Container | Optional container to associate certificate store with. |
+   | Client Machine | The Client Machine field should contain the DNS name or IP address of the remote orchestrated server for Linux orchestrated servers, formatted as a URL (protocol://dns-or-ip:port) for Windows orchestrated servers, or '1.1.1.1|LocalMachine' for local agents. Example: 'https://myserver.mydomain.com:5986' or '1.1.1.1|LocalMachine' for local access. |
+   | Store Path | The Store Path field should contain the full path and file name, including file extension if applicable, beginning with a forward slash (/) for Linux orchestrated servers or a drive letter (i.e., c:\folder\path\storename.p12) for Windows orchestrated servers. Example: '/folder/path/storename.p12' or 'c:\folder\path\storename.p12'. |
+   | Orchestrator | Select an approved orchestrator capable of managing `RFPkcs12` certificates. Specifically, one with the `RFPkcs12` capability. |
+   | ServerUsername | A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value* |
+   | ServerPassword | A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value* |
+   | LinuxFilePermissionsOnStoreCreation | The LinuxFilePermissionsOnStoreCreation field should contain a three-digit value between 000 and 777 representing the Linux file permissions to be set for the certificate store upon creation. Example: '600' or '755'.  Overrides DefaultLinuxPermissionOnStoreCreation [config.json](#post-installation) setting. |
+   | LinuxFileOwnerOnStoreCreation | The LinuxFileOwnerOnStoreCreation field should contain a valid user ID recognized by the destination Linux server, optionally followed by a colon and a group ID if the group owner differs. Example: 'userID' or 'userID:groupID'.  Overrides DefaultOwnerOnStoreCreation [config.json](#post-installation) setting. |
+   | SudoImpersonatingUser | The SudoImpersonatingUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'.  Overrides DefaultSudoImpersonatedUser [config.json](#post-installation) setting. |
+   | RemoveRootCertificate | Remove root certificate from chain when adding/renewing a certificate in a store. |
+   | IncludePortInSPN | Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations. |
+   | FileTransferProtocol | Which protocol should be used when uploading/downloading files - SCP, SFTP, or Both (try one, and then if necessary, the other).  Overrides FileTransferProtocol [config.json](#post-installation) setting. |
+   | SSHPort | Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting. |
+
+</details>
 
 
-* **Using kfutil**
-    
-    <details><summary>Create Certificate Stores with kfutil</summary>
-    
-    1. **Generate a CSV template for the RFPkcs12 certificate store**
 
-        ```shell
-        kfutil stores import generate-template --store-type-name RFPkcs12 --outpath RFPkcs12.csv
-        ```
-    2. **Populate the generated CSV file**
+#### Using kfutil CLI
 
-        Open the CSV file, and reference the table below to populate parameters for each **Attribute**.
+<details><summary>Click to expand details</summary>
 
-        | Attribute | Description |
-        | --------- | ----------- |
-        | Category | Select "RFPkcs12" or the customized certificate store name from the previous step. |
-        | Container | Optional container to associate certificate store with. |
-        | Client Machine | The Client Machine field should contain the DNS name or IP address of the remote orchestrated server for Linux orchestrated servers, formatted as a URL (protocol://dns-or-ip:port) for Windows orchestrated servers, or '1.1.1.1|LocalMachine' for local agents. Example: 'https://myserver.mydomain.com:5986' or '1.1.1.1|LocalMachine' for local access. |
-        | Store Path | The Store Path field should contain the full path and file name, including file extension if applicable, beginning with a forward slash (/) for Linux orchestrated servers or a drive letter (i.e., c:\folder\path\storename.p12) for Windows orchestrated servers. Example: '/folder/path/storename.p12' or 'c:\folder\path\storename.p12'. |
-        | Orchestrator | Select an approved orchestrator capable of managing `RFPkcs12` certificates. Specifically, one with the `RFPkcs12` capability. |
-        | ServerUsername | A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value* |
-        | ServerPassword | A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value* |
-        | LinuxFilePermissionsOnStoreCreation | The LinuxFilePermissionsOnStoreCreation field should contain a three-digit value between 000 and 777 representing the Linux file permissions to be set for the certificate store upon creation. Example: '600' or '755'.  Overrides DefaultLinuxPermissionOnStoreCreation [config.json](#post-installation) setting. |
-        | LinuxFileOwnerOnStoreCreation | The LinuxFileOwnerOnStoreCreation field should contain a valid user ID recognized by the destination Linux server, optionally followed by a colon and a group ID if the group owner differs. Example: 'userID' or 'userID:groupID'.  Overrides DefaultOwnerOnStoreCreation [config.json](#post-installation) setting. |
-        | SudoImpersonatingUser | The SudoImpersonatingUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'.  Overrides DefaultSudoImpersonatedUser [config.json](#post-installation) setting. |
-        | RemoveRootCertificate | Remove root certificate from chain when adding/renewing a certificate in a store. |
-        | IncludePortInSPN | Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations. |
-        | FileTransferProtocol | Which protocol should be used when uploading/downloading files - SCP, SFTP, or Both (try one, and then if necessary, the other).  Overrides FileTransferProtocol [config.json](#post-installation) setting. |
-        | SSHPort | Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting. |
-    3. **Import the CSV file to create the certificate stores**
+1. **Generate a CSV template for the RFPkcs12 certificate store**
 
-        ```shell
-        kfutil stores import csv --store-type-name RFPkcs12 --file RFPkcs12.csv
-        ```
+    ```shell
+    kfutil stores import generate-template --store-type-name RFPkcs12 --outpath RFPkcs12.csv
+    ```
+2. **Populate the generated CSV file**
 
-* **PAM Provider Eligible Fields**
-    <details><summary>Attributes eligible for retrieval by a PAM Provider on the Universal Orchestrator</summary>
+    Open the CSV file, and reference the table below to populate parameters for each **Attribute**.
 
-    If a PAM provider was installed _on the Universal Orchestrator_ in the [Installation](#Installation) section, the following parameters can be configured for retrieval _on the Universal Orchestrator_.
+   | Attribute | Description |
+   | --------- | ----------- |
+   | Category | Select "RFPkcs12" or the customized certificate store name from the previous step. |
+   | Container | Optional container to associate certificate store with. |
+   | Client Machine | The Client Machine field should contain the DNS name or IP address of the remote orchestrated server for Linux orchestrated servers, formatted as a URL (protocol://dns-or-ip:port) for Windows orchestrated servers, or '1.1.1.1|LocalMachine' for local agents. Example: 'https://myserver.mydomain.com:5986' or '1.1.1.1|LocalMachine' for local access. |
+   | Store Path | The Store Path field should contain the full path and file name, including file extension if applicable, beginning with a forward slash (/) for Linux orchestrated servers or a drive letter (i.e., c:\folder\path\storename.p12) for Windows orchestrated servers. Example: '/folder/path/storename.p12' or 'c:\folder\path\storename.p12'. |
+   | Orchestrator | Select an approved orchestrator capable of managing `RFPkcs12` certificates. Specifically, one with the `RFPkcs12` capability. |
+   | Properties.ServerUsername | A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value* |
+   | Properties.ServerPassword | A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value* |
+   | Properties.LinuxFilePermissionsOnStoreCreation | The LinuxFilePermissionsOnStoreCreation field should contain a three-digit value between 000 and 777 representing the Linux file permissions to be set for the certificate store upon creation. Example: '600' or '755'.  Overrides DefaultLinuxPermissionOnStoreCreation [config.json](#post-installation) setting. |
+   | Properties.LinuxFileOwnerOnStoreCreation | The LinuxFileOwnerOnStoreCreation field should contain a valid user ID recognized by the destination Linux server, optionally followed by a colon and a group ID if the group owner differs. Example: 'userID' or 'userID:groupID'.  Overrides DefaultOwnerOnStoreCreation [config.json](#post-installation) setting. |
+   | Properties.SudoImpersonatingUser | The SudoImpersonatingUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'.  Overrides DefaultSudoImpersonatedUser [config.json](#post-installation) setting. |
+   | Properties.RemoveRootCertificate | Remove root certificate from chain when adding/renewing a certificate in a store. |
+   | Properties.IncludePortInSPN | Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations. |
+   | Properties.FileTransferProtocol | Which protocol should be used when uploading/downloading files - SCP, SFTP, or Both (try one, and then if necessary, the other).  Overrides FileTransferProtocol [config.json](#post-installation) setting. |
+   | Properties.SSHPort | Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting. |
 
-    | Attribute | Description |
-    | --------- | ----------- |
-    | ServerUsername | A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value* |
-    | ServerPassword | A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value* |
-    | StorePassword | Password to use when reading/writing to store |
+3. **Import the CSV file to create the certificate stores**
 
-    Please refer to the **Universal Orchestrator (remote)** usage section ([PAM providers on the Keyfactor Integration Catalog](https://keyfactor.github.io/integrations-catalog/content/pam)) for your selected PAM provider for instructions on how to load attributes orchestrator-side.
+    ```shell
+    kfutil stores import csv --store-type-name RFPkcs12 --file RFPkcs12.csv
+    ```
 
-    > Any secret can be rendered by a PAM provider _installed on the Keyfactor Command server_. The above parameters are specific to attributes that can be fetched by an installed PAM provider running on the Universal Orchestrator server itself.
-    </details>
+</details>
+
+
+#### PAM Provider Eligible Fields
+<details><summary>Attributes eligible for retrieval by a PAM Provider on the Universal Orchestrator</summary>
+
+If a PAM provider was installed _on the Universal Orchestrator_ in the [Installation](#Installation) section, the following parameters can be configured for retrieval _on the Universal Orchestrator_.
+
+   | Attribute | Description |
+   | --------- | ----------- |
+   | ServerUsername | A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value* |
+   | ServerPassword | A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value* |
+   | StorePassword | Password to use when reading/writing to store |
+
+Please refer to the **Universal Orchestrator (remote)** usage section ([PAM providers on the Keyfactor Integration Catalog](https://keyfactor.github.io/integrations-catalog/content/pam)) for your selected PAM provider for instructions on how to load attributes orchestrator-side.
+> Any secret can be rendered by a PAM provider _installed on the Keyfactor Command server_. The above parameters are specific to attributes that can be fetched by an installed PAM provider running on the Universal Orchestrator server itself.
+
+</details>
+
 
 
 > The content in this section can be supplemented by the [official Command documentation](https://software.keyfactor.com/Core-OnPrem/Current/Content/ReferenceGuide/Certificate%20Stores.htm?Highlight=certificate%20store).
@@ -1203,89 +1236,96 @@ The Remote File Universal Orchestrator extension implements 6 Certificate Store 
 
 ### Store Creation
 
-* **Manually with the Command UI**
+#### Manually with the Command UI
 
-    <details><summary>Create Certificate Stores manually in the UI</summary>
+<details><summary>Click to expand details</summary>
 
-    1. **Navigate to the _Certificate Stores_ page in Keyfactor Command.**
+1. **Navigate to the _Certificate Stores_ page in Keyfactor Command.**
 
-        Log into Keyfactor Command, toggle the _Locations_ dropdown, and click _Certificate Stores_.
+    Log into Keyfactor Command, toggle the _Locations_ dropdown, and click _Certificate Stores_.
 
-    2. **Add a Certificate Store.**
+2. **Add a Certificate Store.**
 
-        Click the Add button to add a new Certificate Store. Use the table below to populate the **Attributes** in the **Add** form.
+    Click the Add button to add a new Certificate Store. Use the table below to populate the **Attributes** in the **Add** form.
 
-        | Attribute | Description |
-        | --------- | ----------- |
-        | Category | Select "RFDER" or the customized certificate store name from the previous step. |
-        | Container | Optional container to associate certificate store with. |
-        | Client Machine | The Client Machine field should contain the DNS name or IP address of the remote orchestrated server for Linux orchestrated servers, formatted as a URL (protocol://dns-or-ip:port) for Windows orchestrated servers, or '1.1.1.1|LocalMachine' for local agents. Example: 'https://myserver.mydomain.com:5986' or '1.1.1.1|LocalMachine' for local access. |
-        | Store Path | The Store Path field should contain the full path and file name, including file extension if applicable, beginning with a forward slash (/) for Linux orchestrated servers or a drive letter (i.e., c:\folder\path\storename.der) for Windows orchestrated servers. Example: '/folder/path/storename.der' or 'c:\folder\path\storename.der'. |
-        | Orchestrator | Select an approved orchestrator capable of managing `RFDER` certificates. Specifically, one with the `RFDER` capability. |
-        | ServerUsername | A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value* |
-        | ServerPassword | A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value* |
-        | LinuxFilePermissionsOnStoreCreation | The LinuxFilePermissionsOnStoreCreation field should contain a three-digit value between 000 and 777 representing the Linux file permissions to be set for the certificate store upon creation. Example: '600' or '755'.  Overrides DefaultLinuxPermissionOnStoreCreation [config.json](#post-installation) setting. |
-        | LinuxFileOwnerOnStoreCreation | The LinuxFileOwnerOnStoreCreation field should contain a valid user ID recognized by the destination Linux server, optionally followed by a colon and a group ID if the group owner differs. Example: 'userID' or 'userID:groupID'.  Overrides DefaultOwnerOnStoreCreation [config.json](#post-installation) setting. |
-        | SudoImpersonatingUser | The SudoImpersonatingUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'.  Overrides [config.json](#post-installation) DefaultSudoImpersonatedUser setting. |
-        | SeparatePrivateKeyFilePath | The SeparatePrivateKeyFilePath field should contain the full path and file name where the separate private key file will be stored if it is to be kept outside the main certificate file. Example: '/path/to/privatekey.der'. |
-        | RemoveRootCertificate | Remove root certificate from chain when adding/renewing a certificate in a store. |
-        | IncludePortInSPN | Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations. |
-        | FileTransferProtocol | Which protocol should be used when uploading/downloading files - SCP, SFTP, or Both (try one, and then if necessary, the other).  Overrides FileTransferProtocol [config.json](#post-installation) setting. |
-        | SSHPort | Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting. |
-    </details>
+   | Attribute | Description |
+   | --------- | ----------- |
+   | Category | Select "RFDER" or the customized certificate store name from the previous step. |
+   | Container | Optional container to associate certificate store with. |
+   | Client Machine | The Client Machine field should contain the DNS name or IP address of the remote orchestrated server for Linux orchestrated servers, formatted as a URL (protocol://dns-or-ip:port) for Windows orchestrated servers, or '1.1.1.1|LocalMachine' for local agents. Example: 'https://myserver.mydomain.com:5986' or '1.1.1.1|LocalMachine' for local access. |
+   | Store Path | The Store Path field should contain the full path and file name, including file extension if applicable, beginning with a forward slash (/) for Linux orchestrated servers or a drive letter (i.e., c:\folder\path\storename.der) for Windows orchestrated servers. Example: '/folder/path/storename.der' or 'c:\folder\path\storename.der'. |
+   | Orchestrator | Select an approved orchestrator capable of managing `RFDER` certificates. Specifically, one with the `RFDER` capability. |
+   | ServerUsername | A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value* |
+   | ServerPassword | A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value* |
+   | LinuxFilePermissionsOnStoreCreation | The LinuxFilePermissionsOnStoreCreation field should contain a three-digit value between 000 and 777 representing the Linux file permissions to be set for the certificate store upon creation. Example: '600' or '755'.  Overrides DefaultLinuxPermissionOnStoreCreation [config.json](#post-installation) setting. |
+   | LinuxFileOwnerOnStoreCreation | The LinuxFileOwnerOnStoreCreation field should contain a valid user ID recognized by the destination Linux server, optionally followed by a colon and a group ID if the group owner differs. Example: 'userID' or 'userID:groupID'.  Overrides DefaultOwnerOnStoreCreation [config.json](#post-installation) setting. |
+   | SudoImpersonatingUser | The SudoImpersonatingUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'.  Overrides [config.json](#post-installation) DefaultSudoImpersonatedUser setting. |
+   | SeparatePrivateKeyFilePath | The SeparatePrivateKeyFilePath field should contain the full path and file name where the separate private key file will be stored if it is to be kept outside the main certificate file. Example: '/path/to/privatekey.der'. |
+   | RemoveRootCertificate | Remove root certificate from chain when adding/renewing a certificate in a store. |
+   | IncludePortInSPN | Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations. |
+   | FileTransferProtocol | Which protocol should be used when uploading/downloading files - SCP, SFTP, or Both (try one, and then if necessary, the other).  Overrides FileTransferProtocol [config.json](#post-installation) setting. |
+   | SSHPort | Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting. |
+
+</details>
 
 
-* **Using kfutil**
-    
-    <details><summary>Create Certificate Stores with kfutil</summary>
-    
-    1. **Generate a CSV template for the RFDER certificate store**
 
-        ```shell
-        kfutil stores import generate-template --store-type-name RFDER --outpath RFDER.csv
-        ```
-    2. **Populate the generated CSV file**
+#### Using kfutil CLI
 
-        Open the CSV file, and reference the table below to populate parameters for each **Attribute**.
+<details><summary>Click to expand details</summary>
 
-        | Attribute | Description |
-        | --------- | ----------- |
-        | Category | Select "RFDER" or the customized certificate store name from the previous step. |
-        | Container | Optional container to associate certificate store with. |
-        | Client Machine | The Client Machine field should contain the DNS name or IP address of the remote orchestrated server for Linux orchestrated servers, formatted as a URL (protocol://dns-or-ip:port) for Windows orchestrated servers, or '1.1.1.1|LocalMachine' for local agents. Example: 'https://myserver.mydomain.com:5986' or '1.1.1.1|LocalMachine' for local access. |
-        | Store Path | The Store Path field should contain the full path and file name, including file extension if applicable, beginning with a forward slash (/) for Linux orchestrated servers or a drive letter (i.e., c:\folder\path\storename.der) for Windows orchestrated servers. Example: '/folder/path/storename.der' or 'c:\folder\path\storename.der'. |
-        | Orchestrator | Select an approved orchestrator capable of managing `RFDER` certificates. Specifically, one with the `RFDER` capability. |
-        | ServerUsername | A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value* |
-        | ServerPassword | A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value* |
-        | LinuxFilePermissionsOnStoreCreation | The LinuxFilePermissionsOnStoreCreation field should contain a three-digit value between 000 and 777 representing the Linux file permissions to be set for the certificate store upon creation. Example: '600' or '755'.  Overrides DefaultLinuxPermissionOnStoreCreation [config.json](#post-installation) setting. |
-        | LinuxFileOwnerOnStoreCreation | The LinuxFileOwnerOnStoreCreation field should contain a valid user ID recognized by the destination Linux server, optionally followed by a colon and a group ID if the group owner differs. Example: 'userID' or 'userID:groupID'.  Overrides DefaultOwnerOnStoreCreation [config.json](#post-installation) setting. |
-        | SudoImpersonatingUser | The SudoImpersonatingUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'.  Overrides [config.json](#post-installation) DefaultSudoImpersonatedUser setting. |
-        | SeparatePrivateKeyFilePath | The SeparatePrivateKeyFilePath field should contain the full path and file name where the separate private key file will be stored if it is to be kept outside the main certificate file. Example: '/path/to/privatekey.der'. |
-        | RemoveRootCertificate | Remove root certificate from chain when adding/renewing a certificate in a store. |
-        | IncludePortInSPN | Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations. |
-        | FileTransferProtocol | Which protocol should be used when uploading/downloading files - SCP, SFTP, or Both (try one, and then if necessary, the other).  Overrides FileTransferProtocol [config.json](#post-installation) setting. |
-        | SSHPort | Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting. |
-    3. **Import the CSV file to create the certificate stores**
+1. **Generate a CSV template for the RFDER certificate store**
 
-        ```shell
-        kfutil stores import csv --store-type-name RFDER --file RFDER.csv
-        ```
+    ```shell
+    kfutil stores import generate-template --store-type-name RFDER --outpath RFDER.csv
+    ```
+2. **Populate the generated CSV file**
 
-* **PAM Provider Eligible Fields**
-    <details><summary>Attributes eligible for retrieval by a PAM Provider on the Universal Orchestrator</summary>
+    Open the CSV file, and reference the table below to populate parameters for each **Attribute**.
 
-    If a PAM provider was installed _on the Universal Orchestrator_ in the [Installation](#Installation) section, the following parameters can be configured for retrieval _on the Universal Orchestrator_.
+   | Attribute | Description |
+   | --------- | ----------- |
+   | Category | Select "RFDER" or the customized certificate store name from the previous step. |
+   | Container | Optional container to associate certificate store with. |
+   | Client Machine | The Client Machine field should contain the DNS name or IP address of the remote orchestrated server for Linux orchestrated servers, formatted as a URL (protocol://dns-or-ip:port) for Windows orchestrated servers, or '1.1.1.1|LocalMachine' for local agents. Example: 'https://myserver.mydomain.com:5986' or '1.1.1.1|LocalMachine' for local access. |
+   | Store Path | The Store Path field should contain the full path and file name, including file extension if applicable, beginning with a forward slash (/) for Linux orchestrated servers or a drive letter (i.e., c:\folder\path\storename.der) for Windows orchestrated servers. Example: '/folder/path/storename.der' or 'c:\folder\path\storename.der'. |
+   | Orchestrator | Select an approved orchestrator capable of managing `RFDER` certificates. Specifically, one with the `RFDER` capability. |
+   | Properties.ServerUsername | A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value* |
+   | Properties.ServerPassword | A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value* |
+   | Properties.LinuxFilePermissionsOnStoreCreation | The LinuxFilePermissionsOnStoreCreation field should contain a three-digit value between 000 and 777 representing the Linux file permissions to be set for the certificate store upon creation. Example: '600' or '755'.  Overrides DefaultLinuxPermissionOnStoreCreation [config.json](#post-installation) setting. |
+   | Properties.LinuxFileOwnerOnStoreCreation | The LinuxFileOwnerOnStoreCreation field should contain a valid user ID recognized by the destination Linux server, optionally followed by a colon and a group ID if the group owner differs. Example: 'userID' or 'userID:groupID'.  Overrides DefaultOwnerOnStoreCreation [config.json](#post-installation) setting. |
+   | Properties.SudoImpersonatingUser | The SudoImpersonatingUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'.  Overrides [config.json](#post-installation) DefaultSudoImpersonatedUser setting. |
+   | Properties.SeparatePrivateKeyFilePath | The SeparatePrivateKeyFilePath field should contain the full path and file name where the separate private key file will be stored if it is to be kept outside the main certificate file. Example: '/path/to/privatekey.der'. |
+   | Properties.RemoveRootCertificate | Remove root certificate from chain when adding/renewing a certificate in a store. |
+   | Properties.IncludePortInSPN | Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations. |
+   | Properties.FileTransferProtocol | Which protocol should be used when uploading/downloading files - SCP, SFTP, or Both (try one, and then if necessary, the other).  Overrides FileTransferProtocol [config.json](#post-installation) setting. |
+   | Properties.SSHPort | Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting. |
 
-    | Attribute | Description |
-    | --------- | ----------- |
-    | ServerUsername | A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value* |
-    | ServerPassword | A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value* |
-    | StorePassword | Password to use when reading/writing to store |
+3. **Import the CSV file to create the certificate stores**
 
-    Please refer to the **Universal Orchestrator (remote)** usage section ([PAM providers on the Keyfactor Integration Catalog](https://keyfactor.github.io/integrations-catalog/content/pam)) for your selected PAM provider for instructions on how to load attributes orchestrator-side.
+    ```shell
+    kfutil stores import csv --store-type-name RFDER --file RFDER.csv
+    ```
 
-    > Any secret can be rendered by a PAM provider _installed on the Keyfactor Command server_. The above parameters are specific to attributes that can be fetched by an installed PAM provider running on the Universal Orchestrator server itself.
-    </details>
+</details>
+
+
+#### PAM Provider Eligible Fields
+<details><summary>Attributes eligible for retrieval by a PAM Provider on the Universal Orchestrator</summary>
+
+If a PAM provider was installed _on the Universal Orchestrator_ in the [Installation](#Installation) section, the following parameters can be configured for retrieval _on the Universal Orchestrator_.
+
+   | Attribute | Description |
+   | --------- | ----------- |
+   | ServerUsername | A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value* |
+   | ServerPassword | A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value* |
+   | StorePassword | Password to use when reading/writing to store |
+
+Please refer to the **Universal Orchestrator (remote)** usage section ([PAM providers on the Keyfactor Integration Catalog](https://keyfactor.github.io/integrations-catalog/content/pam)) for your selected PAM provider for instructions on how to load attributes orchestrator-side.
+> Any secret can be rendered by a PAM provider _installed on the Keyfactor Command server_. The above parameters are specific to attributes that can be fetched by an installed PAM provider running on the Universal Orchestrator server itself.
+
+</details>
+
 
 
 > The content in this section can be supplemented by the [official Command documentation](https://software.keyfactor.com/Core-OnPrem/Current/Content/ReferenceGuide/Certificate%20Stores.htm?Highlight=certificate%20store).
@@ -1298,87 +1338,94 @@ The Remote File Universal Orchestrator extension implements 6 Certificate Store 
 
 ### Store Creation
 
-* **Manually with the Command UI**
+#### Manually with the Command UI
 
-    <details><summary>Create Certificate Stores manually in the UI</summary>
+<details><summary>Click to expand details</summary>
 
-    1. **Navigate to the _Certificate Stores_ page in Keyfactor Command.**
+1. **Navigate to the _Certificate Stores_ page in Keyfactor Command.**
 
-        Log into Keyfactor Command, toggle the _Locations_ dropdown, and click _Certificate Stores_.
+    Log into Keyfactor Command, toggle the _Locations_ dropdown, and click _Certificate Stores_.
 
-    2. **Add a Certificate Store.**
+2. **Add a Certificate Store.**
 
-        Click the Add button to add a new Certificate Store. Use the table below to populate the **Attributes** in the **Add** form.
+    Click the Add button to add a new Certificate Store. Use the table below to populate the **Attributes** in the **Add** form.
 
-        | Attribute | Description |
-        | --------- | ----------- |
-        | Category | Select "RFKDB" or the customized certificate store name from the previous step. |
-        | Container | Optional container to associate certificate store with. |
-        | Client Machine | The Client Machine field should contain the DNS name or IP address of the remote orchestrated server for Linux orchestrated servers, formatted as a URL (protocol://dns-or-ip:port) for Windows orchestrated servers, or '1.1.1.1|LocalMachine' for local agents. Example: 'https://myserver.mydomain.com:5986' or '1.1.1.1|LocalMachine' for local access. |
-        | Store Path | The Store Path field should contain the full path and file name, including file extension if applicable, beginning with a forward slash (/) for Linux orchestrated servers or a drive letter (i.e., c:\folder\path\storename.kdb) for Windows orchestrated servers. Example: '/folder/path/storename.kdb' or 'c:\folder\path\storename.kdb'. |
-        | Orchestrator | Select an approved orchestrator capable of managing `RFKDB` certificates. Specifically, one with the `RFKDB` capability. |
-        | ServerUsername | A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value* |
-        | ServerPassword | A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value* |
-        | LinuxFilePermissionsOnStoreCreation | The LinuxFilePermissionsOnStoreCreation field should contain a three-digit value between 000 and 777 representing the Linux file permissions to be set for the certificate store upon creation. Example: '600' or '755'.  Overrides DefaultLinuxPermissionOnStoreCreation [config.json](#post-installation) setting. |
-        | LinuxFileOwnerOnStoreCreation | The LinuxFileOwnerOnStoreCreation field should contain a valid user ID recognized by the destination Linux server, optionally followed by a colon and a group ID if the group owner differs. Example: 'userID' or 'userID:groupID'.  Overrides DefaultOwnerOnStoreCreation [config.json](#post-installation) setting. |
-        | SudoImpersonatingUser | The SudoImpersonatingUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'.  Overrides [config.json](#post-installation) DefaultSudoImpersonatedUser setting. |
-        | RemoveRootCertificate | Remove root certificate from chain when adding/renewing a certificate in a store. |
-        | IncludePortInSPN | Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations. |
-        | FileTransferProtocol | Which protocol should be used when uploading/downloading files - SCP, SFTP, or Both (try one, and then if necessary, the other).  Overrides FileTransferProtocol [config.json](#post-installation) setting. |
-        | SSHPort | Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting. |
-    </details>
+   | Attribute | Description |
+   | --------- | ----------- |
+   | Category | Select "RFKDB" or the customized certificate store name from the previous step. |
+   | Container | Optional container to associate certificate store with. |
+   | Client Machine | The Client Machine field should contain the DNS name or IP address of the remote orchestrated server for Linux orchestrated servers, formatted as a URL (protocol://dns-or-ip:port) for Windows orchestrated servers, or '1.1.1.1|LocalMachine' for local agents. Example: 'https://myserver.mydomain.com:5986' or '1.1.1.1|LocalMachine' for local access. |
+   | Store Path | The Store Path field should contain the full path and file name, including file extension if applicable, beginning with a forward slash (/) for Linux orchestrated servers or a drive letter (i.e., c:\folder\path\storename.kdb) for Windows orchestrated servers. Example: '/folder/path/storename.kdb' or 'c:\folder\path\storename.kdb'. |
+   | Orchestrator | Select an approved orchestrator capable of managing `RFKDB` certificates. Specifically, one with the `RFKDB` capability. |
+   | ServerUsername | A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value* |
+   | ServerPassword | A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value* |
+   | LinuxFilePermissionsOnStoreCreation | The LinuxFilePermissionsOnStoreCreation field should contain a three-digit value between 000 and 777 representing the Linux file permissions to be set for the certificate store upon creation. Example: '600' or '755'.  Overrides DefaultLinuxPermissionOnStoreCreation [config.json](#post-installation) setting. |
+   | LinuxFileOwnerOnStoreCreation | The LinuxFileOwnerOnStoreCreation field should contain a valid user ID recognized by the destination Linux server, optionally followed by a colon and a group ID if the group owner differs. Example: 'userID' or 'userID:groupID'.  Overrides DefaultOwnerOnStoreCreation [config.json](#post-installation) setting. |
+   | SudoImpersonatingUser | The SudoImpersonatingUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'.  Overrides [config.json](#post-installation) DefaultSudoImpersonatedUser setting. |
+   | RemoveRootCertificate | Remove root certificate from chain when adding/renewing a certificate in a store. |
+   | IncludePortInSPN | Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations. |
+   | FileTransferProtocol | Which protocol should be used when uploading/downloading files - SCP, SFTP, or Both (try one, and then if necessary, the other).  Overrides FileTransferProtocol [config.json](#post-installation) setting. |
+   | SSHPort | Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting. |
+
+</details>
 
 
-* **Using kfutil**
-    
-    <details><summary>Create Certificate Stores with kfutil</summary>
-    
-    1. **Generate a CSV template for the RFKDB certificate store**
 
-        ```shell
-        kfutil stores import generate-template --store-type-name RFKDB --outpath RFKDB.csv
-        ```
-    2. **Populate the generated CSV file**
+#### Using kfutil CLI
 
-        Open the CSV file, and reference the table below to populate parameters for each **Attribute**.
+<details><summary>Click to expand details</summary>
 
-        | Attribute | Description |
-        | --------- | ----------- |
-        | Category | Select "RFKDB" or the customized certificate store name from the previous step. |
-        | Container | Optional container to associate certificate store with. |
-        | Client Machine | The Client Machine field should contain the DNS name or IP address of the remote orchestrated server for Linux orchestrated servers, formatted as a URL (protocol://dns-or-ip:port) for Windows orchestrated servers, or '1.1.1.1|LocalMachine' for local agents. Example: 'https://myserver.mydomain.com:5986' or '1.1.1.1|LocalMachine' for local access. |
-        | Store Path | The Store Path field should contain the full path and file name, including file extension if applicable, beginning with a forward slash (/) for Linux orchestrated servers or a drive letter (i.e., c:\folder\path\storename.kdb) for Windows orchestrated servers. Example: '/folder/path/storename.kdb' or 'c:\folder\path\storename.kdb'. |
-        | Orchestrator | Select an approved orchestrator capable of managing `RFKDB` certificates. Specifically, one with the `RFKDB` capability. |
-        | ServerUsername | A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value* |
-        | ServerPassword | A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value* |
-        | LinuxFilePermissionsOnStoreCreation | The LinuxFilePermissionsOnStoreCreation field should contain a three-digit value between 000 and 777 representing the Linux file permissions to be set for the certificate store upon creation. Example: '600' or '755'.  Overrides DefaultLinuxPermissionOnStoreCreation [config.json](#post-installation) setting. |
-        | LinuxFileOwnerOnStoreCreation | The LinuxFileOwnerOnStoreCreation field should contain a valid user ID recognized by the destination Linux server, optionally followed by a colon and a group ID if the group owner differs. Example: 'userID' or 'userID:groupID'.  Overrides DefaultOwnerOnStoreCreation [config.json](#post-installation) setting. |
-        | SudoImpersonatingUser | The SudoImpersonatingUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'.  Overrides [config.json](#post-installation) DefaultSudoImpersonatedUser setting. |
-        | RemoveRootCertificate | Remove root certificate from chain when adding/renewing a certificate in a store. |
-        | IncludePortInSPN | Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations. |
-        | FileTransferProtocol | Which protocol should be used when uploading/downloading files - SCP, SFTP, or Both (try one, and then if necessary, the other).  Overrides FileTransferProtocol [config.json](#post-installation) setting. |
-        | SSHPort | Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting. |
-    3. **Import the CSV file to create the certificate stores**
+1. **Generate a CSV template for the RFKDB certificate store**
 
-        ```shell
-        kfutil stores import csv --store-type-name RFKDB --file RFKDB.csv
-        ```
+    ```shell
+    kfutil stores import generate-template --store-type-name RFKDB --outpath RFKDB.csv
+    ```
+2. **Populate the generated CSV file**
 
-* **PAM Provider Eligible Fields**
-    <details><summary>Attributes eligible for retrieval by a PAM Provider on the Universal Orchestrator</summary>
+    Open the CSV file, and reference the table below to populate parameters for each **Attribute**.
 
-    If a PAM provider was installed _on the Universal Orchestrator_ in the [Installation](#Installation) section, the following parameters can be configured for retrieval _on the Universal Orchestrator_.
+   | Attribute | Description |
+   | --------- | ----------- |
+   | Category | Select "RFKDB" or the customized certificate store name from the previous step. |
+   | Container | Optional container to associate certificate store with. |
+   | Client Machine | The Client Machine field should contain the DNS name or IP address of the remote orchestrated server for Linux orchestrated servers, formatted as a URL (protocol://dns-or-ip:port) for Windows orchestrated servers, or '1.1.1.1|LocalMachine' for local agents. Example: 'https://myserver.mydomain.com:5986' or '1.1.1.1|LocalMachine' for local access. |
+   | Store Path | The Store Path field should contain the full path and file name, including file extension if applicable, beginning with a forward slash (/) for Linux orchestrated servers or a drive letter (i.e., c:\folder\path\storename.kdb) for Windows orchestrated servers. Example: '/folder/path/storename.kdb' or 'c:\folder\path\storename.kdb'. |
+   | Orchestrator | Select an approved orchestrator capable of managing `RFKDB` certificates. Specifically, one with the `RFKDB` capability. |
+   | Properties.ServerUsername | A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value* |
+   | Properties.ServerPassword | A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value* |
+   | Properties.LinuxFilePermissionsOnStoreCreation | The LinuxFilePermissionsOnStoreCreation field should contain a three-digit value between 000 and 777 representing the Linux file permissions to be set for the certificate store upon creation. Example: '600' or '755'.  Overrides DefaultLinuxPermissionOnStoreCreation [config.json](#post-installation) setting. |
+   | Properties.LinuxFileOwnerOnStoreCreation | The LinuxFileOwnerOnStoreCreation field should contain a valid user ID recognized by the destination Linux server, optionally followed by a colon and a group ID if the group owner differs. Example: 'userID' or 'userID:groupID'.  Overrides DefaultOwnerOnStoreCreation [config.json](#post-installation) setting. |
+   | Properties.SudoImpersonatingUser | The SudoImpersonatingUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'.  Overrides [config.json](#post-installation) DefaultSudoImpersonatedUser setting. |
+   | Properties.RemoveRootCertificate | Remove root certificate from chain when adding/renewing a certificate in a store. |
+   | Properties.IncludePortInSPN | Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations. |
+   | Properties.FileTransferProtocol | Which protocol should be used when uploading/downloading files - SCP, SFTP, or Both (try one, and then if necessary, the other).  Overrides FileTransferProtocol [config.json](#post-installation) setting. |
+   | Properties.SSHPort | Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting. |
 
-    | Attribute | Description |
-    | --------- | ----------- |
-    | ServerUsername | A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value* |
-    | ServerPassword | A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value* |
-    | StorePassword | Password to use when reading/writing to store |
+3. **Import the CSV file to create the certificate stores**
 
-    Please refer to the **Universal Orchestrator (remote)** usage section ([PAM providers on the Keyfactor Integration Catalog](https://keyfactor.github.io/integrations-catalog/content/pam)) for your selected PAM provider for instructions on how to load attributes orchestrator-side.
+    ```shell
+    kfutil stores import csv --store-type-name RFKDB --file RFKDB.csv
+    ```
 
-    > Any secret can be rendered by a PAM provider _installed on the Keyfactor Command server_. The above parameters are specific to attributes that can be fetched by an installed PAM provider running on the Universal Orchestrator server itself.
-    </details>
+</details>
+
+
+#### PAM Provider Eligible Fields
+<details><summary>Attributes eligible for retrieval by a PAM Provider on the Universal Orchestrator</summary>
+
+If a PAM provider was installed _on the Universal Orchestrator_ in the [Installation](#Installation) section, the following parameters can be configured for retrieval _on the Universal Orchestrator_.
+
+   | Attribute | Description |
+   | --------- | ----------- |
+   | ServerUsername | A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value* |
+   | ServerPassword | A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value* |
+   | StorePassword | Password to use when reading/writing to store |
+
+Please refer to the **Universal Orchestrator (remote)** usage section ([PAM providers on the Keyfactor Integration Catalog](https://keyfactor.github.io/integrations-catalog/content/pam)) for your selected PAM provider for instructions on how to load attributes orchestrator-side.
+> Any secret can be rendered by a PAM provider _installed on the Keyfactor Command server_. The above parameters are specific to attributes that can be fetched by an installed PAM provider running on the Universal Orchestrator server itself.
+
+</details>
+
 
 
 > The content in this section can be supplemented by the [official Command documentation](https://software.keyfactor.com/Core-OnPrem/Current/Content/ReferenceGuide/Certificate%20Stores.htm?Highlight=certificate%20store).
@@ -1391,89 +1438,96 @@ The Remote File Universal Orchestrator extension implements 6 Certificate Store 
 
 ### Store Creation
 
-* **Manually with the Command UI**
+#### Manually with the Command UI
 
-    <details><summary>Create Certificate Stores manually in the UI</summary>
+<details><summary>Click to expand details</summary>
 
-    1. **Navigate to the _Certificate Stores_ page in Keyfactor Command.**
+1. **Navigate to the _Certificate Stores_ page in Keyfactor Command.**
 
-        Log into Keyfactor Command, toggle the _Locations_ dropdown, and click _Certificate Stores_.
+    Log into Keyfactor Command, toggle the _Locations_ dropdown, and click _Certificate Stores_.
 
-    2. **Add a Certificate Store.**
+2. **Add a Certificate Store.**
 
-        Click the Add button to add a new Certificate Store. Use the table below to populate the **Attributes** in the **Add** form.
+    Click the Add button to add a new Certificate Store. Use the table below to populate the **Attributes** in the **Add** form.
 
-        | Attribute | Description |
-        | --------- | ----------- |
-        | Category | Select "RFORA" or the customized certificate store name from the previous step. |
-        | Container | Optional container to associate certificate store with. |
-        | Client Machine | The Client Machine field should contain the DNS name or IP address of the remote orchestrated server for Linux orchestrated servers, formatted as a URL (protocol://dns-or-ip:port) for Windows orchestrated servers, or '1.1.1.1|LocalMachine' for local agents. Example: 'https://myserver.mydomain.com:5986' or '1.1.1.1|LocalMachine' for local access. |
-        | Store Path | The Store Path field should contain the full path and file name of the Oracle Wallet, including the 'eWallet.p12' file name by convention. Example: '/path/to/eWallet.p12' or 'c:\path\to\eWallet.p12'. |
-        | Orchestrator | Select an approved orchestrator capable of managing `RFORA` certificates. Specifically, one with the `RFORA` capability. |
-        | ServerUsername | A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value* |
-        | ServerPassword | A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value* |
-        | LinuxFilePermissionsOnStoreCreation | The LinuxFilePermissionsOnStoreCreation field should contain a three-digit value between 000 and 777 representing the Linux file permissions to be set for the certificate store upon creation. Example: '600' or '755'.  Overrides DefaultLinuxPermissionOnStoreCreation [config.json](#post-installation) setting. |
-        | LinuxFileOwnerOnStoreCreation | The LinuxFileOwnerOnStoreCreation field should contain a valid user ID recognized by the destination Linux server, optionally followed by a colon and a group ID if the group owner differs. Example: 'userID' or 'userID:groupID'.  Overrides DefaultOwnerOnStoreCreation [config.json](#post-installation) setting. |
-        | SudoImpersonatingUser | The SudoImpersonatingUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'.  Overrides [config.json](#post-installation) DefaultSudoImpersonatedUser setting. |
-        | WorkFolder | The WorkFolder field should contain the path on the managed server where temporary work files can be created, modified, and deleted during Inventory and Management jobs. Example: '/path/to/workfolder'. |
-        | RemoveRootCertificate | Remove root certificate from chain when adding/renewing a certificate in a store. |
-        | IncludePortInSPN | Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations. |
-        | FileTransferProtocol | Which protocol should be used when uploading/downloading files - SCP, SFTP, or Both (try one, and then if necessary, the other).  Overrides FileTransferProtocol [config.json](#post-installation) setting. |
-        | SSHPort | Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting. |
-    </details>
+   | Attribute | Description |
+   | --------- | ----------- |
+   | Category | Select "RFORA" or the customized certificate store name from the previous step. |
+   | Container | Optional container to associate certificate store with. |
+   | Client Machine | The Client Machine field should contain the DNS name or IP address of the remote orchestrated server for Linux orchestrated servers, formatted as a URL (protocol://dns-or-ip:port) for Windows orchestrated servers, or '1.1.1.1|LocalMachine' for local agents. Example: 'https://myserver.mydomain.com:5986' or '1.1.1.1|LocalMachine' for local access. |
+   | Store Path | The Store Path field should contain the full path and file name of the Oracle Wallet, including the 'eWallet.p12' file name by convention. Example: '/path/to/eWallet.p12' or 'c:\path\to\eWallet.p12'. |
+   | Orchestrator | Select an approved orchestrator capable of managing `RFORA` certificates. Specifically, one with the `RFORA` capability. |
+   | ServerUsername | A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value* |
+   | ServerPassword | A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value* |
+   | LinuxFilePermissionsOnStoreCreation | The LinuxFilePermissionsOnStoreCreation field should contain a three-digit value between 000 and 777 representing the Linux file permissions to be set for the certificate store upon creation. Example: '600' or '755'.  Overrides DefaultLinuxPermissionOnStoreCreation [config.json](#post-installation) setting. |
+   | LinuxFileOwnerOnStoreCreation | The LinuxFileOwnerOnStoreCreation field should contain a valid user ID recognized by the destination Linux server, optionally followed by a colon and a group ID if the group owner differs. Example: 'userID' or 'userID:groupID'.  Overrides DefaultOwnerOnStoreCreation [config.json](#post-installation) setting. |
+   | SudoImpersonatingUser | The SudoImpersonatingUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'.  Overrides [config.json](#post-installation) DefaultSudoImpersonatedUser setting. |
+   | WorkFolder | The WorkFolder field should contain the path on the managed server where temporary work files can be created, modified, and deleted during Inventory and Management jobs. Example: '/path/to/workfolder'. |
+   | RemoveRootCertificate | Remove root certificate from chain when adding/renewing a certificate in a store. |
+   | IncludePortInSPN | Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations. |
+   | FileTransferProtocol | Which protocol should be used when uploading/downloading files - SCP, SFTP, or Both (try one, and then if necessary, the other).  Overrides FileTransferProtocol [config.json](#post-installation) setting. |
+   | SSHPort | Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting. |
+
+</details>
 
 
-* **Using kfutil**
-    
-    <details><summary>Create Certificate Stores with kfutil</summary>
-    
-    1. **Generate a CSV template for the RFORA certificate store**
 
-        ```shell
-        kfutil stores import generate-template --store-type-name RFORA --outpath RFORA.csv
-        ```
-    2. **Populate the generated CSV file**
+#### Using kfutil CLI
 
-        Open the CSV file, and reference the table below to populate parameters for each **Attribute**.
+<details><summary>Click to expand details</summary>
 
-        | Attribute | Description |
-        | --------- | ----------- |
-        | Category | Select "RFORA" or the customized certificate store name from the previous step. |
-        | Container | Optional container to associate certificate store with. |
-        | Client Machine | The Client Machine field should contain the DNS name or IP address of the remote orchestrated server for Linux orchestrated servers, formatted as a URL (protocol://dns-or-ip:port) for Windows orchestrated servers, or '1.1.1.1|LocalMachine' for local agents. Example: 'https://myserver.mydomain.com:5986' or '1.1.1.1|LocalMachine' for local access. |
-        | Store Path | The Store Path field should contain the full path and file name of the Oracle Wallet, including the 'eWallet.p12' file name by convention. Example: '/path/to/eWallet.p12' or 'c:\path\to\eWallet.p12'. |
-        | Orchestrator | Select an approved orchestrator capable of managing `RFORA` certificates. Specifically, one with the `RFORA` capability. |
-        | ServerUsername | A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value* |
-        | ServerPassword | A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value* |
-        | LinuxFilePermissionsOnStoreCreation | The LinuxFilePermissionsOnStoreCreation field should contain a three-digit value between 000 and 777 representing the Linux file permissions to be set for the certificate store upon creation. Example: '600' or '755'.  Overrides DefaultLinuxPermissionOnStoreCreation [config.json](#post-installation) setting. |
-        | LinuxFileOwnerOnStoreCreation | The LinuxFileOwnerOnStoreCreation field should contain a valid user ID recognized by the destination Linux server, optionally followed by a colon and a group ID if the group owner differs. Example: 'userID' or 'userID:groupID'.  Overrides DefaultOwnerOnStoreCreation [config.json](#post-installation) setting. |
-        | SudoImpersonatingUser | The SudoImpersonatingUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'.  Overrides [config.json](#post-installation) DefaultSudoImpersonatedUser setting. |
-        | WorkFolder | The WorkFolder field should contain the path on the managed server where temporary work files can be created, modified, and deleted during Inventory and Management jobs. Example: '/path/to/workfolder'. |
-        | RemoveRootCertificate | Remove root certificate from chain when adding/renewing a certificate in a store. |
-        | IncludePortInSPN | Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations. |
-        | FileTransferProtocol | Which protocol should be used when uploading/downloading files - SCP, SFTP, or Both (try one, and then if necessary, the other).  Overrides FileTransferProtocol [config.json](#post-installation) setting. |
-        | SSHPort | Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting. |
-    3. **Import the CSV file to create the certificate stores**
+1. **Generate a CSV template for the RFORA certificate store**
 
-        ```shell
-        kfutil stores import csv --store-type-name RFORA --file RFORA.csv
-        ```
+    ```shell
+    kfutil stores import generate-template --store-type-name RFORA --outpath RFORA.csv
+    ```
+2. **Populate the generated CSV file**
 
-* **PAM Provider Eligible Fields**
-    <details><summary>Attributes eligible for retrieval by a PAM Provider on the Universal Orchestrator</summary>
+    Open the CSV file, and reference the table below to populate parameters for each **Attribute**.
 
-    If a PAM provider was installed _on the Universal Orchestrator_ in the [Installation](#Installation) section, the following parameters can be configured for retrieval _on the Universal Orchestrator_.
+   | Attribute | Description |
+   | --------- | ----------- |
+   | Category | Select "RFORA" or the customized certificate store name from the previous step. |
+   | Container | Optional container to associate certificate store with. |
+   | Client Machine | The Client Machine field should contain the DNS name or IP address of the remote orchestrated server for Linux orchestrated servers, formatted as a URL (protocol://dns-or-ip:port) for Windows orchestrated servers, or '1.1.1.1|LocalMachine' for local agents. Example: 'https://myserver.mydomain.com:5986' or '1.1.1.1|LocalMachine' for local access. |
+   | Store Path | The Store Path field should contain the full path and file name of the Oracle Wallet, including the 'eWallet.p12' file name by convention. Example: '/path/to/eWallet.p12' or 'c:\path\to\eWallet.p12'. |
+   | Orchestrator | Select an approved orchestrator capable of managing `RFORA` certificates. Specifically, one with the `RFORA` capability. |
+   | Properties.ServerUsername | A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value* |
+   | Properties.ServerPassword | A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value* |
+   | Properties.LinuxFilePermissionsOnStoreCreation | The LinuxFilePermissionsOnStoreCreation field should contain a three-digit value between 000 and 777 representing the Linux file permissions to be set for the certificate store upon creation. Example: '600' or '755'.  Overrides DefaultLinuxPermissionOnStoreCreation [config.json](#post-installation) setting. |
+   | Properties.LinuxFileOwnerOnStoreCreation | The LinuxFileOwnerOnStoreCreation field should contain a valid user ID recognized by the destination Linux server, optionally followed by a colon and a group ID if the group owner differs. Example: 'userID' or 'userID:groupID'.  Overrides DefaultOwnerOnStoreCreation [config.json](#post-installation) setting. |
+   | Properties.SudoImpersonatingUser | The SudoImpersonatingUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'.  Overrides [config.json](#post-installation) DefaultSudoImpersonatedUser setting. |
+   | Properties.WorkFolder | The WorkFolder field should contain the path on the managed server where temporary work files can be created, modified, and deleted during Inventory and Management jobs. Example: '/path/to/workfolder'. |
+   | Properties.RemoveRootCertificate | Remove root certificate from chain when adding/renewing a certificate in a store. |
+   | Properties.IncludePortInSPN | Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations. |
+   | Properties.FileTransferProtocol | Which protocol should be used when uploading/downloading files - SCP, SFTP, or Both (try one, and then if necessary, the other).  Overrides FileTransferProtocol [config.json](#post-installation) setting. |
+   | Properties.SSHPort | Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting. |
 
-    | Attribute | Description |
-    | --------- | ----------- |
-    | ServerUsername | A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value* |
-    | ServerPassword | A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value* |
-    | StorePassword | Password to use when reading/writing to store |
+3. **Import the CSV file to create the certificate stores**
 
-    Please refer to the **Universal Orchestrator (remote)** usage section ([PAM providers on the Keyfactor Integration Catalog](https://keyfactor.github.io/integrations-catalog/content/pam)) for your selected PAM provider for instructions on how to load attributes orchestrator-side.
+    ```shell
+    kfutil stores import csv --store-type-name RFORA --file RFORA.csv
+    ```
 
-    > Any secret can be rendered by a PAM provider _installed on the Keyfactor Command server_. The above parameters are specific to attributes that can be fetched by an installed PAM provider running on the Universal Orchestrator server itself.
-    </details>
+</details>
+
+
+#### PAM Provider Eligible Fields
+<details><summary>Attributes eligible for retrieval by a PAM Provider on the Universal Orchestrator</summary>
+
+If a PAM provider was installed _on the Universal Orchestrator_ in the [Installation](#Installation) section, the following parameters can be configured for retrieval _on the Universal Orchestrator_.
+
+   | Attribute | Description |
+   | --------- | ----------- |
+   | ServerUsername | A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value* |
+   | ServerPassword | A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value* |
+   | StorePassword | Password to use when reading/writing to store |
+
+Please refer to the **Universal Orchestrator (remote)** usage section ([PAM providers on the Keyfactor Integration Catalog](https://keyfactor.github.io/integrations-catalog/content/pam)) for your selected PAM provider for instructions on how to load attributes orchestrator-side.
+> Any secret can be rendered by a PAM provider _installed on the Keyfactor Command server_. The above parameters are specific to attributes that can be fetched by an installed PAM provider running on the Universal Orchestrator server itself.
+
+</details>
+
 
 
 > The content in this section can be supplemented by the [official Command documentation](https://software.keyfactor.com/Core-OnPrem/Current/Content/ReferenceGuide/Certificate%20Stores.htm?Highlight=certificate%20store).
