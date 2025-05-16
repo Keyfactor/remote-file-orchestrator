@@ -162,14 +162,16 @@ To use the Remote File Universal Orchestrator extension, you **must** create the
 
 The Remote File Universal Orchestrator extension implements 6 Certificate Store Types. Depending on your use case, you may elect to use one, or all of these Certificate Store Types.
 
-<details><summary>RFJKS (RFJKS)</summary>
-
-
 ### RFJKS
 
-The RFJKS store type can be used to manage java keystores of types JKS or PKCS12.  If creating a new java keystore and adding a certificate all via Keyfactor Command, the created java keystore will be of type PKCS12, as java keystores of type JKS have been deprecated as of JDK 9.
 
-Use cases supported:
+<details><summary>Click to expand details</summary>
+
+The `RFJKS` store type can be used to manage java keystores of types `JKS` or `PKCS12`.  If creating a new java keystore 
+and adding a certificate all via Keyfactor Command, the created java keystore will be of type `PKCS12`, as java keystores 
+of type `JKS` have been deprecated as of `JDK 9`.
+
+#### Supported use cases
 1. One-to-many trust entries - A trust entry is defined as a single certificate without a private key in a certificate store.  Each trust entry is identified with a custom alias.
 2. One-to-many key entries - One-to-many certificates with private keys and optionally the full certificate chain.  Each certificate is identified with a custom alias.
 3. A mix of trust and key entries.
@@ -185,7 +187,9 @@ Use cases supported:
 | Reenrollment | 🔲 Unchecked |
 | Create       | ✅ Checked     |
 
-#### Creation Using kfutil:
+#### Store Type Creation
+
+##### Using kfutil:
 `kfutil` is a custom CLI for the Keyfactor Command API and can be used to created certificate store types.
 For more information on [kfutil](https://github.com/Keyfactor/kfutil) check out the [docs](https://github.com/Keyfactor/kfutil?tab=readme-ov-file#quickstart)
    <details><summary>Click to expand RFJKS kfutil details</summary>
@@ -208,9 +212,8 @@ For more information on [kfutil](https://github.com/Keyfactor/kfutil) check out 
 
 
 #### Manual Creation
-If you do not wish to use the `kfutil` CLI then certificate store types can be creating in the web UI as described below.
-
-
+Below are instructions on how to create the RFJKS store type manually in
+the Keyfactor Command Portal
    <details><summary>Click to expand manual RFJKS details</summary>
 
    Create a store type called `RFJKS` with the attributes in the tables below:
@@ -271,23 +274,25 @@ If you do not wish to use the `kfutil` CLI then certificate store types can be c
 
    </details>
 </details>
-&nbsp;
-
-<details><summary>RFPEM (RFPEM)</summary>
-
 
 ### RFPEM
 
-The RFPEM store type can be used to manage PEM encoded files.
 
-Use cases supported:
+<details><summary>Click to expand details</summary>
+
+The `RFPEM` store type can be used to manage `PEM` encoded files.
+
+#### Supported use cases
 1. Trust stores - A file with one-to-many certificates (no private keys, no certificate chains).
 2. Single certificate stores with private key in the file.
 3. Single certificate stores with certificate chain and private key in the file.
 4. Single certificate stores with private key in an external file.
 5. Single certificate stores with certificate chain in the file and private key in an external file
 
-NOTE: PEM stores may only have one private key (internal or external) associated with the store, as only one certificate/chain/private key combination can be stored in a PEM store supported by RFPEM.  Private keys will be stored in encrypted or unencrypted PKCS#8 format (BEGIN [ENCRYPTED] PRIVATE KEY) based on the Store Password set on the Keyfactor Command Certificate Store unless managing a PEM store that currently contains a private key in PKCS#1 format (BEGIN RSA PRIVATE KEY or BEGIN EC PRIVATE KEY).  Store password MUST be set to "No Password" if managing a store with a PKCS#1 private key, as encrypted PKCS#1 keys are not supported with this integration.
+#### Additional Considerations and Limitations
+- `PEM` stores may only have one private key (internal or external) associated with the store, as only one certificate/chain/private key combination can be stored in a PEM store supported by `RFPEM`. 
+- Private keys will be stored in encrypted or unencrypted `PKCS#8` format (`BEGIN [ENCRYPTED] PRIVATE KEY`) based on the Store Password set on the Keyfactor Command Certificate Store unless managing a `PEM` store that currently contains a private key in `PKCS#1` format (`BEGIN RSA PRIVATE KEY` or `BEGIN EC PRIVATE KEY`). 
+- Store password *MUST* be set to `No Password` if managing a store with a `PKCS#1` private key, as encrypted `PKCS#1` keys are not supported with this integration.
 
 
 #### Supported Operations
@@ -300,7 +305,9 @@ NOTE: PEM stores may only have one private key (internal or external) associated
 | Reenrollment | 🔲 Unchecked |
 | Create       | ✅ Checked     |
 
-#### Creation Using kfutil:
+#### Store Type Creation
+
+##### Using kfutil:
 `kfutil` is a custom CLI for the Keyfactor Command API and can be used to created certificate store types.
 For more information on [kfutil](https://github.com/Keyfactor/kfutil) check out the [docs](https://github.com/Keyfactor/kfutil?tab=readme-ov-file#quickstart)
    <details><summary>Click to expand RFPEM kfutil details</summary>
@@ -323,9 +330,8 @@ For more information on [kfutil](https://github.com/Keyfactor/kfutil) check out 
 
 
 #### Manual Creation
-If you do not wish to use the `kfutil` CLI then certificate store types can be creating in the web UI as described below.
-
-
+Below are instructions on how to create the RFPEM store type manually in
+the Keyfactor Command Portal
    <details><summary>Click to expand manual RFPEM details</summary>
 
    Create a store type called `RFPEM` with the attributes in the tables below:
@@ -390,22 +396,21 @@ If you do not wish to use the `kfutil` CLI then certificate store types can be c
 
    </details>
 </details>
-&nbsp;
-
-<details><summary>RFPkcs12 (RFPkcs12)</summary>
-
 
 ### RFPkcs12
 
-The RFPkcs12 store type can be used to manage any PKCS#12 compliant file format INCLUDING java keystores of type PKCS12.
 
-Use cases supported:
-1. One-to-many trust entries -  A trust entry is defined as a single certificate without a private key in a certificate store.  Each trust entry MUST BE identified with a custom friendly name/alias.
+<details><summary>Click to expand details</summary>
+
+The RFPkcs12 store type can be used to manage any `PKCS#12` compliant file format INCLUDING java keystores of type `PKCS12`.
+
+Supported use cases :
+1. One-to-many trust entries - A trust entry is defined as a single certificate without a private key in a certificate store.  Each trust entry MUST BE identified with a custom friendly name/alias.
 2. One-to-many key entries - One-to-many certificates with private keys and optionally the full certificate chain.  Each certificate MUST BE identified with a custom friendly name/alias.
 3. A mix of trust and key entries.  Each entry MUST BE identified with a custom friendly name/alias.
 4. Single certificate stores with a blank/missing friendly name/alias.  Any management add job will replace the current certificate entry and will keep the friendly name/alias blank.  The Keyfactor Command certificate store will show the current certificate thumbprint as the entry's alias.
 
-Use cases not supported:
+Unsupported use cases:
 1. Multiple key and/or trust entries with a mix of existing and non existing friendly names/aliases.
 2. Multiple key and/or trust entries with blank friendly names/aliases
 
@@ -420,7 +425,9 @@ Use cases not supported:
 | Reenrollment | 🔲 Unchecked |
 | Create       | ✅ Checked     |
 
-#### Creation Using kfutil:
+#### Store Type Creation
+
+##### Using kfutil:
 `kfutil` is a custom CLI for the Keyfactor Command API and can be used to created certificate store types.
 For more information on [kfutil](https://github.com/Keyfactor/kfutil) check out the [docs](https://github.com/Keyfactor/kfutil?tab=readme-ov-file#quickstart)
    <details><summary>Click to expand RFPkcs12 kfutil details</summary>
@@ -443,9 +450,8 @@ For more information on [kfutil](https://github.com/Keyfactor/kfutil) check out 
 
 
 #### Manual Creation
-If you do not wish to use the `kfutil` CLI then certificate store types can be creating in the web UI as described below.
-
-
+Below are instructions on how to create the RFPkcs12 store type manually in
+the Keyfactor Command Portal
    <details><summary>Click to expand manual RFPkcs12 details</summary>
 
    Create a store type called `RFPkcs12` with the attributes in the tables below:
@@ -506,16 +512,15 @@ If you do not wish to use the `kfutil` CLI then certificate store types can be c
 
    </details>
 </details>
-&nbsp;
-
-<details><summary>RFDER (RFDER)</summary>
-
 
 ### RFDER
 
-The RFDER store type can be used to manage DER encoded files.
 
-Use cases supported:
+<details><summary>Click to expand details</summary>
+
+The `RFDER` store type can be used to manage DER encoded files.
+
+#### Supported use cases
 1. Single certificate stores with private key in an external file.
 2. Single certificate stores with no private key.
 
@@ -530,7 +535,9 @@ Use cases supported:
 | Reenrollment | 🔲 Unchecked |
 | Create       | ✅ Checked     |
 
-#### Creation Using kfutil:
+#### Store Type Creation
+
+##### Using kfutil:
 `kfutil` is a custom CLI for the Keyfactor Command API and can be used to created certificate store types.
 For more information on [kfutil](https://github.com/Keyfactor/kfutil) check out the [docs](https://github.com/Keyfactor/kfutil?tab=readme-ov-file#quickstart)
    <details><summary>Click to expand RFDER kfutil details</summary>
@@ -553,9 +560,8 @@ For more information on [kfutil](https://github.com/Keyfactor/kfutil) check out 
 
 
 #### Manual Creation
-If you do not wish to use the `kfutil` CLI then certificate store types can be creating in the web UI as described below.
-
-
+Below are instructions on how to create the RFDER store type manually in
+the Keyfactor Command Portal
    <details><summary>Click to expand manual RFDER details</summary>
 
    Create a store type called `RFDER` with the attributes in the tables below:
@@ -617,16 +623,17 @@ If you do not wish to use the `kfutil` CLI then certificate store types can be c
 
    </details>
 </details>
-&nbsp;
-
-<details><summary>RFKDB (RFKDB)</summary>
-
 
 ### RFKDB
 
-The RFKDB store type can be used to manage IBM Key Database Files (KDB) files.  The IBM utility, GSKCAPICMD, is used to read and write certificates from and to the target store and is therefore required to be installed on the server where each KDB certificate store being managed resides, and its location MUST be in the system $Path.
 
-Use cases supported:
+<details><summary>Click to expand details</summary>
+
+The `RFKDB` store type can be used to manage IBM Key Database Files (`KDB`) files.  The IBM utility, `GSKCAPICMD`, is used 
+to read and write certificates from and to the target store and is therefore required to be installed on the server where 
+each `KDB` certificate store being managed resides, and its location MUST be in the system `$Path`.
+
+#### Supported use cases
 1. One-to-many trust entries - A trust entry is defined as a single certificate without a private key in a certificate store.  Each trust entry is identified with a custom alias.
 2. One-to-many key entries - One-to-many certificates with private keys and optionally the full certificate chain.  Each certificate is identified with a custom alias.
 3. A mix of trust and key entries.
@@ -642,7 +649,9 @@ Use cases supported:
 | Reenrollment | 🔲 Unchecked |
 | Create       | ✅ Checked     |
 
-#### Creation Using kfutil:
+#### Store Type Creation
+
+##### Using kfutil:
 `kfutil` is a custom CLI for the Keyfactor Command API and can be used to created certificate store types.
 For more information on [kfutil](https://github.com/Keyfactor/kfutil) check out the [docs](https://github.com/Keyfactor/kfutil?tab=readme-ov-file#quickstart)
    <details><summary>Click to expand RFKDB kfutil details</summary>
@@ -665,9 +674,8 @@ For more information on [kfutil](https://github.com/Keyfactor/kfutil) check out 
 
 
 #### Manual Creation
-If you do not wish to use the `kfutil` CLI then certificate store types can be creating in the web UI as described below.
-
-
+Below are instructions on how to create the RFKDB store type manually in
+the Keyfactor Command Portal
    <details><summary>Click to expand manual RFKDB details</summary>
 
    Create a store type called `RFKDB` with the attributes in the tables below:
@@ -728,16 +736,18 @@ If you do not wish to use the `kfutil` CLI then certificate store types can be c
 
    </details>
 </details>
-&nbsp;
-
-<details><summary>RFORA (RFORA)</summary>
-
 
 ### RFORA
 
-The RFORA store type can be used to manage Pkcs12 Oracle Wallets.  Please note that while this should work for Pkcs12 Oracle Wallets installed on both Windows and Linux servers, this has only been tested on wallets installed on Windows.  Please note, when entering the Store Path for an Oracle Wallet in Keyfactor Command, make sure to INCLUDE the eWallet.p12 file name that by convention is the name of the Pkcs12 wallet file that gets created.
 
-Use cases supported:
+<details><summary>Click to expand details</summary>
+
+The `RFORA` store type can be used to manage `PKCS12` Oracle Wallets. 
+
+> NOTE: This should work for `PKCS12` Oracle Wallets installed on both Windows and Linux servers, this has only been tested on wallets installed on Windows.  
+> NOTE: When entering the Store Path for an Oracle Wallet in Keyfactor Command, make sure to INCLUDE the `eWallet.p12` file name that by convention is the name of the `PKCS12` wallet file that gets created.
+
+#### Supported use cases
 1. One-to-many trust entries - A trust entry is defined as a single certificate without a private key in a certificate store.  Each trust entry is identified with a custom alias.
 2. One-to-many key entries - One-to-many certificates with private keys and optionally the full certificate chain.  Each certificate is identified with a custom alias.
 3. A mix of trust and key entries.
@@ -753,7 +763,9 @@ Use cases supported:
 | Reenrollment | 🔲 Unchecked |
 | Create       | ✅ Checked     |
 
-#### Creation Using kfutil:
+#### Store Type Creation
+
+##### Using kfutil:
 `kfutil` is a custom CLI for the Keyfactor Command API and can be used to created certificate store types.
 For more information on [kfutil](https://github.com/Keyfactor/kfutil) check out the [docs](https://github.com/Keyfactor/kfutil?tab=readme-ov-file#quickstart)
    <details><summary>Click to expand RFORA kfutil details</summary>
@@ -776,9 +788,8 @@ For more information on [kfutil](https://github.com/Keyfactor/kfutil) check out 
 
 
 #### Manual Creation
-If you do not wish to use the `kfutil` CLI then certificate store types can be creating in the web UI as described below.
-
-
+Below are instructions on how to create the RFORA store type manually in
+the Keyfactor Command Portal
    <details><summary>Click to expand manual RFORA details</summary>
 
    Create a store type called `RFORA` with the attributes in the tables below:
@@ -840,7 +851,6 @@ If you do not wish to use the `kfutil` CLI then certificate store types can be c
 
    </details>
 </details>
-&nbsp;
 
 
 ## Installation
