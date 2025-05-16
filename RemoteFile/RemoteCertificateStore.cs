@@ -63,6 +63,23 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
 
 
         internal RemoteCertificateStore() { }
+        
+        internal ServerTypeEnum DetermineRuntimeOs()
+        {
+            logger.MethodEntry();
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+            {
+                logger.LogDebug("Running in a Linux environment");
+                logger.MethodExit();
+                return ServerTypeEnum.Linux;
+            }
+            
+            // Console.WriteLine("Unknown OS");
+            logger.LogDebug("Running in a Windows environment");
+            logger.MethodExit();
+            return ServerTypeEnum.Windows;
+            
+        }
 
         internal RemoteCertificateStore(string server, string serverId, string serverPassword, string storeFileAndPath, string storePassword, ApplicationSettings.FileTransferProtocolEnum fileTransferProtocol, int sshPort, bool includePortInSPN)
         {
@@ -78,7 +95,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             ServerId = serverId;
             ServerPassword = serverPassword ?? string.Empty;
             StorePassword = storePassword;
-            ServerType = StorePath.Substring(0, 1) == "/" ? ServerTypeEnum.Linux : ServerTypeEnum.Windows;
+            ServerType = DetermineRuntimeOs();
             UploadFilePath = !string.IsNullOrEmpty(ApplicationSettings.SeparateUploadFilePath) && ServerType == ServerTypeEnum.Linux ? ApplicationSettings.SeparateUploadFilePath : StorePath;
             FileTransferProtocol = fileTransferProtocol;
             SSHPort = sshPort;
@@ -96,7 +113,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             logger.MethodExit(LogLevel.Debug);
         }
 
-        internal RemoteCertificateStore(string server, string serverId, string serverPassword, ServerTypeEnum serverType, int sshPort)
+        internal RemoteCertificateStore(string server, string serverId, string serverPassword, int sshPort)
         {
             logger = LogHandler.GetClassLogger(this.GetType());
             logger.MethodEntry(LogLevel.Debug);
@@ -104,7 +121,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             Server = server;
             ServerId = serverId;
             ServerPassword = serverPassword ?? string.Empty;
-            ServerType = serverType;
+            ServerType = DetermineRuntimeOs();
             SSHPort = sshPort;
 
             logger.MethodExit(LogLevel.Debug);
