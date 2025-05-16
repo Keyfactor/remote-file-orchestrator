@@ -31,28 +31,31 @@
 
 ## Overview
 
-The Remote File Orchestrator Extension is a multi-purpose integration that can remotely manage a variety of file-based certificate stores and can easily be extended to manage others.  The certificate store types that can be managed in the current version are: 
+The Remote File Orchestrator Extension is a multipurpose integration that can remotely manage a variety of file-based
+certificate stores and can easily be extended to manage others.
 
-* RFJKS - Java Keystores of types JKS or PKCS12
-* RFPkcs12 - Certificate stores that follow the PKCS#12 standard
-* RFPEM - Files in PEM format
-* RFDER - Files in binary DER format
-* RFORA - Pkcs#12 formatted Oracle Wallets
-* RFKDB - IBM Key Database files
+The Keyfactor Universal Orchestrator (UO) and RemoteFile Extension can be installed on either Windows or Linux operating
+systems as well as manage certificates residing on servers of both operating systems. A UO service managing certificates
+on remote servers is considered to be acting as an Orchestrator, while a UO service managing local certificates on the
+same server running the service is considered an Agent. When acting as an Orchestrator, connectivity from the
+orchestrator server hosting the `RemoteFile` extension to the orchestrated server hosting the certificate store(s) being
+managed is achieved via either an `SSH` (for Linux and possibly Windows orchestrated servers) or WinRM (for Windows
+orchestrated servers) connection. When acting as an agent, `SSH/WinRM` may still be used, OR the certificate store can be
+configured to bypass these and instead directly access the orchestrator server's file system.
 
-The Keyfactor Univeral Orchestrator (UO) and RemoteFile Extension can be installed on either Windows or Linux operating systems as well as manage certificates residing on servers of both operating systems. A UO service managing certificates on remote servers is considered to be acting as an Orchestrator, while a UO service managing local certificates on the same server running the service is considered an Agent.  When acting as an Orchestrator, connectivity from the orchestrator server hosting the RemoteFile extension to the orchestrated server hosting the certificate store(s) being managed is achieved via either an SSH (for Linux and possibly Windows orchestrated servers) or WinRM (for Windows orchestrated servers) connection.  When acting as an agent, SSH/WinRM may still be used, OR the certificate store can be configured to bypass these and instead directly access the orchestrator server's file system.
+![](images/orchestrator-agent.png)
 
-![](images/orchestrator-agent.png)  
+The supported configurations of Universal Orchestrator hosts and managed orchestrated servers are detailed below:
 
-Please refer to the READMEs for each supported store type for more information on proper configuration and setup for these different architectures.  The supported configurations of Universal Orchestrator hosts and managed orchestrated servers are detailed below:
+|                                                                           | UO Installed on Windows               | UO Installed on Linux               |
+|---------------------------------------------------------------------------|---------------------------------------|-------------------------------------|
+| Orchestrated Server hosting certificate store(s) on remote Windows server | WinRM connection                      | SSH connection                      |
+| Orchestrated Server hosting certificate store(s) on remote Linux server   | SSH connection                        | SSH connection                      |
+| Certificate store(s) on same server as orchestrator service (Agent)       | WinRM connection or local file system | SSH connection or local file system |  
 
-| | UO Installed on Windows | UO Installed on Linux |
-|-----|-----|------|
-|Orchestrated Server hosting certificate store(s) on remote Windows server|WinRM connection | SSH connection |
-|Orchestrated Server hosting certificate store(s) on remote Linux server| SSH connection | SSH connection |
-|Certificate store(s) on same server as orchestrator service (Agent)| WinRM connection or local file system | SSH connection or local file system |  
-
-Note: when creating, adding certificates to, or removing certificates from any store managed by RemoteFile, the destination store file will be recreated.  When this occurs current AES encryption algorithms will be used for affected certificates and certificate store files.
+Note: when creating, adding certificates to, or removing certificates from any store managed by `RemoteFile`, the
+destination store file will be recreated. When this occurs, current AES encryption algorithms will be used for affected
+certificates and certificate store files.
 
 The Remote File Universal Orchestrator extension implements 6 Certificate Store Types. Depending on your use case, you may elect to use one, or all of these Certificate Store Types. Descriptions of each are provided below.
 
@@ -160,41 +163,74 @@ Before installing the Remote File Universal Orchestrator extension, we recommend
 <details>
 <summary><b>Certificate stores hosted on Linux servers:</b></summary>
 
-1. The Remote File Orchestrator Extension makes use of a few common Linux commands when managing stores on Linux servers. If the credentials you will be connecting with need elevated access to run these commands or to access the certificate store files these commands operate against, you must set up the user id as a sudoer with no password necessary and set the config.json "UseSudo" value to "Y".  When RemoteFile is using orchestration, managing local or external certificate stores using SSH or WinRM, the security context is determined by the user id entered in the Keyfactor Command certificate store or discovery job screens.  When RemoteFile is running as an agent, managing local stores only, the security context is the user id running the Keyfactor Command Universal Orchestrator service account.  The full list of these commands below:
+1. The Remote File Orchestrator Extension makes use of a few common Linux commands when managing stores on Linux
+   servers. If the credentials you will be connecting with need elevated access to run these commands or to access the
+   certificate store files these commands operate against, you must set up the user id as a sudoer with no password
+   necessary and set the config.json `UseSudo` value to `Y`. When `RemoteFile` is using orchestration, managing local or
+   external certificate stores using `SSH` or `WinRM`, the security context is determined by the user id entered into the
+   Keyfactor Command certificate store or discovery job screens. When RemoteFile is running as an agent, managing local
+   stores only, the security context is the user id running the Keyfactor Command Universal Orchestrator service
+   account. The full list of these commands is below:
 
-|Shell Command|Used For|
-|---|---|
-|echo|Used to append a newline and terminate all commands sent.|
-|find|Used by Discovery jobs to locate potential certificate stores on the file system.|
-|cp|Used by Inventory and Management Add/Remove/Create jobs to determine if certificate store file exists.|
-|ls|Used by Management Add/Remove jobs to copy the certificate store file to a temporary file (only when an alternate download folder has been configured).|
-|chown|Used by the Inventory and Management Add/Remove jobs to set the permissions on the temporary file (only when an alternate download folder has been configured).|
-|tee|Used by Management Add/Remove jobs to copy the temporary uploaded certificate file to the certificate store file (only when an alternate upload folder has been configured).|
-|rm|Used by Inventory and Management Add/Remove jobs to remove temporary files (only when an alternate upload/download folder has been configured).|
-|install|Used by the Management Create Store job when initializing a certificate store file.|
-|orapki|Oracle Wallet CLI utility used by Inventory and Management Add/Remove jobs to manipulate an Oracle Wallet certificate store.  Used for the RFORA store type only.|
-|gskcapicmd|IBM Key Database CLI utility used by Inventory and Management Add/Remove jobs to manipulate an IBM Key Database certificate store.  Used for the RFKDB store type only.|  
+| Shell Command  | Used For                                                                                                                                                                     |
+|----------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `echo`         | Used to append a newline and terminate all commands sent.                                                                                                                    |
+| `find`         | Used by Discovery jobs to locate potential certificate stores on the file system.                                                                                            |
+| `cp`           | Used by Inventory and Management Add/Remove/Create jobs to determine if certificate store file exists.                                                                       |
+| `ls`           | Used by Management Add/Remove jobs to copy the certificate store file to a temporary file (only when an alternate download folder has been configured).                      |
+| `chown`        | Used by the Inventory and Management Add/Remove jobs to set the permissions on the temporary file (only when an alternate download folder has been configured).              |
+| `tee`          | Used by Management Add/Remove jobs to copy the temporary uploaded certificate file to the certificate store file (only when an alternate upload folder has been configured). |
+| `rm`           | Used by Inventory and Management Add/Remove jobs to remove temporary files (only when an alternate upload/download folder has been configured).                              |
+| `install`      | Used by the Management Create Store job when initializing a certificate store file.                                                                                          |
+| `orapki`       | Oracle Wallet CLI utility used by Inventory and Management Add/Remove jobs to manipulate an Oracle Wallet certificate store.  Used for the RFORA store type only.            |
+| `gskcapicmd`   | IBM Key Database CLI utility used by Inventory and Management Add/Remove jobs to manipulate an IBM Key Database certificate store.  Used for the RFKDB store type only.      |  
 
-2. When orchestrating management of local or external certificate stores, the Remote File Orchestrator Extension makes use of SFTP and/or SCP to transfer files to and from the orchestrated server.  SFTP/SCP cannot make use of sudo, so all folders containing certificate stores will need to allow SFTP/SCP file transfer for the user assigned to the certificate store/discovery job.  If this is not possible, set the values in the config.json appropriately to use an alternative upload/download folder that does allow SFTP/SCP file transfer.  If the certificate store/discovery job is configured for local (agent) access, the account running the Keyfactor Universal Orchestrator service must have access to read/write to the certificate store location, OR the config.json file must be set up to use the alternative upload/download file.  
+2. When orchestrating management of local or external certificate stores, the Remote File Orchestrator Extension makes
+   use of SFTP and/or SCP to transfer files to and from the orchestrated server. `SFTP/SCP` cannot make use of `sudo`, so
+   all folders containing certificate stores will need to allow SFTP/SCP file transfer for the user assigned to the
+   certificate store/discovery job. If this is not possible, set the values in the `config.json` appropriately to use an
+   alternative upload/download folder that does allow `SFTP/SCP` file transfer. If the certificate store/discovery job is
+   configured for local (agent) access, the account running the Keyfactor Universal Orchestrator service must have
+   access to read/write to the certificate store location, OR the `config.json` file must be set up to use the alternative
+   upload/download file.
 
-3. SSH Authentication: When creating a Keyfactor certificate store for the remote file orchestrator extension, you may supply either a user id and password for the certificate store credentials (directly or through one of Keyfactor Command's PAM integrations), or supply a user id and SSH private key.  When using a password, the connection is attempted using SSH Password Authentication.  If that fails, Keyboard Interactive Authentication is automatically attempted.  One or both of these must be enabled on the Linux box being managed.  If private key authentication is desired, copy and paste the full SSH private key into the Password textbox (or pointer to the private key if using a PAM provider).  Please note that SSH Private Key Authentication is not available when running locally as an agent.  The following private key formats are supported: 
-- PKCS#1 (BEGIN RSA PRIVATE KEY) 
-- PKCS#8 (BEGIN PRIVATE KEY)
-- ECDSA OPENSSH (BEGIN OPENSSH PRIVATE KEY)   
+3. `SSH` Authentication: When creating a Keyfactor certificate store for the `RemoteFile` orchestrator extension, you may
+   supply either a user id and password for the certificate store credentials (directly or through one of Keyfactor
+   Command's PAM integrations), or supply a user id and `SSH` private key. When using a password, the connection is
+   attempted using `SSH` password authentication. If that fails, Keyboard Interactive Authentication is automatically
+   attempted. One or both of these must be enabled on the Linux box being managed. If private key authentication is
+   desired, copy and paste the full SSH private key into the Password textbox (or pointer to the private key if using a
+   PAM provider). Please note that SSH Private Key Authentication is not available when running locally as an agent. The
+   following private key formats are supported:
 
-Please reference [Post Installation](#post-installation) for more information on setting up the config.json file and [Defining Certificate Stores](#defining-certificate-stores) and [Discovering Certificate Stores with the Discovery Job](#discovering-certificate-stores-with-the-discovery-job) for more information on defining and configuring certificate stores.    
+- PKCS#1 (`BEGIN RSA PRIVATE KEY`)
+- PKCS#8 (`BEGIN PRIVATE KEY`)
+- ECDSA OPENSSH (`BEGIN OPENSSH PRIVATE KEY`)
+
+Please reference [Post Installation](#post-installation) for more information on setting up the `config.json` file
+and [Defining Certificate Stores](#defining-certificate-stores)
+and [Discovering Certificate Stores with the Discovery Job](#discovering-certificate-stores-with-the-discovery-job) for
+more information on defining and configuring certificate stores.
 </details>  
 
 <details>  
 <summary><b>Certificate stores hosted on Windows servers:</b></summary>
-1. When orchestrating management of external (and potentially local) certificate stores, the RemoteFile Orchestrator Extension makes use of WinRM to connect to external certificate store servers.  The security context used is the user id entered in the Keyfactor Command certificate store or discovery job screen.  Make sure that WinRM is set up on the orchestrated server and that the WinRM port (by convention, 5585 for HTTP and 5586 for HTTPS) is part of the certificate store path when setting up your certificate stores/discovery jobs.  If running as an agent, managing local certificate stores, local commands are run under the security context of the user account running the Keyfactor Universal Orchestrator Service.  Please reference [Certificate Stores and Discovery Jobs](#certificate-stores-and-discovery-jobs) for more information on creating certificate stores for the RemoteFile Orchestrator Extension.  
+
+1. When orchestrating management of external (and potentially local) certificate stores, the `RemoteFile` Orchestrator 
+Extension makes use of `WinRM` to connect to external certificate store servers.  The security context used is the user id 
+entered in the Keyfactor Command certificate store or discovery job screen.  Make sure that `WinRM` is set up on the 
+orchestrated server and that the `WinRM` port (by convention, `5585` for `HTTP` and `5586` for `HTTPS`) is part of the certificate 
+store path when setting up your certificate stores/discovery jobs. If running as an agent, managing local certificate stores, 
+local commands are run under the security context of the user account running the Keyfactor Universal Orchestrator Service.  
+Please reference [Certificate Stores and Discovery Jobs](#certificate-stores-and-discovery-jobs) for more information on 
+creating certificate stores for the `RemoteFile` Orchestrator Extension.  
 
 </details>
 
-Please consult with your company's system administrator for more information on configuring SSH/SFTP/SCP or WinRM in your environment.
+Please consult with your system administrator for more information on configuring `SSH/SFTP/SCP` or `WinRM` in your environment.
 
 
-## Create Certificate Store Types
+## Certificate Store Types
 
 To use the Remote File Universal Orchestrator extension, you **must** create the Certificate Store Types required for your usecase. This only needs to happen _once_ per Keyfactor Command instance.
 
@@ -203,12 +239,38 @@ The Remote File Universal Orchestrator extension implements 6 Certificate Store 
 <details><summary>RFJKS (RFJKS)</summary>
 
 
-* **Create RFJKS using kfutil**:
 
-    ```shell
-    # RFJKS
-    kfutil store-types create RFJKS
-    ```
+### Supported Operations
+
+| Operation    | Is Supported                                                                                                           |
+|--------------|------------------------------------------------------------------------------------------------------------------------|
+| Add          | ✅ Checked        |
+| Remove       | ✅ Checked     |
+| Discovery    | ✅ Checked  |
+| Reenrollment | 🔲 Unchecked |
+| Create       | ✅ Checked     |
+
+### Creation Using kfutil:
+`kfutil` is a custom CLI for the Keyfactor Command API and can be used to created certificate store types.
+For more information on [kfutil](https://github.com/Keyfactor/kfutil) check out the [docs](https://github.com/Keyfactor/kfutil?tab=readme-ov-file#quickstart)
+
+#### Using online definition from GitHub:
+This will reach out to GitHub and pull the latest store-type definition
+```shell
+# RFJKS
+kfutil store-types create RFJKS
+```
+
+#### Offline creation using integration-manifest file:
+If required, it is possible to create store types from the [integration-manifest.json](./integration-manifest.json) included in this repo.
+You would first download the [integration-manifest.json](./integration-manifest.json) and then run the following command
+in your offline environment.
+```shell
+kfutil store-types create --from-file integration-manifest.json
+```
+
+### Manual Creation
+If you do not wish to use the `kfutil` CLI then certificate store types can be creating in the web UI as described below.
 
 * **Create RFJKS manually in the Command UI**:
     <details><summary>Create RFJKS manually in the Command UI</summary>
@@ -270,18 +332,43 @@ The Remote File Universal Orchestrator extension implements 6 Certificate Store 
 
 
 
-
 </details>
 
 <details><summary>RFPEM (RFPEM)</summary>
 
 
-* **Create RFPEM using kfutil**:
 
-    ```shell
-    # RFPEM
-    kfutil store-types create RFPEM
-    ```
+### Supported Operations
+
+| Operation    | Is Supported                                                                                                           |
+|--------------|------------------------------------------------------------------------------------------------------------------------|
+| Add          | ✅ Checked        |
+| Remove       | ✅ Checked     |
+| Discovery    | ✅ Checked  |
+| Reenrollment | 🔲 Unchecked |
+| Create       | ✅ Checked     |
+
+### Creation Using kfutil:
+`kfutil` is a custom CLI for the Keyfactor Command API and can be used to created certificate store types.
+For more information on [kfutil](https://github.com/Keyfactor/kfutil) check out the [docs](https://github.com/Keyfactor/kfutil?tab=readme-ov-file#quickstart)
+
+#### Using online definition from GitHub:
+This will reach out to GitHub and pull the latest store-type definition
+```shell
+# RFPEM
+kfutil store-types create RFPEM
+```
+
+#### Offline creation using integration-manifest file:
+If required, it is possible to create store types from the [integration-manifest.json](./integration-manifest.json) included in this repo.
+You would first download the [integration-manifest.json](./integration-manifest.json) and then run the following command
+in your offline environment.
+```shell
+kfutil store-types create --from-file integration-manifest.json
+```
+
+### Manual Creation
+If you do not wish to use the `kfutil` CLI then certificate store types can be creating in the web UI as described below.
 
 * **Create RFPEM manually in the Command UI**:
     <details><summary>Create RFPEM manually in the Command UI</summary>
@@ -347,18 +434,43 @@ The Remote File Universal Orchestrator extension implements 6 Certificate Store 
 
 
 
-
 </details>
 
 <details><summary>RFPkcs12 (RFPkcs12)</summary>
 
 
-* **Create RFPkcs12 using kfutil**:
 
-    ```shell
-    # RFPkcs12
-    kfutil store-types create RFPkcs12
-    ```
+### Supported Operations
+
+| Operation    | Is Supported                                                                                                           |
+|--------------|------------------------------------------------------------------------------------------------------------------------|
+| Add          | ✅ Checked        |
+| Remove       | ✅ Checked     |
+| Discovery    | ✅ Checked  |
+| Reenrollment | 🔲 Unchecked |
+| Create       | ✅ Checked     |
+
+### Creation Using kfutil:
+`kfutil` is a custom CLI for the Keyfactor Command API and can be used to created certificate store types.
+For more information on [kfutil](https://github.com/Keyfactor/kfutil) check out the [docs](https://github.com/Keyfactor/kfutil?tab=readme-ov-file#quickstart)
+
+#### Using online definition from GitHub:
+This will reach out to GitHub and pull the latest store-type definition
+```shell
+# RFPkcs12
+kfutil store-types create RFPkcs12
+```
+
+#### Offline creation using integration-manifest file:
+If required, it is possible to create store types from the [integration-manifest.json](./integration-manifest.json) included in this repo.
+You would first download the [integration-manifest.json](./integration-manifest.json) and then run the following command
+in your offline environment.
+```shell
+kfutil store-types create --from-file integration-manifest.json
+```
+
+### Manual Creation
+If you do not wish to use the `kfutil` CLI then certificate store types can be creating in the web UI as described below.
 
 * **Create RFPkcs12 manually in the Command UI**:
     <details><summary>Create RFPkcs12 manually in the Command UI</summary>
@@ -420,18 +532,43 @@ The Remote File Universal Orchestrator extension implements 6 Certificate Store 
 
 
 
-
 </details>
 
 <details><summary>RFDER (RFDER)</summary>
 
 
-* **Create RFDER using kfutil**:
 
-    ```shell
-    # RFDER
-    kfutil store-types create RFDER
-    ```
+### Supported Operations
+
+| Operation    | Is Supported                                                                                                           |
+|--------------|------------------------------------------------------------------------------------------------------------------------|
+| Add          | ✅ Checked        |
+| Remove       | ✅ Checked     |
+| Discovery    | ✅ Checked  |
+| Reenrollment | 🔲 Unchecked |
+| Create       | ✅ Checked     |
+
+### Creation Using kfutil:
+`kfutil` is a custom CLI for the Keyfactor Command API and can be used to created certificate store types.
+For more information on [kfutil](https://github.com/Keyfactor/kfutil) check out the [docs](https://github.com/Keyfactor/kfutil?tab=readme-ov-file#quickstart)
+
+#### Using online definition from GitHub:
+This will reach out to GitHub and pull the latest store-type definition
+```shell
+# RFDER
+kfutil store-types create RFDER
+```
+
+#### Offline creation using integration-manifest file:
+If required, it is possible to create store types from the [integration-manifest.json](./integration-manifest.json) included in this repo.
+You would first download the [integration-manifest.json](./integration-manifest.json) and then run the following command
+in your offline environment.
+```shell
+kfutil store-types create --from-file integration-manifest.json
+```
+
+### Manual Creation
+If you do not wish to use the `kfutil` CLI then certificate store types can be creating in the web UI as described below.
 
 * **Create RFDER manually in the Command UI**:
     <details><summary>Create RFDER manually in the Command UI</summary>
@@ -494,18 +631,43 @@ The Remote File Universal Orchestrator extension implements 6 Certificate Store 
 
 
 
-
 </details>
 
 <details><summary>RFKDB (RFKDB)</summary>
 
 
-* **Create RFKDB using kfutil**:
 
-    ```shell
-    # RFKDB
-    kfutil store-types create RFKDB
-    ```
+### Supported Operations
+
+| Operation    | Is Supported                                                                                                           |
+|--------------|------------------------------------------------------------------------------------------------------------------------|
+| Add          | ✅ Checked        |
+| Remove       | ✅ Checked     |
+| Discovery    | ✅ Checked  |
+| Reenrollment | 🔲 Unchecked |
+| Create       | ✅ Checked     |
+
+### Creation Using kfutil:
+`kfutil` is a custom CLI for the Keyfactor Command API and can be used to created certificate store types.
+For more information on [kfutil](https://github.com/Keyfactor/kfutil) check out the [docs](https://github.com/Keyfactor/kfutil?tab=readme-ov-file#quickstart)
+
+#### Using online definition from GitHub:
+This will reach out to GitHub and pull the latest store-type definition
+```shell
+# RFKDB
+kfutil store-types create RFKDB
+```
+
+#### Offline creation using integration-manifest file:
+If required, it is possible to create store types from the [integration-manifest.json](./integration-manifest.json) included in this repo.
+You would first download the [integration-manifest.json](./integration-manifest.json) and then run the following command
+in your offline environment.
+```shell
+kfutil store-types create --from-file integration-manifest.json
+```
+
+### Manual Creation
+If you do not wish to use the `kfutil` CLI then certificate store types can be creating in the web UI as described below.
 
 * **Create RFKDB manually in the Command UI**:
     <details><summary>Create RFKDB manually in the Command UI</summary>
@@ -567,18 +729,43 @@ The Remote File Universal Orchestrator extension implements 6 Certificate Store 
 
 
 
-
 </details>
 
 <details><summary>RFORA (RFORA)</summary>
 
 
-* **Create RFORA using kfutil**:
 
-    ```shell
-    # RFORA
-    kfutil store-types create RFORA
-    ```
+### Supported Operations
+
+| Operation    | Is Supported                                                                                                           |
+|--------------|------------------------------------------------------------------------------------------------------------------------|
+| Add          | ✅ Checked        |
+| Remove       | ✅ Checked     |
+| Discovery    | ✅ Checked  |
+| Reenrollment | 🔲 Unchecked |
+| Create       | ✅ Checked     |
+
+### Creation Using kfutil:
+`kfutil` is a custom CLI for the Keyfactor Command API and can be used to created certificate store types.
+For more information on [kfutil](https://github.com/Keyfactor/kfutil) check out the [docs](https://github.com/Keyfactor/kfutil?tab=readme-ov-file#quickstart)
+
+#### Using online definition from GitHub:
+This will reach out to GitHub and pull the latest store-type definition
+```shell
+# RFORA
+kfutil store-types create RFORA
+```
+
+#### Offline creation using integration-manifest file:
+If required, it is possible to create store types from the [integration-manifest.json](./integration-manifest.json) included in this repo.
+You would first download the [integration-manifest.json](./integration-manifest.json) and then run the following command
+in your offline environment.
+```shell
+kfutil store-types create --from-file integration-manifest.json
+```
+
+### Manual Creation
+If you do not wish to use the `kfutil` CLI then certificate store types can be creating in the web UI as described below.
 
 * **Create RFORA manually in the Command UI**:
     <details><summary>Create RFORA manually in the Command UI</summary>
@@ -641,7 +828,6 @@ The Remote File Universal Orchestrator extension implements 6 Certificate Store 
 
 
 
-
 </details>
 
 
@@ -692,99 +878,33 @@ The Remote File Universal Orchestrator extension implements 6 Certificate Store 
 
 ## Post Installation
 
-The Remote File Orchestrator Extension uses a JSON configuration file.  It is located in the {Keyfactor Orchestrator Installation Folder}\Extensions\RemoteFile.  None of the values are required, and a description of each follows below:  
-{  
-   "UseSudo": "N",  
-   "DefaultSudoImpersonatedUser": "",  
-   "CreateStoreIfMissing": "N",  
-   "UseNegotiate": "N",  
-   "SeparateUploadFilePath": "",  
-   "FileTransferProtocol":  "SCP",  
-   "DefaultLinuxPermissionsOnStoreCreation": "600",  
-   "DefaultOwnerOnStoreCreation": "",
-   "SSHPort": ""
-}  
+The Remote File Orchestrator Extension uses a JSON configuration file. It is located in the `{Keyfactor Orchestrator Installation Folder}\Extensions\RemoteFile`. None of the values are required, and a description of each follows below:
 
-<details>
-<summary><b>UseSudo</b> (Applicable for Linux hosted certificate stores only)</summary>
+```json
+{
+  "UseSudo": "N",
+  "DefaultSudoImpersonatedUser": "",
+  "CreateStoreIfMissing": "N",
+  "UseNegotiate": "N",
+  "SeparateUploadFilePath": "",
+  "FileTransferProtocol": "SCP",
+  "DefaultLinuxPermissionsOnStoreCreation": "600",
+  "DefaultOwnerOnStoreCreation": "",
+  "SSHPort": ""
+}
+``` 
 
-* Determines whether to prefix Linux command with "sudo". This can be very helpful in ensuring that the user id running commands over an ssh connection uses "least permissions necessary" to process each task. Setting this value to "Y" will prefix all Linux commands with "sudo" with the expectation that the command being executed on the orchestrated Linux server will look in the sudoers file to determine whether the logged in ID has elevated permissions for that specific command. Setting this value to "N" will result in "sudo" not being added to Linux commands.  
-* Allowed values - Y/N  
-* Default value - N  
-
-</details>  
-
-<details>
-<summary><b>DefaultSudoImpersonatedUser</b> (Applicable for Linux hosted certificate stores only)</summary>
-
-* Used in conjunction with UseSudo="Y", this optional setting can be used to set an alternate user id you wish to impersonate with sudo.  If this option does not exist or is set to an empty string, the default user of "root" will be used.  Any user id used here must have permissions to SCP/SFTP files to/from each certificate store location OR the SeparateUploadFilePath (see later in this section) as well as permissions to execute the commands listed in the "Prerequisites and Security Considerations" section above.  This value will be used for all certificate stores managed by this orchestrator extension implementation UNLESS overriden by the SudoImpersonatedUser certificate store type custom field setting described later in the [Creating Certificate Store Types](#creating-certificate-store-types) section.
-* Allowed values - Any valid user id that the destination Linux server will recognize
-* Default value - blank (root will be used)
-
-</details>
-
-<details>  
-<summary><b>CreateStoreOnAddIfMissing</b></summary>
-
-* Determines, during a Management-Add job, if a certificate store should be created if it does not already exist.  If set to "N", and the store referenced in the Management-Add job is not found, the job will return an error with a message stating that the store does not exist.  If set to "Y", the store will be created and the certificate added to the certificate store.
-* Allowed values - Y/N  
-* Default value - N  
-
-</details>  
-
-<details>  
-<summary><b>UseNegotiateAuth</b> (Applicable for Windows hosted certificate stores only)</summary>
-
-* Determines if WinRM should use Negotiate (Y) when connecting to the remote server.
-* Allowed values - Y/N  
-* Default value - N  
-
-</details>  
-
-<details>  
-<summary><b>SeparateUploadFilePath</b> (Applicable for Linux hosted certificate stores only)</summary>
-
-* Set this to the path you wish to use as the location on the orchestrated server to upload/download and later remove temporary work files when processing jobs.  If set to "" or not provided, the location of the certificate store itself will be used.  File transfer is performed using the SCP or SFTP protocols (see the File TransferProtocol setting).
-* Allowed values - Any valid, existing Linux path configured to allow SCP/SFTP file upload/download tranfers.
-* Default value - blank (actual store path will be used)
-
-</details>
-
-<details>  
-<summary><b>FileTransferProtocol</b> (Applicable for Linux hosted certificate stores only)</summary>
-
-* Determines the protocol to use when uploading/downloading files while processing a job.
-* Allowed values - SCP, SFTP or Both.  If "Both" is entered, SCP will be attempted first, and if that does not work, SFTP will be tried.
-* Default value - SCP. 
-
-</details>
-
-<details>  
-<summary><b>DefaultLinuxPermissionsOnStoreCreation</b> (Applicable for Linux hosted certificate stores only)</summary>
-
-* The Linux file permissions that will be set on a new certificate store created via a Management Create job or a Management Add job where CreateStoreOnAddIsMissing is set to "Y".  This value will be used for all certificate stores managed by this orchestrator instance unless overridden by the optional "Linux File Permissions on Store Creation" custom parameter setting on a specific certificate store.  See the [Creating Certificate Store Types](#creating-certificate-store-types) section for more information on creating RemoteFile certificate store types.
-* Allowed values - Any 3 digit value from 000-777.
-* Default Value - blank (if this and the LinuxFilePermissionsOnStoreCreation certificate store setting are both left blank, the permissions on the parent folder will be used).   
-
-</details>
-
-<details>  
-<summary><b>DefaultOwnerOnStoreCreation</b> (Applicable for Linux hosted certificate stores only)</summary>
-
-* When a Management job is run to remotely create the physical certificate store on a remote server, by default the file owner and group will be set to the user name associated with the Keyfactor certificate store.  Setting DefaultOwnerOnStoreCreation to an alternate valid Linux user name will set that as the owner instead.  The owner AND group may be supplied by adding a ":" as a delimitter between the owner and group values, such as ownerId:groupId.  Supplying only the ownerId will set that value as the file owner.  The group name will default to how the Linux "install" command handles assigning the group.  The optional "Linux File Owner on Store Creation" custom parameter setting for a specific certificate store can override this value for a specific store.  See the [Creating Certificate Store Types](#creating-certificate-store-types) section for more information on creating RemoteFile certificate store types.
-* Allowed values - Any valid user id that the destination Linux server will recognize
-* Default Value - blank (if this and the LinuxFileOwnerOnStoreCreation certificate store setting are both left blank, the owner of the parent folder will be used).  
-
-</details>
-
-<details>  
-<summary><b>SSHPort</b> (Applicable for Linux hosted certificate stores only)</summary>
-
-* This optional value should be an integer value representing the port that SSH is listening on
-* Allowed values - Any valid integer representing a valid port
-* Default Value - 22.  
-
-</details>
+| Key                                      | Default Value | Allowed Values                        | Description                                                                                                                                                                                                                                              |
+|------------------------------------------|---------------|---------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `UseSudo`                                | `N`           | `Y/N`                                 | Determines whether to prefix Linux commands with `sudo`. Setting to `Y` will prefix all Linux commands with `sudo`. Setting to `N` will not add `sudo` to Linux commands. Only applicable for Linux hosted certificate stores.                           |
+| `DefaultSudoImpersonatedUser`            |               | Any valid user id                     | Used with UseSudo=`Y` to set an alternate user to impersonate with sudo. If empty, `root` will be used by default. The user must have permissions to SCP/SFTP files and execute necessary commands. Only applicable for Linux hosted certificate stores. |
+| `CreateStoreIfMissing`                   | `N`           | `Y/N`                                 | Determines if a certificate store should be created during a Management-Add job if it doesn't exist. If `N`, the job will return an error. If `Y`, the store will be created and the certificate added.                                                  |
+| `UseNegotiate`                           | `N`           | `Y/N`                                 | Determines if WinRM should use Negotiate (Y) when connecting to the remote server. Only applicable for Windows hosted certificate stores.                                                                                                                |
+| `SeparateUploadFilePath`                 |               | Any valid, existing Linux path        | Path on the orchestrated server for uploading/downloading temporary work files. If empty, the certificate store location will be used. Only applicable for Linux hosted certificate stores.                                                              |
+| `FileTransferProtocol`                   | `SCP`         | `SCP, SFTP, Both`                     | Protocol used for uploading/downloading files. If `Both`, `SCP` will be tried first, then `SFTP`. Only applicable for Linux hosted certificate stores.                                                                                                   |
+| `DefaultLinuxPermissionsOnStoreCreation` | `600`         | Any 3-digit value from 000-777        | Linux file permissions set on new certificate stores. If blank, permissions from the parent folder will be used. Only applicable for Linux hosted certificate stores.                                                                                    |
+| `DefaultOwnerOnStoreCreation`            |               | Any valid user id                     | Sets the owner for newly created certificate stores. Can include group with format `ownerId:groupId`. If blank, the owner of the parent folder will be used. Only applicable for Linux hosted certificate stores.                                        |
+| `SSHPort`                                |               | Any valid integer representing a port | The port that SSH is listening on. Default is 22. Only applicable for Linux hosted certificate stores.                                                                                                                                                   |
 
 
 ## Defining Certificate Stores
@@ -1362,35 +1482,17 @@ The Remote File Universal Orchestrator extension implements 6 Certificate Store 
 </details>
 
 ## Discovering Certificate Stores with the Discovery Job
-When scheduling discovery jobs in Keyfactor Command, there are a few fields that are important to highlight here:  
+When scheduling discovery jobs in Keyfactor Command, there are a few fields that are important to highlight here:
 
-<details>
-<summary>Client Machine</summary>
+| Field                    | Description                                                                                                                                                                                                                                                                                                                                           |
+|--------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Client Machine           | The IP address or DNS of the server hosting the certificate store. For more information, see [Client Machine](#client-machine-instructions)                                                                                                                                                                                                           |
+| Server Username/Password | A username and password (or valid PAM key if the username and/or password is stored in a KF Command configured PAM integration). The password can be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check `No Value` for the username and password. |
+| Directories to Search    | Enter one or more comma delimited file paths to search. A special value `fullscan` can be used on Windows orchestrated servers to search all available drive letters at the root and recursively search all of them for files matching the other search criteria.                                                                                     |
+| Extensions               | Enter one or more comma delimited extensions to search for. A reserved value of `noext` can be used to search for files without an extension. This can be combined with other extensions (e.g., pem,jks,noext will find files with .pem and .jks extensions, as well as files with no extension).                                                     |
 
-The IP address or DNS of the server hosting the certificate store.  For more information, see [Client Machine ](#client-machine-instructions)
-
-</details>
-<details>
-<summary>Server Username/Password</summary>
-
-A username and password (or valid PAM key if the username and/or password is stored in a KF Command configured PAM integration).  The password can be an SSH private key if connecting via SSH to a server using SSH private key authentication.  If acting as an *agent* using local file access, just check "No Value" for the username and password.
-
-</details>
-<details>
-<summary>Directories to Search</summary>
-
-Enter one or more comma delimitted file paths to search (please reference the Keyfactor Command Reference Guide for more information), but there is also a special value that can be used on Windows orchestrated servers instead - "fullscan".  Entering fullscan in this field will tell the RemoteFile discovery job to search all available drive letters at the root and recursively search all of them for files matching the other search criteria.
-
-</details>
-
-<details>
-<summary>Extensions</summary>
-
-In addition to entering one or more comma delimitted extensions to search for (please reference the Keyfactor Command Reference Guide for more information), a reserved value of "noext" can be used that will cause the RemoteFile discovery job to search for files that do not have an extension.  This value can be chained with other extensions using the comma delimiter.  For example, entering pem,jks,noext will cause the RemoteFile discovery job to return file locations with extensions of "pem", "jks", *and* files that do not have extensions.  
-
-</details>
-
-Please refer to the Keyfactor Command Reference Guide for complete information on creating certificate stores and scheduling discovery jobs in Keyfactor Command.
+Please refer to the Keyfactor Command Reference Guide for complete information on creating certificate stores and
+scheduling discovery jobs in Keyfactor Command.
 
 
 
@@ -1402,33 +1504,72 @@ Please refer to the Keyfactor Command Reference Guide for complete information o
 
 ## Client Machine Instructions
 
-When creating a Certificate Store or scheduling a Discovery Job, you will be asked to provide a "Client Machine".
+When creating a Certificate Store or scheduling a Discovery Job, you will be asked to provide a `Client Machine`.
 
-For Linux orchestrated servers, "Client Machine" should be the DNS name or IP address of the remote orchestrated server, while for Windows orchestratred servers, it should be the following URL format: protocol://dns-or-ip:port, where
-* protocol is http or https, whatever your WinRM configuration uses
-* dns-or-ip is the DNS name or IP address of the server
-* port is the port WinRM is running under, usually 5985 for http and 5986 for https.
+### Linux
+
+For Linux orchestrated servers, `Client Machine` should be the DNS name or IP address of the remote orchestrated server.
+
+### Windows
+
+For Windows orchestrated servers, it should be the following URL format: `protocol://dns-or-ip:port`.
+
+| Component   | Description                               | Common Value                  |
+|-------------|-------------------------------------------|-------------------------------|
+| `protocol`  | Protocol used by your WinRM configuration | http or https                 |
+| `dns-or-ip` | DNS name or IP address of the server      | domain name or IP address     |
+| `port`      | Port WinRM is running under               | 5985 for http, 5986 for https |
 
 Example: https://myserver.mydomain.com:5986
 
-If running as an agent (accessing stores on the server where the Universal Orchestrator Services is installed ONLY), Client Machine can be entered as stated above, OR you can bypass SSH/WinRM and access the local file system directly by adding "|LocalMachine" to the end of your value for Client Machine, for example "1.1.1.1|LocalMachine".  In this instance the value to the left of the pipe (|) is ignored.  It is important to make sure the values for Client Machine and Store Path together are unique for each certificate store created, as Keyfactor Command requires the Store Type you select, along with Client Machine, and Store Path together must be unique.  To ensure this, it is good practice to put the full DNS or IP Address to the left of the | character when setting up a cerificate store that will accessed without a WinRM/SSH connection.
+### Localhost
+
+For agent mode (accessing stores on the same server where Universal Orchestrator Services is running):
+
+1. Add `|LocalMachine` to the Client Machine value to bypass SSH/WinRM and access the local file system directly
+    - Examples: `1.1.1.1|LocalMachine`, `hostname|LocalMachine`
+    - The value to the left of the pipe `|` will not be used for connectivity but will be used as part of the
+      Certificate Store definition in Keyfactor Command
+
+2. Important considerations:
+    - `Store Type` + `Client Machine` + `Store Path` must be unique in Keyfactor Command
+    - Best practice: Use the full DNS or IP Address to the left of the `|` character
 
 ## Developer Notes
 
-The Remote File Orchestrator Extension is designed to be highly extensible, enabling its use with various file-based certificate stores beyond the specific implementations currently referenced above.  The advantage to extending this integration rather than creating a new one is that the configuration, remoting, and Inventory/Management/Discovery logic is already written.  The developer needs to only implement a few classes and write code to convert the destired file based store to a common format.  This section describes the steps necessary to add additional store/file types.  Please note that familiarity with the [.Net Core BouncyCastle cryptography library](https://github.com/bcgit/bc-csharp) is a prerequisite for adding additional supported file/store types.  
+The Remote File Orchestrator Extension is designed to be highly extensible, enabling its use with various file-based
+certificate stores beyond the specific implementations currently referenced above. The advantage to extending this
+integration rather than creating a new one is that the configuration, remoting, and Inventory/Management/Discovery logic
+is already written. The developer needs to only implement a few classes and write code to convert the desired file-based 
+store to a common format. This section describes the steps necessary to add additional store/file types. Please
+note that familiarity with the [.Net Core BouncyCastle cryptography library](https://github.com/bcgit/bc-csharp) is a
+prerequisite for adding additional supported file/store types.
 
-Steps to create a new supported file based certificate store type:
+Steps to create a new supported file-based certificate store type:
 
 1. Clone this repository from GitHub
 2. Open the .net core solution in the IDE of your choice
 3. Under the ImplementationStoreTypes folder, create a new folder named for the new certificate store type
-4. Create a new class (with namespace of Keyfactor.Extensions.Orchestrator.RemoteFile.{NewType}) in the new folder that will implement ICertificateStoreSerializer.  By convention, {StoreTypeName}CertificateSerializer would be a good choice for the class name.  This interface requires you to implement three methods:
-    - DesrializeRemoteCertificateStore - This method takes in a byte array containing the contents of file based store you are managing.  The developer will need to convert that to an Org.BouncyCastle.Pkcs.Pkcs12Store class and return it. 
-    - SerializeRemoteCertificateStore - This method takes in an Org.BouncyCastle.Pkcs.Pkcs12Store and converts it to a collection of custom file representations.  
-    - GetPrivateKeyPath - This method returns the location of the external private key file for single certificate stores.  Currently this is only used for RFPEM, and all other implementations return NULL for this method.  If this is not applicable to your implementation just return a NULL value for this method. 
-5. Create an Inventory.cs class (with namespace of Keyfactor.Extensions.Orchestrator.RemoteFile.{NewType}) under the new folder and have it inherit InventoryBase.  Override the internal GetCertificateStoreSerializer() method with a one line implementation returning a new instantiation of the class created in step 4.
-6. Create a Management.cs class (with namespace of Keyfactor.Extensions.Orchestrator.RemoteFile.{NewType}) under the new folder and have it inherit ManagementBase.  Override the internal GetCertificateStoreSerializer() method with a one line implementation returning a new instantiation of the class created in step 4.
-7. Modify the manifest.json file to add three new sections (for Inventory, Management, and Discovery).  Make sure for each, the "NewType" in Certstores.{NewType}.{Operation}, matches what you will use for the certificate store type short name in Keyfactor Command.  On the "TypeFullName" line for all three sections, make sure the namespace matches what you used for your new classes.  Note that the namespace for Discovery uses a common class for all supported types.  Discovery is a common implementation for all supported store types.
+4. Create a new class (with namespace of Keyfactor.Extensions.Orchestrator.RemoteFile.{NewType}) in the new folder that
+   will implement ICertificateStoreSerializer. By convention, {StoreTypeName}CertificateSerializer would be a good
+   choice for the class name. This interface requires you to implement three methods:
+    - `DesrializeRemoteCertificateStore` - This method takes in a byte array containing the contents of file-based store
+      you are managing. The developer will need to convert that to an Org.BouncyCastle.Pkcs.Pkcs12Store class and return
+      it.
+    - `SerializeRemoteCertificateStore` - This method takes in an Org.BouncyCastle.Pkcs.Pkcs12Store and converts it to a
+      collection of custom file representations.
+    - `GetPrivateKeyPath` - This method returns the location of the external private key file for single certificate
+      stores. This is only used for `RFPEM`, and all other implementations return `NULL` for this method. If this
+      is not applicable to your implementation, just return a `NULL` value for this method.
+5. Create an `Inventory.cs` class (with namespace of `Keyfactor.Extensions.Orchestrator.RemoteFile.{NewType}`) under the new
+   folder and have it inherit `InventoryBase`. Override the internal `GetCertificateStoreSerializer()` method with a one-line implementation returning a new instantiation of the class created in step 4.
+6. Create a `Management.cs` class (with namespace of `Keyfactor.Extensions.Orchestrator.RemoteFile.{NewType}`) under the new
+   folder and have it inherit `ManagementBase`. Override the internal `GetCertificateStoreSerializer()` method with a one-line implementation returning a new instantiation of the class created in step 4.
+7. Modify the manifest.json file to add three new sections (for Inventory, Management, and Discovery). Make sure for
+   each, the `NewType` in Certstores.{NewType}.{Operation}, matches what you will use for the certificate store type
+   short name in Keyfactor Command. On the `TypeFullName` line for all three sections, make sure the namespace matches
+   what you used for your new classes. Note that the namespace for Discovery uses a common class for all supported
+   types. Discovery is a common implementation for all supported store types.
 8. Modify the integration-manifest.json file to add the new store type under the store_types element.
 
 

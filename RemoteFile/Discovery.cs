@@ -58,7 +58,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
 
                 ApplicationSettings.Initialize(this.GetType().Assembly.Location);
 
-                certificateStore = new RemoteCertificateStore(config.ClientMachine, userName, userPassword, directoriesToSearch[0].Substring(0, 1) == "/" ? RemoteCertificateStore.ServerTypeEnum.Linux : RemoteCertificateStore.ServerTypeEnum.Windows, ApplicationSettings.SSHPort);
+                certificateStore = new RemoteCertificateStore(config.ClientMachine, userName, userPassword, ApplicationSettings.SSHPort);
                 certificateStore.Initialize(ApplicationSettings.DefaultSudoImpersonatedUser);
 
                 if (directoriesToSearch.Length == 0)
