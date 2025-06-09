@@ -79,7 +79,8 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
                         logger.LogDebug($"BEGIN create Operation for {config.CertificateStoreDetails.StorePath} on {config.CertificateStoreDetails.ClientMachine}.");
                         if (certificateStore.DoesStoreExist())
                         {
-                            throw new RemoteFileException($"Certificate store {config.CertificateStoreDetails.StorePath} already exists.");
+                            logger.LogWarning($"Certificate store {config.CertificateStoreDetails.StorePath} already exists.");
+                            return new JobResult() { Result = OrchestratorJobStatusJobResult.Warning, JobHistoryId = config.JobHistoryId, FailureMessage = $"Certificate store {config.CertificateStoreDetails.StorePath} already exists.  Site {config.CertificateStoreDetails.StorePath} on server {config.CertificateStoreDetails.ClientMachine}" };
                         }
                         else
                         {
