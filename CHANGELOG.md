@@ -1,3 +1,9 @@
+v2.11.3
+- Change returned result of a Management-Create job for a store that already exists from 'Failure' to 'Warning'
+
+v2.11.2
+- Documentation updates
+
 v2.11.1
 - Bug Fix: added ability to set SSH port when managing Linux servers to Discovery jobs
 - Added "@" as a valid character for Linux file paths
