@@ -158,14 +158,14 @@ Please consult with your system administrator for more information on configurin
 
 ## Certificate Store Types
 
-To use the Remote File Universal Orchestrator extension, you **must** create the Certificate Store Types required for your usecase. This only needs to happen _once_ per Keyfactor Command instance.
+To use the Remote File Universal Orchestrator extension, you **must** create the Certificate Store Types required for your use-case. This only needs to happen _once_ per Keyfactor Command instance.
 
 The Remote File Universal Orchestrator extension implements 6 Certificate Store Types. Depending on your use case, you may elect to use one, or all of these Certificate Store Types.
 
 ### RFJKS
 
-
 <details><summary>Click to expand details</summary>
+
 
 The `RFJKS` store type can be used to manage java keystores of types `JKS` or `PKCS12`.  If creating a new java keystore 
 and adding a certificate all via Keyfactor Command, the created java keystore will be of type `PKCS12`, as java keystores 
@@ -175,6 +175,8 @@ of type `JKS` have been deprecated as of `JDK 9`.
 1. One-to-many trust entries - A trust entry is defined as a single certificate without a private key in a certificate store.  Each trust entry is identified with a custom alias.
 2. One-to-many key entries - One-to-many certificates with private keys and optionally the full certificate chain.  Each certificate is identified with a custom alias.
 3. A mix of trust and key entries.
+
+
 
 
 #### Supported Operations
@@ -190,7 +192,7 @@ of type `JKS` have been deprecated as of `JDK 9`.
 #### Store Type Creation
 
 ##### Using kfutil:
-`kfutil` is a custom CLI for the Keyfactor Command API and can be used to created certificate store types.
+`kfutil` is a custom CLI for the Keyfactor Command API and can be used to create certificate store types.
 For more information on [kfutil](https://github.com/Keyfactor/kfutil) check out the [docs](https://github.com/Keyfactor/kfutil?tab=readme-ov-file#quickstart)
    <details><summary>Click to expand RFJKS kfutil details</summary>
 
@@ -271,14 +273,13 @@ the Keyfactor Command Portal
 
    ![RFJKS Custom Fields Tab](docsource/images/RFJKS-custom-fields-store-type-dialog.png)
 
-
    </details>
 </details>
 
 ### RFPEM
 
-
 <details><summary>Click to expand details</summary>
+
 
 The `RFPEM` store type can be used to manage `PEM` encoded files.
 
@@ -295,6 +296,8 @@ The `RFPEM` store type can be used to manage `PEM` encoded files.
 - Store password *MUST* be set to `No Password` if managing a store with a `PKCS#1` private key, as encrypted `PKCS#1` keys are not supported with this integration.
 
 
+
+
 #### Supported Operations
 
 | Operation    | Is Supported                                                                                                           |
@@ -308,7 +311,7 @@ The `RFPEM` store type can be used to manage `PEM` encoded files.
 #### Store Type Creation
 
 ##### Using kfutil:
-`kfutil` is a custom CLI for the Keyfactor Command API and can be used to created certificate store types.
+`kfutil` is a custom CLI for the Keyfactor Command API and can be used to create certificate store types.
 For more information on [kfutil](https://github.com/Keyfactor/kfutil) check out the [docs](https://github.com/Keyfactor/kfutil?tab=readme-ov-file#quickstart)
    <details><summary>Click to expand RFPEM kfutil details</summary>
 
@@ -393,14 +396,13 @@ the Keyfactor Command Portal
 
    ![RFPEM Custom Fields Tab](docsource/images/RFPEM-custom-fields-store-type-dialog.png)
 
-
    </details>
 </details>
 
 ### RFPkcs12
 
-
 <details><summary>Click to expand details</summary>
+
 
 The `RFPkcs12` store type can be used to manage any `PKCS#12` compliant file format INCLUDING java keystores of type `PKCS12`.
 
@@ -413,6 +415,8 @@ The `RFPkcs12` store type can be used to manage any `PKCS#12` compliant file for
 #### Unsupported use cases
 1. Multiple key and/or trust entries with a mix of existing and non-existing friendly names/aliases.
 2. Multiple key and/or trust entries with blank friendly names/aliases
+
+
 
 
 #### Supported Operations
@@ -428,7 +432,7 @@ The `RFPkcs12` store type can be used to manage any `PKCS#12` compliant file for
 #### Store Type Creation
 
 ##### Using kfutil:
-`kfutil` is a custom CLI for the Keyfactor Command API and can be used to created certificate store types.
+`kfutil` is a custom CLI for the Keyfactor Command API and can be used to create certificate store types.
 For more information on [kfutil](https://github.com/Keyfactor/kfutil) check out the [docs](https://github.com/Keyfactor/kfutil?tab=readme-ov-file#quickstart)
    <details><summary>Click to expand RFPkcs12 kfutil details</summary>
 
@@ -509,20 +513,21 @@ the Keyfactor Command Portal
 
    ![RFPkcs12 Custom Fields Tab](docsource/images/RFPkcs12-custom-fields-store-type-dialog.png)
 
-
    </details>
 </details>
 
 ### RFDER
 
-
 <details><summary>Click to expand details</summary>
+
 
 The `RFDER` store type can be used to manage DER encoded files.
 
 #### Supported use cases
 1. Single certificate stores with private key in an external file.
 2. Single certificate stores with no private key.
+
+
 
 
 #### Supported Operations
@@ -538,7 +543,7 @@ The `RFDER` store type can be used to manage DER encoded files.
 #### Store Type Creation
 
 ##### Using kfutil:
-`kfutil` is a custom CLI for the Keyfactor Command API and can be used to created certificate store types.
+`kfutil` is a custom CLI for the Keyfactor Command API and can be used to create certificate store types.
 For more information on [kfutil](https://github.com/Keyfactor/kfutil) check out the [docs](https://github.com/Keyfactor/kfutil?tab=readme-ov-file#quickstart)
    <details><summary>Click to expand RFDER kfutil details</summary>
 
@@ -620,14 +625,13 @@ the Keyfactor Command Portal
 
    ![RFDER Custom Fields Tab](docsource/images/RFDER-custom-fields-store-type-dialog.png)
 
-
    </details>
 </details>
 
 ### RFKDB
 
-
 <details><summary>Click to expand details</summary>
+
 
 The `RFKDB` store type can be used to manage IBM Key Database Files (`KDB`) files.  The IBM utility, `GSKCAPICMD`, is used 
 to read and write certificates from and to the target store and is therefore required to be installed on the server where 
@@ -637,6 +641,8 @@ each `KDB` certificate store being managed resides, and its location MUST be in 
 1. One-to-many trust entries - A trust entry is defined as a single certificate without a private key in a certificate store.  Each trust entry is identified with a custom alias.
 2. One-to-many key entries - One-to-many certificates with private keys and optionally the full certificate chain.  Each certificate is identified with a custom alias.
 3. A mix of trust and key entries.
+
+
 
 
 #### Supported Operations
@@ -652,7 +658,7 @@ each `KDB` certificate store being managed resides, and its location MUST be in 
 #### Store Type Creation
 
 ##### Using kfutil:
-`kfutil` is a custom CLI for the Keyfactor Command API and can be used to created certificate store types.
+`kfutil` is a custom CLI for the Keyfactor Command API and can be used to create certificate store types.
 For more information on [kfutil](https://github.com/Keyfactor/kfutil) check out the [docs](https://github.com/Keyfactor/kfutil?tab=readme-ov-file#quickstart)
    <details><summary>Click to expand RFKDB kfutil details</summary>
 
@@ -733,14 +739,13 @@ the Keyfactor Command Portal
 
    ![RFKDB Custom Fields Tab](docsource/images/RFKDB-custom-fields-store-type-dialog.png)
 
-
    </details>
 </details>
 
 ### RFORA
 
-
 <details><summary>Click to expand details</summary>
+
 
 The `RFORA` store type can be used to manage `PKCS12` Oracle Wallets. 
 
@@ -751,6 +756,8 @@ The `RFORA` store type can be used to manage `PKCS12` Oracle Wallets.
 1. One-to-many trust entries - A trust entry is defined as a single certificate without a private key in a certificate store.  Each trust entry is identified with a custom alias.
 2. One-to-many key entries - One-to-many certificates with private keys and optionally the full certificate chain.  Each certificate is identified with a custom alias.
 3. A mix of trust and key entries.
+
+
 
 
 #### Supported Operations
@@ -766,7 +773,7 @@ The `RFORA` store type can be used to manage `PKCS12` Oracle Wallets.
 #### Store Type Creation
 
 ##### Using kfutil:
-`kfutil` is a custom CLI for the Keyfactor Command API and can be used to created certificate store types.
+`kfutil` is a custom CLI for the Keyfactor Command API and can be used to create certificate store types.
 For more information on [kfutil](https://github.com/Keyfactor/kfutil) check out the [docs](https://github.com/Keyfactor/kfutil?tab=readme-ov-file#quickstart)
    <details><summary>Click to expand RFORA kfutil details</summary>
 
@@ -847,7 +854,6 @@ the Keyfactor Command Portal
    The Custom Fields tab should look like this:
 
    ![RFORA Custom Fields Tab](docsource/images/RFORA-custom-fields-store-type-dialog.png)
-
 
    </details>
 </details>
@@ -1027,7 +1033,6 @@ Please refer to the **Universal Orchestrator (remote)** usage section ([PAM prov
 </details>
 
 
-
 > The content in this section can be supplemented by the [official Command documentation](https://software.keyfactor.com/Core-OnPrem/Current/Content/ReferenceGuide/Certificate%20Stores.htm?Highlight=certificate%20store).
 
 
@@ -1135,7 +1140,6 @@ Please refer to the **Universal Orchestrator (remote)** usage section ([PAM prov
 </details>
 
 
-
 > The content in this section can be supplemented by the [official Command documentation](https://software.keyfactor.com/Core-OnPrem/Current/Content/ReferenceGuide/Certificate%20Stores.htm?Highlight=certificate%20store).
 
 
@@ -1233,7 +1237,6 @@ Please refer to the **Universal Orchestrator (remote)** usage section ([PAM prov
 > Any secret can be rendered by a PAM provider _installed on the Keyfactor Command server_. The above parameters are specific to attributes that can be fetched by an installed PAM provider running on the Universal Orchestrator server itself.
 
 </details>
-
 
 
 > The content in this section can be supplemented by the [official Command documentation](https://software.keyfactor.com/Core-OnPrem/Current/Content/ReferenceGuide/Certificate%20Stores.htm?Highlight=certificate%20store).
@@ -1337,7 +1340,6 @@ Please refer to the **Universal Orchestrator (remote)** usage section ([PAM prov
 </details>
 
 
-
 > The content in this section can be supplemented by the [official Command documentation](https://software.keyfactor.com/Core-OnPrem/Current/Content/ReferenceGuide/Certificate%20Stores.htm?Highlight=certificate%20store).
 
 
@@ -1435,7 +1437,6 @@ Please refer to the **Universal Orchestrator (remote)** usage section ([PAM prov
 > Any secret can be rendered by a PAM provider _installed on the Keyfactor Command server_. The above parameters are specific to attributes that can be fetched by an installed PAM provider running on the Universal Orchestrator server itself.
 
 </details>
-
 
 
 > The content in this section can be supplemented by the [official Command documentation](https://software.keyfactor.com/Core-OnPrem/Current/Content/ReferenceGuide/Certificate%20Stores.htm?Highlight=certificate%20store).
@@ -1537,7 +1538,6 @@ Please refer to the **Universal Orchestrator (remote)** usage section ([PAM prov
 > Any secret can be rendered by a PAM provider _installed on the Keyfactor Command server_. The above parameters are specific to attributes that can be fetched by an installed PAM provider running on the Universal Orchestrator server itself.
 
 </details>
-
 
 
 > The content in this section can be supplemented by the [official Command documentation](https://software.keyfactor.com/Core-OnPrem/Current/Content/ReferenceGuide/Certificate%20Stores.htm?Highlight=certificate%20store).
