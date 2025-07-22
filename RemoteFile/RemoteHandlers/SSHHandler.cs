@@ -260,8 +260,14 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
 
             bool scpError = false;
 
+            _logger.LogDebug($"Download path: {downloadPath}");
+            _logger.LogDebug($"IsStoreServerLinux: {IsStoreServerLinux}");
+            _logger.LogDebug($"FileTransferProtocol: {FileTransferProtocol}");
+            bool attemptedDownload = false;
+            
             if (FileTransferProtocol == ApplicationSettings.FileTransferProtocolEnum.Both || FileTransferProtocol == ApplicationSettings.FileTransferProtocolEnum.SCP)
             {
+                _logger.LogDebug($"Attempting SCP download...");
                 using (ScpClient client = new ScpClient(Connection))
                 {
                     try
@@ -288,6 +294,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
                     }
                     finally
                     {
+                        attemptedDownload = true;
                         client.Disconnect();
                     }
                 }
@@ -295,6 +302,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
 
             if ((FileTransferProtocol == ApplicationSettings.FileTransferProtocolEnum.Both && scpError) || FileTransferProtocol == ApplicationSettings.FileTransferProtocolEnum.SFTP)
             {
+                _logger.LogDebug($"Attempting SFTP download...");
                 using (SftpClient client = new SftpClient(Connection))
                 {
                     try
@@ -317,9 +325,16 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
                     }
                     finally
                     {
+                        attemptedDownload = true;
                         client.Disconnect();
                     }
                 }
+            }
+            if (!attemptedDownload)
+            {
+                FileTransferProtocol = ApplicationSettings.FileTransferProtocolEnum.Both;
+                _logger.LogDebug($"No download attempted.  Setting FileTransferProtocol to Both and retrying download.");
+                return DownloadCertificateFile(path);
             }
 
             if (!string.IsNullOrEmpty(ApplicationSettings.SeparateUploadFilePath) && IsStoreServerLinux)
