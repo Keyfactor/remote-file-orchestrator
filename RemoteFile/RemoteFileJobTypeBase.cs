@@ -78,12 +78,19 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             {
                 logger.LogDebug($"Attempting to map file transfer protocol from properties. Current Value: {FileTransferProtocol}, Property Value: {properties.FileTransferProtocol.Value}");
                 ApplicationSettings.FileTransferProtocolEnum fileTransferProtocol;
-                if (Enum.TryParse(properties.FileTransferProtocol.Value, out fileTransferProtocol))
+                if (PropertyUtilities.TryEnumParse(properties.FileTransferProtocol.Value, out bool isFlagCombination, out fileTransferProtocol))
                 {
-                    logger.LogDebug("Successfully mapped file transfer protocol from properties");
+                    logger.LogDebug($"Successfully mapped file transfer protocol from properties. Value: {fileTransferProtocol}");
                     FileTransferProtocol = fileTransferProtocol;
                 }
-                    
+
+                // Issue: If received a comma-delimited list ("SCP,SFTP,Both"), it's treating it as a flag combination (i.e. mapping it to 0+1+2=3)
+                // If this happens, we want to default it to Both so it's resolved as a valid mapping.
+                if (isFlagCombination)
+                {
+                    logger.LogWarning($"FileTransferProtocol job property value {properties.FileTransferProtocol.Value} mapped to a flag combination. Setting FileTransferProtocol explicitly to Both.");
+                    FileTransferProtocol = ApplicationSettings.FileTransferProtocolEnum.Both;
+                }
             }
 
             if (config.JobProperties != null)

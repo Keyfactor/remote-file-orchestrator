@@ -5,6 +5,10 @@ VisualStudioVersion = 16.0.31702.278
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RemoteFile", "RemoteFile\RemoteFile.csproj", "{A006BFAB-20F7-4F42-8B5F-591268ACE836}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{856DF77E-EB78-45EB-836F-50C3B017B4C2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RemoteFile.UnitTests", "RemoteFile.UnitTests\RemoteFile.UnitTests.csproj", "{2769EBA9-6C62-4409-B637-FFA86E23749E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,11 +19,18 @@ Global
 		{A006BFAB-20F7-4F42-8B5F-591268ACE836}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A006BFAB-20F7-4F42-8B5F-591268ACE836}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A006BFAB-20F7-4F42-8B5F-591268ACE836}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2769EBA9-6C62-4409-B637-FFA86E23749E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2769EBA9-6C62-4409-B637-FFA86E23749E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2769EBA9-6C62-4409-B637-FFA86E23749E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2769EBA9-6C62-4409-B637-FFA86E23749E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8F3245C7-FCC9-4666-99E0-F8D63BBE8373}
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{2769EBA9-6C62-4409-B637-FFA86E23749E} = {856DF77E-EB78-45EB-836F-50C3B017B4C2}
 	EndGlobalSection
 EndGlobal
