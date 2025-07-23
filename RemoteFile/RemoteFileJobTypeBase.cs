@@ -11,6 +11,7 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using Keyfactor.Logging;
 
 namespace Keyfactor.Extensions.Orchestrator.RemoteFile
 {
@@ -35,6 +36,8 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
 
         internal void SetJobProperties(JobConfiguration config, CertificateStore certificateStoreDetails, ILogger logger)
         {
+            logger.MethodEntry(LogLevel.Debug);
+            
             logger.LogDebug($"Begin {config.Capability} for job id {config.JobId}...");
             logger.LogDebug($"Server: {certificateStoreDetails.ClientMachine}");
             logger.LogDebug($"Store Path: {certificateStoreDetails.StorePath}");
@@ -73,9 +76,21 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             FileTransferProtocol = ApplicationSettings.FileTransferProtocol;
             if (properties.FileTransferProtocol != null && !string.IsNullOrEmpty(properties.FileTransferProtocol.Value))
             {
+                logger.LogDebug($"Attempting to map file transfer protocol from properties. Current Value: {FileTransferProtocol}, Property Value: {properties.FileTransferProtocol.Value}");
                 ApplicationSettings.FileTransferProtocolEnum fileTransferProtocol;
-                if (Enum.TryParse(properties.FileTransferProtocol.Value, out fileTransferProtocol))
+                if (PropertyUtilities.TryEnumParse(properties.FileTransferProtocol.Value, out bool isFlagCombination, out fileTransferProtocol))
+                {
+                    logger.LogDebug($"Successfully mapped file transfer protocol from properties. Value: {fileTransferProtocol}");
                     FileTransferProtocol = fileTransferProtocol;
+                }
+
+                // Issue: If received a comma-delimited list ("SCP,SFTP,Both"), it's treating it as a flag combination (i.e. mapping it to 0+1+2=3)
+                // If this happens, we want to default it to Both so it's resolved as a valid mapping.
+                if (isFlagCombination)
+                {
+                    logger.LogWarning($"FileTransferProtocol job property value {properties.FileTransferProtocol.Value} mapped to a flag combination. Setting FileTransferProtocol explicitly to Both.");
+                    FileTransferProtocol = ApplicationSettings.FileTransferProtocolEnum.Both;
+                }
             }
 
             if (config.JobProperties != null)
@@ -83,7 +98,28 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
                 KeyType = !config.JobProperties.ContainsKey("keyType") || config.JobProperties["keyType"] == null || string.IsNullOrEmpty(config.JobProperties["keyType"].ToString()) ? string.Empty : config.JobProperties["keyType"].ToString();
                 KeySize = !config.JobProperties.ContainsKey("keySize") || config.JobProperties["keySize"] == null || string.IsNullOrEmpty(config.JobProperties["keySize"].ToString()) || !int.TryParse(config.JobProperties["keySize"].ToString(), out int notUsed2) ? 2048 : Convert.ToInt32(config.JobProperties["keySize"]);
                 SubjectText = !config.JobProperties.ContainsKey("subjectText") || config.JobProperties["subjectText"] == null || string.IsNullOrEmpty(config.JobProperties["subjectText"].ToString()) ? string.Empty : config.JobProperties["subjectText"].ToString();
-            }        
+            }
+            
+            logger.LogDebug("Store properties have been configured successfully. Property values:");
+            logger.LogDebug($"UserName: {UserName}");
+            logger.LogDebug($"UserPassword: {LogSensitiveField(UserPassword)}");
+            logger.LogDebug($"StorePassword: {LogSensitiveField(StorePassword)}");
+            logger.LogDebug($"SudoImpersonatedUser: {SudoImpersonatedUser}");
+            logger.LogDebug($"RemoveRootCertificate: {RemoveRootCertificate}");
+            logger.LogDebug($"SSHPort: {SSHPort}");
+            logger.LogDebug($"IncludePortInSPN: {IncludePortInSPN}");
+            logger.LogDebug($"FileTransferProtocol: {FileTransferProtocol}");
+            logger.LogDebug($"CreateCSROnDevice: {CreateCSROnDevice}");
+            logger.LogDebug($"KeyType: {KeyType}");
+            logger.LogDebug($"KeySize: {KeySize}");
+            logger.LogDebug($"SubjectText: {SubjectText}");
+            
+            logger.MethodExit(LogLevel.Debug);
+        }
+
+        private string LogSensitiveField(string input)
+        {
+            return string.IsNullOrWhiteSpace(input) ? "" : "(hidden)";
         }
     }
 }
