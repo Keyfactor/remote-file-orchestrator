@@ -251,6 +251,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
 
             if (!string.IsNullOrEmpty(ApplicationSettings.SeparateUploadFilePath) && IsStoreServerLinux)
             {
+                _logger.LogDebug("Splitting store path");
                 SplitStorePathFile(path, out altPathOnly, out altFileNameOnly);
                 downloadPath = ApplicationSettings.SeparateUploadFilePath + altFileNameOnly;
                 RunCommand($"cp {path} {downloadPath}", null, ApplicationSettings.UseSudo, null);
