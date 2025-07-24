@@ -200,6 +200,9 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.PEM
             IncludesChain = properties.IncludesChain == null || string.IsNullOrEmpty(properties.IncludesChain.Value) ? false : bool.Parse(properties.IncludesChain.Value);
             SeparatePrivateKeyFilePath = properties.SeparatePrivateKeyFilePath == null || string.IsNullOrEmpty(properties.SeparatePrivateKeyFilePath.Value) ? String.Empty : properties.SeparatePrivateKeyFilePath.Value;
             IgnorePrivateKeyOnInventory = properties.IgnorePrivateKeyOnInventory == null || string.IsNullOrEmpty(properties.IgnorePrivateKeyOnInventory.Value) ? false : bool.Parse(properties.IgnorePrivateKeyOnInventory.Value);
+            
+            logger.LogDebug("Custom Properties have been loaded:");
+            logger.LogDebug($"IsTrustStore: {IsTrustStore}, IncludesChain: {IncludesChain}, SeparatePrivateKeyFilePath: {SeparatePrivateKeyFilePath}, IgnorePrivateKeyOnInventory: {IgnorePrivateKeyOnInventory}");
 
             logger.MethodExit(LogLevel.Debug);
         }
