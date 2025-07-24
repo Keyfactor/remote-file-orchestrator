@@ -1,3 +1,12 @@
+v2.11.4
+- Bug Fix: Handle condition where a certificate store definition contains an invalid values for `FileTransferProtocol` 
+would return no error and return an empty inventory. If no value is set or an invalid value is set, the default value of `Both` will be used.
+
+> [!IMPORTANT]
+> Anyone upgrading from version < 2.10.0 should check their store definitions to ensure that the `FileTransferProtocol` 
+> custom field is set to a valid value. Valid values are `SCP`, `SFTP`, `Both`, otherwise there is a risk of the store 
+> not being inventoried correctly.
+
 v2.11.3
 - Change returned result of a Management-Create job for a store that already exists from 'Failure' to 'Warning'
 
