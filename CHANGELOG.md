@@ -1,6 +1,7 @@
 v2.11.4
 - Bug Fix: Handle condition where a certificate store definition that contains an invalid value for `FileTransferProtocol` 
-would return empty inventory. If no value is set or an invalid value is set, the default value of `Both` will be used.
+would return empty inventory. If no value is set or an invalid value is set, the default value of `Both` will be used 
+and a warning status will be returned for the job.
 
 > [!IMPORTANT]
 > Due to an issue in Keyfactor Command versions through 25.2.1, when adding multiple choice store properties to exiting 
