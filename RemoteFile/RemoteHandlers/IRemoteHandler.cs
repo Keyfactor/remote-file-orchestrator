@@ -13,6 +13,8 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
     /// </summary>
     interface IRemoteHandler
     {
+        
+        string [] Warnings { get; set; }
         void Terminate();
 
         string RunCommand(string commandText, object[] arguments, bool withSudo, string[] passwordsToMaskInLog);
