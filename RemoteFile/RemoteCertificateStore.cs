@@ -252,6 +252,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
         internal void AddCertificate(string alias, string certificateEntry, bool overwrite, string pfxPassword, bool removeRootCertificate)
         {
             logger.MethodEntry(LogLevel.Debug);
+            logger.LogDebug($"Alias: {alias}, Certificate Entry: {certificateEntry}, Overwrite: {overwrite}, RemoveRootCertificate: {removeRootCertificate}");
 
             try
             {
