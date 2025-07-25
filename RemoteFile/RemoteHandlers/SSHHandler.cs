@@ -8,6 +8,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -334,7 +335,11 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
             if (!attemptedDownload)
             {
                 FileTransferProtocol = ApplicationSettings.FileTransferProtocolEnum.Both;
-                _logger.LogDebug($"No download attempted.  Setting FileTransferProtocol to Both and retrying download.");
+                var warningMsg = "No download attempted.  Setting FileTransferProtocol to 'Both' and retrying download.";
+                _logger.LogWarning(warningMsg);
+                // append to Warnings global array
+               Warnings = Warnings.Length == 0 ? new[] { warningMsg } : Warnings.Append(warningMsg).ToArray();
+                
                 return DownloadCertificateFile(path);
             }
 
