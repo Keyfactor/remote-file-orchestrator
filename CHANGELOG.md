@@ -3,9 +3,12 @@ v2.11.4
 would return empty inventory. If no value is set or an invalid value is set, the default value of `Both` will be used.
 
 > [!IMPORTANT]
-> When upgrading from version < 2.10.0 ensure that the `FileTransferProtocol` 
-> custom field is set to a valid value. Valid values are `SCP`, `SFTP`, `Both`, otherwise there is a risk of the store 
-> not being inventoried correctly.
+> Due to an issue in Keyfactor Command versions through 25.2.1, when adding multiple choice store properties to exiting 
+> certificate store types, existing certificate stores receive incorrect initialization data for the new property. 
+> If you have upgraded your store type from something prior to version 2.10.0, ensure that each existing certificate 
+> store has a valid value for FileTransferProtocol. Valid values are SCP, SFTP, Both, otherwise inventory jobs may report 
+> empty certificate store inventories. Extension version 2.11.4 compensates for this, but upgrading customers should 
+> check their store’s configuration for proper FileTransferProtocol values.
 
 v2.11.3
 - Change returned result of a Management-Create job for a store that already exists from 'Failure' to 'Warning'
