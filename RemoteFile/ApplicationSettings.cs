@@ -16,7 +16,7 @@ using Keyfactor.Logging;
 
 namespace Keyfactor.Extensions.Orchestrator.RemoteFile 
 {
-    class ApplicationSettings
+    public class ApplicationSettings
     {
         public enum FileTransferProtocolEnum
         {
@@ -63,15 +63,27 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
         { 
             get 
             {
+                ILogger logger = LogHandler.GetClassLogger<ApplicationSettings>();
+                
                 string protocolNames = string.Empty;
                 foreach (string protocolName in Enum.GetNames(typeof(FileTransferProtocolEnum)))
                 {
                     protocolNames += protocolName + ", ";
                 }
                 protocolNames = protocolNames.Substring(0, protocolNames.Length - 2);
+                string? protocolValue = configuration["FileTransferProtocol"];
 
-                if (!Enum.TryParse(configuration["FileTransferProtocol"], out FileTransferProtocolEnum protocol))
-                    throw new RemoteFileException($"Invalid optional config.json FileTransferProtocol option of {configuration["FileTransferProtocol"]}.  If present, must be one of these values: {protocolNames}.");
+                if (!PropertyUtilities.TryEnumParse(protocolValue, out bool isFlagCombination, out FileTransferProtocolEnum protocol))
+                    throw new RemoteFileException($"Invalid optional config.json FileTransferProtocol option of {protocolValue}.  If present, must be one of these values: {protocolNames}.");
+
+                // Issue: If received a comma-delimited list ("SCP,SFTP,Both"), it's treating it as a flag combination (i.e. mapping it to 0+1+2=3)
+                // If this happens, we want to default it to Both so it's resolved as a valid mapping.
+                if (isFlagCombination)
+                {
+                    logger.LogWarning($"FileTransferProtocol config value {protocolValue} mapped to a flag combination. Setting FileTransferProtocol explicitly to Both.");
+                    protocol = FileTransferProtocolEnum.Both;
+                }
+                
                 return protocol; 
             }
         }

@@ -5,6 +5,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions
 // and limitations under the License.
 
+using System;
 using Keyfactor.Logging;
 
 using Microsoft.Extensions.Logging;
@@ -18,6 +19,8 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
         internal const string PASSWORD_MASK_VALUE = "[PASSWORD]";
         internal const int PASSWORD_LENGTH_MAX = 100;
         internal const string LINUX_PERMISSION_REGEXP = "^[0-7]{3}$";
+        
+        public string[] Warnings { get; set; } = Array.Empty<string>();
 
         public string Server { get; set; }
 
