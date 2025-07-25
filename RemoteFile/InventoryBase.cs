@@ -7,6 +7,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 
 using Keyfactor.Orchestrators.Extensions;
@@ -73,7 +74,12 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             catch (Exception ex)
             {
                 logger.LogError($"Exception for {config.Capability}: {RemoteFileException.FlattenExceptionMessages(ex, string.Empty)} for job id {config.JobId}");
-                return new JobResult() { Result = OrchestratorJobStatusJobResult.Failure, JobHistoryId = config.JobHistoryId, FailureMessage = RemoteFileException.FlattenExceptionMessages(ex, $"Site {config.CertificateStoreDetails.StorePath} on server {config.CertificateStoreDetails.ClientMachine}:") };
+                return new JobResult 
+                    { 
+                        Result = OrchestratorJobStatusJobResult.Failure, 
+                        JobHistoryId = config.JobHistoryId, 
+                        FailureMessage = RemoteFileException.FlattenExceptionMessages(ex, $"Site {config.CertificateStoreDetails.StorePath} on server {config.CertificateStoreDetails.ClientMachine}:") 
+                    };
             }
             finally
             {
@@ -84,14 +90,31 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             try
             {
                 submitInventory.Invoke(inventoryItems);
-                logger.LogDebug($"...End {config.Capability} job for job id {config.JobId}");
-                return new JobResult() { Result = OrchestratorJobStatusJobResult.Success, JobHistoryId = config.JobHistoryId };
+                logger.LogDebug("...End {ConfigCapability} job for job id {ConfigJobId}", config.Capability, config.JobId);
+                var jobResultStatus = OrchestratorJobStatusJobResult.Success;
+                var jobMsg = string.Empty;
+                if (certificateStore.RemoteHandler != null && certificateStore.RemoteHandler.Warnings.Length > 0)
+                {
+                    jobResultStatus = OrchestratorJobStatusJobResult.Warning;
+                    jobMsg = certificateStore.RemoteHandler.Warnings.Aggregate(jobMsg, (current, warning) => current + (warning + Environment.NewLine));
+                }
+                return new JobResult
+                {
+                    Result = jobResultStatus, 
+                    JobHistoryId = config.JobHistoryId,
+                    FailureMessage = jobMsg
+                };
             }
             catch (Exception ex)
             {
                 string errorMessage = RemoteFileException.FlattenExceptionMessages(ex, string.Empty);
                 logger.LogError($"Exception returning certificates for {config.Capability}: {errorMessage} for job id {config.JobId}");
-                return new JobResult() { Result = OrchestratorJobStatusJobResult.Failure, JobHistoryId = config.JobHistoryId, FailureMessage = RemoteFileException.FlattenExceptionMessages(ex, $"Site {config.CertificateStoreDetails.StorePath} on server {config.CertificateStoreDetails.ClientMachine}:") };
+                return new JobResult
+                {
+                    Result = OrchestratorJobStatusJobResult.Failure, 
+                    JobHistoryId = config.JobHistoryId, 
+                    FailureMessage = RemoteFileException.FlattenExceptionMessages(ex, $"Site {config.CertificateStoreDetails.StorePath} on server {config.CertificateStoreDetails.ClientMachine}:")
+                };
             }
         }
     }
