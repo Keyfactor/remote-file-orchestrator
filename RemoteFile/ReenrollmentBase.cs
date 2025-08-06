@@ -50,8 +50,6 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
 
             try
             {
-                ApplicationSettings.Initialize(this.GetType().Assembly.Location);
-
                 SetJobProperties(config, config.CertificateStoreDetails, logger);
 
                 string alias = "abcd";
