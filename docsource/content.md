@@ -107,7 +107,7 @@ Please consult with your system administrator for more information on configurin
 
 ## Post Installation
 
-The Remote File Orchestrator Extension uses a JSON configuration file. It is located in the `{Keyfactor Orchestrator Installation Folder}\Extensions\RemoteFile`. None of the values are required, and a description of each follows below:
+The Remote File Orchestrator Extension uses a JSON configuration file. It is located at `{Keyfactor Orchestrator Installation Folder}\Extensions\RemoteFile\config.json`. None of the values are required, and a description of each follows below:
 
 ```json
 {
