@@ -32,26 +32,34 @@ certificates and certificate store files.
 <summary><b>Certificate stores hosted on Linux servers:</b></summary>
 
 1. The Remote File Orchestrator Extension makes use of a few common Linux commands when managing stores on Linux
-   servers. If the credentials you will be connecting with need elevated access to run these commands or to access the
+   servers as well as some specialized CLI commands for certain store types. If the credentials you will be connecting with 
+   need elevated access to run these commands or to access the
    certificate store files these commands operate against, you must set up the user id as a sudoer with no password
    necessary and set the config.json `UseSudo` value to `Y`. When `RemoteFile` is using orchestration, managing local or
    external certificate stores using `SSH` or `WinRM`, the security context is determined by the user id entered into the
    Keyfactor Command certificate store or discovery job screens. When RemoteFile is running as an agent, managing local
    stores only, the security context is the user id running the Keyfactor Command Universal Orchestrator service
-   account. The full list of these commands is below:
+   account. The full list of these commands and when they are used is illustrated below:
 
-| Shell Command  | Used For                                                                                                                                                                     |
-|----------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `echo`         | Used to append a newline and terminate all commands sent.                                                                                                                    |
-| `find`         | Used by Discovery jobs to locate potential certificate stores on the file system.                                                                                            |
-| `cp`           | Used by Inventory and Management Add/Remove/Create jobs to determine if certificate store file exists.                                                                       |
-| `ls`           | Used by Management Add/Remove jobs to copy the certificate store file to a temporary file (only when an alternate download folder has been configured).                      |
-| `chown`        | Used by the Inventory and Management Add/Remove jobs to set the permissions on the temporary file (only when an alternate download folder has been configured).              |
-| `tee`          | Used by Management Add/Remove jobs to copy the temporary uploaded certificate file to the certificate store file (only when an alternate upload folder has been configured). |
-| `rm`           | Used by Inventory and Management Add/Remove jobs to remove temporary files (only when an alternate upload/download folder has been configured).                              |
-| `install`      | Used by the Management Create Store job when initializing a certificate store file.                                                                                          |
-| `orapki`       | Oracle Wallet CLI utility used by Inventory and Management Add/Remove jobs to manipulate an Oracle Wallet certificate store.  Used for the RFORA store type only.            |
-| `gskcapicmd`   | IBM Key Database CLI utility used by Inventory and Management Add/Remove jobs to manipulate an IBM Key Database certificate store.  Used for the RFKDB store type only.      |  
+| Shell Command  | Discovery | Inventory | Management-Add | Management-Delete | Management-Create |
+|----------------|-----------|-----------|----------------|-------------------|-------------------|
+| `echo`         | X         | X         | X              | X                 | X                 |
+| `find`         | X         |           |                |                   |                   |
+| `cp`           |           | X(a)      | X(a)           | X(a)              |                   |
+| `ls`           |           |           | X              | X                 | X                 |
+| `chown`        |           | X(b)      | X(b)           | X(b)              |                   |
+| `tee`          |           | X(c)      | X(a)           | X(a)              |                   |
+| `rm`           |           | X(d)      | X(d)           | X(d)              |                   |
+| `install`      |           |           |                |                   | X                 |
+| `orapki`       |           | X(e)      | X(e)           | X(e)              |                   |
+| `gskcapicmd`   |           | X(f)      | X(f)           | X(f)              |                   |  
+
+(a) - Only used if config.json setting SeparateUploadFilePath is used (non empty value)
+(b) - Only used if config.json setting SeparateUploadFilePath is used (non empty value) AND the config.json or certificate store setting SudoImpersonatedUser is not used (empty value)
+(c) - Only used if store type is RFKDB or RFORA AND config.json setting SeparateUploadFilePath is used (non empty value)
+(d) - Only used if using store type is either RFKDB or RFORA OR any store type and the config.json setting SeparateUploadFilePath is used (non empty value)
+(e) - RFORA store type only
+(f) - RFKDB store type only
 
 2. When orchestrating management of local or external certificate stores, the Remote File Orchestrator Extension makes
    use of SFTP and/or SCP to transfer files to and from the orchestrated server. `SFTP/SCP` cannot make use of `sudo`, so
