@@ -1,3 +1,7 @@
+v2.11.5
+- Bug Fix: Rare race condition loading config settings when multiple RemoteFile jobs are running simultaneously on the same orchestrator
+- Documentation update to better list out what Linux commands get executed under what situations in Requirements & Prerequisites section
+
 v2.11.4
 - Bug Fix: Handle condition where a certificate store definition that contains an invalid value for `FileTransferProtocol` 
 would return empty inventory. If no value is set or an invalid value is set, the default value of `Both` will be used 
