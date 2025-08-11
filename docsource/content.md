@@ -54,11 +54,11 @@ certificates and certificate store files.
 | `orapki`       |           | X(e)      | X(e)           | X(e)              |                   |
 | `gskcapicmd`   |           | X(f)      | X(f)           | X(f)              |                   |  
 
-(a) - Only used if config.json setting SeparateUploadFilePath is used (non empty value)
-(b) - Only used if config.json setting SeparateUploadFilePath is used (non empty value) AND the config.json or certificate store setting SudoImpersonatedUser is not used (empty value)
-(c) - Only used if store type is RFKDB or RFORA AND config.json setting SeparateUploadFilePath is used (non empty value)
-(d) - Only used if using store type is either RFKDB or RFORA OR any store type and the config.json setting SeparateUploadFilePath is used (non empty value)
-(e) - RFORA store type only
+(a) - Only used if config.json setting SeparateUploadFilePath is used (non empty value)  
+(b) - Only used if config.json setting SeparateUploadFilePath is used (non empty value) AND the config.json or certificate store setting SudoImpersonatedUser is not used (empty value)  
+(c) - Only used if store type is RFKDB or RFORA AND config.json setting SeparateUploadFilePath is used (non empty value)  
+(d) - Only used if using store type is either RFKDB or RFORA OR any store type and the config.json setting SeparateUploadFilePath is used (non empty value)  
+(e) - RFORA store type only  
 (f) - RFKDB store type only
 
 2. When orchestrating management of local or external certificate stores, the Remote File Orchestrator Extension makes
