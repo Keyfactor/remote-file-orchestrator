@@ -12,6 +12,7 @@ using System.IO;
 using Newtonsoft.Json;
 using Microsoft.Extensions.Logging;
 using Keyfactor.Logging;
+using System.Reflection;
 
 
 namespace Keyfactor.Extensions.Orchestrator.RemoteFile 
@@ -88,13 +89,13 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             }
         }
 
-        public static void Initialize(string configLocation)
+        static ApplicationSettings()
         {
             ILogger logger = LogHandler.GetClassLogger<ApplicationSettings>();
             logger.MethodEntry(LogLevel.Debug);
 
             configuration = new Dictionary<string, string>();
-            configLocation = $"{Path.GetDirectoryName(configLocation)}{Path.DirectorySeparatorChar}config.json";
+            string configLocation = $"{Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)}{Path.DirectorySeparatorChar}config.json";
             string configContents = string.Empty;
 
             if (!File.Exists(configLocation))
