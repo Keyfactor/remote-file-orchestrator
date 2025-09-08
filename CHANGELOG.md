@@ -1,3 +1,6 @@
+v2.12.0
+- Added config.json setting and its override store level custom field - AllowShellCommands.  If "N" (default "Y"), SFTP will be used to create stores and move files on Linux-based certificate store servers.  No Linux shell commands will be used in the integration.
+
 v2.11.4
 - Bug Fix: Handle condition where a certificate store definition that contains an invalid value for `FileTransferProtocol` 
 would return empty inventory. If no value is set or an invalid value is set, the default value of `Both` will be used 
