@@ -174,6 +174,24 @@ For agent mode (accessing stores on the same server where Universal Orchestrator
     - `Store Type` + `Client Machine` + `Store Path` must be unique in Keyfactor Command
     - Best practice: Use the full DNS or IP Address to the left of the `|` character
 
+
+## Use Shell Commands Setting
+
+The Use Shell Commands Setting (orchestrator level in config.json and per store override of this value as a custom field value) 
+determines whether or not Linux shell commands will be used when managing certificate stores on Linux-based servers.  
+This is useful for environments where shell access is limited or even not allowed.  Keep in mind that the following
+restrictions will be in place when using RemoteFile in this mode:
+1. The config.json and custom field options SeparateUploadFilePath, DefaultLinuxPermissionsOnStoreCreation, DefaultOwnerOnStoreCreation, 
+LinuxFilePermissionsOnStoreCreation, and LinuxFileOwnerOnStoreCreation are not supported and will be ignored.  As a result, file
+permissions and ownership when creating a certificate store or adding a certificate to an existing store will be based
+on the user assigned to the Command certificate store and other Linux environmental settings.
+2. A rare issue exists where a certificate store user id having an expired password causes the orchestrator to hang when attempting an 
+SFTP/SCP connection.  A modification was added to check for this condition.  Running RemoteFile with Use Shell Commands = N will 
+cause this validation check to NOT occur.
+3. Both RFORA and RFKDB use proprietary CLI commands in order to manage their respective certificate stores.  These commands
+will still be executed when Use Shell Commands is set to Y.
+
+
 ## Developer Notes
 
 The Remote File Orchestrator Extension is designed to be highly extensible, enabling its use with various file-based
