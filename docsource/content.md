@@ -178,22 +178,23 @@ For agent mode (accessing stores on the same server where Universal Orchestrator
 ## Use Shell Commands Setting
 
 The Use Shell Commands Setting (orchestrator level in config.json and per store override of this value as a custom field value) 
-determines whether or not Linux shell commands will be used when managing certificate stores on Linux-based servers.  
-This is useful for environments where shell access is limited or even not allowed.  Keep in mind that the following
-restrictions will be in place when using RemoteFile in this mode:
+determines whether or not Linux shell commands will be used when managing certificate stores on Linux-based servers.
+This is useful for environments where shell access is limited or even not allowed.  In those scenarios setting this value to 'N'
+will substitute SFTP commands for certain specific Linux shell commands.  The following restrictions will be in place when 
+using RemoteFile in this mode:
 1. The config.json and custom field options SeparateUploadFilePath, DefaultLinuxPermissionsOnStoreCreation, DefaultOwnerOnStoreCreation, 
 LinuxFilePermissionsOnStoreCreation, and LinuxFileOwnerOnStoreCreation are not supported and will be ignored.  As a result, file
 permissions and ownership when creating a certificate store or adding a certificate to an existing store will be based
 on the user assigned to the Command certificate store and other Linux environmental settings.
-2. Discovery jobs are excluded and will still use the shell `find` command
-3. A rare issue exists where a certificate store user id having an expired password causes the orchestrator to hang when attempting an 
-SFTP/SCP connection.  A modification was added to check for this condition.  Running RemoteFile with Use Shell Commands = N will 
-cause this validation check to NOT occur.
+2. Discovery jobs are excluded and will still use the `find` shell command
+3. A rare issue exists where the user id assigned to a certificate store has an expired password causing the orchestrator to hang 
+when attempting an SFTP/SCP connection.  A modification was added to RemoteFile to check for this condition.  Running RemoteFile 
+with Use Shell Commands = N will cause this validation check to NOT occur.
 4. Both RFORA and RFKDB use proprietary CLI commands in order to manage their respective certificate stores.  These commands
 will still be executed when Use Shell Commands is set to Y.
-5. If executing in local mode (|LocalMachine at the end of your client machine name for your certificate store), Use Shell
+5. If executing in local mode ('|LocalMachine' at the end of your client machine name for your certificate store), Use Shell
 Commands = 'N' will have no effect.  Shell commands will continue to be used because there will be no SSH connection
-available to use SFTP with.
+available from which to execute SFTP commands.
 
 
 ## Developer Notes
