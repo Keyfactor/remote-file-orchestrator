@@ -924,7 +924,8 @@ The Remote File Orchestrator Extension uses a JSON configuration file. It is loc
   "FileTransferProtocol": "SCP",
   "DefaultLinuxPermissionsOnStoreCreation": "600",
   "DefaultOwnerOnStoreCreation": "",
-  "SSHPort": ""
+  "SSHPort": "",
+  "UseShellCommands":  "Y"
 }
 ``` 
 
@@ -939,6 +940,7 @@ The Remote File Orchestrator Extension uses a JSON configuration file. It is loc
 | `DefaultLinuxPermissionsOnStoreCreation` | `600`         | Any 3-digit value from 000-777        | Linux file permissions set on new certificate stores. If blank, permissions from the parent folder will be used. Only applicable for Linux hosted certificate stores.                                                                                    |
 | `DefaultOwnerOnStoreCreation`            |               | Any valid user id                     | Sets the owner for newly created certificate stores. Can include group with format `ownerId:groupId`. If blank, the owner of the parent folder will be used. Only applicable for Linux hosted certificate stores.                                        |
 | `SSHPort`                                |               | Any valid integer representing a port | The port that SSH is listening on. Default is 22. Only applicable for Linux hosted certificate stores.                                                                                                                                                   |
+| `UseShellCommands`                       | `Y`           | `Y/N`                                 | Recommended to be set to the default value of 'Y'.  For a detailed explanation of this setting, please refer to [Use Shell Commands Setting](#use-shell-commands-setting)                                                                                |
 
 
 ## Defining Certificate Stores
