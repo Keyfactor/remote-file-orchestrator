@@ -394,28 +394,38 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
         {
             _logger.MethodEntry(LogLevel.Debug);
             _logger.LogDebug($"DoesFileExist: {path}");
-            
-            string rtn = RunCommand($"ls {path} >> /dev/null 2>&1 && echo True || echo False", null, ApplicationSettings.UseSudo, null);
-            return Convert.ToBoolean(rtn);
-            
-            //using (SftpClient client = new SftpClient(Connection))
-            //{
-            //    try
-            //    {
-            //        client.Connect();
-            //        string existsPath = FormatFTPPath(path, !IsStoreServerLinux);
-            //        bool exists = client.Exists(existsPath);
-            //        _logger.LogDebug(existsPath);
 
-            //        _logger.MethodExit(LogLevel.Debug);
+            bool exists = false;
 
-            //        return exists;
-            //    }
-            //    finally
-            //    {
-            //        client.Disconnect();
-            //    }
-            //}
+            if (UseShellCommands)
+            {
+                exists = Convert.ToBoolean(RunCommand($"ls {path} >> /dev/null 2>&1 && echo True || echo False", null, ApplicationSettings.UseSudo, null));
+            }
+            else
+            {
+                using (SftpClient client = new SftpClient(Connection))
+                {
+                    try
+                    {
+                        client.Connect();
+                        string existsPath = FormatFTPPath(path, !IsStoreServerLinux);
+                        exists = client.Exists(existsPath);
+                        _logger.LogDebug(existsPath);
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.LogError(RemoteFileException.FlattenExceptionMessages(ex, "Error checking existence of file {path} using SFTP"));
+                        throw;
+                    }
+                    finally
+                    {
+                        _logger.MethodExit(LogLevel.Debug);
+                        client.Disconnect();
+                    }
+                }
+            }
+
+            return exists;
         }
 
         public override void RemoveCertificateFile(string path, string fileName)
