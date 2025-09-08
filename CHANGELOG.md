@@ -1,7 +1,5 @@
 v2.12.0
-- Added config.json setting and its override store level custom field - AllowShellCommands.  If "N" (default "Y"), SFTP will be used to create stores and move files on Linux-based certificate store servers.  No Linux shell commands will be used in the integration.  Limitations when running in this mode exist:
-  - config.json/custom field values SeparateUploadFilePath, DefaultLinuxPermissionsOnStoreCreation, DefaultOwnerOnStoreCreation, LinuxFilePermissionsOnStoreCreation, and LinuxFileOwnerOnStoreCreation cannot be used and will be ignored
-  - rare issue where a certificate store user id having an expired password causes the orchestrator to hang when attempting an SFTP/SCP connection will NOT be able to be caught and handled
+- Added config.json setting and its override store level custom field - AllowShellCommands.  If "N" (default "Y"), SFTP will be used to create stores and move files on Linux-based certificate store servers.  No Linux shell commands will be used in the integration.
 
 v2.11.4
 - Bug Fix: Handle condition where a certificate store definition that contains an invalid value for `FileTransferProtocol` 

@@ -185,11 +185,15 @@ restrictions will be in place when using RemoteFile in this mode:
 LinuxFilePermissionsOnStoreCreation, and LinuxFileOwnerOnStoreCreation are not supported and will be ignored.  As a result, file
 permissions and ownership when creating a certificate store or adding a certificate to an existing store will be based
 on the user assigned to the Command certificate store and other Linux environmental settings.
-2. A rare issue exists where a certificate store user id having an expired password causes the orchestrator to hang when attempting an 
+2. Discovery jobs are excluded and will still use the shell `find` command
+3. A rare issue exists where a certificate store user id having an expired password causes the orchestrator to hang when attempting an 
 SFTP/SCP connection.  A modification was added to check for this condition.  Running RemoteFile with Use Shell Commands = N will 
 cause this validation check to NOT occur.
-3. Both RFORA and RFKDB use proprietary CLI commands in order to manage their respective certificate stores.  These commands
+4. Both RFORA and RFKDB use proprietary CLI commands in order to manage their respective certificate stores.  These commands
 will still be executed when Use Shell Commands is set to Y.
+5. If executing in local mode (|LocalMachine at the end of your client machine name for your certificate store), Use Shell
+Commands = 'N' will have no effect.  Shell commands will continue to be used because there will be no SSH connection
+available to use SFTP with.
 
 
 ## Developer Notes

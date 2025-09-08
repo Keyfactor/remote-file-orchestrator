@@ -41,6 +41,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
         public static string DefaultSudoImpersonatedUser { get { return configuration.ContainsKey("DefaultSudoImpersonatedUser") ? configuration["DefaultSudoImpersonatedUser"] : DEFAULT_SUDO_IMPERSONATION_SETTING; } }
         public static bool CreateCSROnDevice { get { return configuration.ContainsKey("CreateCSROnDevice") ? configuration["CreateCSROnDevice"]?.ToUpper() == "Y" : false; } }
         public static string TempFilePathForODKG { get { return configuration.ContainsKey("TempFilePathForODKG") ? configuration["TempFilePathForODKG"] : string.Empty; } }
+        public static bool UseShellCommands { get { return configuration.ContainsKey("UseShellCommands") ? configuration["UseShellCommands"]?.ToUpper() == "Y" : false; } }
         public static int SSHPort
         {
             get

@@ -31,11 +31,12 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
         private string SudoImpersonatedUser { get; set; }
         private ApplicationSettings.FileTransferProtocolEnum FileTransferProtocol { get; set; }
         private bool IsStoreServerLinux { get; set; }
+        private bool UseShellCommands { get; set; }
         private string UserId { get; set; }
         private string Password { get; set; }
         private SshClient sshClient;
 
-        internal SSHHandler(string server, string serverLogin, string serverPassword, bool isStoreServerLinux, ApplicationSettings.FileTransferProtocolEnum fileTransferProtocol, int sshPort, string sudoImpersonatedUser)
+        internal SSHHandler(string server, string serverLogin, string serverPassword, bool isStoreServerLinux, ApplicationSettings.FileTransferProtocolEnum fileTransferProtocol, int sshPort, string sudoImpersonatedUser, bool useShellCommands)
         {
             _logger.MethodEntry(LogLevel.Debug);
             
@@ -43,6 +44,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
             SudoImpersonatedUser = sudoImpersonatedUser;
             FileTransferProtocol = fileTransferProtocol;
             IsStoreServerLinux = isStoreServerLinux;
+            UseShellCommands = useShellCommands;
             UserId = serverLogin;
             Password = serverPassword;
 
@@ -80,7 +82,8 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
                 sshClient.Connect();
 
                 //method call below necessary to check edge condition where password for user id has expired. SCP (and possibly SFTP) download hangs in that scenario
-                CheckConnection();
+                if (useShellCommands)
+                    CheckConnection();
             }
             catch (Exception ex)
             {
@@ -368,13 +371,18 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
             if (IsStoreServerLinux)
             {
                 string pathOnly = string.Empty;
-                SplitStorePathFile(path, out pathOnly, out _);
+                string fileName = string.Empty;
+                SplitStorePathFile(path, out pathOnly, out fileName);
 
                 linuxFilePermissions = string.IsNullOrEmpty(linuxFilePermissions) ? GetFolderPermissions(pathOnly) : linuxFilePermissions;
                 linuxFileOwner = string.IsNullOrEmpty(linuxFileOwner) ? GetFolderOwner(pathOnly) : linuxFileOwner;
 
                 AreLinuxPermissionsValid(linuxFilePermissions);
-                RunCommand($"install -m {linuxFilePermissions} -o {linuxFileOwner} {linuxFileGroup} /dev/null {path}", null, ApplicationSettings.UseSudo, null);
+
+                if (UseShellCommands)
+                    RunCommand($"install -m {linuxFilePermissions} -o {linuxFileOwner} {linuxFileGroup} /dev/null {path}", null, ApplicationSettings.UseSudo, null);
+                else
+                    UploadCertificateFile(pathOnly, fileName, Array.Empty<byte>());
             }
             else
                 RunCommand($@"Out-File -FilePath ""{path}""", null, false, null);
