@@ -130,7 +130,7 @@
                       "Required": false,
                       "DependsOn": "",
                       "Type": "Bool",
-                      "DefaultValue": "Y",
+                      "DefaultValue": "True",
                       "Description": "Recommended to be set to the default value of 'Y'.  For a detailed explanation of this setting, please refer to [Use Shell Commands Setting](#use-shell-commands-setting)"
                     }
                   ],
@@ -289,7 +289,7 @@
                       "Required": false,
                       "DependsOn": "",
                       "Type": "Bool",
-                      "DefaultValue": "Y",
+                      "DefaultValue": "True",
                       "Description": "Recommended to be set to the default value of 'Y'.  For a detailed explanation of this setting, please refer to [Use Shell Commands Setting](#use-shell-commands-setting)"
                     }
                   ],
@@ -412,7 +412,7 @@
                       "Required": false,
                       "DependsOn": "",
                       "Type": "Bool",
-                      "DefaultValue": "Y",
+                      "DefaultValue": "True",
                       "Description": "Recommended to be set to the default value of 'Y'.  For a detailed explanation of this setting, please refer to [Use Shell Commands Setting](#use-shell-commands-setting)"
                     }
                   ],
@@ -544,7 +544,7 @@
                       "Required": false,
                       "DependsOn": "",
                       "Type": "Bool",
-                      "DefaultValue": "Y",
+                      "DefaultValue": "True",
                       "Description": "Recommended to be set to the default value of 'Y'.  For a detailed explanation of this setting, please refer to [Use Shell Commands Setting](#use-shell-commands-setting)"
                     }
                   ],
@@ -667,7 +667,7 @@
                       "Required": false,
                       "DependsOn": "",
                       "Type": "Bool",
-                      "DefaultValue": "Y",
+                      "DefaultValue": "True",
                       "Description": "Recommended to be set to the default value of 'Y'.  For a detailed explanation of this setting, please refer to [Use Shell Commands Setting](#use-shell-commands-setting)"
                     }
                   ],
@@ -799,7 +799,7 @@
                       "Required": false,
                       "DependsOn": "",
                       "Type": "Bool",
-                      "DefaultValue": "Y",
+                      "DefaultValue": "True",
                       "Description": "Recommended to be set to the default value of 'Y'.  For a detailed explanation of this setting, please refer to [Use Shell Commands Setting](#use-shell-commands-setting)"
                     }
                   ],
