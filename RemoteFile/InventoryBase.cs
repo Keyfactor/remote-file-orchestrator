@@ -40,7 +40,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
                 SetJobProperties(config, config.CertificateStoreDetails, logger);
 
                 certificateStore = new RemoteCertificateStore(config.CertificateStoreDetails.ClientMachine, UserName, UserPassword, config.CertificateStoreDetails.StorePath, StorePassword, FileTransferProtocol, SSHPort, IncludePortInSPN);
-                certificateStore.Initialize(SudoImpersonatedUser);
+                certificateStore.Initialize(SudoImpersonatedUser, UseShellCommands);
                 certificateStore.LoadCertificateStore(certificateStoreSerializer, true);
 
                 List<X509Certificate2Collection> collections = certificateStore.GetCertificateChains();
