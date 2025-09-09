@@ -74,7 +74,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
                 ApplicationSettings.CreateCSROnDevice :
                 Convert.ToBoolean(properties.CreateCSROnDevice.Value);
 
-            UseShellCommands = properties.UseShellCommands == null || string.IsNullOrEmpty(properties.UseShellCommands.Value) || !int.TryParse(properties.UseShellCommands.Value, out int _) ?
+            UseShellCommands = properties.UseShellCommands == null || string.IsNullOrEmpty(properties.UseShellCommands.Value) ?
                 ApplicationSettings.UseShellCommands :
                 properties.UseShellCommands;
 
