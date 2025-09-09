@@ -123,6 +123,15 @@
                       "Type": "String",
                       "DefaultValue": "",
                       "Description": "Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting."
+                    },
+                    {
+                      "Name": "UseShellCommands",
+                      "DisplayName": "Use Shell Commands",
+                      "Required": false,
+                      "DependsOn": "",
+                      "Type": "Bool",
+                      "DefaultValue": "Y",
+                      "Description": "Recommended to be set to the default value of 'Y'.  For a detailed explanation of this setting, please refer to [Use Shell Commands Setting](#use-shell-commands-setting)"
                     }
                   ],
                     "EntryParameters": [],
@@ -273,6 +282,15 @@
                       "Type": "String",
                       "DefaultValue": "",
                       "Description": "Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting."
+                    },
+                    {
+                      "Name": "UseShellCommands",
+                      "DisplayName": "Use Shell Commands",
+                      "Required": false,
+                      "DependsOn": "",
+                      "Type": "Bool",
+                      "DefaultValue": "Y",
+                      "Description": "Recommended to be set to the default value of 'Y'.  For a detailed explanation of this setting, please refer to [Use Shell Commands Setting](#use-shell-commands-setting)"
                     }
                   ],
                     "EntryParameters": [],
@@ -387,6 +405,15 @@
                       "Type": "String",
                       "DefaultValue": "",
                       "Description": "Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting."
+                    },
+                    {
+                      "Name": "UseShellCommands",
+                      "DisplayName": "Use Shell Commands",
+                      "Required": false,
+                      "DependsOn": "",
+                      "Type": "Bool",
+                      "DefaultValue": "Y",
+                      "Description": "Recommended to be set to the default value of 'Y'.  For a detailed explanation of this setting, please refer to [Use Shell Commands Setting](#use-shell-commands-setting)"
                     }
                   ],
                     "EntryParameters": [],
@@ -510,6 +537,15 @@
                       "Type": "String",
                       "DefaultValue": "",
                       "Description": "Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting."
+                    },
+                    {
+                      "Name": "UseShellCommands",
+                      "DisplayName": "Use Shell Commands",
+                      "Required": false,
+                      "DependsOn": "",
+                      "Type": "Bool",
+                      "DefaultValue": "Y",
+                      "Description": "Recommended to be set to the default value of 'Y'.  For a detailed explanation of this setting, please refer to [Use Shell Commands Setting](#use-shell-commands-setting)"
                     }
                   ],
                     "EntryParameters": [],
@@ -624,6 +660,15 @@
                       "Type": "String",
                       "DefaultValue": "",
                       "Description": "Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting."
+                    },
+                    {
+                      "Name": "UseShellCommands",
+                      "DisplayName": "Use Shell Commands",
+                      "Required": false,
+                      "DependsOn": "",
+                      "Type": "Bool",
+                      "DefaultValue": "Y",
+                      "Description": "Recommended to be set to the default value of 'Y'.  For a detailed explanation of this setting, please refer to [Use Shell Commands Setting](#use-shell-commands-setting)"
                     }
                   ],
                     "EntryParameters": [],
@@ -747,6 +792,15 @@
                       "Type": "String",
                       "DefaultValue": "",
                       "Description": "Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting."
+                    },
+                    {
+                      "Name": "UseShellCommands",
+                      "DisplayName": "Use Shell Commands",
+                      "Required": false,
+                      "DependsOn": "",
+                      "Type": "Bool",
+                      "DefaultValue": "Y",
+                      "Description": "Recommended to be set to the default value of 'Y'.  For a detailed explanation of this setting, please refer to [Use Shell Commands Setting](#use-shell-commands-setting)"
                     }
                   ],
                     "EntryParameters": [],
