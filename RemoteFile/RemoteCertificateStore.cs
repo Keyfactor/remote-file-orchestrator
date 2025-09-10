@@ -453,14 +453,14 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             return csr;
         }
 
-        internal void Initialize(string sudoImpersonatedUser)
+        internal void Initialize(string sudoImpersonatedUser, bool useShellCommands)
         {
             logger.MethodEntry(LogLevel.Debug);
 
             bool treatAsLocal = Server.ToLower().EndsWith(LOCAL_MACHINE_SUFFIX);
 
             if (ServerType == ServerTypeEnum.Linux || RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
-                RemoteHandler = treatAsLocal ? new LinuxLocalHandler() as IRemoteHandler : new SSHHandler(Server, ServerId, ServerPassword, ServerType == ServerTypeEnum.Linux, FileTransferProtocol, SSHPort, sudoImpersonatedUser) as IRemoteHandler;
+                RemoteHandler = treatAsLocal ? new LinuxLocalHandler() as IRemoteHandler : new SSHHandler(Server, ServerId, ServerPassword, ServerType == ServerTypeEnum.Linux, FileTransferProtocol, SSHPort, sudoImpersonatedUser, useShellCommands) as IRemoteHandler;
             else
                 RemoteHandler = new WinRMHandler(Server, ServerId, ServerPassword, treatAsLocal, IncludePortInSPN);
 
