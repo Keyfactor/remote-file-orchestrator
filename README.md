@@ -1638,17 +1638,19 @@ determines whether or not Linux shell commands will be used when managing certif
 This is useful for environments where shell access is limited or even not allowed.  In those scenarios setting this value to 'N'
 will substitute SFTP commands for certain specific Linux shell commands.  The following restrictions will be in place when 
 using RemoteFile in this mode:
-1. The config.json and custom field options SeparateUploadFilePath, DefaultLinuxPermissionsOnStoreCreation, DefaultOwnerOnStoreCreation, 
+1. The config.json option SeparateUploadFilePath must NOT be used (option missing from the config.json file or set to empty) for shell
+commands to be suppressed for all use cases.
+2. The config.json and custom field options SeparateUploadFilePath, DefaultLinuxPermissionsOnStoreCreation, DefaultOwnerOnStoreCreation, 
 LinuxFilePermissionsOnStoreCreation, and LinuxFileOwnerOnStoreCreation are not supported and will be ignored.  As a result, file
-permissions and ownership when creating a certificate store or adding a certificate to an existing store will be based
-on the user assigned to the Command certificate store and other Linux environmental settings.
-2. Discovery jobs are excluded and will still use the `find` shell command
-3. A rare issue exists where the user id assigned to a certificate store has an expired password causing the orchestrator to hang 
+permissions and ownership when creating certificate stores will be based on the user assigned to the Command certificate store and 
+other Linux environmental settings.
+3. Discovery jobs are excluded and will still use the `find` shell command
+4. A rare issue exists where the user id assigned to a certificate store has an expired password causing the orchestrator to hang 
 when attempting an SFTP/SCP connection.  A modification was added to RemoteFile to check for this condition.  Running RemoteFile 
 with Use Shell Commands = N will cause this validation check to NOT occur.
-4. Both RFORA and RFKDB use proprietary CLI commands in order to manage their respective certificate stores.  These commands
+5. Both RFORA and RFKDB use proprietary CLI commands in order to manage their respective certificate stores.  These commands
 will still be executed when Use Shell Commands is set to Y.
-5. If executing in local mode ('|LocalMachine' at the end of your client machine name for your certificate store), Use Shell
+6. If executing in local mode ('|LocalMachine' at the end of your client machine name for your certificate store), Use Shell
 Commands = 'N' will have no effect.  Shell commands will continue to be used because there will be no SSH connection
 available from which to execute SFTP commands.
 
