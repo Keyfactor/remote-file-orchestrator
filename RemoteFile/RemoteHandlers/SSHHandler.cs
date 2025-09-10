@@ -374,13 +374,15 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
                 string fileName = string.Empty;
                 SplitStorePathFile(path, out pathOnly, out fileName);
 
-                linuxFilePermissions = string.IsNullOrEmpty(linuxFilePermissions) ? GetFolderPermissions(pathOnly) : linuxFilePermissions;
-                linuxFileOwner = string.IsNullOrEmpty(linuxFileOwner) ? GetFolderOwner(pathOnly) : linuxFileOwner;
-
-                AreLinuxPermissionsValid(linuxFilePermissions);
-
                 if (UseShellCommands)
+                {
+                    linuxFilePermissions = string.IsNullOrEmpty(linuxFilePermissions) ? GetFolderPermissions(pathOnly) : linuxFilePermissions;
+                    linuxFileOwner = string.IsNullOrEmpty(linuxFileOwner) ? GetFolderOwner(pathOnly) : linuxFileOwner;
+
+                    AreLinuxPermissionsValid(linuxFilePermissions);
+
                     RunCommand($"install -m {linuxFilePermissions} -o {linuxFileOwner} {linuxFileGroup} /dev/null {path}", null, ApplicationSettings.UseSudo, null);
+                }
                 else
                     UploadCertificateFile(pathOnly, fileName, Array.Empty<byte>());
             }
