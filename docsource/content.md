@@ -111,7 +111,8 @@ The Remote File Orchestrator Extension uses a JSON configuration file. It is loc
   "FileTransferProtocol": "SCP",
   "DefaultLinuxPermissionsOnStoreCreation": "600",
   "DefaultOwnerOnStoreCreation": "",
-  "SSHPort": ""
+  "SSHPort": "",
+  "UseShellCommands":  "Y"
 }
 ``` 
 
@@ -126,6 +127,7 @@ The Remote File Orchestrator Extension uses a JSON configuration file. It is loc
 | `DefaultLinuxPermissionsOnStoreCreation` | `600`         | Any 3-digit value from 000-777        | Linux file permissions set on new certificate stores. If blank, permissions from the parent folder will be used. Only applicable for Linux hosted certificate stores.                                                                                    |
 | `DefaultOwnerOnStoreCreation`            |               | Any valid user id                     | Sets the owner for newly created certificate stores. Can include group with format `ownerId:groupId`. If blank, the owner of the parent folder will be used. Only applicable for Linux hosted certificate stores.                                        |
 | `SSHPort`                                |               | Any valid integer representing a port | The port that SSH is listening on. Default is 22. Only applicable for Linux hosted certificate stores.                                                                                                                                                   |
+| `UseShellCommands`                       | `Y`           | `Y/N`                                 | Recommended to be set to the default value of 'Y'.  For a detailed explanation of this setting, please refer to [Use Shell Commands Setting](#use-shell-commands-setting)                                                                                |
 
 ## Discovery
 
@@ -173,6 +175,31 @@ For agent mode (accessing stores on the same server where Universal Orchestrator
 2. Important considerations:
     - `Store Type` + `Client Machine` + `Store Path` must be unique in Keyfactor Command
     - Best practice: Use the full DNS or IP Address to the left of the `|` character
+
+
+## Use Shell Commands Setting
+
+The Use Shell Commands Setting (orchestrator level in config.json and per store override of this value as a custom field value) 
+determines whether or not Linux shell commands will be used when managing certificate stores on Linux-based servers.
+This is useful for environments where shell access is limited or even not allowed.  In those scenarios setting this value to 'N'
+will substitute SFTP commands for certain specific Linux shell commands.  The following restrictions will be in place when 
+using RemoteFile in this mode:
+1. The config.json option SeparateUploadFilePath must NOT be used (option missing from the config.json file or set to empty) for shell
+commands to be suppressed for all use cases.
+2. The config.json and custom field options SeparateUploadFilePath, DefaultLinuxPermissionsOnStoreCreation, DefaultOwnerOnStoreCreation, 
+LinuxFilePermissionsOnStoreCreation, and LinuxFileOwnerOnStoreCreation are not supported and will be ignored.  As a result, file
+permissions and ownership when creating certificate stores will be based on the user assigned to the Command certificate store and 
+other Linux environmental settings.
+3. Discovery jobs are excluded and will still use the `find` shell command
+4. A rare issue exists where the user id assigned to a certificate store has an expired password causing the orchestrator to hang 
+when attempting an SFTP/SCP connection.  A modification was added to RemoteFile to check for this condition.  Running RemoteFile 
+with Use Shell Commands = N will cause this validation check to NOT occur.
+5. Both RFORA and RFKDB use proprietary CLI commands in order to manage their respective certificate stores.  These commands
+will still be executed when Use Shell Commands is set to Y.
+6. If executing in local mode ('|LocalMachine' at the end of your client machine name for your certificate store), Use Shell
+Commands = 'N' will have no effect.  Shell commands will continue to be used because there will be no SSH connection
+available from which to execute SFTP commands.
+
 
 ## Developer Notes
 
