@@ -186,7 +186,7 @@ will substitute SFTP commands for certain specific Linux shell commands.  The fo
 using RemoteFile in this mode:
 1. The config.json option SeparateUploadFilePath must NOT be used (option missing from the config.json file or set to empty) for shell
 commands to be suppressed for all use cases.
-2. The config.json and custom field options SeparateUploadFilePath, DefaultLinuxPermissionsOnStoreCreation, DefaultOwnerOnStoreCreation, 
+2. The config.json and custom field options DefaultLinuxPermissionsOnStoreCreation, DefaultOwnerOnStoreCreation, 
 LinuxFilePermissionsOnStoreCreation, and LinuxFileOwnerOnStoreCreation are not supported and will be ignored.  As a result, file
 permissions and ownership when creating certificate stores will be based on the user assigned to the Command certificate store and 
 other Linux environmental settings.
