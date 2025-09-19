@@ -77,9 +77,9 @@ The Remote File Universal Orchestrator extension implements 6 Certificate Store 
 This integration is compatible with Keyfactor Universal Orchestrator version 10.4 and later.
 
 ## Support
-The Remote File Universal Orchestrator extension If you have a support issue, please open a support ticket by either contacting your Keyfactor representative or via the Keyfactor Support Portal at https://support.keyfactor.com.
+The Remote File Universal Orchestrator extension is supported by Keyfactor. If you require support for any issues or have feature request, please open a support ticket by either contacting your Keyfactor representative or via the Keyfactor Support Portal at https://support.keyfactor.com.
 
-> To report a problem or suggest a new feature, use the **[Issues](../../issues)** tab. If you want to contribute actual bug fixes or proposed enhancements, use the **[Pull requests](../../pulls)** tab.
+> If you want to contribute bug fixes or additional enhancements, use the **[Pull requests](../../pulls)** tab.
 
 ## Requirements & Prerequisites
 
@@ -90,26 +90,34 @@ Before installing the Remote File Universal Orchestrator extension, we recommend
 <summary><b>Certificate stores hosted on Linux servers:</b></summary>
 
 1. The Remote File Orchestrator Extension makes use of a few common Linux commands when managing stores on Linux
-   servers. If the credentials you will be connecting with need elevated access to run these commands or to access the
+   servers as well as some specialized CLI commands for certain store types. If the credentials you will be connecting with 
+   need elevated access to run these commands or to access the
    certificate store files these commands operate against, you must set up the user id as a sudoer with no password
    necessary and set the config.json `UseSudo` value to `Y`. When `RemoteFile` is using orchestration, managing local or
    external certificate stores using `SSH` or `WinRM`, the security context is determined by the user id entered into the
    Keyfactor Command certificate store or discovery job screens. When RemoteFile is running as an agent, managing local
    stores only, the security context is the user id running the Keyfactor Command Universal Orchestrator service
-   account. The full list of these commands is below:
+   account. The full list of these commands and when they are used is illustrated below:
 
-| Shell Command  | Used For                                                                                                                                                                     |
-|----------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `echo`         | Used to append a newline and terminate all commands sent.                                                                                                                    |
-| `find`         | Used by Discovery jobs to locate potential certificate stores on the file system.                                                                                            |
-| `cp`           | Used by Inventory and Management Add/Remove/Create jobs to determine if certificate store file exists.                                                                       |
-| `ls`           | Used by Management Add/Remove jobs to copy the certificate store file to a temporary file (only when an alternate download folder has been configured).                      |
-| `chown`        | Used by the Inventory and Management Add/Remove jobs to set the permissions on the temporary file (only when an alternate download folder has been configured).              |
-| `tee`          | Used by Management Add/Remove jobs to copy the temporary uploaded certificate file to the certificate store file (only when an alternate upload folder has been configured). |
-| `rm`           | Used by Inventory and Management Add/Remove jobs to remove temporary files (only when an alternate upload/download folder has been configured).                              |
-| `install`      | Used by the Management Create Store job when initializing a certificate store file.                                                                                          |
-| `orapki`       | Oracle Wallet CLI utility used by Inventory and Management Add/Remove jobs to manipulate an Oracle Wallet certificate store.  Used for the RFORA store type only.            |
-| `gskcapicmd`   | IBM Key Database CLI utility used by Inventory and Management Add/Remove jobs to manipulate an IBM Key Database certificate store.  Used for the RFKDB store type only.      |  
+| Shell Command  | Discovery | Inventory | Management-Add | Management-Delete | Management-Create |
+|----------------|-----------|-----------|----------------|-------------------|-------------------|
+| `echo`         | X         | X         | X              | X                 | X                 |
+| `find`         | X         |           |                |                   |                   |
+| `cp`           |           | X(a)      | X(a)           | X(a)              |                   |
+| `ls`           |           |           | X              | X                 | X                 |
+| `chown`        |           | X(b)      | X(b)           | X(b)              |                   |
+| `tee`          |           | X(c)      | X(a)           | X(a)              |                   |
+| `rm`           |           | X(d)      | X(d)           | X(d)              |                   |
+| `install`      |           |           |                |                   | X                 |
+| `orapki`       |           | X(e)      | X(e)           | X(e)              |                   |
+| `gskcapicmd`   |           | X(f)      | X(f)           | X(f)              |                   |  
+
+(a) - Only used if [config.json](#post-installation) setting SeparateUploadFilePath is used (non empty value)  
+(b) - Only used if [config.json](#post-installation) setting SeparateUploadFilePath is used (non empty value) AND the [config.json](#post-installation) or certificate store setting SudoImpersonatedUser is not used (empty value)  
+(c) - Only used if store type is RFKDB or RFORA AND [config.json](#post-installation) setting SeparateUploadFilePath is used (non empty value)  
+(d) - Only used if using store type is either RFKDB or RFORA OR any store type and the [config.json](#post-installation) setting SeparateUploadFilePath is used (non empty value)  
+(e) - RFORA store type only  
+(f) - RFKDB store type only
 
 2. When orchestrating management of local or external certificate stores, the Remote File Orchestrator Extension makes
    use of SFTP and/or SCP to transfer files to and from the orchestrated server. `SFTP/SCP` cannot make use of `sudo`, so
@@ -268,6 +276,7 @@ the Keyfactor Command Portal
    | IncludePortInSPN | Include Port in SPN for WinRM | Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations. | Bool | False | 🔲 Unchecked |
    | FileTransferProtocol | File Transfer Protocol to Use | Which protocol should be used when uploading/downloading files - SCP, SFTP, or Both (try one, and then if necessary, the other).  Overrides FileTransferProtocol [config.json](#post-installation) setting. | MultipleChoice | ,SCP,SFTP,Both | 🔲 Unchecked |
    | SSHPort | SSH Port | Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting. | String |  | 🔲 Unchecked |
+   | UseShellCommands | Use Shell Commands | Recommended to be set to the default value of 'Y'.  For a detailed explanation of this setting, please refer to [Use Shell Commands Setting](#use-shell-commands-setting) | Bool | True | 🔲 Unchecked |
 
    The Custom Fields tab should look like this:
 
@@ -391,6 +400,7 @@ the Keyfactor Command Portal
    | IncludePortInSPN | Include Port in SPN for WinRM | Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations. | Bool | False | 🔲 Unchecked |
    | FileTransferProtocol | File Transfer Protocol to Use | Which protocol should be used when uploading/downloading files - SCP, SFTP, or Both (try one, and then if necessary, the other).  Overrides FileTransferProtocol [config.json](#post-installation) setting. | MultipleChoice | ,SCP,SFTP,Both | 🔲 Unchecked |
    | SSHPort | SSH Port | Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting. | String |  | 🔲 Unchecked |
+   | UseShellCommands | Use Shell Commands | Recommended to be set to the default value of 'Y'.  For a detailed explanation of this setting, please refer to [Use Shell Commands Setting](#use-shell-commands-setting) | Bool | True | 🔲 Unchecked |
 
    The Custom Fields tab should look like this:
 
@@ -508,6 +518,7 @@ the Keyfactor Command Portal
    | IncludePortInSPN | Include Port in SPN for WinRM | Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations. | Bool | False | 🔲 Unchecked |
    | FileTransferProtocol | File Transfer Protocol to Use | Which protocol should be used when uploading/downloading files - SCP, SFTP, or Both (try one, and then if necessary, the other).  Overrides FileTransferProtocol [config.json](#post-installation) setting. | MultipleChoice | ,SCP,SFTP,Both | 🔲 Unchecked |
    | SSHPort | SSH Port | Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting. | String |  | 🔲 Unchecked |
+   | UseShellCommands | Use Shell Commands | Recommended to be set to the default value of 'Y'.  For a detailed explanation of this setting, please refer to [Use Shell Commands Setting](#use-shell-commands-setting) | Bool | True | 🔲 Unchecked |
 
    The Custom Fields tab should look like this:
 
@@ -620,6 +631,7 @@ the Keyfactor Command Portal
    | IncludePortInSPN | Include Port in SPN for WinRM | Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations. | Bool | False | 🔲 Unchecked |
    | FileTransferProtocol | File Transfer Protocol to Use | Which protocol should be used when uploading/downloading files - SCP, SFTP, or Both (try one, and then if necessary, the other).  Overrides FileTransferProtocol [config.json](#post-installation) setting. | MultipleChoice | ,SCP,SFTP,Both | 🔲 Unchecked |
    | SSHPort | SSH Port | Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting. | String |  | 🔲 Unchecked |
+   | UseShellCommands | Use Shell Commands | Recommended to be set to the default value of 'Y'.  For a detailed explanation of this setting, please refer to [Use Shell Commands Setting](#use-shell-commands-setting) | Bool | True | 🔲 Unchecked |
 
    The Custom Fields tab should look like this:
 
@@ -734,6 +746,7 @@ the Keyfactor Command Portal
    | IncludePortInSPN | Include Port in SPN for WinRM | Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations. | Bool | False | 🔲 Unchecked |
    | FileTransferProtocol | File Transfer Protocol to Use | Which protocol should be used when uploading/downloading files - SCP, SFTP, or Both (try one, and then if necessary, the other).  Overrides FileTransferProtocol [config.json](#post-installation) setting. | MultipleChoice | ,SCP,SFTP,Both | 🔲 Unchecked |
    | SSHPort | SSH Port | Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting. | String |  | 🔲 Unchecked |
+   | UseShellCommands | Use Shell Commands | Recommended to be set to the default value of 'Y'.  For a detailed explanation of this setting, please refer to [Use Shell Commands Setting](#use-shell-commands-setting) | Bool | True | 🔲 Unchecked |
 
    The Custom Fields tab should look like this:
 
@@ -850,6 +863,7 @@ the Keyfactor Command Portal
    | IncludePortInSPN | Include Port in SPN for WinRM | Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations. | Bool | False | 🔲 Unchecked |
    | FileTransferProtocol | File Transfer Protocol to Use | Which protocol should be used when uploading/downloading files - SCP, SFTP, or Both (try one, and then if necessary, the other).  Overrides FileTransferProtocol [config.json](#post-installation) setting. | MultipleChoice | ,SCP,SFTP,Both | 🔲 Unchecked |
    | SSHPort | SSH Port | Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting. | String |  | 🔲 Unchecked |
+   | UseShellCommands | Use Shell Commands | Recommended to be set to the default value of 'Y'.  For a detailed explanation of this setting, please refer to [Use Shell Commands Setting](#use-shell-commands-setting) | Bool | True | 🔲 Unchecked |
 
    The Custom Fields tab should look like this:
 
@@ -906,7 +920,7 @@ the Keyfactor Command Portal
 
 ## Post Installation
 
-The Remote File Orchestrator Extension uses a JSON configuration file. It is located in the `{Keyfactor Orchestrator Installation Folder}\Extensions\RemoteFile`. None of the values are required, and a description of each follows below:
+The Remote File Orchestrator Extension uses a JSON configuration file. It is located at `{Keyfactor Orchestrator Installation Folder}\Extensions\RemoteFile\config.json`. None of the values are required, and a description of each follows below:
 
 ```json
 {
@@ -918,7 +932,8 @@ The Remote File Orchestrator Extension uses a JSON configuration file. It is loc
   "FileTransferProtocol": "SCP",
   "DefaultLinuxPermissionsOnStoreCreation": "600",
   "DefaultOwnerOnStoreCreation": "",
-  "SSHPort": ""
+  "SSHPort": "",
+  "UseShellCommands":  "Y"
 }
 ``` 
 
@@ -933,6 +948,7 @@ The Remote File Orchestrator Extension uses a JSON configuration file. It is loc
 | `DefaultLinuxPermissionsOnStoreCreation` | `600`         | Any 3-digit value from 000-777        | Linux file permissions set on new certificate stores. If blank, permissions from the parent folder will be used. Only applicable for Linux hosted certificate stores.                                                                                    |
 | `DefaultOwnerOnStoreCreation`            |               | Any valid user id                     | Sets the owner for newly created certificate stores. Can include group with format `ownerId:groupId`. If blank, the owner of the parent folder will be used. Only applicable for Linux hosted certificate stores.                                        |
 | `SSHPort`                                |               | Any valid integer representing a port | The port that SSH is listening on. Default is 22. Only applicable for Linux hosted certificate stores.                                                                                                                                                   |
+| `UseShellCommands`                       | `Y`           | `Y/N`                                 | Recommended to be set to the default value of 'Y'.  For a detailed explanation of this setting, please refer to [Use Shell Commands Setting](#use-shell-commands-setting)                                                                                |
 
 
 ## Defining Certificate Stores
@@ -973,6 +989,7 @@ The Remote File Universal Orchestrator extension implements 6 Certificate Store 
    | IncludePortInSPN | Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations. |
    | FileTransferProtocol | Which protocol should be used when uploading/downloading files - SCP, SFTP, or Both (try one, and then if necessary, the other).  Overrides FileTransferProtocol [config.json](#post-installation) setting. |
    | SSHPort | Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting. |
+   | UseShellCommands | Recommended to be set to the default value of 'Y'.  For a detailed explanation of this setting, please refer to [Use Shell Commands Setting](#use-shell-commands-setting) |
 
 </details>
 
@@ -1008,6 +1025,7 @@ The Remote File Universal Orchestrator extension implements 6 Certificate Store 
    | Properties.IncludePortInSPN | Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations. |
    | Properties.FileTransferProtocol | Which protocol should be used when uploading/downloading files - SCP, SFTP, or Both (try one, and then if necessary, the other).  Overrides FileTransferProtocol [config.json](#post-installation) setting. |
    | Properties.SSHPort | Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting. |
+   | Properties.UseShellCommands | Recommended to be set to the default value of 'Y'.  For a detailed explanation of this setting, please refer to [Use Shell Commands Setting](#use-shell-commands-setting) |
 
 3. **Import the CSV file to create the certificate stores**
 
@@ -1078,6 +1096,7 @@ Please refer to the **Universal Orchestrator (remote)** usage section ([PAM prov
    | IncludePortInSPN | Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations. |
    | FileTransferProtocol | Which protocol should be used when uploading/downloading files - SCP, SFTP, or Both (try one, and then if necessary, the other).  Overrides FileTransferProtocol [config.json](#post-installation) setting. |
    | SSHPort | Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting. |
+   | UseShellCommands | Recommended to be set to the default value of 'Y'.  For a detailed explanation of this setting, please refer to [Use Shell Commands Setting](#use-shell-commands-setting) |
 
 </details>
 
@@ -1117,6 +1136,7 @@ Please refer to the **Universal Orchestrator (remote)** usage section ([PAM prov
    | Properties.IncludePortInSPN | Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations. |
    | Properties.FileTransferProtocol | Which protocol should be used when uploading/downloading files - SCP, SFTP, or Both (try one, and then if necessary, the other).  Overrides FileTransferProtocol [config.json](#post-installation) setting. |
    | Properties.SSHPort | Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting. |
+   | Properties.UseShellCommands | Recommended to be set to the default value of 'Y'.  For a detailed explanation of this setting, please refer to [Use Shell Commands Setting](#use-shell-commands-setting) |
 
 3. **Import the CSV file to create the certificate stores**
 
@@ -1183,6 +1203,7 @@ Please refer to the **Universal Orchestrator (remote)** usage section ([PAM prov
    | IncludePortInSPN | Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations. |
    | FileTransferProtocol | Which protocol should be used when uploading/downloading files - SCP, SFTP, or Both (try one, and then if necessary, the other).  Overrides FileTransferProtocol [config.json](#post-installation) setting. |
    | SSHPort | Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting. |
+   | UseShellCommands | Recommended to be set to the default value of 'Y'.  For a detailed explanation of this setting, please refer to [Use Shell Commands Setting](#use-shell-commands-setting) |
 
 </details>
 
@@ -1218,6 +1239,7 @@ Please refer to the **Universal Orchestrator (remote)** usage section ([PAM prov
    | Properties.IncludePortInSPN | Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations. |
    | Properties.FileTransferProtocol | Which protocol should be used when uploading/downloading files - SCP, SFTP, or Both (try one, and then if necessary, the other).  Overrides FileTransferProtocol [config.json](#post-installation) setting. |
    | Properties.SSHPort | Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting. |
+   | Properties.UseShellCommands | Recommended to be set to the default value of 'Y'.  For a detailed explanation of this setting, please refer to [Use Shell Commands Setting](#use-shell-commands-setting) |
 
 3. **Import the CSV file to create the certificate stores**
 
@@ -1285,6 +1307,7 @@ Please refer to the **Universal Orchestrator (remote)** usage section ([PAM prov
    | IncludePortInSPN | Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations. |
    | FileTransferProtocol | Which protocol should be used when uploading/downloading files - SCP, SFTP, or Both (try one, and then if necessary, the other).  Overrides FileTransferProtocol [config.json](#post-installation) setting. |
    | SSHPort | Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting. |
+   | UseShellCommands | Recommended to be set to the default value of 'Y'.  For a detailed explanation of this setting, please refer to [Use Shell Commands Setting](#use-shell-commands-setting) |
 
 </details>
 
@@ -1321,6 +1344,7 @@ Please refer to the **Universal Orchestrator (remote)** usage section ([PAM prov
    | Properties.IncludePortInSPN | Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations. |
    | Properties.FileTransferProtocol | Which protocol should be used when uploading/downloading files - SCP, SFTP, or Both (try one, and then if necessary, the other).  Overrides FileTransferProtocol [config.json](#post-installation) setting. |
    | Properties.SSHPort | Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting. |
+   | Properties.UseShellCommands | Recommended to be set to the default value of 'Y'.  For a detailed explanation of this setting, please refer to [Use Shell Commands Setting](#use-shell-commands-setting) |
 
 3. **Import the CSV file to create the certificate stores**
 
@@ -1387,6 +1411,7 @@ Please refer to the **Universal Orchestrator (remote)** usage section ([PAM prov
    | IncludePortInSPN | Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations. |
    | FileTransferProtocol | Which protocol should be used when uploading/downloading files - SCP, SFTP, or Both (try one, and then if necessary, the other).  Overrides FileTransferProtocol [config.json](#post-installation) setting. |
    | SSHPort | Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting. |
+   | UseShellCommands | Recommended to be set to the default value of 'Y'.  For a detailed explanation of this setting, please refer to [Use Shell Commands Setting](#use-shell-commands-setting) |
 
 </details>
 
@@ -1422,6 +1447,7 @@ Please refer to the **Universal Orchestrator (remote)** usage section ([PAM prov
    | Properties.IncludePortInSPN | Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations. |
    | Properties.FileTransferProtocol | Which protocol should be used when uploading/downloading files - SCP, SFTP, or Both (try one, and then if necessary, the other).  Overrides FileTransferProtocol [config.json](#post-installation) setting. |
    | Properties.SSHPort | Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting. |
+   | Properties.UseShellCommands | Recommended to be set to the default value of 'Y'.  For a detailed explanation of this setting, please refer to [Use Shell Commands Setting](#use-shell-commands-setting) |
 
 3. **Import the CSV file to create the certificate stores**
 
@@ -1489,6 +1515,7 @@ Please refer to the **Universal Orchestrator (remote)** usage section ([PAM prov
    | IncludePortInSPN | Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations. |
    | FileTransferProtocol | Which protocol should be used when uploading/downloading files - SCP, SFTP, or Both (try one, and then if necessary, the other).  Overrides FileTransferProtocol [config.json](#post-installation) setting. |
    | SSHPort | Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting. |
+   | UseShellCommands | Recommended to be set to the default value of 'Y'.  For a detailed explanation of this setting, please refer to [Use Shell Commands Setting](#use-shell-commands-setting) |
 
 </details>
 
@@ -1525,6 +1552,7 @@ Please refer to the **Universal Orchestrator (remote)** usage section ([PAM prov
    | Properties.IncludePortInSPN | Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations. |
    | Properties.FileTransferProtocol | Which protocol should be used when uploading/downloading files - SCP, SFTP, or Both (try one, and then if necessary, the other).  Overrides FileTransferProtocol [config.json](#post-installation) setting. |
    | Properties.SSHPort | Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting. |
+   | Properties.UseShellCommands | Recommended to be set to the default value of 'Y'.  For a detailed explanation of this setting, please refer to [Use Shell Commands Setting](#use-shell-commands-setting) |
 
 3. **Import the CSV file to create the certificate stores**
 
@@ -1610,6 +1638,29 @@ For agent mode (accessing stores on the same server where Universal Orchestrator
 2. Important considerations:
     - `Store Type` + `Client Machine` + `Store Path` must be unique in Keyfactor Command
     - Best practice: Use the full DNS or IP Address to the left of the `|` character
+
+## Use Shell Commands Setting
+
+The Use Shell Commands Setting (orchestrator level in config.json and per store override of this value as a custom field value) 
+determines whether or not Linux shell commands will be used when managing certificate stores on Linux-based servers.
+This is useful for environments where shell access is limited or even not allowed.  In those scenarios setting this value to 'N'
+will substitute SFTP commands for certain specific Linux shell commands.  The following restrictions will be in place when 
+using RemoteFile in this mode:
+1. The config.json option SeparateUploadFilePath must NOT be used (option missing from the config.json file or set to empty) for shell
+commands to be suppressed for all use cases.
+2. The config.json and custom field options DefaultLinuxPermissionsOnStoreCreation, DefaultOwnerOnStoreCreation, 
+LinuxFilePermissionsOnStoreCreation, and LinuxFileOwnerOnStoreCreation are not supported and will be ignored.  As a result, file
+permissions and ownership when creating certificate stores will be based on the user assigned to the Command certificate store and 
+other Linux environmental settings.
+3. Discovery jobs are excluded and will still use the `find` shell command
+4. A rare issue exists where the user id assigned to a certificate store has an expired password causing the orchestrator to hang 
+when attempting an SFTP/SCP connection.  A modification was added to RemoteFile to check for this condition.  Running RemoteFile 
+with Use Shell Commands = N will cause this validation check to NOT occur.
+5. Both RFORA and RFKDB use proprietary CLI commands in order to manage their respective certificate stores.  These commands
+will still be executed when Use Shell Commands is set to Y.
+6. If executing in local mode ('|LocalMachine' at the end of your client machine name for your certificate store), Use Shell
+Commands = 'N' will have no effect.  Shell commands will continue to be used because there will be no SSH connection
+available from which to execute SFTP commands.
 
 ## Developer Notes
 
