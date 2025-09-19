@@ -29,6 +29,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
         internal bool IncludePortInSPN { get; set; }
         internal ApplicationSettings.FileTransferProtocolEnum FileTransferProtocol { get; set; }
         internal bool CreateCSROnDevice { get; set; }
+        internal bool UseShellCommands { get; set; }
         internal string KeyType { get; set; }
         internal int KeySize { get; set; }
         internal string SubjectText { get; set; }
@@ -57,7 +58,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
                 ApplicationSettings.DefaultSudoImpersonatedUser :
                 properties.SudoImpersonatedUser.Value;
 
-            SSHPort = properties.SSHPort == null || string.IsNullOrEmpty(properties.SSHPort.Value) || !int.TryParse(properties.SSHPort.Value, out int notUsed) ?
+            SSHPort = properties.SSHPort == null || string.IsNullOrEmpty(properties.SSHPort.Value) || !int.TryParse(properties.SSHPort.Value, out int _) ?
                 ApplicationSettings.SSHPort :
                 properties.SSHPort;
 
@@ -72,6 +73,10 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             CreateCSROnDevice = properties.CreateCSROnDevice == null || string.IsNullOrEmpty(properties.CreateCSROnDevice.Value) ?
                 ApplicationSettings.CreateCSROnDevice :
                 Convert.ToBoolean(properties.CreateCSROnDevice.Value);
+
+            UseShellCommands = properties.UseShellCommands == null || string.IsNullOrEmpty(properties.UseShellCommands.Value) ?
+                ApplicationSettings.UseShellCommands :
+                properties.UseShellCommands;
 
             FileTransferProtocol = ApplicationSettings.FileTransferProtocol;
             if (properties.FileTransferProtocol != null && !string.IsNullOrEmpty(properties.FileTransferProtocol.Value))
