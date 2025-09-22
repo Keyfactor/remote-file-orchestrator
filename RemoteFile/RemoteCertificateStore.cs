@@ -257,18 +257,13 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             try
             {
                 Pkcs12StoreBuilder storeBuilder = new Pkcs12StoreBuilder();
-                Pkcs12Store certs = storeBuilder.Build();
+                Pkcs12Store newEntry = storeBuilder.Build();
 
                 byte[] newCertBytes = removeRootCertificate && !string.IsNullOrEmpty(pfxPassword) ? 
                     RemoveRootCertificate(Convert.FromBase64String(certificateEntry), pfxPassword) : 
                     Convert.FromBase64String(certificateEntry);
 
-                Pkcs12Store newEntry = storeBuilder.Build();
-
-                X509Certificate2 cert = new X509Certificate2(newCertBytes, pfxPassword, X509KeyStorageFlags.Exportable | X509KeyStorageFlags.EphemeralKeySet);
-                byte[] binaryCert = cert.Export(X509ContentType.Pkcs12, pfxPassword);
-
-                using (MemoryStream ms = new MemoryStream(string.IsNullOrEmpty(pfxPassword) ? binaryCert : newCertBytes))
+                using (MemoryStream ms = new MemoryStream(newCertBytes))
                 {
                     newEntry.Load(ms, string.IsNullOrEmpty(pfxPassword) ? new char[0] : pfxPassword.ToCharArray());
                 }
@@ -295,7 +290,8 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
 
                 if (string.IsNullOrEmpty(checkAliasExists))
                 {
-                    Org.BouncyCastle.X509.X509Certificate bcCert = DotNetUtilities.FromX509Certificate(cert);
+                    //Org.BouncyCastle.X509.X509Certificate bcCert = DotNetUtilities.FromX509Certificate(cert);
+                    Org.BouncyCastle.X509.X509Certificate bcCert = new Org.BouncyCastle.X509.X509Certificate(newCertBytes);
                     X509CertificateEntry bcEntry = new X509CertificateEntry(bcCert);
                     if (CertificateStore.ContainsAlias(alias))
                     {
