@@ -9,7 +9,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -163,36 +162,25 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             return ServerType == ServerTypeEnum.Linux ? FindStoresLinux(paths, extensions, files, ignoredDirs, includeSymLinks) : FindStoresWindows(paths, extensions, files);
         }
 
-        internal List<X509Certificate2Collection> GetCertificateChains()
+        internal List<X509CertificateEntryCollection> GetCertificateChains()
         {
             logger.MethodEntry(LogLevel.Debug);
-
-            List<X509Certificate2Collection> certificateChains = new List<X509Certificate2Collection>();
+            
+            List<X509CertificateEntryCollection> certificateChains = new List<X509CertificateEntryCollection>();
 
             foreach(string alias in CertificateStore.Aliases)
             {
-                X509Certificate2Collection chain = new X509Certificate2Collection();
-                X509CertificateEntry[] entries;
-
-                if (CertificateStore.IsKeyEntry(alias))
+                bool hasPrivateKey = CertificateStore.IsKeyEntry(alias);
+                X509CertificateEntryCollection entries = new X509CertificateEntryCollection()
                 {
-                    entries = CertificateStore.GetCertificateChain(alias);
-                }
-                else
-                {
-                    X509CertificateEntry entry = CertificateStore.GetCertificate(alias);
-                    entries = new X509CertificateEntry[] { entry };
-                }
+                    Alias = alias,
+                    HasPrivateKey = hasPrivateKey,
+                    CertificateChain = hasPrivateKey ?
+                        CertificateStore.GetCertificateChain(alias).ToList() :
+                        new List<X509CertificateEntry>() { CertificateStore.GetCertificate(alias) }
+                };
 
-                foreach(X509CertificateEntry entry in entries)
-                {
-                    X509Certificate2Ext cert = new X509Certificate2Ext(entry.Certificate.GetEncoded());
-                    cert.FriendlyNameExt = alias;
-                    cert.HasPrivateKey = CertificateStore.IsKeyEntry(alias);
-                    chain.Add(cert);
-                }
-
-                certificateChains.Add(chain);
+                certificateChains.Add(entries);
             }
 
             logger.MethodExit(LogLevel.Debug);
@@ -389,65 +377,65 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             return encodedCsr;
         }
 
-        internal string GenerateCSROnDevice(string subjectText, SupportedKeyTypeEnum keyType, int keySize, List<string> sans, out string privateKey)
-        {
-            string path = ApplicationSettings.TempFilePathForODKG;
-            if (path.Substring(path.Length - 1, 1) != "/") path += "/";
-            string fileName = Guid.NewGuid().ToString();
+        //internal string GenerateCSROnDevice(string subjectText, SupportedKeyTypeEnum keyType, int keySize, List<string> sans, out string privateKey)
+        //{
+        //    string path = ApplicationSettings.TempFilePathForODKG;
+        //    if (path.Substring(path.Length - 1, 1) != "/") path += "/";
+        //    string fileName = Guid.NewGuid().ToString();
 
-            X500DistinguishedName dn = new X500DistinguishedName(subjectText);
-            string opensslSubject = dn.Format(true).Replace("S=","ST=");
-            opensslSubject = opensslSubject.Replace(System.Environment.NewLine, "/");
-            opensslSubject = "/" + opensslSubject.Substring(0, opensslSubject.Length - 1);
+        //    X500DistinguishedName dn = new X500DistinguishedName(subjectText);
+        //    string opensslSubject = dn.Format(true).Replace("S=","ST=");
+        //    opensslSubject = opensslSubject.Replace(System.Environment.NewLine, "/");
+        //    opensslSubject = "/" + opensslSubject.Substring(0, opensslSubject.Length - 1);
 
-            string cmd = $"openssl req -new -newkey REPLACE -nodes -keyout {path}{fileName}.key -out {path}{fileName}.csr -subj '{opensslSubject}'";
-            switch (keyType)
-            {
-                case SupportedKeyTypeEnum.RSA:
-                    cmd = cmd.Replace("REPLACE", $"rsa:{keySize.ToString()}");
-                    break;
-                case SupportedKeyTypeEnum.ECC:
-                    string algName = "prime256v1";
-                    switch (keySize)
-                    {
-                        case 384:
-                            algName = "secp384r1";
-                            break;
-                        case 521:
-                            algName = "secp521r1";
-                            break;
-                    }
-                    cmd = cmd.Replace("REPLACE", $"ec:<(openssl ecparam -name {algName})");
-                    break;
-            }
+        //    string cmd = $"openssl req -new -newkey REPLACE -nodes -keyout {path}{fileName}.key -out {path}{fileName}.csr -subj '{opensslSubject}'";
+        //    switch (keyType)
+        //    {
+        //        case SupportedKeyTypeEnum.RSA:
+        //            cmd = cmd.Replace("REPLACE", $"rsa:{keySize.ToString()}");
+        //            break;
+        //        case SupportedKeyTypeEnum.ECC:
+        //            string algName = "prime256v1";
+        //            switch (keySize)
+        //            {
+        //                case 384:
+        //                    algName = "secp384r1";
+        //                    break;
+        //                case 521:
+        //                    algName = "secp521r1";
+        //                    break;
+        //            }
+        //            cmd = cmd.Replace("REPLACE", $"ec:<(openssl ecparam -name {algName})");
+        //            break;
+        //    }
 
-            string csr = string.Empty;
-            privateKey = string.Empty;
-            try
-            {
-                try
-                {
-                    RemoteHandler.RunCommand(cmd, null, ApplicationSettings.UseSudo, null);
-                }
-                catch (Exception ex)
-                {
-                    if (!ex.Message.Contains("----"))
-                        throw;
-                }
+        //    string csr = string.Empty;
+        //    privateKey = string.Empty;
+        //    try
+        //    {
+        //        try
+        //        {
+        //            RemoteHandler.RunCommand(cmd, null, ApplicationSettings.UseSudo, null);
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            if (!ex.Message.Contains("----"))
+        //                throw;
+        //        }
 
-                privateKey = Encoding.UTF8.GetString(RemoteHandler.DownloadCertificateFile(path + fileName + ".key"));
-                csr = Encoding.UTF8.GetString(RemoteHandler.DownloadCertificateFile(path + fileName + ".csr"));
-            }
-            finally
-            {
-                if (RemoteHandler.DoesFileExist(path + fileName + ".key"))
-                    RemoteHandler.RemoveCertificateFile(path, fileName + ".key");
-                if (RemoteHandler.DoesFileExist(path + fileName + ".csr"))
-                    RemoteHandler.RemoveCertificateFile(path, fileName + ".csr");
-            }
+        //        privateKey = Encoding.UTF8.GetString(RemoteHandler.DownloadCertificateFile(path + fileName + ".key"));
+        //        csr = Encoding.UTF8.GetString(RemoteHandler.DownloadCertificateFile(path + fileName + ".csr"));
+        //    }
+        //    finally
+        //    {
+        //        if (RemoteHandler.DoesFileExist(path + fileName + ".key"))
+        //            RemoteHandler.RemoveCertificateFile(path, fileName + ".key");
+        //        if (RemoteHandler.DoesFileExist(path + fileName + ".csr"))
+        //            RemoteHandler.RemoveCertificateFile(path, fileName + ".csr");
+        //    }
 
-            return csr;
-        }
+        //    return csr;
+        //}
 
         internal void Initialize(string sudoImpersonatedUser, bool useShellCommands)
         {

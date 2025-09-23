@@ -8,15 +8,18 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
 
 using Keyfactor.Orchestrators.Extensions;
 using Keyfactor.Orchestrators.Common.Enums;
 using Keyfactor.Logging;
 using Keyfactor.Extensions.Orchestrator.RemoteFile.Models;
+using Keyfactor.PKI.Extensions;
 
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using Org.BouncyCastle.Pkcs;
+using System.Security.Cryptography.X509Certificates;
+using Keyfactor.PKI.X509;
 
 namespace Keyfactor.Extensions.Orchestrator.RemoteFile
 {
@@ -41,29 +44,29 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
                 certificateStore.Initialize(SudoImpersonatedUser, UseShellCommands);
                 certificateStore.LoadCertificateStore(certificateStoreSerializer, true);
 
-                List<X509Certificate2Collection> collections = certificateStore.GetCertificateChains();
+                List<X509CertificateEntryCollection> collection = certificateStore.GetCertificateChains();
 
                 logger.LogDebug($"Format returned certificates BEGIN");
-                foreach (X509Certificate2Collection collection in collections)
+                foreach (X509CertificateEntryCollection entry in collection)
                 {
-                    if (collection.Count == 0)
+                    if (entry.CertificateChain?.Count > 1)
                         continue;
 
-                    X509Certificate2Ext issuedCertificate = (X509Certificate2Ext)collection[0];
+                    X509CertificateEntry issuedCertificate = entry.CertificateChain[0];
 
                     List<string> certChain = new List<string>();
-                    foreach (X509Certificate2 certificate in collection)
+                    foreach (X509CertificateEntry certificateEntry in entry.CertificateChain)
                     {
-                        certChain.Add(Convert.ToBase64String(certificate.Export(X509ContentType.Cert)));
-                        logger.LogDebug(Convert.ToBase64String(certificate.Export(X509ContentType.Cert)));
+                        CertificateConverter converter = CertificateConverterFactory.FromBouncyCastleCertificate(certificateEntry.Certificate);
+                        certChain.Add(converter.ToPEM(false));
                     }
-
+                    
                     inventoryItems.Add(new CurrentInventoryItem()
                     {
                         ItemStatus = OrchestratorInventoryItemStatus.Unknown,
-                        Alias = string.IsNullOrEmpty(issuedCertificate.FriendlyNameExt) ? issuedCertificate.Thumbprint : issuedCertificate.FriendlyNameExt,
-                        PrivateKeyEntry = issuedCertificate.HasPrivateKey,
-                        UseChainLevel = collection.Count > 1,
+                        Alias = string.IsNullOrEmpty(entry.Alias) ? BouncyCastleX509Extensions.Thumbprint(issuedCertificate.Certificate) : entry.Alias,
+                        PrivateKeyEntry = entry.HasPrivateKey,
+                        UseChainLevel = entry.CertificateChain.Count > 1,
                         Certificates = certChain.ToArray()
                     });
                 }
