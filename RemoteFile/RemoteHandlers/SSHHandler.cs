@@ -416,7 +416,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
                     }
                     catch (Exception ex)
                     {
-                        _logger.LogError(RemoteFileException.FlattenExceptionMessages(ex, "Error checking existence of file {path} using SFTP"));
+                        _logger.LogError(RemoteFileException.FlattenExceptionMessages(ex, $"Error checking existence of file {path} using SFTP"));
                         throw;
                     }
                     finally
