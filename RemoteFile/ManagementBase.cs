@@ -5,20 +5,17 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions
 // and limitations under the License.
 
-using System;
-
 using Keyfactor.Logging;
-using Keyfactor.Orchestrators.Extensions;
 using Keyfactor.Orchestrators.Common.Enums;
+using Keyfactor.Orchestrators.Extensions;
 using Keyfactor.PKI.Extensions;
-
-using Org.BouncyCastle.X509;
-
 using Microsoft.Extensions.Logging;
-
 using Newtonsoft.Json;
 using Org.BouncyCastle.Pkcs;
+using Org.BouncyCastle.X509;
+using System;
 using System.IO;
+using static Org.BouncyCastle.Math.EC.ECCurve;
 
 namespace Keyfactor.Extensions.Orchestrator.RemoteFile
 {
@@ -50,21 +47,11 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
                         if (!certificateStore.DoesStoreExist())
                         {
                             if (ApplicationSettings.CreateStoreIfMissing)
-                                CreateStore(certificateStoreSerializer, config);
+                                CreateStore(certificateStoreSerializer, config, logger);
                             else
                                 throw new RemoteFileException($"Certificate store {config.CertificateStoreDetails.StorePath} does not exist on server {config.CertificateStoreDetails.ClientMachine}.");
                         }
                         certificateStore.LoadCertificateStore(certificateStoreSerializer, false);
-
-                        using (MemoryStream ms = new MemoryStream(Convert.FromBase64String(config.JobCertificate.Contents)))
-                        {
-                            Pkcs12StoreBuilder storeBuilder = new Pkcs12StoreBuilder();
-                            Pkcs12Store store = storeBuilder.Build();
-
-                            store.Load(ms, config.JobCertificate.PrivateKeyPassword.ToCharArray());
-
-                            store.Aliases[0]
-                        }
                         certificateStore.AddCertificate((config.JobCertificate.Alias ?? new X509Certificate(), config.JobCertificate.Contents, config.Overwrite, config.JobCertificate.PrivateKeyPassword, RemoveRootCertificate);
                         certificateStore.SaveCertificateStore(certificateStoreSerializer.SerializeRemoteCertificateStore(certificateStore.GetCertificateStore(), storePathFile.Path, storePathFile.File, StorePassword, certificateStore.RemoteHandler));
 
@@ -119,8 +106,10 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             return new JobResult() { Result = OrchestratorJobStatusJobResult.Success, JobHistoryId = config.JobHistoryId };
         }
 
-        private void CreateStore(ICertificateStoreSerializer certificateStoreSerializer, ManagementJobConfiguration config)
+        private void CreateStore(ICertificateStoreSerializer certificateStoreSerializer, ManagementJobConfiguration config, ILogger logger)
         {
+            logger.MethodEntry(LogLevel.Debug);
+
             dynamic properties = JsonConvert.DeserializeObject(config.CertificateStoreDetails.Properties.ToString());
             string linuxFilePermissions = properties.LinuxFilePermissionsOnStoreCreation == null || string.IsNullOrEmpty(properties.LinuxFilePermissionsOnStoreCreation.Value) ?
                 ApplicationSettings.DefaultLinuxPermissionsOnStoreCreation :
@@ -131,6 +120,32 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
                 properties.LinuxFileOwnerOnStoreCreation.Value;
 
             certificateStore.CreateCertificateStore(certificateStoreSerializer, config.CertificateStoreDetails.StorePath, linuxFilePermissions, linuxFileOwner);
+
+            logger.MethodExit(LogLevel.Debug);
+        }
+
+        private string GetThumbprint (ManagementJobCertificate jobCertificate, ILogger logger)
+        {
+            logger.MethodEntry(LogLevel.Debug);
+
+            string thumbprint = string.Empty;
+
+            using (MemoryStream ms = new MemoryStream(Convert.FromBase64String(jobCertificate.Contents)))
+            {
+                Pkcs12StoreBuilder storeBuilder = new Pkcs12StoreBuilder();
+                Pkcs12Store store = storeBuilder.Build();
+
+                store.Load(ms, jobCertificate.PrivateKeyPassword.ToCharArray());
+
+                foreach (string alias in store.Aliases)
+                {
+                    thumbprint = store.GetCertificate(alias).Certificate.Thumbprint();
+                    break;
+                }
+            }
+
+            logger.MethodExit(LogLevel.Debug);
+            return thumbprint;
         }
     }
 }
