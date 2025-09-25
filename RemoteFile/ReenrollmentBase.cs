@@ -50,8 +50,6 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
 
             try
             {
-                ApplicationSettings.Initialize(this.GetType().Assembly.Location);
-
                 SetJobProperties(config, config.CertificateStoreDetails, logger);
 
                 string alias = "abcd";
@@ -68,7 +66,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
                 ApplicationSettings.FileTransferProtocolEnum fileTransferProtocol = ApplicationSettings.FileTransferProtocol;
 
                 certificateStore = new RemoteCertificateStore(config.CertificateStoreDetails.ClientMachine, UserName, UserPassword, config.CertificateStoreDetails.StorePath, StorePassword, fileTransferProtocol, SSHPort, IncludePortInSPN);
-                certificateStore.Initialize(SudoImpersonatedUser);
+                certificateStore.Initialize(SudoImpersonatedUser, UseShellCommands);
 
                 PathFile storePathFile = RemoteCertificateStore.SplitStorePathFile(config.CertificateStoreDetails.StorePath);
 
