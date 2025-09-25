@@ -33,8 +33,6 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
 
             try
             {
-                ApplicationSettings.Initialize(this.GetType().Assembly.Location);
-
                 SetJobProperties(config, config.CertificateStoreDetails, logger);
 
                 certificateStore = new RemoteCertificateStore(config.CertificateStoreDetails.ClientMachine, UserName, UserPassword, config.CertificateStoreDetails.StorePath, StorePassword, FileTransferProtocol, SSHPort, IncludePortInSPN);
