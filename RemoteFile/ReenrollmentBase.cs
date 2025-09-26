@@ -12,11 +12,9 @@ using System.Security.Cryptography.X509Certificates;
 using Keyfactor.Logging;
 using Keyfactor.Orchestrators.Extensions;
 using Keyfactor.Orchestrators.Common.Enums;
-using Keyfactor.PKI.PEM;
 
 using Microsoft.Extensions.Logging;
 
-using Newtonsoft.Json;
 using System.Security.Cryptography;
 
 namespace Keyfactor.Extensions.Orchestrator.RemoteFile

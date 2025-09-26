@@ -6,16 +6,15 @@
 // and limitations under the License.
 
 using System;
-using System.Collections.Generic;
-using System.Security.Cryptography.X509Certificates;
 
 using Keyfactor.Logging;
 using Keyfactor.Orchestrators.Extensions;
 using Keyfactor.Orchestrators.Common.Enums;
-
+using Keyfactor.PKI.Extensions;
 using Microsoft.Extensions.Logging;
 
 using Newtonsoft.Json;
+using Org.BouncyCastle.X509;
 
 namespace Keyfactor.Extensions.Orchestrator.RemoteFile
 {
@@ -52,7 +51,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
                                 throw new RemoteFileException($"Certificate store {config.CertificateStoreDetails.StorePath} does not exist on server {config.CertificateStoreDetails.ClientMachine}.");
                         }
                         certificateStore.LoadCertificateStore(certificateStoreSerializer, false);
-                        certificateStore.AddCertificate((config.JobCertificate.Alias ?? new X509Certificate2(Convert.FromBase64String(config.JobCertificate.Contents), config.JobCertificate.PrivateKeyPassword, X509KeyStorageFlags.EphemeralKeySet).Thumbprint), config.JobCertificate.Contents, config.Overwrite, config.JobCertificate.PrivateKeyPassword, RemoveRootCertificate);
+                        certificateStore.AddCertificate(config.JobCertificate.Alias ?? new X509Certificate(Convert.FromBase64String(config.JobCertificate.Contents)).Thumbprint(), config.JobCertificate.Contents, config.Overwrite, config.JobCertificate.PrivateKeyPassword, RemoveRootCertificate);
                         certificateStore.SaveCertificateStore(certificateStoreSerializer.SerializeRemoteCertificateStore(certificateStore.GetCertificateStore(), storePathFile.Path, storePathFile.File, StorePassword, certificateStore.RemoteHandler));
 
                         logger.LogDebug($"END add Operation for {config.CertificateStoreDetails.StorePath} on {config.CertificateStoreDetails.ClientMachine}.");

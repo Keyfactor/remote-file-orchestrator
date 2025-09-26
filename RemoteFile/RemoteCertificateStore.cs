@@ -163,15 +163,14 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             return ServerType == ServerTypeEnum.Linux ? FindStoresLinux(paths, extensions, files, ignoredDirs, includeSymLinks) : FindStoresWindows(paths, extensions, files);
         }
 
-        internal List<X509Certificate2Collection> GetCertificateChains()
+        internal List<List<X509CertificateExt>> GetCertificateChains()
         {
             logger.MethodEntry(LogLevel.Debug);
 
-            List<X509Certificate2Collection> certificateChains = new List<X509Certificate2Collection>();
+            List<List<X509CertificateExt>> certificateChains = new List<List<X509CertificateExt>>();
 
             foreach(string alias in CertificateStore.Aliases)
             {
-                X509Certificate2Collection chain = new X509Certificate2Collection();
                 X509CertificateEntry[] entries;
 
                 if (CertificateStore.IsKeyEntry(alias))
@@ -184,13 +183,13 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
                     entries = new X509CertificateEntry[] { entry };
                 }
 
-                foreach(X509CertificateEntry entry in entries)
-                {
-                    X509Certificate2Ext cert = new X509Certificate2Ext(entry.Certificate.GetEncoded());
-                    cert.FriendlyNameExt = alias;
-                    cert.HasPrivateKey = CertificateStore.IsKeyEntry(alias);
-                    chain.Add(cert);
-                }
+                List<X509CertificateExt> chain = entries.Select(entry =>
+                        new X509CertificateExt(entry.Certificate.GetEncoded())
+                        {
+                            FriendlyNameExt = alias,
+                            HasPrivateKey = CertificateStore.IsKeyEntry(alias)
+                        })
+                    .ToList();
 
                 certificateChains.Add(chain);
             }
@@ -264,11 +263,8 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
                     Convert.FromBase64String(certificateEntry);
 
                 Pkcs12Store newEntry = storeBuilder.Build();
-
-                X509Certificate2 cert = new X509Certificate2(newCertBytes, pfxPassword, X509KeyStorageFlags.Exportable | X509KeyStorageFlags.EphemeralKeySet);
-                byte[] binaryCert = cert.Export(X509ContentType.Pkcs12, pfxPassword);
-
-                using (MemoryStream ms = new MemoryStream(string.IsNullOrEmpty(pfxPassword) ? binaryCert : newCertBytes))
+                
+                using (MemoryStream ms = new MemoryStream(newCertBytes))
                 {
                     newEntry.Load(ms, string.IsNullOrEmpty(pfxPassword) ? new char[0] : pfxPassword.ToCharArray());
                 }
@@ -295,8 +291,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
 
                 if (string.IsNullOrEmpty(checkAliasExists))
                 {
-                    Org.BouncyCastle.X509.X509Certificate bcCert = DotNetUtilities.FromX509Certificate(cert);
-                    X509CertificateEntry bcEntry = new X509CertificateEntry(bcCert);
+                    X509CertificateEntry bcEntry = newEntry.GetCertificate(alias);
                     if (CertificateStore.ContainsAlias(alias))
                     {
                         CertificateStore.DeleteEntry(alias);

@@ -17,7 +17,7 @@ using Keyfactor.PKI.PrivateKeys;
 using Keyfactor.PKI.X509;
 using Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers;
 using Keyfactor.Extensions.Orchestrator.RemoteFile.Models;
-
+using Keyfactor.PKI.Extensions;
 using Microsoft.Extensions.Logging;
 
 using Org.BouncyCastle.Crypto;
@@ -49,12 +49,12 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.DER
 
             if (String.IsNullOrEmpty(SeparatePrivateKeyFilePath))
             {
-                store.SetCertificateEntry(CertificateConverterFactory.FromBouncyCastleCertificate(certificate.Certificate).ToX509Certificate2().Thumbprint, certificate);
+                store.SetCertificateEntry(certificate.Certificate.Thumbprint(), certificate);
             }
             else
             {
                 AsymmetricKeyEntry keyEntry = GetPrivateKey(storePassword ?? string.Empty, remoteHandler);
-                store.SetKeyEntry(CertificateConverterFactory.FromBouncyCastleCertificate(certificate.Certificate).ToX509Certificate2().Thumbprint, keyEntry, new X509CertificateEntry[] { certificate });
+                store.SetKeyEntry(certificate.Certificate.Thumbprint(), keyEntry, new X509CertificateEntry[] { certificate });
             }
 
             // Second Pkcs12Store necessary because of an obscure BC bug where creating a Pkcs12Store without .Load (code above using "Set" methods only) does not set all internal hashtables necessary to avoid an error later
@@ -94,6 +94,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.DER
                         throw new RemoteFileException($"DER certificate store has a private key at {SeparatePrivateKeyFilePath}, but no private key was passed with the certificate to this job.");
                 }
 
+                // this still needs refactored to CryptographicObjectFormatter
                 CertificateConverter certConverter = CertificateConverterFactory.FromBouncyCastleCertificate(certificateStore.GetCertificate(alias).Certificate);
                 certificateBytes = certConverter.ToDER(string.IsNullOrEmpty(storePassword) ? string.Empty : storePassword);
 
@@ -140,9 +141,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.DER
 
             try
             {
-                CertificateConverter converter = CertificateConverterFactory.FromDER(storeContentBytes);
-                X509Certificate bcCert = converter.ToBouncyCastleCertificate();
-                certificateEntry = new X509CertificateEntry(bcCert);
+                certificateEntry = new X509CertificateEntry(new X509Certificate(storeContentBytes));
             }
             catch (Exception ex)
             {
