@@ -52,7 +52,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
                                 throw new RemoteFileException($"Certificate store {config.CertificateStoreDetails.StorePath} does not exist on server {config.CertificateStoreDetails.ClientMachine}.");
                         }
                         certificateStore.LoadCertificateStore(certificateStoreSerializer, false);
-                        certificateStore.AddCertificate((config.JobCertificate.Alias ?? new X509Certificate(), config.JobCertificate.Contents, config.Overwrite, config.JobCertificate.PrivateKeyPassword, RemoveRootCertificate);
+                        certificateStore.AddCertificate(config.JobCertificate.Alias ?? GetThumbprint(config.JobCertificate, logger), config.JobCertificate.Contents, config.Overwrite, config.JobCertificate.PrivateKeyPassword, RemoveRootCertificate);
                         certificateStore.SaveCertificateStore(certificateStoreSerializer.SerializeRemoteCertificateStore(certificateStore.GetCertificateStore(), storePathFile.Path, storePathFile.File, StorePassword, certificateStore.RemoteHandler));
 
                         logger.LogDebug($"END add Operation for {config.CertificateStoreDetails.StorePath} on {config.CertificateStoreDetails.ClientMachine}.");
@@ -82,7 +82,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
                         }
                         else
                         {
-                            CreateStore(certificateStoreSerializer, config);
+                            CreateStore(certificateStoreSerializer, config, logger);
                         }
                         logger.LogDebug($"END create Operation for {config.CertificateStoreDetails.StorePath} on {config.CertificateStoreDetails.ClientMachine}.");
                         break;
