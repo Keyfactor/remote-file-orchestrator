@@ -31,11 +31,12 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
         private string SudoImpersonatedUser { get; set; }
         private ApplicationSettings.FileTransferProtocolEnum FileTransferProtocol { get; set; }
         private bool IsStoreServerLinux { get; set; }
+        private bool UseShellCommands { get; set; }
         private string UserId { get; set; }
         private string Password { get; set; }
         private SshClient sshClient;
 
-        internal SSHHandler(string server, string serverLogin, string serverPassword, bool isStoreServerLinux, ApplicationSettings.FileTransferProtocolEnum fileTransferProtocol, int sshPort, string sudoImpersonatedUser)
+        internal SSHHandler(string server, string serverLogin, string serverPassword, bool isStoreServerLinux, ApplicationSettings.FileTransferProtocolEnum fileTransferProtocol, int sshPort, string sudoImpersonatedUser, bool useShellCommands)
         {
             _logger.MethodEntry(LogLevel.Debug);
             
@@ -43,6 +44,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
             SudoImpersonatedUser = sudoImpersonatedUser;
             FileTransferProtocol = fileTransferProtocol;
             IsStoreServerLinux = isStoreServerLinux;
+            UseShellCommands = useShellCommands;
             UserId = serverLogin;
             Password = serverPassword;
 
@@ -80,7 +82,8 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
                 sshClient.Connect();
 
                 //method call below necessary to check edge condition where password for user id has expired. SCP (and possibly SFTP) download hangs in that scenario
-                CheckConnection();
+                if (useShellCommands)
+                    CheckConnection();
             }
             catch (Exception ex)
             {
@@ -368,13 +371,20 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
             if (IsStoreServerLinux)
             {
                 string pathOnly = string.Empty;
-                SplitStorePathFile(path, out pathOnly, out _);
+                string fileName = string.Empty;
+                SplitStorePathFile(path, out pathOnly, out fileName);
 
-                linuxFilePermissions = string.IsNullOrEmpty(linuxFilePermissions) ? GetFolderPermissions(pathOnly) : linuxFilePermissions;
-                linuxFileOwner = string.IsNullOrEmpty(linuxFileOwner) ? GetFolderOwner(pathOnly) : linuxFileOwner;
+                if (UseShellCommands)
+                {
+                    linuxFilePermissions = string.IsNullOrEmpty(linuxFilePermissions) ? GetFolderPermissions(pathOnly) : linuxFilePermissions;
+                    linuxFileOwner = string.IsNullOrEmpty(linuxFileOwner) ? GetFolderOwner(pathOnly) : linuxFileOwner;
 
-                AreLinuxPermissionsValid(linuxFilePermissions);
-                RunCommand($"install -m {linuxFilePermissions} -o {linuxFileOwner} {linuxFileGroup} /dev/null {path}", null, ApplicationSettings.UseSudo, null);
+                    AreLinuxPermissionsValid(linuxFilePermissions);
+
+                    RunCommand($"install -m {linuxFilePermissions} -o {linuxFileOwner} {linuxFileGroup} /dev/null {path}", null, ApplicationSettings.UseSudo, null);
+                }
+                else
+                    UploadCertificateFile(pathOnly, fileName, Array.Empty<byte>());
             }
             else
                 RunCommand($@"Out-File -FilePath ""{path}""", null, false, null);
@@ -386,28 +396,38 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
         {
             _logger.MethodEntry(LogLevel.Debug);
             _logger.LogDebug($"DoesFileExist: {path}");
-            
-            string rtn = RunCommand($"ls {path} >> /dev/null 2>&1 && echo True || echo False", null, ApplicationSettings.UseSudo, null);
-            return Convert.ToBoolean(rtn);
-            
-            //using (SftpClient client = new SftpClient(Connection))
-            //{
-            //    try
-            //    {
-            //        client.Connect();
-            //        string existsPath = FormatFTPPath(path, !IsStoreServerLinux);
-            //        bool exists = client.Exists(existsPath);
-            //        _logger.LogDebug(existsPath);
 
-            //        _logger.MethodExit(LogLevel.Debug);
+            bool exists = false;
 
-            //        return exists;
-            //    }
-            //    finally
-            //    {
-            //        client.Disconnect();
-            //    }
-            //}
+            if (UseShellCommands)
+            {
+                exists = Convert.ToBoolean(RunCommand($"ls {path} >> /dev/null 2>&1 && echo True || echo False", null, ApplicationSettings.UseSudo, null));
+            }
+            else
+            {
+                using (SftpClient client = new SftpClient(Connection))
+                {
+                    try
+                    {
+                        client.Connect();
+                        string existsPath = FormatFTPPath(path, !IsStoreServerLinux);
+                        exists = client.Exists(existsPath);
+                        _logger.LogDebug(existsPath);
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.LogError(RemoteFileException.FlattenExceptionMessages(ex, "Error checking existence of file {path} using SFTP"));
+                        throw;
+                    }
+                    finally
+                    {
+                        _logger.MethodExit(LogLevel.Debug);
+                        client.Disconnect();
+                    }
+                }
+            }
+
+            return exists;
         }
 
         public override void RemoveCertificateFile(string path, string fileName)
