@@ -12,6 +12,7 @@ using System.IO;
 using Newtonsoft.Json;
 using Microsoft.Extensions.Logging;
 using Keyfactor.Logging;
+using System.Reflection;
 
 
 namespace Keyfactor.Extensions.Orchestrator.RemoteFile 
@@ -41,6 +42,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
         public static string DefaultSudoImpersonatedUser { get { return configuration.ContainsKey("DefaultSudoImpersonatedUser") ? configuration["DefaultSudoImpersonatedUser"] : DEFAULT_SUDO_IMPERSONATION_SETTING; } }
         public static bool CreateCSROnDevice { get { return configuration.ContainsKey("CreateCSROnDevice") ? configuration["CreateCSROnDevice"]?.ToUpper() == "Y" : false; } }
         public static string TempFilePathForODKG { get { return configuration.ContainsKey("TempFilePathForODKG") ? configuration["TempFilePathForODKG"] : string.Empty; } }
+        public static bool UseShellCommands { get { return configuration.ContainsKey("UseShellCommands") ? configuration["UseShellCommands"]?.ToUpper() == "Y" : true; } }
         public static int SSHPort
         {
             get
@@ -88,13 +90,13 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             }
         }
 
-        public static void Initialize(string configLocation)
+        static ApplicationSettings()
         {
             ILogger logger = LogHandler.GetClassLogger<ApplicationSettings>();
             logger.MethodEntry(LogLevel.Debug);
 
             configuration = new Dictionary<string, string>();
-            configLocation = $"{Path.GetDirectoryName(configLocation)}{Path.DirectorySeparatorChar}config.json";
+            string configLocation = $"{Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)}{Path.DirectorySeparatorChar}config.json";
             string configContents = string.Empty;
 
             if (!File.Exists(configLocation))
