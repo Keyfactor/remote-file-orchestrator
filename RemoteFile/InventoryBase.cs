@@ -48,7 +48,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
                 logger.LogDebug($"Format returned certificates BEGIN");
                 foreach (X509CertificateEntryCollection entry in collection)
                 {
-                    if (entry.CertificateChain?.Count > 1)
+                    if (collection.Count == 0)
                         continue;
 
                     X509CertificateEntry issuedCertificate = entry.CertificateChain[0];
