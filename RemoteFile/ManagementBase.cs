@@ -34,7 +34,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             try
             {
                 SetJobProperties(config, config.CertificateStoreDetails, logger);
-
+                
                 certificateStore = new RemoteCertificateStore(config.CertificateStoreDetails.ClientMachine, UserName, UserPassword, config.CertificateStoreDetails.StorePath, StorePassword, FileTransferProtocol, SSHPort, IncludePortInSPN);
                 certificateStore.Initialize(SudoImpersonatedUser, UseShellCommands);
 

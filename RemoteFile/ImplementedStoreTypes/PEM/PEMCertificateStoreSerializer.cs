@@ -12,6 +12,7 @@ using Keyfactor.PKI.CryptographicObjects.Formatters;
 using Keyfactor.PKI.Extensions;
 using Keyfactor.PKI.PEM;
 using Keyfactor.PKI.PrivateKeys;
+using Keyfactor.PKI.X509;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Org.BouncyCastle.Asn1.X9;
@@ -23,10 +24,12 @@ using Org.BouncyCastle.Pkcs;
 using Org.BouncyCastle.X509;
 using System;
 using System.Collections.Generic;
+using System.DirectoryServices.Protocols;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
+using static Keyfactor.PKI.PEM.PemUtilities;
 
 namespace Keyfactor.Extensions.Orchestrator.RemoteFile.PEM
 {
@@ -50,7 +53,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.PEM
 
         private ILogger logger;
 
-        public PEMCertificateStoreSerializer(string storeProperties) 
+        public PEMCertificateStoreSerializer(string storeProperties)
         {
             logger = LogHandler.GetClassLogger(this.GetType());
             LoadCustomProperties(storeProperties);
@@ -59,7 +62,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.PEM
         public Pkcs12Store DeserializeRemoteCertificateStore(byte[] storeContentBytes, string storePath, string storePassword, IRemoteHandler remoteHandler, bool isInventory)
         {
             logger.MethodEntry(LogLevel.Debug);
-           
+
             Pkcs12StoreBuilder storeBuilder = new Pkcs12StoreBuilder();
             Pkcs12Store store = storeBuilder.Build();
 
@@ -68,7 +71,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.PEM
 
             if (IsTrustStore || (isInventory && IgnorePrivateKeyOnInventory))
             {
-                foreach(X509CertificateEntry certificate in certificates)
+                foreach (X509CertificateEntry certificate in certificates)
                 {
                     store.SetCertificateEntry(certificate.Certificate.Thumbprint(), certificate);
                 }
@@ -122,7 +125,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.PEM
 
                 if (!string.IsNullOrEmpty(storePassword) && privateKeyType != PrivateKeyTypeEnum.PKCS8)
                     throw new RemoteFileException("Error retrieving private key.  Certificate store password cannot have a non empty value if the private key is in PKCS#1 format (BEGIN [RSA|EC] PRIVATE KEY)");
-        
+
                 bool keyEntryProcessed = false;
                 foreach (string alias in certificateStore.Aliases)
                 {
@@ -140,10 +143,27 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.PEM
                     AsymmetricKeyParameter privateKey = certificateStore.GetKey(alias).Key;
                     PrivateKeyConverter keyConverter = PrivateKeyConverterFactory.FromBCPrivateKeyAndCert(privateKey, endCertificate);
 
-                    keyString = CryptographicObjectFormatter.PEM.Format(keyConverter, storePassword);
-                    pemString = string.IsNullOrEmpty(SeparatePrivateKeyFilePath)
-                        ? CryptographicObjectFormatter.PEM.Format(endCertificate, keyConverter, storePassword, false)
-                        : CryptographicObjectFormatter.PEM.Format(endCertificate, false);
+                    pemString = CryptographicObjectFormatter.PEM.Format(endCertificate, false);
+
+                    if (privateKeyType == PrivateKeyTypeEnum.PKCS8)
+                    {
+                        if (string.IsNullOrEmpty(storePassword))
+                            keyString = PemUtilities.DERToPEM(keyConverter.ToPkcs8BlobUnencrypted(), PemObjectType.PrivateKey);
+                        else
+                            keyString = CryptographicObjectFormatter.PEM.Format(keyConverter, storePassword);
+                    }
+                    else
+                    {
+                        TextWriter textWriter = new StringWriter();
+                        PemWriter pemWriter = new PemWriter(textWriter);
+                        pemWriter.WriteObject(privateKey);
+                        pemWriter.Writer.Flush();
+
+                        keyString = textWriter.ToString();
+                    }
+
+                    if (string.IsNullOrEmpty(SeparatePrivateKeyFilePath))
+                        pemString += keyString;
 
                     if (!IncludesChain)
                     {
@@ -180,7 +200,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.PEM
             IncludesChain = properties.IncludesChain == null || string.IsNullOrEmpty(properties.IncludesChain.Value) ? false : bool.Parse(properties.IncludesChain.Value);
             SeparatePrivateKeyFilePath = properties.SeparatePrivateKeyFilePath == null || string.IsNullOrEmpty(properties.SeparatePrivateKeyFilePath.Value) ? String.Empty : properties.SeparatePrivateKeyFilePath.Value;
             IgnorePrivateKeyOnInventory = properties.IgnorePrivateKeyOnInventory == null || string.IsNullOrEmpty(properties.IgnorePrivateKeyOnInventory.Value) ? false : bool.Parse(properties.IgnorePrivateKeyOnInventory.Value);
-            
+
             logger.LogDebug("Custom Properties have been loaded:");
             logger.LogDebug($"IsTrustStore: {IsTrustStore}, IncludesChain: {IncludesChain}, SeparatePrivateKeyFilePath: {SeparatePrivateKeyFilePath}, IgnorePrivateKeyOnInventory: {IgnorePrivateKeyOnInventory}");
 
@@ -195,7 +215,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.PEM
 
             try
             {
-                IEnumerable<string> pemCertificates = PemUtilities.SplitCollection(certificates);
+                IEnumerable<string> pemCertificates = PemUtilities.SplitCollection(RemovePrivateKey(certificates));
                 certificateEntries.AddRange(pemCertificates.Select(cert =>
                     new X509CertificateEntry(new X509Certificate(CryptographicObjectFormatter.DER.Format(cert))))
                 );
@@ -262,7 +282,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.PEM
 
             logger.MethodExit(LogLevel.Debug);
 
-            return keyEntry; 
+            return keyEntry;
         }
 
         private PrivateKeyTypeEnum GetPrivateKeyType(string storeContents, out string privateKeyBegDelim)
@@ -324,6 +344,30 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.PEM
             {
                 throw new RemoteFileException("Error converting to BouncyCastle private key - Invalid parameter.");
             }
+        }
+
+        private string RemovePrivateKey(string pemString)
+        {
+            List<string> delimiters = new List<string>();
+
+            foreach (string delim in PrivateKeyDelimetersPkcs8)
+                delimiters.Add(delim);
+            foreach (string delim in PrivateKeyDelimetersRSA)
+                delimiters.Add(delim);
+            foreach (string delim in PrivateKeyDelimetersEC)
+                delimiters.Add(delim);
+
+            foreach (string delim in delimiters)
+            {
+                string delimEnd = delim.Replace("BEGIN", "END");
+                int certStart = pemString.IndexOf(delim);
+                if (certStart == -1)
+                    continue;
+                int certLength = pemString.IndexOf(delimEnd) + delimEnd.Length - certStart;
+                pemString = pemString.Remove(certStart, certLength);
+            }
+
+            return pemString.Trim();
         }
     }
 }

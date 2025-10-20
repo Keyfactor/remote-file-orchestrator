@@ -5,21 +5,20 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions
 // and limitations under the License.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-
-using Keyfactor.Orchestrators.Extensions;
-using Keyfactor.Orchestrators.Common.Enums;
-using Keyfactor.Logging;
 using Keyfactor.Extensions.Orchestrator.RemoteFile.Models;
+using Keyfactor.Logging;
+using Keyfactor.Orchestrators.Common.Enums;
+using Keyfactor.Orchestrators.Extensions;
+using Keyfactor.PKI.CryptographicObjects.Formatters;
 using Keyfactor.PKI.Extensions;
-
+using Keyfactor.PKI.X509;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Org.BouncyCastle.Pkcs;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Security.Cryptography.X509Certificates;
-using Keyfactor.PKI.X509;
 
 namespace Keyfactor.Extensions.Orchestrator.RemoteFile
 {
@@ -57,10 +56,9 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
                     List<string> certChain = new List<string>();
                     foreach (X509CertificateEntry certificateEntry in entry.CertificateChain)
                     {
-                        CertificateConverter converter = CertificateConverterFactory.FromBouncyCastleCertificate(certificateEntry.Certificate);
-                        certChain.Add(converter.ToPEM(false));
+                        certChain.Add(CryptographicObjectFormatter.PEM.Format(certificateEntry.Certificate, false));
                     }
-                    
+
                     inventoryItems.Add(new CurrentInventoryItem()
                     {
                         ItemStatus = OrchestratorInventoryItemStatus.Unknown,
