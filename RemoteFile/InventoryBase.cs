@@ -39,7 +39,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             {
                 SetJobProperties(config, config.CertificateStoreDetails, logger);
 
-                certificateStore = new RemoteCertificateStore(config.CertificateStoreDetails.ClientMachine, UserName, UserPassword, config.CertificateStoreDetails.StorePath, StorePassword, FileTransferProtocol, SSHPort, IncludePortInSPN);
+                certificateStore = new RemoteCertificateStore(config.CertificateStoreDetails.ClientMachine, UserName, UserPassword, config.CertificateStoreDetails.StorePath, StorePassword, SSHPort, IncludePortInSPN);
                 certificateStore.Initialize(SudoImpersonatedUser, UseShellCommands);
                 certificateStore.LoadCertificateStore(certificateStoreSerializer, true);
 

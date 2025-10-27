@@ -53,7 +53,6 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
         internal ServerTypeEnum ServerType { get; set; }
         internal List<string> DiscoveredStores { get; set; }
         internal string UploadFilePath { get; set; }
-        internal ApplicationSettings.FileTransferProtocolEnum FileTransferProtocol { get; set; }
         internal bool IncludePortInSPN { get; set; }
         internal int SSHPort { get; set; }
         
@@ -63,7 +62,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
 
         internal RemoteCertificateStore() { }
 
-        internal RemoteCertificateStore(string server, string serverId, string serverPassword, string storeFileAndPath, string storePassword, ApplicationSettings.FileTransferProtocolEnum fileTransferProtocol, int sshPort, bool includePortInSPN)
+        internal RemoteCertificateStore(string server, string serverId, string serverPassword, string storeFileAndPath, string storePassword, int sshPort, bool includePortInSPN)
         {
             logger = LogHandler.GetClassLogger(this.GetType());
             logger.MethodEntry(LogLevel.Debug);
@@ -79,7 +78,6 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             StorePassword = storePassword;
             ServerType = StorePath.Substring(0, 1) == "/" ? ServerTypeEnum.Linux : ServerTypeEnum.Windows;
             UploadFilePath = !string.IsNullOrEmpty(ApplicationSettings.SeparateUploadFilePath) && ServerType == ServerTypeEnum.Linux ? ApplicationSettings.SeparateUploadFilePath : StorePath;
-            FileTransferProtocol = fileTransferProtocol;
             SSHPort = sshPort;
             IncludePortInSPN = includePortInSPN;
             logger.LogDebug($"UploadFilePath: {UploadFilePath}");
@@ -444,7 +442,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             bool treatAsLocal = Server.ToLower().EndsWith(LOCAL_MACHINE_SUFFIX);
 
             if (ServerType == ServerTypeEnum.Linux || RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
-                RemoteHandler = treatAsLocal ? new LinuxLocalHandler() as IRemoteHandler : new SSHHandler(Server, ServerId, ServerPassword, ServerType == ServerTypeEnum.Linux, FileTransferProtocol, SSHPort, sudoImpersonatedUser, useShellCommands) as IRemoteHandler;
+                RemoteHandler = treatAsLocal ? new LinuxLocalHandler() as IRemoteHandler : new SSHHandler(Server, ServerId, ServerPassword, ServerType == ServerTypeEnum.Linux, SSHPort, sudoImpersonatedUser, useShellCommands) as IRemoteHandler;
             else
                 RemoteHandler = new WinRMHandler(Server, ServerId, ServerPassword, treatAsLocal, IncludePortInSPN);
 

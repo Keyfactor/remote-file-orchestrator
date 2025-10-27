@@ -19,13 +19,6 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
 {
     public class ApplicationSettings
     {
-        public enum FileTransferProtocolEnum
-        {
-            SCP,
-            SFTP,
-            Both
-        }
-
         private const string DEFAULT_LINUX_PERMISSION_SETTING = "";
         private const string DEFAULT_OWNER_SETTING = "";
         private const string DEFAULT_SUDO_IMPERSONATION_SETTING = "";
@@ -59,34 +52,6 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
                 {
                     return DEFAULT_SSH_PORT;
                 }
-            }
-        }
-        public static FileTransferProtocolEnum FileTransferProtocol 
-        { 
-            get 
-            {
-                ILogger logger = LogHandler.GetClassLogger<ApplicationSettings>();
-                
-                string protocolNames = string.Empty;
-                foreach (string protocolName in Enum.GetNames(typeof(FileTransferProtocolEnum)))
-                {
-                    protocolNames += protocolName + ", ";
-                }
-                protocolNames = protocolNames.Substring(0, protocolNames.Length - 2);
-                string? protocolValue = configuration["FileTransferProtocol"];
-
-                if (!PropertyUtilities.TryEnumParse(protocolValue, out bool isFlagCombination, out FileTransferProtocolEnum protocol))
-                    throw new RemoteFileException($"Invalid optional config.json FileTransferProtocol option of {protocolValue}.  If present, must be one of these values: {protocolNames}.");
-
-                // Issue: If received a comma-delimited list ("SCP,SFTP,Both"), it's treating it as a flag combination (i.e. mapping it to 0+1+2=3)
-                // If this happens, we want to default it to Both so it's resolved as a valid mapping.
-                if (isFlagCombination)
-                {
-                    logger.LogWarning($"FileTransferProtocol config value {protocolValue} mapped to a flag combination. Setting FileTransferProtocol explicitly to Both.");
-                    protocol = FileTransferProtocolEnum.Both;
-                }
-                
-                return protocol; 
             }
         }
 
@@ -143,8 +108,6 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
                 logger.LogDebug($"Missing configuration parameter - DefaultLinuxPermissionsOnStoreCreation.  Will set to default value of '{DEFAULT_LINUX_PERMISSION_SETTING}'");
             if (!configuration.ContainsKey("DefaultOwnerOnStoreCreation"))
                 logger.LogDebug($"Missing configuration parameter - DefaultOwnerOnStoreCreation.  Will set to default value of '{DEFAULT_OWNER_SETTING}'");
-            if (!configuration.ContainsKey("FileTransferProtocol"))
-                logger.LogDebug($"Missing configuration parameter - FileTransferProtocol.  Will set to default value of 'SCP'");
         }
 
         private static string AddTrailingSlash(string path)

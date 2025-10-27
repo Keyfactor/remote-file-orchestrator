@@ -62,10 +62,11 @@ certificates and certificate store files.
 (f) - RFKDB store type only
 
 2. When orchestrating management of local or external certificate stores, the Remote File Orchestrator Extension makes
-   use of SFTP and/or SCP to transfer files to and from the orchestrated server. `SFTP/SCP` cannot make use of `sudo`, so
-   all folders containing certificate stores will need to allow SFTP/SCP file transfer for the user assigned to the
+   use of SCP or SFTP to transfer files to and from the orchestrated server. SCP is attempted first, and if that 
+   fails, SFTP is attempted. `SCP/SFTP` cannot make use of `sudo`, so
+   all folders containing certificate stores will need to allow SCP/SFTP file transfer for the user assigned to the
    certificate store/discovery job. If this is not possible, set the values in the `config.json` appropriately to use an
-   alternative upload/download folder that does allow `SFTP/SCP` file transfer. If the certificate store/discovery job is
+   alternative upload/download folder that does allow `SCP/SFTP` file transfer. If the certificate store/discovery job is
    configured for local (agent) access, the account running the Keyfactor Universal Orchestrator service must have
    access to read/write to the certificate store location, OR the `config.json` file must be set up to use the alternative
    upload/download file.
@@ -102,8 +103,8 @@ Please reference [Certificate Stores and Discovery Jobs](#certificate-stores-and
 creating certificate stores for the `RemoteFile` Orchestrator Extension.  
 
 </details>
-
-Please consult with your system administrator for more information on configuring `SSH/SFTP/SCP` or `WinRM` in your environment.
+C
+Please consult with your system administrator for more information on configuring `SSH/SCP/SFTP` or `WinRM` in your environment.
 
 ## Post Installation
 
@@ -116,7 +117,6 @@ The Remote File Orchestrator Extension uses a JSON configuration file. It is loc
   "CreateStoreIfMissing": "N",
   "UseNegotiate": "N",
   "SeparateUploadFilePath": "",
-  "FileTransferProtocol": "SCP",
   "DefaultLinuxPermissionsOnStoreCreation": "600",
   "DefaultOwnerOnStoreCreation": "",
   "SSHPort": "",
@@ -131,7 +131,6 @@ The Remote File Orchestrator Extension uses a JSON configuration file. It is loc
 | `CreateStoreIfMissing`                   | `N`           | `Y/N`                                 | Determines if a certificate store should be created during a Management-Add job if it doesn't exist. If `N`, the job will return an error. If `Y`, the store will be created and the certificate added.                                                  |
 | `UseNegotiate`                           | `N`           | `Y/N`                                 | Determines if WinRM should use Negotiate (Y) when connecting to the remote server. Only applicable for Windows hosted certificate stores.                                                                                                                |
 | `SeparateUploadFilePath`                 |               | Any valid, existing Linux path        | Path on the orchestrated server for uploading/downloading temporary work files. If empty, the certificate store location will be used. Only applicable for Linux hosted certificate stores.                                                              |
-| `FileTransferProtocol`                   | `SCP`         | `SCP, SFTP, Both`                     | Protocol used for uploading/downloading files. If `Both`, `SCP` will be tried first, then `SFTP`. Only applicable for Linux hosted certificate stores.                                                                                                   |
 | `DefaultLinuxPermissionsOnStoreCreation` | `600`         | Any 3-digit value from 000-777        | Linux file permissions set on new certificate stores. If blank, permissions from the parent folder will be used. Only applicable for Linux hosted certificate stores.                                                                                    |
 | `DefaultOwnerOnStoreCreation`            |               | Any valid user id                     | Sets the owner for newly created certificate stores. Can include group with format `ownerId:groupId`. If blank, the owner of the parent folder will be used. Only applicable for Linux hosted certificate stores.                                        |
 | `SSHPort`                                |               | Any valid integer representing a port | The port that SSH is listening on. Default is 22. Only applicable for Linux hosted certificate stores.                                                                                                                                                   |
@@ -200,7 +199,7 @@ permissions and ownership when creating certificate stores will be based on the 
 other Linux environmental settings.
 3. Discovery jobs are excluded and will still use the `find` shell command
 4. A rare issue exists where the user id assigned to a certificate store has an expired password causing the orchestrator to hang 
-when attempting an SFTP/SCP connection.  A modification was added to RemoteFile to check for this condition.  Running RemoteFile 
+when attempting an SCP/SFTP connection.  A modification was added to RemoteFile to check for this condition.  Running RemoteFile 
 with Use Shell Commands = N will cause this validation check to NOT occur.
 5. Both RFORA and RFKDB use proprietary CLI commands in order to manage their respective certificate stores.  These commands
 will still be executed when Use Shell Commands is set to Y.
