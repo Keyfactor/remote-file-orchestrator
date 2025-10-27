@@ -7,18 +7,13 @@
 
 using System;
 using System.IO;
-using System.Security.Cryptography;
 
 using CliWrap;
 using CliWrap.Buffered;
 
-using Renci.SshNet;
-
 using Microsoft.Extensions.Logging;
 
 using Keyfactor.Logging;
-using Keyfactor.PKI.PrivateKeys;
-using Keyfactor.PKI.PEM;
 
 namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
 {

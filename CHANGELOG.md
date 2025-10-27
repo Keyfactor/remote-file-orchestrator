@@ -1,3 +1,6 @@
+v2.12.0
+- Added config.json setting and its override store level custom field - AllowShellCommands.  If "N" (default "Y"), SFTP will be used to create stores and move files on Linux-based certificate store servers.  No Linux shell commands will be used in the integration.
+
 v2.11.5
 - Bug Fix: Rare race condition loading config settings when multiple RemoteFile jobs are running simultaneously on the same orchestrator
 - Documentation update to better list out what Linux commands get executed under what situations in Requirements & Prerequisites section
