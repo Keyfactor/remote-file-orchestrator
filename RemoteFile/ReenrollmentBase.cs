@@ -7,17 +7,12 @@
 
 using System;
 using System.Collections.Generic;
-using System.Security.Cryptography.X509Certificates;
 
 using Keyfactor.Logging;
 using Keyfactor.Orchestrators.Extensions;
 using Keyfactor.Orchestrators.Common.Enums;
-using Keyfactor.PKI.PEM;
 
 using Microsoft.Extensions.Logging;
-
-using Newtonsoft.Json;
-using System.Security.Cryptography;
 
 namespace Keyfactor.Extensions.Orchestrator.RemoteFile
 {
@@ -52,7 +47,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             {
                 SetJobProperties(config, config.CertificateStoreDetails, logger);
 
-                string alias = "abcd";
+                string alias = config.;
                 string sans = "reenroll2.Keyfactor.com&reenroll1.keyfactor.com&reenroll3.Keyfactor.com";
                 bool overwrite = true;
 
@@ -66,7 +61,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
                 ApplicationSettings.FileTransferProtocolEnum fileTransferProtocol = ApplicationSettings.FileTransferProtocol;
 
                 certificateStore = new RemoteCertificateStore(config.CertificateStoreDetails.ClientMachine, UserName, UserPassword, config.CertificateStoreDetails.StorePath, StorePassword, fileTransferProtocol, SSHPort, IncludePortInSPN);
-                certificateStore.Initialize(SudoImpersonatedUser);
+                certificateStore.Initialize(SudoImpersonatedUser, UseShellCommands);
 
                 PathFile storePathFile = RemoteCertificateStore.SplitStorePathFile(config.CertificateStoreDetails.StorePath);
 
