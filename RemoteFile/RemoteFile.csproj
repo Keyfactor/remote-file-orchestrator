@@ -10,7 +10,7 @@
   <ItemGroup>
     <PackageReference Include="BouncyCastle.Cryptography" Version="2.6.2" />
     <PackageReference Include="CliWrap" Version="3.6.6" />
-    <PackageReference Include="Keyfactor.Orchestrators.IOrchestratorJobExtensions" Version="0.7.0" />
+    <PackageReference Include="Keyfactor.Orchestrators.IOrchestratorJobExtensions" Version="1.0.0" />
     <PackageReference Include="Keyfactor.PKI" Version="8.1.1" />
     <PackageReference Include="Microsoft.PowerShell.SDK" Version="7.4.5" />
     <PackageReference Include="SSH.NET" Version="2024.0.0" />
