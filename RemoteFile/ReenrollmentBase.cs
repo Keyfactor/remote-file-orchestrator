@@ -7,17 +7,13 @@
 
 using System;
 using System.Collections.Generic;
-using System.Security.Cryptography.X509Certificates;
 
 using Keyfactor.Logging;
 using Keyfactor.Orchestrators.Extensions;
 using Keyfactor.Orchestrators.Common.Enums;
-using Keyfactor.PKI.PEM;
 
 using Microsoft.Extensions.Logging;
-
-using Newtonsoft.Json;
-using System.Security.Cryptography;
+using static Keyfactor.PKI.PKIConstants.X509;
 
 namespace Keyfactor.Extensions.Orchestrator.RemoteFile
 {
@@ -52,9 +48,22 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             {
                 SetJobProperties(config, config.CertificateStoreDetails, logger);
 
-                string alias = "abcd";
-                string sans = "reenroll2.Keyfactor.com&reenroll1.keyfactor.com&reenroll3.Keyfactor.com";
-                bool overwrite = true;
+                bool overwrite = config.Overwrite;
+                string alias = config.Alias;
+                string sans = "";
+                if (config.SANs.Count > 0)
+                {
+                    foreach (KeyValuePair<string, string[]> keyValue in config.SANs)
+                    {
+                        string key = keyValue.Key.Replace("ip4", "ip", StringComparison.OrdinalIgnoreCase).Replace("ip6", "ip", StringComparison.OrdinalIgnoreCase).Replace("upn", "uri", StringComparison.OrdinalIgnoreCase);
+                        foreach (string value in keyValue.Value)
+                        {
+                            sans += (key + ":" + value + ",");
+                        }
+                    }
+                    if (sans.Length > 0)
+                        sans = sans.Substring(0, sans.Length - 1);
+                }
 
                 // validate parameters
                 string KeyTypes = string.Join(",", Enum.GetNames(typeof(SupportedKeyTypeEnum)));
@@ -63,10 +72,8 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
                     throw new RemoteFileException($"Unsupported KeyType value {KeyType}.  Supported types are {KeyTypes}.");
                 }
 
-                ApplicationSettings.FileTransferProtocolEnum fileTransferProtocol = ApplicationSettings.FileTransferProtocol;
-
-                certificateStore = new RemoteCertificateStore(config.CertificateStoreDetails.ClientMachine, UserName, UserPassword, config.CertificateStoreDetails.StorePath, StorePassword, fileTransferProtocol, SSHPort, IncludePortInSPN);
-                certificateStore.Initialize(SudoImpersonatedUser);
+                certificateStore = new RemoteCertificateStore(config.CertificateStoreDetails.ClientMachine, UserName, UserPassword, config.CertificateStoreDetails.StorePath, StorePassword, SSHPort, IncludePortInSPN);
+                certificateStore.Initialize(SudoImpersonatedUser, UseShellCommands);
 
                 PathFile storePathFile = RemoteCertificateStore.SplitStorePathFile(config.CertificateStoreDetails.StorePath);
 
