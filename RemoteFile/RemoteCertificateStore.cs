@@ -5,29 +5,24 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions
 // and limitations under the License.
 
+using Keyfactor.Extensions.Orchestrator.RemoteFile.Models;
+using Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers;
+using Keyfactor.Logging;
+using Keyfactor.PKI.X509;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+using Org.BouncyCastle.Pkcs;
+using Org.BouncyCastle.Security;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
+using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
-
-using Microsoft.Extensions.Logging;
-
-using Org.BouncyCastle.Pkcs;
-using Org.BouncyCastle.Security;
-
-using Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers;
-using Keyfactor.Extensions.Orchestrator.RemoteFile.Models;
-using Keyfactor.Logging;
-using System.Runtime.InteropServices;
-using Org.BouncyCastle.Asn1.Pkcs;
-using Org.BouncyCastle.Asn1.X509;
-using Org.BouncyCastle.Asn1;
-using Org.BouncyCastle.Crypto.Generators;
-using Org.BouncyCastle.Crypto.Prng;
-using Org.BouncyCastle.Crypto;
 using static Keyfactor.Extensions.Orchestrator.RemoteFile.ReenrollmentBase;
+using static Keyfactor.PKI.PKIConstants.X509;
 
 namespace Keyfactor.Extensions.Orchestrator.RemoteFile
 {
@@ -222,14 +217,31 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             logger.MethodExit(LogLevel.Debug);
         }
 
-        internal void CreateCertificateStore(ICertificateStoreSerializer certificateStoreSerializer, string storePath, string linuxFilePermissions, string linuxFileOwner)
+        internal void CreateCertificateStore(ICertificateStoreSerializer certificateStoreSerializer, string properties, string storePath, ILogger logger)
         {
             logger.MethodEntry(LogLevel.Debug);
+
+            dynamic propertiesCollection = JsonConvert.DeserializeObject(properties);
+            string linuxFilePermissions = propertiesCollection.LinuxFilePermissionsOnStoreCreation == null || string.IsNullOrEmpty(propertiesCollection.LinuxFilePermissionsOnStoreCreation.Value) ?
+                ApplicationSettings.DefaultLinuxPermissionsOnStoreCreation :
+                propertiesCollection.LinuxFilePermissionsOnStoreCreation.Value;
+
+            string linuxFileOwner = propertiesCollection.LinuxFileOwnerOnStoreCreation == null || string.IsNullOrEmpty(propertiesCollection.LinuxFileOwnerOnStoreCreation.Value) ?
+                ApplicationSettings.DefaultOwnerOnStoreCreation :
+                propertiesCollection.LinuxFileOwnerOnStoreCreation.Value;
 
             RemoteHandler.CreateEmptyStoreFile(storePath, linuxFilePermissions, linuxFileOwner);
             string privateKeyPath = certificateStoreSerializer.GetPrivateKeyPath();
             if (!string.IsNullOrEmpty(privateKeyPath))
                 RemoteHandler.CreateEmptyStoreFile(privateKeyPath, linuxFilePermissions, linuxFileOwner);
+
+            logger.MethodExit(LogLevel.Debug);
+        }
+
+        internal void CreateCertificateStore(ICertificateStoreSerializer certificateStoreSerializer, string storePath, string linuxFilePermissions, string linuxFileOwner)
+        {
+            logger.MethodEntry(LogLevel.Debug);
+
 
 
             logger.MethodExit(LogLevel.Debug);
@@ -335,44 +347,52 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             }
         }
 
-        internal string GenerateCSR(string subjectText, SupportedKeyTypeEnum keyType, int keySize, List<string> sans)
+        internal string GenerateCSROnDevice(string subjectText, bool overwrite, string alias, SupportedKeyTypeEnum keyType, int keySize, Dictionary<string, string[]> sans, out AsymmetricAlgorithm pemPrivateKey)
         {
-            IAsymmetricCipherKeyPairGenerator keyPairGenerator = null;
-            string algorithm = string.Empty;
+            string csr = string.Empty;
+            pemPrivateKey = string.Empty;
+
+            return csr;
+        }
+
+        internal string GenerateCSR(string subjectText, bool overwrite, string alias, SupportedKeyTypeEnum keyType, int keySize, Dictionary<string, string[]> sans, out AsymmetricAlgorithm privateKey)
+        {
+            if (CertificateStore.ContainsAlias(alias) && !overwrite)
+            {
+                throw new RemoteFileException($"Alias {alias} already exists in store {StorePath + StoreFileName} and overwrite is set to False.  Please try again with overwrite set to True if you wish to replace this entry.");
+            }
+            
+            IEnumerable<KeyValuePair<SubjectAltNameElementType, string>> sansList =
+                sans.SelectMany(
+                    kvp =>
+                        kvp.Value.Select(
+                            v => new KeyValuePair<SubjectAltNameElementType, string>(
+                                Enum.Parse<SubjectAltNameElementType>(kvp.Key, ignoreCase: true),
+                                v
+                            )
+                        )
+                );
+            
+            string keyAlgorithm = string.Empty;
             switch (keyType)
             {
                 case SupportedKeyTypeEnum.RSA:
-                    keyPairGenerator = new RsaKeyPairGenerator();
-                    algorithm = "SHA256withRSA";
+                    keyAlgorithm = "SHA256withRSA";
                     break;
                 case SupportedKeyTypeEnum.ECC:
-                    keyPairGenerator = new ECKeyPairGenerator();
-                    algorithm = "SHA256withECDSA";
-                    if (keySize == 384) algorithm = "SHA384withECDSA";
-                    if (keySize == 521) algorithm = "SHA512withECDSA";
+                    keyAlgorithm = "SHA256withECDSA";
+                    if (keySize == 384) keyAlgorithm = "SHA384withECDSA";
+                    if (keySize == 521) keyAlgorithm = "SHA512withECDSA";
                     break;
             }
 
-            var keyGenParams = new KeyGenerationParameters(new Org.BouncyCastle.Security.SecureRandom(new CryptoApiRandomGenerator()), keySize);
-            keyPairGenerator.Init(keyGenParams);
-            var keyPair = keyPairGenerator.GenerateKeyPair();
+            RequestGenerator generator = new RequestGenerator(keyAlgorithm, keySize);
+            generator.SANs = sansList;
+            generator.Subject = subjectText;
+            string csr = System.Text.Encoding.ASCII.GetString(generator.CreatePKCS10Request());
+            privateKey = generator.GetRequestPrivateKey().ToNetPrivateKey();
 
-            var subject = new X509Name(subjectText);
-
-            // Add SAN entries
-            var subAltNameList = new List<GeneralName>();
-            sans.ForEach(san => subAltNameList.Add(new GeneralName(GeneralName.DnsName, san.Trim())));
-            var generalSubAltNames = new GeneralNames(subAltNameList.ToArray());
-
-            var extensionsGenerator = new X509ExtensionsGenerator();
-            extensionsGenerator.AddExtension(X509Extensions.SubjectAlternativeName, false, generalSubAltNames);
-            var attributeSet = new DerSet(new AttributePkcs(PkcsObjectIdentifiers.Pkcs9AtExtensionRequest, new DerSet(extensionsGenerator.Generate())));
-
-            Pkcs10CertificationRequest csr = new Pkcs10CertificationRequest(algorithm, subject, keyPair.Public, (DerSet)attributeSet, keyPair.Private);
-
-            // encode the CSR as base64
-            var encodedCsr = Convert.ToBase64String(csr.GetEncoded());
-            return encodedCsr;
+            return csr;
         }
 
         //internal string GenerateCSROnDevice(string subjectText, SupportedKeyTypeEnum keyType, int keySize, List<string> sans, out string privateKey)

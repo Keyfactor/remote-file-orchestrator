@@ -47,7 +47,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
                         if (!certificateStore.DoesStoreExist())
                         {
                             if (ApplicationSettings.CreateStoreIfMissing)
-                                CreateStore(certificateStoreSerializer, config, logger);
+                                certificateStore.CreateCertificateStore(certificateStoreSerializer, config.CertificateStoreDetails.Properties, config.CertificateStoreDetails.StorePath, logger);
                             else
                                 throw new RemoteFileException($"Certificate store {config.CertificateStoreDetails.StorePath} does not exist on server {config.CertificateStoreDetails.ClientMachine}.");
                         }
@@ -82,7 +82,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
                         }
                         else
                         {
-                            CreateStore(certificateStoreSerializer, config, logger);
+                            certificateStore.CreateCertificateStore(certificateStoreSerializer, config, logger);
                         }
                         logger.LogDebug($"END create Operation for {config.CertificateStoreDetails.StorePath} on {config.CertificateStoreDetails.ClientMachine}.");
                         break;
@@ -104,24 +104,6 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
 
             logger.LogDebug($"...End {config.Capability} job for job id {config.JobId}");
             return new JobResult() { Result = OrchestratorJobStatusJobResult.Success, JobHistoryId = config.JobHistoryId };
-        }
-
-        private void CreateStore(ICertificateStoreSerializer certificateStoreSerializer, ManagementJobConfiguration config, ILogger logger)
-        {
-            logger.MethodEntry(LogLevel.Debug);
-
-            dynamic properties = JsonConvert.DeserializeObject(config.CertificateStoreDetails.Properties.ToString());
-            string linuxFilePermissions = properties.LinuxFilePermissionsOnStoreCreation == null || string.IsNullOrEmpty(properties.LinuxFilePermissionsOnStoreCreation.Value) ?
-                ApplicationSettings.DefaultLinuxPermissionsOnStoreCreation :
-                properties.LinuxFilePermissionsOnStoreCreation.Value;
-
-            string linuxFileOwner = properties.LinuxFileOwnerOnStoreCreation == null || string.IsNullOrEmpty(properties.LinuxFileOwnerOnStoreCreation.Value) ?
-                ApplicationSettings.DefaultOwnerOnStoreCreation :
-                properties.LinuxFileOwnerOnStoreCreation.Value;
-
-            certificateStore.CreateCertificateStore(certificateStoreSerializer, config.CertificateStoreDetails.StorePath, linuxFilePermissions, linuxFileOwner);
-
-            logger.MethodExit(LogLevel.Debug);
         }
 
         private string GetThumbprint (ManagementJobCertificate jobCertificate, ILogger logger)
