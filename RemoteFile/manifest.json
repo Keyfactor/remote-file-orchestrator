@@ -13,6 +13,10 @@
         "assemblypath": "RemoteFile.dll",
         "TypeFullName": "Keyfactor.Extensions.Orchestrator.RemoteFile.Discovery"
       },
+      "CertStores.RFPkcs12.Reenrollment": {
+        "assemblypath": "RemoteFile.dll",
+        "TypeFullName": "Keyfactor.Extensions.Orchestrator.RemoteFile.Reenrollment"
+      },
       "CertStores.RFPEM.Inventory": {
         "assemblypath": "RemoteFile.dll",
         "TypeFullName": "Keyfactor.Extensions.Orchestrator.RemoteFile.PEM.Inventory"
@@ -25,6 +29,10 @@
         "assemblypath": "RemoteFile.dll",
         "TypeFullName": "Keyfactor.Extensions.Orchestrator.RemoteFile.Discovery"
       },
+      "CertStores.RFPEM.Reenrollment": {
+        "assemblypath": "RemoteFile.dll",
+        "TypeFullName": "Keyfactor.Extensions.Orchestrator.RemoteFile.Reenrollment"
+      },
       "CertStores.RFJKS.Inventory": {
         "assemblypath": "RemoteFile.dll",
         "TypeFullName": "Keyfactor.Extensions.Orchestrator.RemoteFile.JKS.Inventory"
@@ -36,6 +44,10 @@
       "CertStores.RFJKS.Discovery": {
         "assemblypath": "RemoteFile.dll",
         "TypeFullName": "Keyfactor.Extensions.Orchestrator.RemoteFile.Discovery"
+      },
+      "CertStores.RFJKS.Reenrollment": {
+        "assemblypath": "RemoteFile.dll",
+        "TypeFullName": "Keyfactor.Extensions.Orchestrator.RemoteFile.Reenrollment"
       },
       "CertStores.RFKDB.Inventory": {
         "assemblypath": "RemoteFile.dll",
@@ -60,6 +72,10 @@
       "CertStores.RFDER.Discovery": {
         "assemblypath": "RemoteFile.dll",
         "TypeFullName": "Keyfactor.Extensions.Orchestrator.RemoteFile.Discovery"
+      },
+      "CertStores.RFDER.Reenrollment": {
+        "assemblypath": "RemoteFile.dll",
+        "TypeFullName": "Keyfactor.Extensions.Orchestrator.RemoteFile.Reenrollment"
       },
       "CertStores.RFORA.Inventory": {
         "assemblypath": "RemoteFile.dll",

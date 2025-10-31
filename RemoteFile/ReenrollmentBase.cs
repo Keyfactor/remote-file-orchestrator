@@ -20,7 +20,7 @@ using System.Security.Cryptography.X509Certificates;
 
 namespace Keyfactor.Extensions.Orchestrator.RemoteFile
 {
-    public abstract class ReenrollmentBase : RemoteFileJobTypeBase
+    public abstract class ReenrollmentBase : RemoteFileJobTypeBase, IReenrollmentJobExtension
     {
         public string ExtensionName => "Keyfactor.Extensions.Orchestrator.RemoteFile";
 
@@ -41,7 +41,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
         // 6) Modify ReenrollmentBase to implement IReenrollmentJobExtension 
         // 6) Update README.  Remember to explain the differences between ODKG and OOKG
 
-        public JobResult ProcessJobToDo(ReenrollmentJobConfiguration config, SubmitReenrollmentCSR submitReenrollment)
+        public JobResult ProcessJob(ReenrollmentJobConfiguration config, SubmitReenrollmentCSR submitReenrollment)
         {
             ILogger logger = LogHandler.GetClassLogger(this.GetType());
 
@@ -80,21 +80,35 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
                 }
                 else
                 {
-                    csr = certificateStore.GenerateCSR(SubjectText, config.Overwrite, config.Alias, KeyTypeEnum, KeySize, config.SANs, out privateKey));
+                    csr = certificateStore.GenerateCSR(SubjectText, config.Overwrite, config.Alias, KeyTypeEnum, KeySize, config.SANs, out privateKey);
                 }
 
                 X509Certificate2 cert = submitReenrollment.Invoke(csr);
-                cert.
+
                 if (cert == null)
                     throw new RemoteFileException("Enrollment of CSR failed.  Please check Keyfactor Command logs for more information on potential enrollment errors.");
 
-                //AsymmetricAlgorithm alg = KeyTypeEnum == SupportedKeyTypeEnum.RSA ? RSA.Create() : ECDsa.Create();
-                //alg.ImportEncryptedPkcs8PrivateKey(string.Empty, Keyfactor.PKI.PEM.PemUtilities.PEMToDER(pemPrivateKey), out _);
-                //cert = KeyTypeEnum == SupportedKeyTypeEnum.RSA ? cert.CopyWithPrivateKey((RSA)alg) : cert.CopyWithPrivateKey((ECDsa)alg);
+                switch (privateKey)
+                {
+                    case RSA rsa:
+                        cert = cert.CopyWithPrivateKey(rsa);
+                        break;
+
+                    case ECDsa ecdsa:
+                        cert = cert.CopyWithPrivateKey(ecdsa);
+                        break;
+
+                    case DSA dsa:
+                        cert = cert.CopyWithPrivateKey(dsa);
+                        break;
+
+                    default:
+                        throw new NotSupportedException($"Unsupported key type: {privateKey?.GetType().Name}");
+                }
 
                 // save certificate
                 certificateStore.LoadCertificateStore(certificateStoreSerializer, false);
-                certificateStore.AddCertificate(alias ?? cert.Thumbprint, Convert.ToBase64String(cert.Export(X509ContentType.Pfx)), overwrite, null, RemoveRootCertificate);
+                certificateStore.AddCertificate(config.Alias ?? cert.Thumbprint, Convert.ToBase64String(cert.Export(X509ContentType.Pfx)), config.Overwrite, null, RemoveRootCertificate);
                 certificateStore.SaveCertificateStore(certificateStoreSerializer.SerializeRemoteCertificateStore(certificateStore.GetCertificateStore(), storePathFile.Path, storePathFile.File, StorePassword, certificateStore.RemoteHandler));
 
                 logger.LogDebug($"END add Operation for {config.CertificateStoreDetails.StorePath} on {config.CertificateStoreDetails.ClientMachine}.");

@@ -82,7 +82,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
                         }
                         else
                         {
-                            certificateStore.CreateCertificateStore(certificateStoreSerializer, config, logger);
+                            certificateStore.CreateCertificateStore(certificateStoreSerializer, config.CertificateStoreDetails.Properties, config.CertificateStoreDetails.StorePath, logger);
                         }
                         logger.LogDebug($"END create Operation for {config.CertificateStoreDetails.StorePath} on {config.CertificateStoreDetails.ClientMachine}.");
                         break;

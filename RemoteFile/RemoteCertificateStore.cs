@@ -347,10 +347,10 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             }
         }
 
-        internal string GenerateCSROnDevice(string subjectText, bool overwrite, string alias, SupportedKeyTypeEnum keyType, int keySize, Dictionary<string, string[]> sans, out AsymmetricAlgorithm pemPrivateKey)
+        internal string GenerateCSROnDevice(string subjectText, bool overwrite, string alias, SupportedKeyTypeEnum keyType, int keySize, Dictionary<string, string[]> sans, out AsymmetricAlgorithm privateKey)
         {
             string csr = string.Empty;
-            pemPrivateKey = string.Empty;
+            privateKey = RSA.Create();
 
             return csr;
         }
