@@ -57,7 +57,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
                 string userPassword = PAMUtilities.ResolvePAMField(_resolver, logger, "Server Password", config.ServerPassword);
 
                 certificateStore = new RemoteCertificateStore(config.ClientMachine, userName, userPassword, directoriesToSearch[0].Substring(0, 1) == "/" ? RemoteCertificateStore.ServerTypeEnum.Linux : RemoteCertificateStore.ServerTypeEnum.Windows, ApplicationSettings.SSHPort);
-                certificateStore.Initialize(ApplicationSettings.DefaultSudoImpersonatedUser);
+                certificateStore.Initialize(ApplicationSettings.DefaultSudoImpersonatedUser, true);
 
                 if (directoriesToSearch.Length == 0)
                     throw new RemoteFileException("Blank or missing search directories for Discovery.");
