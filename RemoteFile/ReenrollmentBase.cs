@@ -13,6 +13,7 @@ using Keyfactor.Orchestrators.Extensions;
 using Keyfactor.Orchestrators.Common.Enums;
 
 using Microsoft.Extensions.Logging;
+using static Keyfactor.PKI.PKIConstants.X509;
 
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
