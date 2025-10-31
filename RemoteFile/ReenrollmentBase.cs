@@ -7,21 +7,20 @@
 
 using System;
 using System.Collections.Generic;
-using System.Security.Cryptography.X509Certificates;
 
 using Keyfactor.Logging;
 using Keyfactor.Orchestrators.Extensions;
 using Keyfactor.Orchestrators.Common.Enums;
-using Keyfactor.PKI.PEM;
 
 using Microsoft.Extensions.Logging;
+using static Keyfactor.PKI.PKIConstants.X509;
 
-using Newtonsoft.Json;
 using System.Security.Cryptography;
+using System.Security.Cryptography.X509Certificates;
 
 namespace Keyfactor.Extensions.Orchestrator.RemoteFile
 {
-    public abstract class ReenrollmentBase : RemoteFileJobTypeBase
+    public abstract class ReenrollmentBase : RemoteFileJobTypeBase, IReenrollmentJobExtension
     {
         public string ExtensionName => "Keyfactor.Extensions.Orchestrator.RemoteFile";
 
@@ -42,7 +41,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
         // 6) Modify ReenrollmentBase to implement IReenrollmentJobExtension 
         // 6) Update README.  Remember to explain the differences between ODKG and OOKG
 
-        public JobResult ProcessJobToDo(ReenrollmentJobConfiguration config, SubmitReenrollmentCSR submitReenrollment)
+        public JobResult ProcessJob(ReenrollmentJobConfiguration config, SubmitReenrollmentCSR submitReenrollment)
         {
             ILogger logger = LogHandler.GetClassLogger(this.GetType());
 
@@ -52,9 +51,16 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             {
                 SetJobProperties(config, config.CertificateStoreDetails, logger);
 
-                string alias = "abcd";
-                string sans = "reenroll2.Keyfactor.com&reenroll1.keyfactor.com&reenroll3.Keyfactor.com";
-                bool overwrite = true;
+                certificateStore = new RemoteCertificateStore(config.CertificateStoreDetails.ClientMachine, UserName, UserPassword, config.CertificateStoreDetails.StorePath, StorePassword, SSHPort, IncludePortInSPN);
+                certificateStore.Initialize(SudoImpersonatedUser, UseShellCommands);
+
+                if (!certificateStore.DoesStoreExist())
+                {
+                    if (ApplicationSettings.CreateStoreIfMissing)
+                        certificateStore.CreateCertificateStore(certificateStoreSerializer, config.CertificateStoreDetails.Properties, config.CertificateStoreDetails.StorePath, logger);
+                    else
+                        throw new RemoteFileException($"Certificate store {config.CertificateStoreDetails.StorePath} does not exist on server {config.CertificateStoreDetails.ClientMachine}.");
+                }
 
                 // validate parameters
                 string KeyTypes = string.Join(",", Enum.GetNames(typeof(SupportedKeyTypeEnum)));
@@ -62,42 +68,47 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
                 {
                     throw new RemoteFileException($"Unsupported KeyType value {KeyType}.  Supported types are {KeyTypes}.");
                 }
-
-                ApplicationSettings.FileTransferProtocolEnum fileTransferProtocol = ApplicationSettings.FileTransferProtocol;
-
-                certificateStore = new RemoteCertificateStore(config.CertificateStoreDetails.ClientMachine, UserName, UserPassword, config.CertificateStoreDetails.StorePath, StorePassword, fileTransferProtocol, SSHPort, IncludePortInSPN);
-                certificateStore.Initialize(SudoImpersonatedUser);
-
+                
                 PathFile storePathFile = RemoteCertificateStore.SplitStorePathFile(config.CertificateStoreDetails.StorePath);
-
-                if (!certificateStore.DoesStoreExist())
-                {
-                    throw new RemoteFileException($"Certificate store {config.CertificateStoreDetails.StorePath} does not exist on server {config.CertificateStoreDetails.ClientMachine}.");
-                }
 
                 // generate CSR and call back to enroll certificate
                 string csr = string.Empty;
-                string pemPrivateKey = string.Empty;
+                AsymmetricAlgorithm privateKey;
                 if (CreateCSROnDevice)
                 {
-                    csr = certificateStore.GenerateCSROnDevice(SubjectText, KeyTypeEnum, KeySize, new List<string>(sans.Split('&', StringSplitOptions.RemoveEmptyEntries)), out pemPrivateKey);
+                    csr = certificateStore.GenerateCSROnDevice(SubjectText, config.Overwrite, config.Alias, KeyTypeEnum, KeySize, config.SANs, out privateKey);
                 }
                 else
                 {
-                    csr = certificateStore.GenerateCSR(SubjectText, KeyTypeEnum, KeySize, new List<string>(sans.Split('&', StringSplitOptions.RemoveEmptyEntries)));
+                    csr = certificateStore.GenerateCSR(SubjectText, config.Overwrite, config.Alias, KeyTypeEnum, KeySize, config.SANs, out privateKey);
                 }
 
                 X509Certificate2 cert = submitReenrollment.Invoke(csr);
-                if (cert == null || String.IsNullOrEmpty(pemPrivateKey))
+
+                if (cert == null)
                     throw new RemoteFileException("Enrollment of CSR failed.  Please check Keyfactor Command logs for more information on potential enrollment errors.");
 
-                AsymmetricAlgorithm alg = KeyTypeEnum == SupportedKeyTypeEnum.RSA ? RSA.Create() : ECDsa.Create();
-                alg.ImportEncryptedPkcs8PrivateKey(string.Empty, Keyfactor.PKI.PEM.PemUtilities.PEMToDER(pemPrivateKey), out _);
-                cert = KeyTypeEnum == SupportedKeyTypeEnum.RSA ? cert.CopyWithPrivateKey((RSA)alg) : cert.CopyWithPrivateKey((ECDsa)alg);
+                switch (privateKey)
+                {
+                    case RSA rsa:
+                        cert = cert.CopyWithPrivateKey(rsa);
+                        break;
+
+                    case ECDsa ecdsa:
+                        cert = cert.CopyWithPrivateKey(ecdsa);
+                        break;
+
+                    case DSA dsa:
+                        cert = cert.CopyWithPrivateKey(dsa);
+                        break;
+
+                    default:
+                        throw new NotSupportedException($"Unsupported key type: {privateKey?.GetType().Name}");
+                }
 
                 // save certificate
                 certificateStore.LoadCertificateStore(certificateStoreSerializer, false);
-                certificateStore.AddCertificate((alias ?? cert.Thumbprint), Convert.ToBase64String(cert.Export(X509ContentType.Pfx)), overwrite, null, RemoveRootCertificate);
+                certificateStore.AddCertificate(config.Alias ?? cert.Thumbprint, Convert.ToBase64String(cert.Export(X509ContentType.Pfx)), config.Overwrite, null, RemoveRootCertificate);
                 certificateStore.SaveCertificateStore(certificateStoreSerializer.SerializeRemoteCertificateStore(certificateStore.GetCertificateStore(), storePathFile.Path, storePathFile.File, StorePassword, certificateStore.RemoteHandler));
 
                 logger.LogDebug($"END add Operation for {config.CertificateStoreDetails.StorePath} on {config.CertificateStoreDetails.ClientMachine}.");
