@@ -80,6 +80,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             if (config.JobProperties != null)
             {
                 KeyType = !config.JobProperties.ContainsKey("keyType") || config.JobProperties["keyType"] == null || string.IsNullOrEmpty(config.JobProperties["keyType"].ToString()) ? string.Empty : config.JobProperties["keyType"].ToString();
+                if (KeyType == "ECDSA") KeyType = "ECC";
                 KeySize = !config.JobProperties.ContainsKey("keySize") || config.JobProperties["keySize"] == null || string.IsNullOrEmpty(config.JobProperties["keySize"].ToString()) || !int.TryParse(config.JobProperties["keySize"].ToString(), out int notUsed2) ? 2048 : Convert.ToInt32(config.JobProperties["keySize"]);
                 SubjectText = !config.JobProperties.ContainsKey("subjectText") || config.JobProperties["subjectText"] == null || string.IsNullOrEmpty(config.JobProperties["subjectText"].ToString()) ? string.Empty : config.JobProperties["subjectText"].ToString();
             }

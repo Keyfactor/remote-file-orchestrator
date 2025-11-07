@@ -53,6 +53,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
 
                 certificateStore = new RemoteCertificateStore(config.CertificateStoreDetails.ClientMachine, UserName, UserPassword, config.CertificateStoreDetails.StorePath, StorePassword, SSHPort, IncludePortInSPN);
                 certificateStore.Initialize(SudoImpersonatedUser, UseShellCommands);
+                certificateStore.LoadCertificateStore(certificateStoreSerializer, false);
 
                 if (!certificateStore.DoesStoreExist())
                 {
@@ -107,7 +108,6 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
                 }
 
                 // save certificate
-                certificateStore.LoadCertificateStore(certificateStoreSerializer, false);
                 certificateStore.AddCertificate(config.Alias ?? cert.Thumbprint, Convert.ToBase64String(cert.Export(X509ContentType.Pfx)), config.Overwrite, null, RemoveRootCertificate);
                 certificateStore.SaveCertificateStore(certificateStoreSerializer.SerializeRemoteCertificateStore(certificateStore.GetCertificateStore(), storePathFile.Path, storePathFile.File, StorePassword, certificateStore.RemoteHandler));
 

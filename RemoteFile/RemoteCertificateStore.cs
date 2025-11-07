@@ -9,6 +9,7 @@ using Keyfactor.Extensions.Orchestrator.RemoteFile.Models;
 using Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers;
 using Keyfactor.Logging;
 using Keyfactor.PKI.X509;
+using Keyfactor.PKI.PEM;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Org.BouncyCastle.Pkcs;
@@ -352,6 +353,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             string csr = string.Empty;
             privateKey = RSA.Create();
 
+
             return csr;
         }
 
@@ -361,40 +363,21 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             {
                 throw new RemoteFileException($"Alias {alias} already exists in store {StorePath + StoreFileName} and overwrite is set to False.  Please try again with overwrite set to True if you wish to replace this entry.");
             }
-            
-            IEnumerable<KeyValuePair<SubjectAltNameElementType, string>> sansList =
-                sans.SelectMany(
-                    kvp =>
-                        kvp.Value.Select(
-                            v => new KeyValuePair<SubjectAltNameElementType, string>(
-                                Enum.Parse<SubjectAltNameElementType>(kvp.Key, ignoreCase: true),
-                                v
-                            )
-                        )
-                );
-            
-            string keyAlgorithm = string.Empty;
-            switch (keyType)
-            {
-                case SupportedKeyTypeEnum.RSA:
-                    keyAlgorithm = "SHA256withRSA";
-                    break;
-                case SupportedKeyTypeEnum.ECC:
-                    keyAlgorithm = "SHA256withECDSA";
-                    if (keySize == 384) keyAlgorithm = "SHA384withECDSA";
-                    if (keySize == 521) keyAlgorithm = "SHA512withECDSA";
-                    break;
-            }
 
-            RequestGenerator generator = new RequestGenerator(keyAlgorithm, keySize);
-            generator.SANs = sansList;
+            List<string> sansList = sans
+                .SelectMany(san => san.Value.Select(value => $"{san.Key}={value}"))
+                .ToList();
+
+            RequestGenerator generator = new RequestGenerator(keyType.ToString(), keySize);
+            generator.SANs = X509Utilities.ParseSANs(sansList);
             generator.Subject = subjectText;
-            string csr = System.Text.Encoding.ASCII.GetString(generator.CreatePKCS10Request());
+            string csr = PemUtilities.DERToPEM(generator.CreatePKCS10Request(), PKI.PEM.PemUtilities.PemObjectType.CertRequest);
+
             privateKey = generator.GetRequestPrivateKey().ToNetPrivateKey();
 
             return csr;
         }
-
+        
         //internal string GenerateCSROnDevice(string subjectText, SupportedKeyTypeEnum keyType, int keySize, List<string> sans, out string privateKey)
         //{
         //    string path = ApplicationSettings.TempFilePathForODKG;
