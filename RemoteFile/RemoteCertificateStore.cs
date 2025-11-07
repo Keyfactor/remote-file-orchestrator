@@ -24,6 +24,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using static Keyfactor.Extensions.Orchestrator.RemoteFile.ReenrollmentBase;
 using static Keyfactor.PKI.PKIConstants.X509;
+using Keyfactor.PKI.PrivateKeys;
 
 namespace Keyfactor.Extensions.Orchestrator.RemoteFile
 {
@@ -374,69 +375,72 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             string csr = PemUtilities.DERToPEM(generator.CreatePKCS10Request(), PKI.PEM.PemUtilities.PemObjectType.CertRequest);
 
             privateKey = generator.GetRequestPrivateKey().ToNetPrivateKey();
+            
+            return csr;
+        }
+
+        internal string GenerateCSROnDevice(string subjectText, bool overwrite, string alias, SupportedKeyTypeEnum keyType, int keySize, Dictionary<string, string[]> sans, out AsymmetricAlgorithm privateKey)
+        {
+            string path = ApplicationSettings.TempFilePathForODKG;
+            if (path.Substring(path.Length - 1, 1) != "/") path += "/";
+            string fileName = Guid.NewGuid().ToString();
+
+            System.Security.Cryptography.X509Certificates.X500DistinguishedName dn = new System.Security.Cryptography.X509Certificates.X500DistinguishedName(subjectText);
+            string opensslSubject = dn.Format(true).Replace("S=", "ST=");
+            opensslSubject = opensslSubject.Replace(System.Environment.NewLine, "/");
+            opensslSubject = "/" + opensslSubject.Substring(0, opensslSubject.Length - 1);
+
+            string cmd = $"openssl req -new -newkey REPLACE -nodes -keyout {path}{fileName}.key -out {path}{fileName}.csr -subj '{opensslSubject}'";
+            switch (keyType)
+            {
+                case SupportedKeyTypeEnum.RSA:
+                    cmd = cmd.Replace("REPLACE", $"rsa:{keySize.ToString()}");
+                    break;
+                case SupportedKeyTypeEnum.ECC:
+                    string algName = "prime256v1";
+                    switch (keySize)
+                    {
+                        case 384:
+                            algName = "secp384r1";
+                            break;
+                        case 521:
+                            algName = "secp521r1";
+                            break;
+                    }
+                    cmd = cmd.Replace("REPLACE", $"ec:<(openssl ecparam -name {algName})");
+                    break;
+            }
+
+            string csr = string.Empty;
+            
+            try
+            {
+                try
+                {
+                    RemoteHandler.RunCommand(cmd, null, ApplicationSettings.UseSudo, null);
+                }
+                catch (Exception ex)
+                {
+                    if (!ex.Message.Contains("----"))
+                        throw;
+                }
+
+                string privateKeyString = Encoding.UTF8.GetString(RemoteHandler.DownloadCertificateFile(path + fileName + ".key"));
+                privateKey = keyType == SupportedKeyTypeEnum.RSA ? RSA.Create() : ECDsa.Create();
+                privateKey.ImportFromPem(privateKeyString);
+
+                csr = Encoding.UTF8.GetString(RemoteHandler.DownloadCertificateFile(path + fileName + ".csr"));
+            }
+            finally
+            {
+                if (RemoteHandler.DoesFileExist(path + fileName + ".key"))
+                    RemoteHandler.RemoveCertificateFile(path, fileName + ".key");
+                if (RemoteHandler.DoesFileExist(path + fileName + ".csr"))
+                    RemoteHandler.RemoveCertificateFile(path, fileName + ".csr");
+            }
 
             return csr;
         }
-        
-        //internal string GenerateCSROnDevice(string subjectText, SupportedKeyTypeEnum keyType, int keySize, List<string> sans, out string privateKey)
-        //{
-        //    string path = ApplicationSettings.TempFilePathForODKG;
-        //    if (path.Substring(path.Length - 1, 1) != "/") path += "/";
-        //    string fileName = Guid.NewGuid().ToString();
-
-        //    X500DistinguishedName dn = new X500DistinguishedName(subjectText);
-        //    string opensslSubject = dn.Format(true).Replace("S=","ST=");
-        //    opensslSubject = opensslSubject.Replace(System.Environment.NewLine, "/");
-        //    opensslSubject = "/" + opensslSubject.Substring(0, opensslSubject.Length - 1);
-
-        //    string cmd = $"openssl req -new -newkey REPLACE -nodes -keyout {path}{fileName}.key -out {path}{fileName}.csr -subj '{opensslSubject}'";
-        //    switch (keyType)
-        //    {
-        //        case SupportedKeyTypeEnum.RSA:
-        //            cmd = cmd.Replace("REPLACE", $"rsa:{keySize.ToString()}");
-        //            break;
-        //        case SupportedKeyTypeEnum.ECC:
-        //            string algName = "prime256v1";
-        //            switch (keySize)
-        //            {
-        //                case 384:
-        //                    algName = "secp384r1";
-        //                    break;
-        //                case 521:
-        //                    algName = "secp521r1";
-        //                    break;
-        //            }
-        //            cmd = cmd.Replace("REPLACE", $"ec:<(openssl ecparam -name {algName})");
-        //            break;
-        //    }
-
-        //    string csr = string.Empty;
-        //    privateKey = string.Empty;
-        //    try
-        //    {
-        //        try
-        //        {
-        //            RemoteHandler.RunCommand(cmd, null, ApplicationSettings.UseSudo, null);
-        //        }
-        //        catch (Exception ex)
-        //        {
-        //            if (!ex.Message.Contains("----"))
-        //                throw;
-        //        }
-
-        //        privateKey = Encoding.UTF8.GetString(RemoteHandler.DownloadCertificateFile(path + fileName + ".key"));
-        //        csr = Encoding.UTF8.GetString(RemoteHandler.DownloadCertificateFile(path + fileName + ".csr"));
-        //    }
-        //    finally
-        //    {
-        //        if (RemoteHandler.DoesFileExist(path + fileName + ".key"))
-        //            RemoteHandler.RemoveCertificateFile(path, fileName + ".key");
-        //        if (RemoteHandler.DoesFileExist(path + fileName + ".csr"))
-        //            RemoteHandler.RemoveCertificateFile(path, fileName + ".csr");
-        //    }
-
-        //    return csr;
-        //}
 
         internal void Initialize(string sudoImpersonatedUser, bool useShellCommands)
         {
