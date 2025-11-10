@@ -69,10 +69,6 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
                 false :
                 Convert.ToBoolean(properties.IncludePortInSPN.Value);
 
-            CreateCSROnDevice = properties.CreateCSROnDevice == null || string.IsNullOrEmpty(properties.CreateCSROnDevice.Value) ?
-                ApplicationSettings.CreateCSROnDevice :
-                Convert.ToBoolean(properties.CreateCSROnDevice.Value);
-
             UseShellCommands = properties.UseShellCommands == null || string.IsNullOrEmpty(properties.UseShellCommands.Value) ?
                 ApplicationSettings.UseShellCommands :
                 properties.UseShellCommands;
@@ -93,7 +89,6 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             logger.LogDebug($"RemoveRootCertificate: {RemoveRootCertificate}");
             logger.LogDebug($"SSHPort: {SSHPort}");
             logger.LogDebug($"IncludePortInSPN: {IncludePortInSPN}");
-            logger.LogDebug($"CreateCSROnDevice: {CreateCSROnDevice}");
             logger.LogDebug($"KeyType: {KeyType}");
             logger.LogDebug($"KeySize: {KeySize}");
             logger.LogDebug($"SubjectText: {SubjectText}");

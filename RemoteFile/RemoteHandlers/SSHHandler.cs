@@ -27,6 +27,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
 {
     class SSHHandler : BaseRemoteHandler
     {
+        private readonly string[] IgnoreErrors = { "Could not chdir to home directory" };
         private ConnectionInfo Connection { get; set; }
         private string SudoImpersonatedUser { get; set; }
         private bool IsStoreServerLinux { get; set; }
@@ -141,7 +142,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
                     command.Execute();
                     _logger.LogDebug($"SSH Results: {displayCommand}::: {command.Result}::: {command.Error}");
 
-                    if (!String.IsNullOrEmpty(command.Error))
+                    if (!String.IsNullOrEmpty(command.Error) && !IgnoreError(command.Error))
                         throw new ApplicationException(command.Error);
 
                     _logger.MethodExit(LogLevel.Debug);
@@ -513,6 +514,11 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
                 _logger.LogError(RemoteFileException.FlattenExceptionMessages(ex, "Error validating server connection."));
                 throw;
             }
+        }
+
+        private bool IgnoreError(string err)
+        {
+            return IgnoreErrors.Any(p => err.Contains(p, StringComparison.OrdinalIgnoreCase));
         }
     }
 }

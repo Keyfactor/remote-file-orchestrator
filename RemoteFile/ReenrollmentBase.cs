@@ -75,14 +75,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
                 // generate CSR and call back to enroll certificate
                 string csr = string.Empty;
                 AsymmetricAlgorithm privateKey;
-                if (CreateCSROnDevice)
-                {
-                    csr = certificateStore.GenerateCSROnDevice(SubjectText, config.Overwrite, config.Alias, KeyTypeEnum, KeySize, config.SANs, out privateKey);
-                }
-                else
-                {
-                    csr = certificateStore.GenerateCSR(SubjectText, config.Overwrite, config.Alias, KeyTypeEnum, KeySize, config.SANs, out privateKey);
-                }
+                csr = certificateStore.GenerateCSR(SubjectText, config.Overwrite, config.Alias, KeyTypeEnum, KeySize, config.SANs, out privateKey);
 
                 X509Certificate2 cert = submitReenrollment.Invoke(csr);
 
