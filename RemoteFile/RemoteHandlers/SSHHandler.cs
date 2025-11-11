@@ -142,7 +142,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
                     command.Execute();
                     _logger.LogDebug($"SSH Results: {displayCommand}::: {command.Result}::: {command.Error}");
 
-                    if (!String.IsNullOrEmpty(command.Error) && !IgnoreError(command.Error))
+                    if (!String.IsNullOrEmpty(command.Error)/* && !IgnoreError(command.Error)*/)
                         throw new ApplicationException(command.Error);
 
                     _logger.MethodExit(LogLevel.Debug);

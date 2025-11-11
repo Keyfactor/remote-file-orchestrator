@@ -28,7 +28,7 @@
                         "Add": true,
                         "Create": true,
                         "Discovery": true,
-                        "Enrollment": false,
+                        "Enrollment": true,
                         "Remove": true
                     },
                     "PasswordOptions": {
@@ -142,7 +142,7 @@
                         "Add": true,
                         "Create": true,
                         "Discovery": true,
-                        "Enrollment": false,
+                        "Enrollment": true,
                         "Remove": true
                     },
                     "PasswordOptions": {
@@ -301,7 +301,7 @@
                         "Add": true,
                         "Create": true,
                         "Discovery": true,
-                        "Enrollment": false,
+                        "Enrollment": true,
                         "Remove": true
                     },
                     "PasswordOptions": {
@@ -424,7 +424,7 @@
                         "Add": true,
                         "Create": true,
                         "Discovery": true,
-                        "Enrollment": false,
+                        "Enrollment": true,
                         "Remove": true
                     },
                     "PasswordOptions": {

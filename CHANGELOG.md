@@ -1,8 +1,6 @@
 v3.0.0
 - Added support for post quantum MLD-SA certificates for store types RFPEM, RFJKS, RFPkcs12, and RFDER
-- Added support for On Device Key Generation (ODKG) as well as On Orchestrator Key Generation (OOKG)
-  - ODKG: uses OpenSSL to generate private key and CSR on the target device
-  - OOKG: uses BouncyCastle libraries to generate the private key and CSR on the orchestrator
+- Added support for On Device Key Generation (ODKG)
 - Removed FileTransferProtocol option from the config.json and store type custom fields.  Integration will now always attempt SCP first and then SFTP (if SCP fails) for all file transfers.
 
 v2.12.0
