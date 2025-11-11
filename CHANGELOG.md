@@ -2,6 +2,7 @@ v3.0.0
 - Added support for post quantum MLD-SA certificates for store types RFPEM, RFJKS, RFPkcs12, and RFDER
 - Added support for On Device Key Generation (ODKG)
 - Removed FileTransferProtocol option from the config.json and store type custom fields.  Integration will now always attempt SCP first and then SFTP (if SCP fails) for all file transfers.
+- Removed .net8/.net6 dual build capabilities.  3.0 and later releases .net8 only due to mandatory use of later Keyfactor libraries that have minimum requirements of .net8.
 
 v2.12.0
 - Added config.json setting and its override store level custom field - AllowShellCommands.  If "N" (default "Y"), SFTP will be used to create stores and move files on Linux-based certificate store servers.  No Linux shell commands will be used in the integration.
