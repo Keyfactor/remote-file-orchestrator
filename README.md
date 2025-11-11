@@ -109,6 +109,7 @@ Before installing the Remote File Universal Orchestrator extension, we recommend
 | `tee`          |           | X(c)      | X(a)           | X(a)              |                   |
 | `rm`           |           | X(d)      | X(d)           | X(d)              |                   |
 | `install`      |           |           |                |                   | X                 |
+| `stat`         |           |           |                |                   | X                 |
 | `orapki`       |           | X(e)      | X(e)           | X(e)              |                   |
 | `gskcapicmd`   |           | X(f)      | X(f)           | X(f)              |                   |  
 
