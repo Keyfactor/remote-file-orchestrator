@@ -1,3 +1,11 @@
+v3.0.0
+- Added support for post quantum MLD-SA certificates for store types RFPEM, RFJKS, RFPkcs12, and RFDER
+- Added support for On Device Key Generation (ODKG)
+- Removed FileTransferProtocol option from the config.json and store type custom fields.  Integration will now always attempt SCP first and then SFTP (if SCP fails) for all file transfers.
+
+v2.12.0
+- Added config.json setting and its override store level custom field - AllowShellCommands.  If "N" (default "Y"), SFTP will be used to create stores and move files on Linux-based certificate store servers.  No Linux shell commands will be used in the integration.
+
 v2.11.5
 - Bug Fix: Rare race condition loading config settings when multiple RemoteFile jobs are running simultaneously on the same orchestrator
 - Documentation update to better list out what Linux commands get executed under what situations in Requirements & Prerequisites section
