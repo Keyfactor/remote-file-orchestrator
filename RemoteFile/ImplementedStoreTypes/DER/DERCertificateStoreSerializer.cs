@@ -5,24 +5,22 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions
 // and limitations under the License.
 
+using Keyfactor.Extensions.Orchestrator.RemoteFile.Models;
+using Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers;
+using Keyfactor.Logging;
+using Keyfactor.PKI.CryptographicObjects.Formatters;
+using Keyfactor.PKI.PrivateKeys;
+using Keyfactor.PKI.X509;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+using Org.BouncyCastle.Crypto;
+using Org.BouncyCastle.Pkcs;
+using Org.BouncyCastle.Tls;
+using Org.BouncyCastle.X509;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-
-using Newtonsoft.Json;
-
-using Keyfactor.Logging;
-using Keyfactor.PKI.PrivateKeys;
-using Keyfactor.PKI.X509;
-using Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers;
-using Keyfactor.Extensions.Orchestrator.RemoteFile.Models;
-
-using Microsoft.Extensions.Logging;
-
-using Org.BouncyCastle.Crypto;
-using Org.BouncyCastle.Pkcs;
-using Org.BouncyCastle.X509;
 
 namespace Keyfactor.Extensions.Orchestrator.RemoteFile.DER
 {
@@ -94,8 +92,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.DER
                         throw new RemoteFileException($"DER certificate store has a private key at {SeparatePrivateKeyFilePath}, but no private key was passed with the certificate to this job.");
                 }
 
-                CertificateConverter certConverter = CertificateConverterFactory.FromBouncyCastleCertificate(certificateStore.GetCertificate(alias).Certificate);
-                certificateBytes = certConverter.ToDER(string.IsNullOrEmpty(storePassword) ? string.Empty : storePassword);
+                certificateBytes = CryptographicObjectFormatter.DER.Format(certificateStore.GetCertificate(alias).Certificate);
 
                 if (!string.IsNullOrEmpty(SeparatePrivateKeyFilePath))
                 {
