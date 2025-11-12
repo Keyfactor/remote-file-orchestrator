@@ -28,7 +28,7 @@
                         "Add": true,
                         "Create": true,
                         "Discovery": true,
-                        "Enrollment": false,
+                        "Enrollment": true,
                         "Remove": true
                     },
                     "PasswordOptions": {
@@ -107,15 +107,6 @@
                       "Description": "Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations."
                     },
                     {
-                      "Name": "FileTransferProtocol",
-                      "DisplayName": "File Transfer Protocol to Use",
-                      "Required": false,
-                      "DependsOn": "",
-                      "Type": "MultipleChoice",
-                      "DefaultValue": ",SCP,SFTP,Both",
-                      "Description": "Which protocol should be used when uploading/downloading files - SCP, SFTP, or Both (try one, and then if necessary, the other).  Overrides FileTransferProtocol [config.json](#post-installation) setting."
-                    },
-                    {
                       "Name": "SSHPort",
                       "DisplayName": "SSH Port",
                       "Required": false,
@@ -123,6 +114,15 @@
                       "Type": "String",
                       "DefaultValue": "",
                       "Description": "Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting."
+                    },
+                    {
+                      "Name": "UseShellCommands",
+                      "DisplayName": "Use Shell Commands",
+                      "Required": false,
+                      "DependsOn": "",
+                      "Type": "Bool",
+                      "DefaultValue": "True",
+                      "Description": "Recommended to be set to the default value of 'Y'.  For a detailed explanation of this setting, please refer to [Use Shell Commands Setting](#use-shell-commands-setting)"
                     }
                   ],
                     "EntryParameters": [],
@@ -142,7 +142,7 @@
                         "Add": true,
                         "Create": true,
                         "Discovery": true,
-                        "Enrollment": false,
+                        "Enrollment": true,
                         "Remove": true
                     },
                     "PasswordOptions": {
@@ -257,15 +257,6 @@
                       "Description": "Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations."
                     },
                     {
-                      "Name": "FileTransferProtocol",
-                      "DisplayName": "File Transfer Protocol to Use",
-                      "Required": false,
-                      "DependsOn": "",
-                      "Type": "MultipleChoice",
-                      "DefaultValue": ",SCP,SFTP,Both",
-                      "Description": "Which protocol should be used when uploading/downloading files - SCP, SFTP, or Both (try one, and then if necessary, the other).  Overrides FileTransferProtocol [config.json](#post-installation) setting."
-                    },
-                    {
                       "Name": "SSHPort",
                       "DisplayName": "SSH Port",
                       "Required": false,
@@ -273,6 +264,15 @@
                       "Type": "String",
                       "DefaultValue": "",
                       "Description": "Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting."
+                    },
+                    {
+                      "Name": "UseShellCommands",
+                      "DisplayName": "Use Shell Commands",
+                      "Required": false,
+                      "DependsOn": "",
+                      "Type": "Bool",
+                      "DefaultValue": "True",
+                      "Description": "Recommended to be set to the default value of 'Y'.  For a detailed explanation of this setting, please refer to [Use Shell Commands Setting](#use-shell-commands-setting)"
                     }
                   ],
                     "EntryParameters": [],
@@ -292,7 +292,7 @@
                         "Add": true,
                         "Create": true,
                         "Discovery": true,
-                        "Enrollment": false,
+                        "Enrollment": true,
                         "Remove": true
                     },
                     "PasswordOptions": {
@@ -371,15 +371,6 @@
                       "Description": "Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations."
                     },
                     {
-                      "Name": "FileTransferProtocol",
-                      "DisplayName": "File Transfer Protocol to Use",
-                      "Required": false,
-                      "DependsOn": "",
-                      "Type": "MultipleChoice",
-                      "DefaultValue": ",SCP,SFTP,Both",
-                      "Description": "Which protocol should be used when uploading/downloading files - SCP, SFTP, or Both (try one, and then if necessary, the other).  Overrides FileTransferProtocol [config.json](#post-installation) setting."
-                    },
-                    {
                       "Name": "SSHPort",
                       "DisplayName": "SSH Port",
                       "Required": false,
@@ -387,6 +378,15 @@
                       "Type": "String",
                       "DefaultValue": "",
                       "Description": "Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting."
+                    },
+                    {
+                      "Name": "UseShellCommands",
+                      "DisplayName": "Use Shell Commands",
+                      "Required": false,
+                      "DependsOn": "",
+                      "Type": "Bool",
+                      "DefaultValue": "True",
+                      "Description": "Recommended to be set to the default value of 'Y'.  For a detailed explanation of this setting, please refer to [Use Shell Commands Setting](#use-shell-commands-setting)"
                     }
                   ],
                     "EntryParameters": [],
@@ -406,7 +406,7 @@
                         "Add": true,
                         "Create": true,
                         "Discovery": true,
-                        "Enrollment": false,
+                        "Enrollment": true,
                         "Remove": true
                     },
                     "PasswordOptions": {
@@ -494,15 +494,6 @@
                       "Description": "Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations."
                     },
                     {
-                      "Name": "FileTransferProtocol",
-                      "DisplayName": "File Transfer Protocol to Use",
-                      "Required": false,
-                      "DependsOn": "",
-                      "Type": "MultipleChoice",
-                      "DefaultValue": ",SCP,SFTP,Both",
-                      "Description": "Which protocol should be used when uploading/downloading files - SCP, SFTP, or Both (try one, and then if necessary, the other).  Overrides FileTransferProtocol [config.json](#post-installation) setting."
-                    },
-                    {
                       "Name": "SSHPort",
                       "DisplayName": "SSH Port",
                       "Required": false,
@@ -510,6 +501,15 @@
                       "Type": "String",
                       "DefaultValue": "",
                       "Description": "Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting."
+                    },
+                    {
+                      "Name": "UseShellCommands",
+                      "DisplayName": "Use Shell Commands",
+                      "Required": false,
+                      "DependsOn": "",
+                      "Type": "Bool",
+                      "DefaultValue": "True",
+                      "Description": "Recommended to be set to the default value of 'Y'.  For a detailed explanation of this setting, please refer to [Use Shell Commands Setting](#use-shell-commands-setting)"
                     }
                   ],
                     "EntryParameters": [],
@@ -608,15 +608,6 @@
                       "Description": "Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations."
                     },
                     {
-                      "Name": "FileTransferProtocol",
-                      "DisplayName": "File Transfer Protocol to Use",
-                      "Required": false,
-                      "DependsOn": "",
-                      "Type": "MultipleChoice",
-                      "DefaultValue": ",SCP,SFTP,Both",
-                      "Description": "Which protocol should be used when uploading/downloading files - SCP, SFTP, or Both (try one, and then if necessary, the other).  Overrides FileTransferProtocol [config.json](#post-installation) setting."
-                    },
-                    {
                       "Name": "SSHPort",
                       "DisplayName": "SSH Port",
                       "Required": false,
@@ -624,6 +615,15 @@
                       "Type": "String",
                       "DefaultValue": "",
                       "Description": "Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting."
+                    },
+                    {
+                      "Name": "UseShellCommands",
+                      "DisplayName": "Use Shell Commands",
+                      "Required": false,
+                      "DependsOn": "",
+                      "Type": "Bool",
+                      "DefaultValue": "True",
+                      "Description": "Recommended to be set to the default value of 'Y'.  For a detailed explanation of this setting, please refer to [Use Shell Commands Setting](#use-shell-commands-setting)"
                     }
                   ],
                     "EntryParameters": [],
@@ -731,15 +731,6 @@
                       "Description": "Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations."
                     },
                     {
-                      "Name": "FileTransferProtocol",
-                      "DisplayName": "File Transfer Protocol to Use",
-                      "Required": false,
-                      "DependsOn": "",
-                      "Type": "MultipleChoice",
-                      "DefaultValue": ",SCP,SFTP,Both",
-                      "Description": "Which protocol should be used when uploading/downloading files - SCP, SFTP, or Both (try one, and then if necessary, the other).  Overrides FileTransferProtocol [config.json](#post-installation) setting."
-                    },
-                    {
                       "Name": "SSHPort",
                       "DisplayName": "SSH Port",
                       "Required": false,
@@ -747,6 +738,15 @@
                       "Type": "String",
                       "DefaultValue": "",
                       "Description": "Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting."
+                    },
+                    {
+                      "Name": "UseShellCommands",
+                      "DisplayName": "Use Shell Commands",
+                      "Required": false,
+                      "DependsOn": "",
+                      "Type": "Bool",
+                      "DefaultValue": "True",
+                      "Description": "Recommended to be set to the default value of 'Y'.  For a detailed explanation of this setting, please refer to [Use Shell Commands Setting](#use-shell-commands-setting)"
                     }
                   ],
                     "EntryParameters": [],
