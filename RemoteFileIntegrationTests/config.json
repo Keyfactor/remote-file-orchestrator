@@ -1,0 +1,10 @@
+{
+  "UseSudo": "Y",
+  "DefaultSudoImpersonatedUser": "",
+  "CreateStoreIfMissing": "N",
+  "UseNegotiate": "N",
+  "SeparateUploadFilePath": "",
+  "DefaultLinuxPermissionsOnStoreCreation": "600",
+  "DefaultOwnerOnStoreCreation": "",
+  "SSHPort":  ""
+}
