@@ -93,6 +93,9 @@ StyleCopReport.xml
 *.svclog
 *.scc
 
+# Env Files
+*.env
+
 # Chutzpah Test files
 _Chutzpah*
 
