@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace RemoteFileIntegrationTests
 {
-    public abstract class BaseIntegrationTest : IDisposable
+    public abstract class BaseTest : IDisposable
     {
         [ModuleInitializer]
         public static void Init()
@@ -33,7 +33,7 @@ namespace RemoteFileIntegrationTests
             }
         }
 
-        public BaseIntegrationTest()
+        public BaseTest()
         { 
         
         }
