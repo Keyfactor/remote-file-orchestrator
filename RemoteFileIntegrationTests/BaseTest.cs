@@ -1,14 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
+using Renci.SshNet;
 
 namespace RemoteFileIntegrationTests
 {
     public abstract class BaseTest : IDisposable
     {
+        public enum STORE_ENVIRONMENT_ENUM
+        {
+            LINUX,
+            WINDOWS
+        }
+
+        private static ConnectionInfo Connection { get; set; }
+        private static SshClient Client { get; set; }
+
+
         [ModuleInitializer]
         public static void Init()
         {
@@ -34,8 +41,24 @@ namespace RemoteFileIntegrationTests
         }
 
         public BaseTest()
-        { 
-        
+        {
+            if (Connection != null)
+                return;
+
+            string userId = Environment.GetEnvironmentVariable("LinuxUserId")!;
+            KeyboardInteractiveAuthenticationMethod keyboardAuthentication = new KeyboardInteractiveAuthenticationMethod(userId);
+            Connection = new ConnectionInfo(Environment.GetEnvironmentVariable("LinuxServer"), userId, new PasswordAuthenticationMethod(userId, Environment.GetEnvironmentVariable("LinuxUserPassword")), keyboardAuthentication);
+            Client = new SshClient(Connection);
+
+            SetUp();
+        }
+
+        public void CreateFile(string fileName, byte[] contents, STORE_ENVIRONMENT_ENUM storeEnvironment)
+        {
+            if (storeEnvironment == STORE_ENVIRONMENT_ENUM.LINUX) 
+                CreateFileLinux(fileName, contents);
+            if (storeEnvironment == STORE_ENVIRONMENT_ENUM.WINDOWS)
+                CreateFileWindows(fileName, contents);
         }
 
         public void Dispose()
@@ -46,5 +69,15 @@ namespace RemoteFileIntegrationTests
         public abstract void SetUp();
 
         public abstract void TearDown();
+
+        private void CreateFileLinux(string fileName, byte[] contents)
+        {
+
+        }
+
+        private void CreateFileWindows(string fileName, byte[] contents)
+        {
+
+        }
     }
 }
