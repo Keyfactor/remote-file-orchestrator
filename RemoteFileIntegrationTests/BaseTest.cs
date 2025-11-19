@@ -1,6 +1,9 @@
-﻿
+﻿using Moq;
 using System.Runtime.CompilerServices;
 using Renci.SshNet;
+using Keyfactor.Orchestrators.Extensions.Interfaces;
+using static Org.BouncyCastle.Math.EC.ECCurve;
+using Keyfactor.Orchestrators.Extensions;
 
 namespace RemoteFileIntegrationTests
 {
@@ -76,6 +79,19 @@ namespace RemoteFileIntegrationTests
         public abstract void SetUp();
 
         public abstract void TearDown();
+
+        internal Mock<IPAMSecretResolver> GetMockSecretResolver(JobConfiguration config)
+        {
+            Mock<IPAMSecretResolver> secretResolver = new Mock<IPAMSecretResolver>();
+            secretResolver
+                .Setup(p => p.Resolve(It.Is<string>(q => q == config.ServerUsername)))
+                .Returns(config.ServerUsername);
+            secretResolver
+                .Setup(p => p.Resolve(It.Is<string>(q => q == config.ServerPassword)))
+                .Returns(config.ServerPassword);
+
+            return secretResolver;
+        }
 
         private void CreateFileLinux(string fileName, byte[] contents)
         {
