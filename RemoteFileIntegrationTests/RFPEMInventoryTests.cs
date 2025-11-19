@@ -2,8 +2,8 @@ namespace RemoteFileIntegrationTests
 {
     public class RFPEMInventoryTests : BaseRFPEMTest
     {
-        [Fact(DisplayName = "RFPEM Inventory Internal Private Key")]
-        public void RFPEM_Inventory_InternalPrivateKey_Test0001()
+        [Fact]
+        public void RFPEM_Inventory_InternalPrivateKey_EmptyStore_Linux_Test0001()
         {
 
         }

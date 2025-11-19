@@ -1,25 +1,30 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
+﻿using Org.BouncyCastle.Asn1.X509;
+using Org.BouncyCastle.Crypto;
+using Org.BouncyCastle.Crypto.Generators;
+using Org.BouncyCastle.Crypto.Operators;
+using Org.BouncyCastle.Math;
+using Org.BouncyCastle.OpenSsl;
+using Org.BouncyCastle.Security;
+using Org.BouncyCastle.X509;
+
 using System.Text;
-using System.Threading.Tasks;
 
 namespace RemoteFileIntegrationTests
 {
     public abstract class BaseRFPEMTest : BaseTest
     {
-        private string pemCertificate = string.Empty;
-        private string pemKey = string.Empty;
+        private static string pemCertificate = string.Empty;
+        private static string pemKey = string.Empty;
 
         public BaseRFPEMTest()
         {
-            CreateCertificateAndKey();
+            if (pemCertificate == null)
+                CreateCertificateAndKey();
         }
 
         public void CreateStore(string fileName, bool withExtKeyFile, bool withCertificate, STORE_ENVIRONMENT_ENUM storeEnvironment)
         {
-            string storeContents = withCertificate ? (withExtKeyFile ? pemCertificate + System.Environment.NewLine + pemKey : pemCertificate) : string.Empty;
+            string storeContents = withCertificate ? (withExtKeyFile ? pemCertificate : pemCertificate + System.Environment.NewLine + pemKey) : string.Empty;
             CreateFile($"{fileName}.pem", Encoding.ASCII.GetBytes(storeContents), storeEnvironment);
             if (withExtKeyFile)
                 CreateFile($"{fileName}.key", Encoding.ASCII.GetBytes(pemKey), storeEnvironment);
@@ -34,8 +39,47 @@ namespace RemoteFileIntegrationTests
 
         private void CreateCertificateAndKey()
         {
-            pemCertificate = string.Empty;
-            pemKey = string.Empty;
+            var keyGen = new RsaKeyPairGenerator();
+            keyGen.Init(new KeyGenerationParameters(new SecureRandom(), 2048));
+            AsymmetricCipherKeyPair keyPair = keyGen.GenerateKeyPair();
+
+            // Define certificate attributes
+            var certName = new X509Name("CN=Test Certificate");
+            BigInteger serialNumber = BigInteger.ProbablePrime(120, new Random());
+
+            // Validity period
+            DateTime notBefore = DateTime.UtcNow.Date;
+            DateTime notAfter = notBefore.AddYears(1);
+
+            // Generate the certificate
+            var certGen = new X509V3CertificateGenerator();
+            certGen.SetSerialNumber(serialNumber);
+            certGen.SetSubjectDN(certName);
+            certGen.SetIssuerDN(certName); // Self-signed
+            certGen.SetNotBefore(notBefore);
+            certGen.SetNotAfter(notAfter);
+            certGen.SetPublicKey(keyPair.Public);
+
+            // Generate the certificate
+            X509Certificate certificate = certGen.Generate(new Asn1SignatureFactory("SHA256WITHRSA", keyPair.Private));
+
+            // Export certificate as PEM
+            using (var sw = new StringWriter())
+            {
+                var pw = new PemWriter(sw);
+                pw.WriteObject(certificate);
+                pw.Writer.Flush();
+                pemCertificate = sw.ToString();
+            }
+
+            // Export private key as PEM (unencrypted)
+            using (var sw = new StringWriter())
+            {
+                var pw = new PemWriter(sw);
+                pw.WriteObject(keyPair.Private);
+                pw.Writer.Flush();
+                pemKey = sw.ToString();
+            }
         }
     }
 }
