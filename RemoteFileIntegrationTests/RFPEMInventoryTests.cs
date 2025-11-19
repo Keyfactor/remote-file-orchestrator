@@ -10,17 +10,18 @@ namespace RemoteFileIntegrationTests
 
         public override void SetUp()
         {
-            CreateStore("Test0001", false, false);
-            CreateStore("Test0002", false, true);
-            CreateStore("Test0003", true, false);
-            CreateStore("Test0004", true, true);
+            CreateStore("Test0001", false, false, STORE_ENVIRONMENT_ENUM.LINUX);
+            CreateStore("Test0002", false, true, STORE_ENVIRONMENT_ENUM.LINUX);
+            CreateStore("Test0003", true, false, STORE_ENVIRONMENT_ENUM.LINUX);
+            CreateStore("Test0004", true, true, STORE_ENVIRONMENT_ENUM.LINUX);
         }
 
         public override void TearDown()
         {
-            throw new NotImplementedException();
+            RemoveStore("Test0001", false, STORE_ENVIRONMENT_ENUM.LINUX);
+            RemoveStore("Test0002", false, STORE_ENVIRONMENT_ENUM.LINUX);
+            RemoveStore("Test0003", true, STORE_ENVIRONMENT_ENUM.LINUX);
+            RemoveStore("Test0004", true, STORE_ENVIRONMENT_ENUM.LINUX);
         }
-
-        
     }
 }

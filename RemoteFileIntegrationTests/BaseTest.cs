@@ -13,7 +13,6 @@ namespace RemoteFileIntegrationTests
         }
 
         private static ConnectionInfo Connection { get; set; }
-        private static SshClient Client { get; set; }
 
 
         [ModuleInitializer]
@@ -61,6 +60,14 @@ namespace RemoteFileIntegrationTests
                 CreateFileWindows(fileName, contents);
         }
 
+        public void RemoveFile(string fileName, STORE_ENVIRONMENT_ENUM storeEnvironment)
+        {
+            if (storeEnvironment == STORE_ENVIRONMENT_ENUM.LINUX)
+                RemoveFileLinux(fileName);
+            if (storeEnvironment == STORE_ENVIRONMENT_ENUM.WINDOWS)
+                RemoveFileWindows(fileName);
+        }
+
         public void Dispose()
         {
             TearDown();
@@ -72,10 +79,48 @@ namespace RemoteFileIntegrationTests
 
         private void CreateFileLinux(string fileName, byte[] contents)
         {
+            using (ScpClient client = new ScpClient(Connection))
+            {
+                try
+                {
+                    client.OperationTimeout = System.TimeSpan.FromSeconds(60);
+                    client.Connect();
 
+                    using (MemoryStream stream = new MemoryStream(contents))
+                    {
+                        client.Upload(stream, Environment.GetEnvironmentVariable("LinuxStorePath") + fileName);
+                    }
+                }
+                finally
+                {
+                    client.Disconnect();
+                }
+            };
         }
 
         private void CreateFileWindows(string fileName, byte[] contents)
+        {
+
+        }
+
+        private void RemoveFileLinux(string fileName)
+        {
+            using (SftpClient client = new SftpClient(Connection))
+            {
+                try
+                {
+                    client.OperationTimeout = System.TimeSpan.FromSeconds(60);
+                    client.Connect();
+                    client.DeleteFile(Environment.GetEnvironmentVariable("LinuxStorePath") + fileName);
+                }
+                finally
+                {
+                    client.Disconnect();
+                }
+            };
+        }
+
+        private void RemoveFileWindows(string fileName)
         {
 
         }
