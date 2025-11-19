@@ -1,3 +1,5 @@
+using Keyfactor.Orchestrators.Extensions;
+
 namespace RemoteFileIntegrationTests
 {
     public class RFPEMInventoryTests : BaseRFPEMTest
@@ -5,7 +7,7 @@ namespace RemoteFileIntegrationTests
         [Fact]
         public void RFPEM_Inventory_InternalPrivateKey_EmptyStore_Linux_Test0001()
         {
-
+            InventoryJobConfiguration config = BuildBaseInvConfig();
         }
 
         public override void SetUp()
@@ -22,6 +24,16 @@ namespace RemoteFileIntegrationTests
             RemoveStore("Test0002", false, STORE_ENVIRONMENT_ENUM.LINUX);
             RemoveStore("Test0003", true, STORE_ENVIRONMENT_ENUM.LINUX);
             RemoveStore("Test0004", true, STORE_ENVIRONMENT_ENUM.LINUX);
+        }
+
+        private InventoryJobConfiguration BuildBaseInvConfig()
+        {
+            InventoryJobConfiguration config = new InventoryJobConfiguration();
+            config.Capability = "Inventory";
+            config.CertificateStoreDetails = new CertificateStore();
+            config.JobId = new Guid();
+            config.JobProperties = new Dictionary<string, object>();
+            
         }
     }
 }
