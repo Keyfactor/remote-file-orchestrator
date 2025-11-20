@@ -1,4 +1,5 @@
 using Keyfactor.Extensions.Orchestrator.RemoteFile.PEM;
+using Keyfactor.Orchestrators.Common.Enums;
 using Keyfactor.Orchestrators.Extensions;
 using Keyfactor.Orchestrators.Extensions.Interfaces;
 using Moq;
@@ -22,7 +23,15 @@ namespace RemoteFileIntegrationTests
             Mock<SubmitInventoryUpdate> submitInventoryUpdate = new Mock<SubmitInventoryUpdate>();
 
             Inventory inventory = new Inventory(secretResolver.Object);
-            inventory.ProcessJob()
+            JobResult result = inventory.ProcessJob(config, submitInventoryUpdate.Object);
+
+            Assert.Equal(OrchestratorJobStatusJobResult.Success, result.Result);
+            
+            IInvocation invocation = submitInventoryUpdate.Invocations[0];
+            List<CurrentInventoryItem> inventoryItems = (List<CurrentInventoryItem>)invocation.Arguments[0];
+            Assert.Single(inventoryItems);
+            inventoryItems[0].Certificates).
+
         }
 
         public override void SetUp()

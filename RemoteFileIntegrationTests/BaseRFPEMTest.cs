@@ -44,7 +44,7 @@ namespace RemoteFileIntegrationTests
             AsymmetricCipherKeyPair keyPair = keyGen.GenerateKeyPair();
 
             // Define certificate attributes
-            var certName = new X509Name("CN=Test Certificate");
+            var certName = new X509Name(Environment.GetEnvironmentVariable("CertificateSubjectDN"));
             BigInteger serialNumber = BigInteger.ProbablePrime(120, new Random());
 
             // Validity period
