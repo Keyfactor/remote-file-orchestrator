@@ -289,6 +289,74 @@ the Keyfactor Command Portal
 
    ![RFJKS Custom Fields Tab](docsource/images/RFJKS-custom-fields-store-type-dialog.png)
 
+
+   ###### Server Username
+   A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value*
+
+   > [!IMPORTANT]
+   > This field is created by the `Needs Server` on the Basic tab, do not create this field manually.
+
+
+
+   ###### Server Password
+   A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value*
+
+   > [!IMPORTANT]
+   > This field is created by the `Needs Server` on the Basic tab, do not create this field manually.
+
+
+
+   ###### Linux File Permissions on Store Creation
+   The LinuxFilePermissionsOnStoreCreation field should contain a three-digit value between 000 and 777 representing the Linux file permissions to be set for the certificate store upon creation. Example: '600' or '755'.  Overrides DefaultLinuxPermissionOnStoreCreation [config.json](#post-installation) setting.
+
+   ![RFJKS Custom Field - LinuxFilePermissionsOnStoreCreation](docsource/images/RFJKS-custom-field-LinuxFilePermissionsOnStoreCreation-dialog.png)
+
+
+
+   ###### Linux File Owner on Store Creation
+   The LinuxFileOwnerOnStoreCreation field should contain a valid user ID recognized by the destination Linux server, optionally followed by a colon and a group ID if the group owner differs. Example: 'userID' or 'userID:groupID'.  Overrides DefaultOwnerOnStoreCreation [config.json](#post-installation) setting.
+
+   ![RFJKS Custom Field - LinuxFileOwnerOnStoreCreation](docsource/images/RFJKS-custom-field-LinuxFileOwnerOnStoreCreation-dialog.png)
+
+
+
+   ###### Sudo Impersonating User
+   The SudoImpersonatingUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'.  Overrides DefaultSudoImpersonatedUser [config.json](#post-installation) setting.
+
+   ![RFJKS Custom Field - SudoImpersonatingUser](docsource/images/RFJKS-custom-field-SudoImpersonatingUser-dialog.png)
+
+
+
+   ###### Remove Root Certificate from Chain
+   Remove root certificate from chain when adding/renewing a certificate in a store.
+
+   ![RFJKS Custom Field - RemoveRootCertificate](docsource/images/RFJKS-custom-field-RemoveRootCertificate-dialog.png)
+
+
+
+   ###### Include Port in SPN for WinRM
+   Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations.
+
+   ![RFJKS Custom Field - IncludePortInSPN](docsource/images/RFJKS-custom-field-IncludePortInSPN-dialog.png)
+
+
+
+   ###### SSH Port
+   Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting.
+
+   ![RFJKS Custom Field - SSHPort](docsource/images/RFJKS-custom-field-SSHPort-dialog.png)
+
+
+
+   ###### Use Shell Commands
+   Recommended to be set to the default value of 'Y'.  For a detailed explanation of this setting, please refer to [Use Shell Commands Setting](#use-shell-commands-setting)
+
+   ![RFJKS Custom Field - UseShellCommands](docsource/images/RFJKS-custom-field-UseShellCommands-dialog.png)
+
+
+
+
+
    </details>
 </details>
 
@@ -412,6 +480,102 @@ the Keyfactor Command Portal
 
    ![RFPEM Custom Fields Tab](docsource/images/RFPEM-custom-fields-store-type-dialog.png)
 
+
+   ###### Server Username
+   A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value*
+
+   > [!IMPORTANT]
+   > This field is created by the `Needs Server` on the Basic tab, do not create this field manually.
+
+
+
+   ###### Server Password
+   A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value*
+
+   > [!IMPORTANT]
+   > This field is created by the `Needs Server` on the Basic tab, do not create this field manually.
+
+
+
+   ###### Linux File Permissions on Store Creation
+   The LinuxFilePermissionsOnStoreCreation field should contain a three-digit value between 000 and 777 representing the Linux file permissions to be set for the certificate store upon creation. Example: '600' or '755'.  Overrides DefaultLinuxPermissionOnStoreCreation [config.json](#post-installation) setting.
+
+   ![RFPEM Custom Field - LinuxFilePermissionsOnStoreCreation](docsource/images/RFPEM-custom-field-LinuxFilePermissionsOnStoreCreation-dialog.png)
+
+
+
+   ###### Linux File Owner on Store Creation
+   The LinuxFileOwnerOnStoreCreation field should contain a valid user ID recognized by the destination Linux server, optionally followed by a colon and a group ID if the group owner differs. Example: 'userID' or 'userID:groupID'.  Overrides DefaultOwnerOnStoreCreation [config.json](#post-installation) setting.
+
+   ![RFPEM Custom Field - LinuxFileOwnerOnStoreCreation](docsource/images/RFPEM-custom-field-LinuxFileOwnerOnStoreCreation-dialog.png)
+
+
+
+   ###### Sudo Impersonating User
+   The SudoImpersonatingUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'.  Overrides [config.json](#post-installation) DefaultSudoImpersonatedUser setting..
+
+   ![RFPEM Custom Field - SudoImpersonatingUser](docsource/images/RFPEM-custom-field-SudoImpersonatingUser-dialog.png)
+
+
+
+   ###### Trust Store
+   The IsTrustStore field should contain a boolean value ('true' or 'false') indicating whether the store will be identified as a trust store, which can hold multiple certificates without private keys. Example: 'true' for a trust store or 'false' for a store with a single certificate and private key.
+
+   ![RFPEM Custom Field - IsTrustStore](docsource/images/RFPEM-custom-field-IsTrustStore-dialog.png)
+
+
+
+   ###### Store Includes Chain
+   The IncludesChain field should contain a boolean value ('true' or 'false') indicating whether the certificate store includes the full certificate chain along with the end entity certificate. Example: 'true' to include the full chain or 'false' to exclude it.
+
+   ![RFPEM Custom Field - IncludesChain](docsource/images/RFPEM-custom-field-IncludesChain-dialog.png)
+
+
+
+   ###### Separate Private Key File Location
+   The SeparatePrivateKeyFilePath field should contain the full path and file name where the separate private key file will be stored if it is to be kept outside the main certificate file. Example: '/path/to/privatekey.pem'.
+
+   ![RFPEM Custom Field - SeparatePrivateKeyFilePath](docsource/images/RFPEM-custom-field-SeparatePrivateKeyFilePath-dialog.png)
+
+
+
+   ###### Ignore Private Key On Inventory
+   The IgnorePrivateKeyOnInventory field should contain a boolean value ('true' or 'false') indicating whether to disregard the private key during inventory. Setting this to 'true' will allow inventory for the store without needing to supply the location of the private key or the password if the key is encrypted.  However, doing this makes the store in effect inventory-only and no management jobs will be able to be run for this store. Example: 'true' to ignore the private key or 'false' to include it.
+
+   ![RFPEM Custom Field - IgnorePrivateKeyOnInventory](docsource/images/RFPEM-custom-field-IgnorePrivateKeyOnInventory-dialog.png)
+
+
+
+   ###### Remove Root Certificate from Chain
+   Remove root certificate from chain when adding/renewing a certificate in a store.
+
+   ![RFPEM Custom Field - RemoveRootCertificate](docsource/images/RFPEM-custom-field-RemoveRootCertificate-dialog.png)
+
+
+
+   ###### Include Port in SPN for WinRM
+   Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations.
+
+   ![RFPEM Custom Field - IncludePortInSPN](docsource/images/RFPEM-custom-field-IncludePortInSPN-dialog.png)
+
+
+
+   ###### SSH Port
+   Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting.
+
+   ![RFPEM Custom Field - SSHPort](docsource/images/RFPEM-custom-field-SSHPort-dialog.png)
+
+
+
+   ###### Use Shell Commands
+   Recommended to be set to the default value of 'Y'.  For a detailed explanation of this setting, please refer to [Use Shell Commands Setting](#use-shell-commands-setting)
+
+   ![RFPEM Custom Field - UseShellCommands](docsource/images/RFPEM-custom-field-UseShellCommands-dialog.png)
+
+
+
+
+
    </details>
 </details>
 
@@ -529,6 +693,74 @@ the Keyfactor Command Portal
 
    ![RFPkcs12 Custom Fields Tab](docsource/images/RFPkcs12-custom-fields-store-type-dialog.png)
 
+
+   ###### Server Username
+   A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value*
+
+   > [!IMPORTANT]
+   > This field is created by the `Needs Server` on the Basic tab, do not create this field manually.
+
+
+
+   ###### Server Password
+   A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value*
+
+   > [!IMPORTANT]
+   > This field is created by the `Needs Server` on the Basic tab, do not create this field manually.
+
+
+
+   ###### Linux File Permissions on Store Creation
+   The LinuxFilePermissionsOnStoreCreation field should contain a three-digit value between 000 and 777 representing the Linux file permissions to be set for the certificate store upon creation. Example: '600' or '755'.  Overrides DefaultLinuxPermissionOnStoreCreation [config.json](#post-installation) setting.
+
+   ![RFPkcs12 Custom Field - LinuxFilePermissionsOnStoreCreation](docsource/images/RFPkcs12-custom-field-LinuxFilePermissionsOnStoreCreation-dialog.png)
+
+
+
+   ###### Linux File Owner on Store Creation
+   The LinuxFileOwnerOnStoreCreation field should contain a valid user ID recognized by the destination Linux server, optionally followed by a colon and a group ID if the group owner differs. Example: 'userID' or 'userID:groupID'.  Overrides DefaultOwnerOnStoreCreation [config.json](#post-installation) setting.
+
+   ![RFPkcs12 Custom Field - LinuxFileOwnerOnStoreCreation](docsource/images/RFPkcs12-custom-field-LinuxFileOwnerOnStoreCreation-dialog.png)
+
+
+
+   ###### Sudo Impersonating User
+   The SudoImpersonatingUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'.  Overrides DefaultSudoImpersonatedUser [config.json](#post-installation) setting.
+
+   ![RFPkcs12 Custom Field - SudoImpersonatingUser](docsource/images/RFPkcs12-custom-field-SudoImpersonatingUser-dialog.png)
+
+
+
+   ###### Remove Root Certificate from Chain
+   Remove root certificate from chain when adding/renewing a certificate in a store.
+
+   ![RFPkcs12 Custom Field - RemoveRootCertificate](docsource/images/RFPkcs12-custom-field-RemoveRootCertificate-dialog.png)
+
+
+
+   ###### Include Port in SPN for WinRM
+   Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations.
+
+   ![RFPkcs12 Custom Field - IncludePortInSPN](docsource/images/RFPkcs12-custom-field-IncludePortInSPN-dialog.png)
+
+
+
+   ###### SSH Port
+   Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting.
+
+   ![RFPkcs12 Custom Field - SSHPort](docsource/images/RFPkcs12-custom-field-SSHPort-dialog.png)
+
+
+
+   ###### Use Shell Commands
+   Recommended to be set to the default value of 'Y'.  For a detailed explanation of this setting, please refer to [Use Shell Commands Setting](#use-shell-commands-setting)
+
+   ![RFPkcs12 Custom Field - UseShellCommands](docsource/images/RFPkcs12-custom-field-UseShellCommands-dialog.png)
+
+
+
+
+
    </details>
 </details>
 
@@ -640,6 +872,81 @@ the Keyfactor Command Portal
    The Custom Fields tab should look like this:
 
    ![RFDER Custom Fields Tab](docsource/images/RFDER-custom-fields-store-type-dialog.png)
+
+
+   ###### Server Username
+   A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value*
+
+   > [!IMPORTANT]
+   > This field is created by the `Needs Server` on the Basic tab, do not create this field manually.
+
+
+
+   ###### Server Password
+   A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value*
+
+   > [!IMPORTANT]
+   > This field is created by the `Needs Server` on the Basic tab, do not create this field manually.
+
+
+
+   ###### Linux File Permissions on Store Creation
+   The LinuxFilePermissionsOnStoreCreation field should contain a three-digit value between 000 and 777 representing the Linux file permissions to be set for the certificate store upon creation. Example: '600' or '755'.  Overrides DefaultLinuxPermissionOnStoreCreation [config.json](#post-installation) setting.
+
+   ![RFDER Custom Field - LinuxFilePermissionsOnStoreCreation](docsource/images/RFDER-custom-field-LinuxFilePermissionsOnStoreCreation-dialog.png)
+
+
+
+   ###### Linux File Owner on Store Creation
+   The LinuxFileOwnerOnStoreCreation field should contain a valid user ID recognized by the destination Linux server, optionally followed by a colon and a group ID if the group owner differs. Example: 'userID' or 'userID:groupID'.  Overrides DefaultOwnerOnStoreCreation [config.json](#post-installation) setting.
+
+   ![RFDER Custom Field - LinuxFileOwnerOnStoreCreation](docsource/images/RFDER-custom-field-LinuxFileOwnerOnStoreCreation-dialog.png)
+
+
+
+   ###### Sudo Impersonating User
+   The SudoImpersonatingUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'.  Overrides [config.json](#post-installation) DefaultSudoImpersonatedUser setting.
+
+   ![RFDER Custom Field - SudoImpersonatingUser](docsource/images/RFDER-custom-field-SudoImpersonatingUser-dialog.png)
+
+
+
+   ###### Separate Private Key File Location
+   The SeparatePrivateKeyFilePath field should contain the full path and file name where the separate private key file will be stored if it is to be kept outside the main certificate file. Example: '/path/to/privatekey.der'.
+
+   ![RFDER Custom Field - SeparatePrivateKeyFilePath](docsource/images/RFDER-custom-field-SeparatePrivateKeyFilePath-dialog.png)
+
+
+
+   ###### Remove Root Certificate from Chain
+   Remove root certificate from chain when adding/renewing a certificate in a store.
+
+   ![RFDER Custom Field - RemoveRootCertificate](docsource/images/RFDER-custom-field-RemoveRootCertificate-dialog.png)
+
+
+
+   ###### Include Port in SPN for WinRM
+   Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations.
+
+   ![RFDER Custom Field - IncludePortInSPN](docsource/images/RFDER-custom-field-IncludePortInSPN-dialog.png)
+
+
+
+   ###### SSH Port
+   Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting.
+
+   ![RFDER Custom Field - SSHPort](docsource/images/RFDER-custom-field-SSHPort-dialog.png)
+
+
+
+   ###### Use Shell Commands
+   Recommended to be set to the default value of 'Y'.  For a detailed explanation of this setting, please refer to [Use Shell Commands Setting](#use-shell-commands-setting)
+
+   ![RFDER Custom Field - UseShellCommands](docsource/images/RFDER-custom-field-UseShellCommands-dialog.png)
+
+
+
+
 
    </details>
 </details>
@@ -754,6 +1061,74 @@ the Keyfactor Command Portal
    The Custom Fields tab should look like this:
 
    ![RFKDB Custom Fields Tab](docsource/images/RFKDB-custom-fields-store-type-dialog.png)
+
+
+   ###### Server Username
+   A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value*
+
+   > [!IMPORTANT]
+   > This field is created by the `Needs Server` on the Basic tab, do not create this field manually.
+
+
+
+   ###### Server Password
+   A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value*
+
+   > [!IMPORTANT]
+   > This field is created by the `Needs Server` on the Basic tab, do not create this field manually.
+
+
+
+   ###### Linux File Permissions on Store Creation
+   The LinuxFilePermissionsOnStoreCreation field should contain a three-digit value between 000 and 777 representing the Linux file permissions to be set for the certificate store upon creation. Example: '600' or '755'.  Overrides DefaultLinuxPermissionOnStoreCreation [config.json](#post-installation) setting.
+
+   ![RFKDB Custom Field - LinuxFilePermissionsOnStoreCreation](docsource/images/RFKDB-custom-field-LinuxFilePermissionsOnStoreCreation-dialog.png)
+
+
+
+   ###### Linux File Owner on Store Creation
+   The LinuxFileOwnerOnStoreCreation field should contain a valid user ID recognized by the destination Linux server, optionally followed by a colon and a group ID if the group owner differs. Example: 'userID' or 'userID:groupID'.  Overrides DefaultOwnerOnStoreCreation [config.json](#post-installation) setting.
+
+   ![RFKDB Custom Field - LinuxFileOwnerOnStoreCreation](docsource/images/RFKDB-custom-field-LinuxFileOwnerOnStoreCreation-dialog.png)
+
+
+
+   ###### Sudo Impersonating User
+   The SudoImpersonatingUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'.  Overrides [config.json](#post-installation) DefaultSudoImpersonatedUser setting.
+
+   ![RFKDB Custom Field - SudoImpersonatingUser](docsource/images/RFKDB-custom-field-SudoImpersonatingUser-dialog.png)
+
+
+
+   ###### Remove Root Certificate from Chain
+   Remove root certificate from chain when adding/renewing a certificate in a store.
+
+   ![RFKDB Custom Field - RemoveRootCertificate](docsource/images/RFKDB-custom-field-RemoveRootCertificate-dialog.png)
+
+
+
+   ###### Include Port in SPN for WinRM
+   Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations.
+
+   ![RFKDB Custom Field - IncludePortInSPN](docsource/images/RFKDB-custom-field-IncludePortInSPN-dialog.png)
+
+
+
+   ###### SSH Port
+   Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting.
+
+   ![RFKDB Custom Field - SSHPort](docsource/images/RFKDB-custom-field-SSHPort-dialog.png)
+
+
+
+   ###### Use Shell Commands
+   Recommended to be set to the default value of 'Y'.  For a detailed explanation of this setting, please refer to [Use Shell Commands Setting](#use-shell-commands-setting)
+
+   ![RFKDB Custom Field - UseShellCommands](docsource/images/RFKDB-custom-field-UseShellCommands-dialog.png)
+
+
+
+
 
    </details>
 </details>
@@ -871,6 +1246,81 @@ the Keyfactor Command Portal
 
    ![RFORA Custom Fields Tab](docsource/images/RFORA-custom-fields-store-type-dialog.png)
 
+
+   ###### Server Username
+   A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value*
+
+   > [!IMPORTANT]
+   > This field is created by the `Needs Server` on the Basic tab, do not create this field manually.
+
+
+
+   ###### Server Password
+   A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value*
+
+   > [!IMPORTANT]
+   > This field is created by the `Needs Server` on the Basic tab, do not create this field manually.
+
+
+
+   ###### Linux File Permissions on Store Creation
+   The LinuxFilePermissionsOnStoreCreation field should contain a three-digit value between 000 and 777 representing the Linux file permissions to be set for the certificate store upon creation. Example: '600' or '755'.  Overrides DefaultLinuxPermissionOnStoreCreation [config.json](#post-installation) setting.
+
+   ![RFORA Custom Field - LinuxFilePermissionsOnStoreCreation](docsource/images/RFORA-custom-field-LinuxFilePermissionsOnStoreCreation-dialog.png)
+
+
+
+   ###### Linux File Owner on Store Creation
+   The LinuxFileOwnerOnStoreCreation field should contain a valid user ID recognized by the destination Linux server, optionally followed by a colon and a group ID if the group owner differs. Example: 'userID' or 'userID:groupID'.  Overrides DefaultOwnerOnStoreCreation [config.json](#post-installation) setting.
+
+   ![RFORA Custom Field - LinuxFileOwnerOnStoreCreation](docsource/images/RFORA-custom-field-LinuxFileOwnerOnStoreCreation-dialog.png)
+
+
+
+   ###### Sudo Impersonating User
+   The SudoImpersonatingUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'.  Overrides [config.json](#post-installation) DefaultSudoImpersonatedUser setting.
+
+   ![RFORA Custom Field - SudoImpersonatingUser](docsource/images/RFORA-custom-field-SudoImpersonatingUser-dialog.png)
+
+
+
+   ###### Location to use for creation/removal of work files
+   The WorkFolder field should contain the path on the managed server where temporary work files can be created, modified, and deleted during Inventory and Management jobs. Example: '/path/to/workfolder'.
+
+   ![RFORA Custom Field - WorkFolder](docsource/images/RFORA-custom-field-WorkFolder-dialog.png)
+
+
+
+   ###### Remove Root Certificate from Chain
+   Remove root certificate from chain when adding/renewing a certificate in a store.
+
+   ![RFORA Custom Field - RemoveRootCertificate](docsource/images/RFORA-custom-field-RemoveRootCertificate-dialog.png)
+
+
+
+   ###### Include Port in SPN for WinRM
+   Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations.
+
+   ![RFORA Custom Field - IncludePortInSPN](docsource/images/RFORA-custom-field-IncludePortInSPN-dialog.png)
+
+
+
+   ###### SSH Port
+   Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting.
+
+   ![RFORA Custom Field - SSHPort](docsource/images/RFORA-custom-field-SSHPort-dialog.png)
+
+
+
+   ###### Use Shell Commands
+   Recommended to be set to the default value of 'Y'.  For a detailed explanation of this setting, please refer to [Use Shell Commands Setting](#use-shell-commands-setting)
+
+   ![RFORA Custom Field - UseShellCommands](docsource/images/RFORA-custom-field-UseShellCommands-dialog.png)
+
+
+
+
+
    </details>
 </details>
 
@@ -879,19 +1329,16 @@ the Keyfactor Command Portal
 
 1. **Download the latest Remote File Universal Orchestrator extension from GitHub.**
 
-    Navigate to the [Remote File Universal Orchestrator extension GitHub version page](https://github.com/Keyfactor/remote-file-orchestrator/releases/latest). Refer to the compatibility matrix below to determine whether the `net6.0` or `net8.0` asset should be downloaded. Then, click the corresponding asset to download the zip archive.
+    Navigate to the [Remote File Universal Orchestrator extension GitHub version page](https://github.com/Keyfactor/remote-file-orchestrator/releases/latest). Refer to the compatibility matrix below to determine the asset should be downloaded. Then, click the corresponding asset to download the zip archive.
 
    | Universal Orchestrator Version | Latest .NET version installed on the Universal Orchestrator server | `rollForward` condition in `Orchestrator.runtimeconfig.json` | `remote-file-orchestrator` .NET version to download |
    | --------- | ----------- | ----------- | ----------- |
-   | Older than `11.0.0` | | | `net6.0` |
-   | Between `11.0.0` and `11.5.1` (inclusive) | `net6.0` | | `net6.0` |
-   | Between `11.0.0` and `11.5.1` (inclusive) | `net8.0` | `Disable` | `net6.0` |
    | Between `11.0.0` and `11.5.1` (inclusive) | `net8.0` | `LatestMajor` | `net8.0` |
-   | `11.6` _and_ newer | `net8.0` | | `net8.0` |
+   | `11.6` _and_ newer | `net8.0` | | `net8.0` | 
 
     Unzip the archive containing extension assemblies to a known location.
 
-    > **Note** If you don't see an asset with a corresponding .NET version, you should always assume that it was compiled for `net6.0`.
+    > **Note** If you don't see an asset with a corresponding .NET version, you should always assume that it was compiled for `net8.0`.
 
 2. **Locate the Universal Orchestrator extensions directory.**
 
