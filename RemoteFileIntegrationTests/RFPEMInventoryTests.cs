@@ -17,7 +17,7 @@ namespace RemoteFileIntegrationTests
         {
             InventoryJobConfiguration config = BuildBaseInventoryConfig();
             config.CertificateStoreDetails.ClientMachine = EnvironmentVariables.LinuxServer;
-            config.CertificateStoreDetails.StorePath = EnvironmentVariables.LinuxStorePath;
+            config.CertificateStoreDetails.StorePath = EnvironmentVariables.LinuxStorePath + "Test0001.pem";
             config.CertificateStoreDetails.Properties = "{}";
             //config.CertificateStoreDetails.Properties = JsonConvert.SerializeObject(new Dictionary<string, string?>() { { "SeparatePrivateKeyFilePath", Environment.GetEnvironmentVariable("LinuxStorePath") + "Test0001.key" } });
             config.CertificateStoreDetails.ClientMachine = EnvironmentVariables.LinuxServer;
@@ -33,6 +33,30 @@ namespace RemoteFileIntegrationTests
             
             IInvocation invocation = submitInventoryUpdate.Invocations[0];
             List<CurrentInventoryItem> inventoryItems = (List<CurrentInventoryItem>)invocation.Arguments[0];
+            Assert.Empty(inventoryItems);
+        }
+
+        [Fact]
+        public void RFPEM_Inventory_InternalPrivateKey_WithCert_Linux_Test0002()
+        {
+            InventoryJobConfiguration config = BuildBaseInventoryConfig();
+            config.CertificateStoreDetails.ClientMachine = EnvironmentVariables.LinuxServer;
+            config.CertificateStoreDetails.StorePath = EnvironmentVariables.LinuxStorePath + "Test0002.pem";
+            config.CertificateStoreDetails.Properties = "{}";
+            //config.CertificateStoreDetails.Properties = JsonConvert.SerializeObject(new Dictionary<string, string?>() { { "SeparatePrivateKeyFilePath", Environment.GetEnvironmentVariable("LinuxStorePath") + "Test0001.key" } });
+            config.CertificateStoreDetails.ClientMachine = EnvironmentVariables.LinuxServer;
+
+            Mock<IPAMSecretResolver> secretResolver = GetMockSecretResolver(config);
+
+            Mock<SubmitInventoryUpdate> submitInventoryUpdate = new Mock<SubmitInventoryUpdate>();
+
+            Inventory inventory = new Inventory(secretResolver.Object);
+            JobResult result = inventory.ProcessJob(config, submitInventoryUpdate.Object);
+
+            Assert.Equal(OrchestratorJobStatusJobResult.Success, result.Result);
+
+            IInvocation invocation = submitInventoryUpdate.Invocations[0];
+            List<CurrentInventoryItem> inventoryItems = (List<CurrentInventoryItem>)invocation.Arguments[0];
             Assert.Single(inventoryItems);
 
             using (StringReader rdr = new StringReader(inventoryItems[0].Certificates.First()))
@@ -44,11 +68,12 @@ namespace RemoteFileIntegrationTests
 
                 Assert.Equal(EnvironmentVariables.CertificateSubjectDN, certificate.SubjectDN.ToString());
             }
-
         }
 
         public override void SetUp()
         {
+            CreateCertificateAndKey();
+
             CreateStore("Test0001", false, false, STORE_ENVIRONMENT_ENUM.LINUX);
             CreateStore("Test0002", false, true, STORE_ENVIRONMENT_ENUM.LINUX);
             CreateStore("Test0003", true, false, STORE_ENVIRONMENT_ENUM.LINUX);

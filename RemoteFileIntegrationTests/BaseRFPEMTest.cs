@@ -4,6 +4,7 @@ using Org.BouncyCastle.Crypto.Generators;
 using Org.BouncyCastle.Crypto.Operators;
 using Org.BouncyCastle.Math;
 using Org.BouncyCastle.OpenSsl;
+using Org.BouncyCastle.Pkcs;
 using Org.BouncyCastle.Security;
 using Org.BouncyCastle.X509;
 
@@ -16,18 +17,12 @@ namespace RemoteFileIntegrationTests
         private static string pemCertificate = string.Empty;
         private static string pemKey = string.Empty;
 
-        public BaseRFPEMTest()
-        {
-            if (pemCertificate == null)
-                CreateCertificateAndKey();
-        }
-
         public void CreateStore(string fileName, bool withExtKeyFile, bool withCertificate, STORE_ENVIRONMENT_ENUM storeEnvironment)
         {
             string storeContents = withCertificate ? (withExtKeyFile ? pemCertificate : pemCertificate + System.Environment.NewLine + pemKey) : string.Empty;
             CreateFile($"{fileName}.pem", Encoding.ASCII.GetBytes(storeContents), storeEnvironment);
             if (withExtKeyFile)
-                CreateFile($"{fileName}.key", Encoding.ASCII.GetBytes(pemKey), storeEnvironment);
+                CreateFile($"{fileName}.key", Encoding.ASCII.GetBytes(withCertificate ? pemKey : string.Empty), storeEnvironment);
         }
 
         public void RemoveStore(string fileName, bool withExtKeyFile, STORE_ENVIRONMENT_ENUM storeEnvironment)
@@ -37,8 +32,11 @@ namespace RemoteFileIntegrationTests
                 RemoveFile($"{fileName}.key", storeEnvironment);
         }
 
-        private void CreateCertificateAndKey()
+        public void CreateCertificateAndKey()
         {
+            if (!string.IsNullOrEmpty(pemCertificate))
+                return;
+
             var keyGen = new RsaKeyPairGenerator();
             keyGen.Init(new KeyGenerationParameters(new SecureRandom(), 2048));
             AsymmetricCipherKeyPair keyPair = keyGen.GenerateKeyPair();
@@ -76,7 +74,7 @@ namespace RemoteFileIntegrationTests
             using (var sw = new StringWriter())
             {
                 var pw = new PemWriter(sw);
-                pw.WriteObject(keyPair.Private);
+                pw.WriteObject((new Pkcs8Generator(keyPair.Private)).Generate());
                 pw.Writer.Flush();
                 pemKey = sw.ToString();
             }
