@@ -2,7 +2,11 @@ using Keyfactor.Extensions.Orchestrator.RemoteFile.PEM;
 using Keyfactor.Orchestrators.Common.Enums;
 using Keyfactor.Orchestrators.Extensions;
 using Keyfactor.Orchestrators.Extensions.Interfaces;
+
 using Moq;
+
+using Org.BouncyCastle.X509;
+using Org.BouncyCastle.Utilities.IO.Pem;
 
 namespace RemoteFileIntegrationTests
 {
@@ -12,11 +16,11 @@ namespace RemoteFileIntegrationTests
         public void RFPEM_Inventory_InternalPrivateKey_EmptyStore_Linux_Test0001()
         {
             InventoryJobConfiguration config = BuildBaseInventoryConfig();
-            config.CertificateStoreDetails.ClientMachine = Environment.GetEnvironmentVariable("LinuxServer");
-            config.CertificateStoreDetails.StorePath = Environment.GetEnvironmentVariable("LinuxStorePath");
+            config.CertificateStoreDetails.ClientMachine = EnvironmentVariables.LinuxServer;
+            config.CertificateStoreDetails.StorePath = EnvironmentVariables.LinuxStorePath;
             config.CertificateStoreDetails.Properties = "{}";
             //config.CertificateStoreDetails.Properties = JsonConvert.SerializeObject(new Dictionary<string, string?>() { { "SeparatePrivateKeyFilePath", Environment.GetEnvironmentVariable("LinuxStorePath") + "Test0001.key" } });
-            config.CertificateStoreDetails.ClientMachine = Environment.GetEnvironmentVariable("LinuxServer");
+            config.CertificateStoreDetails.ClientMachine = EnvironmentVariables.LinuxServer;
 
             Mock<IPAMSecretResolver> secretResolver = GetMockSecretResolver(config);
 
@@ -30,7 +34,16 @@ namespace RemoteFileIntegrationTests
             IInvocation invocation = submitInventoryUpdate.Invocations[0];
             List<CurrentInventoryItem> inventoryItems = (List<CurrentInventoryItem>)invocation.Arguments[0];
             Assert.Single(inventoryItems);
-            inventoryItems[0].Certificates).
+
+            using (StringReader rdr = new StringReader(inventoryItems[0].Certificates.First()))
+            {
+                PemReader pemReader = new PemReader(rdr);
+                PemObject pemObject = pemReader.ReadPemObject();
+                X509CertificateParser parser = new X509CertificateParser();
+                X509Certificate certificate = parser.ReadCertificate(pemObject.Content);
+
+                Assert.Equal(EnvironmentVariables.CertificateSubjectDN, certificate.SubjectDN.ToString());
+            }
 
         }
 
@@ -57,8 +70,8 @@ namespace RemoteFileIntegrationTests
             config.CertificateStoreDetails = new CertificateStore();
             config.JobId = new Guid();
             config.JobProperties = new Dictionary<string, object>();
-            config.ServerUsername = Environment.GetEnvironmentVariable("LinuxUserId");
-            config.ServerPassword = Environment.GetEnvironmentVariable("LinuxUserPassword");
+            config.ServerUsername = EnvironmentVariables.LinuxUserId;
+            config.ServerPassword = EnvironmentVariables.LinuxUserPassword;
 
             return config;
         }

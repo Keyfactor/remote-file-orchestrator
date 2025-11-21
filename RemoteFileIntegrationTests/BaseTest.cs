@@ -47,10 +47,9 @@ namespace RemoteFileIntegrationTests
             if (Connection != null)
                 return;
 
-            string userId = Environment.GetEnvironmentVariable("LinuxUserId")!;
+            string userId = EnvironmentVariables.LinuxUserId!;
             KeyboardInteractiveAuthenticationMethod keyboardAuthentication = new KeyboardInteractiveAuthenticationMethod(userId);
-            Connection = new ConnectionInfo(Environment.GetEnvironmentVariable("LinuxServer"), userId, new PasswordAuthenticationMethod(userId, Environment.GetEnvironmentVariable("LinuxUserPassword")), keyboardAuthentication);
-            Client = new SshClient(Connection);
+            Connection = new ConnectionInfo(EnvironmentVariables.LinuxServer, userId, new PasswordAuthenticationMethod(userId, EnvironmentVariables.LinuxUserPassword), keyboardAuthentication);
 
             SetUp();
         }
@@ -104,7 +103,7 @@ namespace RemoteFileIntegrationTests
 
                     using (MemoryStream stream = new MemoryStream(contents))
                     {
-                        client.Upload(stream, Environment.GetEnvironmentVariable("LinuxStorePath") + fileName);
+                        client.Upload(stream, EnvironmentVariables.LinuxStorePath + fileName);
                     }
                 }
                 finally
@@ -127,7 +126,7 @@ namespace RemoteFileIntegrationTests
                 {
                     client.OperationTimeout = System.TimeSpan.FromSeconds(60);
                     client.Connect();
-                    client.DeleteFile(Environment.GetEnvironmentVariable("LinuxStorePath") + fileName);
+                    client.DeleteFile(EnvironmentVariables.LinuxStorePath + fileName);
                 }
                 finally
                 {
