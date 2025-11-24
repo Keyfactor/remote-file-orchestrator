@@ -12,7 +12,7 @@ using System.Text;
 
 namespace RemoteFileIntegrationTests
 {
-    public abstract class BaseRFPEMTest : BaseTest
+    public class BaseRFPEMTest : BaseTest
     {
         private static string pemCertificate = string.Empty;
         private static string pemKey = string.Empty;
