@@ -10,10 +10,11 @@ using Newtonsoft.Json;
 using Org.BouncyCastle.X509;
 using Org.BouncyCastle.Utilities.IO.Pem;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel.Client;
+using Microsoft.PowerShell.Commands;
 
 namespace RemoteFileIntegrationTests
 {
-    public class RFPEMInventoryTests : BaseRFPEMTest, IClassFixture<RFPEMInventoryTestsFixture>
+    public class RFPEMManagementAddTests : BaseRFPEMTest, IClassFixture<RFPEMManagementAddTestsFixture>
     {
         public static TestConfig[] TestConfigs = {
             new TestConfig() { FileName = "Test0001", HasSeparatePrivateKey = false, WithCertificate = false, StoreEnvironment = STORE_ENVIRONMENT_ENUM.LINUX},
@@ -21,6 +22,8 @@ namespace RemoteFileIntegrationTests
             new TestConfig() { FileName = "Test0003", HasSeparatePrivateKey = true, WithCertificate = false, StoreEnvironment = STORE_ENVIRONMENT_ENUM.LINUX},
             new TestConfig() { FileName = "Test0004", HasSeparatePrivateKey = true, WithCertificate = true, StoreEnvironment = STORE_ENVIRONMENT_ENUM.LINUX},
         };
+
+        public static string ExistingAlias {  get; set; }
 
         [Fact]
         public void RFPEM_Inventory_InternalPrivateKey_EmptyStore_Linux_Test0001()
@@ -48,7 +51,7 @@ namespace RemoteFileIntegrationTests
 
         private void RunTest(TestConfig testConfig)
         {
-            InventoryJobConfiguration config = BuildBaseInventoryConfig();
+            InventoryJobConfiguration config = BuildBaseInventoryConfig(testConfig.WithCertificate ? ExistingAlias : string.Empty);
             config.CertificateStoreDetails.ClientMachine = EnvironmentVariables.LinuxServer;
             config.CertificateStoreDetails.StorePath = EnvironmentVariables.LinuxStorePath + $"{testConfig.FileName}.pem";
             config.CertificateStoreDetails.Properties = "{}";
@@ -84,10 +87,12 @@ namespace RemoteFileIntegrationTests
             }
         }
 
-        private InventoryJobConfiguration BuildBaseInventoryConfig()
+        private ManagementJobConfiguration BuildBaseInventoryConfig()
         {
-            InventoryJobConfiguration config = new InventoryJobConfiguration();
-            config.Capability = "Inventory";
+            ManagementJobConfiguration config = new ManagementJobConfiguration();
+            config.JobCertificate = new ManagementJobCertificate();
+            config.JobCertificate.Contents = ;
+            config.Capability = "Management";
             config.CertificateStoreDetails = new CertificateStore();
             config.JobId = new Guid();
             config.JobProperties = new Dictionary<string, object>();
@@ -102,15 +107,16 @@ namespace RemoteFileIntegrationTests
             internal string FileName { get; set; }
             internal bool HasSeparatePrivateKey { get; set; }
             internal bool WithCertificate { get; set; }
+            internal bool Overwrite {  get; set; }
             internal BaseTest.STORE_ENVIRONMENT_ENUM StoreEnvironment { get; set; }
         }
     }
 
-    public class RFPEMInventoryTestsFixture : IDisposable
+    public class RFPEMManagementAddTestsFixture : IDisposable
     {
-        public RFPEMInventoryTestsFixture()
+        public RFPEMManagementAddTestsFixture()
         {
-            SetUp();
+            RFPEMManagementAddTests.ExistingAlias = SetUp(EnvironmentVariables.ExistingCertificateSubjectDN ?? string.Empty);
         }
 
         public void Dispose()
@@ -118,22 +124,24 @@ namespace RemoteFileIntegrationTests
             TearDown();
         }
 
-        private void SetUp()
+        private string SetUp(string certName)
         {
-            BaseRFPEMTest.CreateCertificateAndKey(EnvironmentVariables.ExistingCertificateSubjectDN ?? string.Empty);
+            string existingAlias = BaseRFPEMTest.CreateCertificateAndKey(certName);
 
-            BaseRFPEMTest.CreateStore(RFPEMInventoryTests.TestConfigs[0].FileName, RFPEMInventoryTests.TestConfigs[0].HasSeparatePrivateKey, RFPEMInventoryTests.TestConfigs[0].WithCertificate, RFPEMInventoryTests.TestConfigs[0].StoreEnvironment);
-            BaseRFPEMTest.CreateStore(RFPEMInventoryTests.TestConfigs[1].FileName, RFPEMInventoryTests.TestConfigs[1].HasSeparatePrivateKey, RFPEMInventoryTests.TestConfigs[1].WithCertificate, RFPEMInventoryTests.TestConfigs[1].StoreEnvironment);
-            BaseRFPEMTest.CreateStore(RFPEMInventoryTests.TestConfigs[2].FileName, RFPEMInventoryTests.TestConfigs[2].HasSeparatePrivateKey, RFPEMInventoryTests.TestConfigs[2].WithCertificate, RFPEMInventoryTests.TestConfigs[2].StoreEnvironment);
-            BaseRFPEMTest.CreateStore(RFPEMInventoryTests.TestConfigs[3].FileName, RFPEMInventoryTests.TestConfigs[3].HasSeparatePrivateKey, RFPEMInventoryTests.TestConfigs[3].WithCertificate, RFPEMInventoryTests.TestConfigs[3].StoreEnvironment);
+            BaseRFPEMTest.CreateStore(RFPEMManagementAddTests.TestConfigs[0].FileName, RFPEMManagementAddTests.TestConfigs[0].HasSeparatePrivateKey, RFPEMManagementAddTests.TestConfigs[0].WithCertificate, RFPEMManagementAddTests.TestConfigs[0].StoreEnvironment);
+            BaseRFPEMTest.CreateStore(RFPEMManagementAddTests.TestConfigs[1].FileName, RFPEMManagementAddTests.TestConfigs[1].HasSeparatePrivateKey, RFPEMManagementAddTests.TestConfigs[1].WithCertificate, RFPEMManagementAddTests.TestConfigs[1].StoreEnvironment);
+            BaseRFPEMTest.CreateStore(RFPEMManagementAddTests.TestConfigs[2].FileName, RFPEMManagementAddTests.TestConfigs[2].HasSeparatePrivateKey, RFPEMManagementAddTests.TestConfigs[2].WithCertificate, RFPEMManagementAddTests.TestConfigs[2].StoreEnvironment);
+            BaseRFPEMTest.CreateStore(RFPEMManagementAddTests.TestConfigs[3].FileName, RFPEMManagementAddTests.TestConfigs[3].HasSeparatePrivateKey, RFPEMManagementAddTests.TestConfigs[3].WithCertificate, RFPEMManagementAddTests.TestConfigs[3].StoreEnvironment);
+
+            return existingAlias;
         }
 
         private void TearDown()
         {
-            BaseRFPEMTest.RemoveStore(RFPEMInventoryTests.TestConfigs[0].FileName, RFPEMInventoryTests.TestConfigs[0].HasSeparatePrivateKey, RFPEMInventoryTests.TestConfigs[0].StoreEnvironment);
-            BaseRFPEMTest.RemoveStore(RFPEMInventoryTests.TestConfigs[1].FileName, RFPEMInventoryTests.TestConfigs[1].HasSeparatePrivateKey, RFPEMInventoryTests.TestConfigs[1].StoreEnvironment);
-            BaseRFPEMTest.RemoveStore(RFPEMInventoryTests.TestConfigs[2].FileName, RFPEMInventoryTests.TestConfigs[2].HasSeparatePrivateKey, RFPEMInventoryTests.TestConfigs[2].StoreEnvironment);
-            BaseRFPEMTest.RemoveStore(RFPEMInventoryTests.TestConfigs[3].FileName, RFPEMInventoryTests.TestConfigs[3].HasSeparatePrivateKey, RFPEMInventoryTests.TestConfigs[3].StoreEnvironment);
+            BaseRFPEMTest.RemoveStore(RFPEMManagementAddTests.TestConfigs[0].FileName, RFPEMManagementAddTests.TestConfigs[0].HasSeparatePrivateKey, RFPEMManagementAddTests.TestConfigs[0].StoreEnvironment);
+            BaseRFPEMTest.RemoveStore(RFPEMManagementAddTests.TestConfigs[1].FileName, RFPEMManagementAddTests.TestConfigs[1].HasSeparatePrivateKey, RFPEMManagementAddTests.TestConfigs[1].StoreEnvironment);
+            BaseRFPEMTest.RemoveStore(RFPEMManagementAddTests.TestConfigs[2].FileName, RFPEMManagementAddTests.TestConfigs[2].HasSeparatePrivateKey, RFPEMManagementAddTests.TestConfigs[2].StoreEnvironment);
+            BaseRFPEMTest.RemoveStore(RFPEMManagementAddTests.TestConfigs[3].FileName, RFPEMManagementAddTests.TestConfigs[3].HasSeparatePrivateKey, RFPEMManagementAddTests.TestConfigs[3].StoreEnvironment);
         }
     }
 

@@ -1,4 +1,5 @@
-﻿using Org.BouncyCastle.Asn1.X509;
+﻿using Keyfactor.PKI.Extensions;
+using Org.BouncyCastle.Asn1.X509;
 using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Crypto.Generators;
 using Org.BouncyCastle.Crypto.Operators;
@@ -33,17 +34,17 @@ namespace RemoteFileIntegrationTests
                 RemoveFile($"{fileName}.key", storeEnvironment);
         }
 
-        public static void CreateCertificateAndKey()
+        public static string CreateCertificateAndKey(string certNameString)
         {
             if (!string.IsNullOrEmpty(pemCertificate))
-                return;
+                return string.Empty;
 
             var keyGen = new RsaKeyPairGenerator();
             keyGen.Init(new KeyGenerationParameters(new SecureRandom(), 2048));
             AsymmetricCipherKeyPair keyPair = keyGen.GenerateKeyPair();
 
             // Define certificate attributes
-            var certName = new X509Name(EnvironmentVariables.CertificateSubjectDN);
+            var certName = new X509Name(certNameString);
             BigInteger serialNumber = BigInteger.ProbablePrime(120, new Random());
 
             // Validity period
@@ -79,6 +80,8 @@ namespace RemoteFileIntegrationTests
                 pw.Writer.Flush();
                 pemKey = sw.ToString();
             }
+
+            return certificate.Thumbprint();
         }
     }
 }
