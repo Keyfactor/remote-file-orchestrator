@@ -17,7 +17,8 @@ namespace RemoteFileIntegrationTests
         private static string pemCertificate = string.Empty;
         private static string pemKey = string.Empty;
 
-        public void CreateStore(string fileName, bool withExtKeyFile, bool withCertificate, STORE_ENVIRONMENT_ENUM storeEnvironment)
+
+        public static void CreateStore(string fileName, bool withExtKeyFile, bool withCertificate, STORE_ENVIRONMENT_ENUM storeEnvironment)
         {
             string storeContents = withCertificate ? (withExtKeyFile ? pemCertificate : pemCertificate + System.Environment.NewLine + pemKey) : string.Empty;
             CreateFile($"{fileName}.pem", Encoding.ASCII.GetBytes(storeContents), storeEnvironment);
@@ -25,14 +26,14 @@ namespace RemoteFileIntegrationTests
                 CreateFile($"{fileName}.key", Encoding.ASCII.GetBytes(withCertificate ? pemKey : string.Empty), storeEnvironment);
         }
 
-        public void RemoveStore(string fileName, bool withExtKeyFile, STORE_ENVIRONMENT_ENUM storeEnvironment)
+        public static void RemoveStore(string fileName, bool withExtKeyFile, STORE_ENVIRONMENT_ENUM storeEnvironment)
         {
             RemoveFile($"{fileName}.pem", storeEnvironment);
             if (withExtKeyFile)
                 RemoveFile($"{fileName}.key", storeEnvironment);
         }
 
-        public void CreateCertificateAndKey()
+        public static void CreateCertificateAndKey()
         {
             if (!string.IsNullOrEmpty(pemCertificate))
                 return;

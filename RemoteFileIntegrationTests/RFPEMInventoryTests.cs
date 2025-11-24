@@ -7,10 +7,11 @@ using Moq;
 
 using Org.BouncyCastle.X509;
 using Org.BouncyCastle.Utilities.IO.Pem;
+using static RemoteFileIntegrationTests.BaseTest;
 
 namespace RemoteFileIntegrationTests
 {
-    public class RFPEMInventoryTests : BaseRFPEMTest
+    public class RFPEMInventoryTests : BaseRFPEMTest, IClassFixture<RFPEMInventoryTestsFixture>
     {
         [Fact]
         public void RFPEM_Inventory_InternalPrivateKey_EmptyStore_Linux_Test0001()
@@ -70,24 +71,6 @@ namespace RemoteFileIntegrationTests
             }
         }
 
-        public override void SetUp()
-        {
-            CreateCertificateAndKey();
-
-            CreateStore("Test0001", false, false, STORE_ENVIRONMENT_ENUM.LINUX);
-            CreateStore("Test0002", false, true, STORE_ENVIRONMENT_ENUM.LINUX);
-            CreateStore("Test0003", true, false, STORE_ENVIRONMENT_ENUM.LINUX);
-            CreateStore("Test0004", true, true, STORE_ENVIRONMENT_ENUM.LINUX);
-        }
-
-        public override void TearDown()
-        {
-            RemoveStore("Test0001", false, STORE_ENVIRONMENT_ENUM.LINUX);
-            RemoveStore("Test0002", false, STORE_ENVIRONMENT_ENUM.LINUX);
-            RemoveStore("Test0003", true, STORE_ENVIRONMENT_ENUM.LINUX);
-            RemoveStore("Test0004", true, STORE_ENVIRONMENT_ENUM.LINUX);
-        }
-
         private InventoryJobConfiguration BuildBaseInventoryConfig()
         {
             InventoryJobConfiguration config = new InventoryJobConfiguration();
@@ -101,4 +84,39 @@ namespace RemoteFileIntegrationTests
             return config;
         }
     }
+
+    public class RFPEMInventoryTestsFixture : IDisposable
+    {
+        public RFPEMInventoryTestsFixture()
+        {
+            SetUp();
+        }
+
+        public void Dispose()
+        {
+            TearDown();
+        }
+
+        private void SetUp()
+        {
+            BaseRFPEMTest.CreateCertificateAndKey();
+
+            BaseRFPEMTest.CreateStore("Test0001", false, false, STORE_ENVIRONMENT_ENUM.LINUX);
+            BaseRFPEMTest.CreateStore("Test0002", false, true, STORE_ENVIRONMENT_ENUM.LINUX);
+            BaseRFPEMTest.CreateStore("Test0003", true, false, STORE_ENVIRONMENT_ENUM.LINUX);
+            BaseRFPEMTest.CreateStore("Test0004", true, true, STORE_ENVIRONMENT_ENUM.LINUX);
+        }
+
+        private void TearDown()
+        {
+            BaseRFPEMTest.RemoveStore("Test0001", false, STORE_ENVIRONMENT_ENUM.LINUX);
+            BaseRFPEMTest.RemoveStore("Test0002", false, STORE_ENVIRONMENT_ENUM.LINUX);
+            BaseRFPEMTest.RemoveStore("Test0003", true, STORE_ENVIRONMENT_ENUM.LINUX);
+            BaseRFPEMTest.RemoveStore("Test0004", true, STORE_ENVIRONMENT_ENUM.LINUX);
+        }
+    }
+
+
+
+
 }

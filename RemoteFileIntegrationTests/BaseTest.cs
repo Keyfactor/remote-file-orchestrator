@@ -7,7 +7,7 @@ using Keyfactor.Orchestrators.Extensions;
 
 namespace RemoteFileIntegrationTests
 {
-    public abstract class BaseTest : IDisposable
+    public abstract class BaseTest
     {
         public enum STORE_ENVIRONMENT_ENUM
         {
@@ -40,21 +40,13 @@ namespace RemoteFileIntegrationTests
             {
                 throw new Exception(".env not found.  Make sure .env exists and is being copied to the run folder on compile.");
             }
-        }
-
-        public BaseTest()
-        {
-            if (Connection != null)
-                return;
 
             string userId = EnvironmentVariables.LinuxUserId!;
             KeyboardInteractiveAuthenticationMethod keyboardAuthentication = new KeyboardInteractiveAuthenticationMethod(userId);
             Connection = new ConnectionInfo(EnvironmentVariables.LinuxServer, userId, new PasswordAuthenticationMethod(userId, EnvironmentVariables.LinuxUserPassword), keyboardAuthentication);
-
-            SetUp();
         }
 
-        public void CreateFile(string fileName, byte[] contents, STORE_ENVIRONMENT_ENUM storeEnvironment)
+        public static void CreateFile(string fileName, byte[] contents, STORE_ENVIRONMENT_ENUM storeEnvironment)
         {
             if (storeEnvironment == STORE_ENVIRONMENT_ENUM.LINUX) 
                 CreateFileLinux(fileName, contents);
@@ -62,22 +54,13 @@ namespace RemoteFileIntegrationTests
                 CreateFileWindows(fileName, contents);
         }
 
-        public void RemoveFile(string fileName, STORE_ENVIRONMENT_ENUM storeEnvironment)
+        public static void RemoveFile(string fileName, STORE_ENVIRONMENT_ENUM storeEnvironment)
         {
             if (storeEnvironment == STORE_ENVIRONMENT_ENUM.LINUX)
                 RemoveFileLinux(fileName);
             if (storeEnvironment == STORE_ENVIRONMENT_ENUM.WINDOWS)
                 RemoveFileWindows(fileName);
         }
-
-        public void Dispose()
-        {
-            TearDown();
-        }
-
-        public abstract void SetUp();
-
-        public abstract void TearDown();
 
         internal Mock<IPAMSecretResolver> GetMockSecretResolver(JobConfiguration config)
         {
@@ -92,7 +75,7 @@ namespace RemoteFileIntegrationTests
             return secretResolver;
         }
 
-        private void CreateFileLinux(string fileName, byte[] contents)
+        private static void CreateFileLinux(string fileName, byte[] contents)
         {
             using (ScpClient client = new ScpClient(Connection))
             {
@@ -113,12 +96,12 @@ namespace RemoteFileIntegrationTests
             };
         }
 
-        private void CreateFileWindows(string fileName, byte[] contents)
+        private static void CreateFileWindows(string fileName, byte[] contents)
         {
 
         }
 
-        private void RemoveFileLinux(string fileName)
+        private static void RemoveFileLinux(string fileName)
         {
             using (SftpClient client = new SftpClient(Connection))
             {
@@ -135,7 +118,7 @@ namespace RemoteFileIntegrationTests
             };
         }
 
-        private void RemoveFileWindows(string fileName)
+        private static void RemoveFileWindows(string fileName)
         {
 
         }
