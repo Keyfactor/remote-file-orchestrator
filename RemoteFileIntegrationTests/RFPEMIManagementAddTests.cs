@@ -51,7 +51,8 @@ namespace RemoteFileIntegrationTests
 
         private void RunTest(TestConfig testConfig)
         {
-            InventoryJobConfiguration config = BuildBaseInventoryConfig(testConfig.WithCertificate ? ExistingAlias : string.Empty);
+            ManagementJobConfiguration config = BuildBaseInventoryConfig();
+            config.JobCertificate.Alias = testConfig.WithCertificate ? ExistingAlias : string.Empty;
             config.CertificateStoreDetails.ClientMachine = EnvironmentVariables.LinuxServer;
             config.CertificateStoreDetails.StorePath = EnvironmentVariables.LinuxStorePath + $"{testConfig.FileName}.pem";
             config.CertificateStoreDetails.Properties = "{}";
@@ -64,8 +65,8 @@ namespace RemoteFileIntegrationTests
 
             Mock<SubmitInventoryUpdate> submitInventoryUpdate = new Mock<SubmitInventoryUpdate>();
 
-            Inventory inventory = new Inventory(secretResolver.Object);
-            JobResult result = inventory.ProcessJob(config, submitInventoryUpdate.Object);
+            Management management = new Management(secretResolver.Object);
+            management.ProcessJob(config);
 
             Assert.Equal(OrchestratorJobStatusJobResult.Success, result.Result);
 
@@ -91,7 +92,7 @@ namespace RemoteFileIntegrationTests
         {
             ManagementJobConfiguration config = new ManagementJobConfiguration();
             config.JobCertificate = new ManagementJobCertificate();
-            config.JobCertificate.Contents = ;
+            config.JobCertificate.Contents = GetNewCert();
             config.Capability = "Management";
             config.CertificateStoreDetails = new CertificateStore();
             config.JobId = new Guid();
@@ -116,7 +117,7 @@ namespace RemoteFileIntegrationTests
     {
         public RFPEMManagementAddTestsFixture()
         {
-            RFPEMManagementAddTests.ExistingAlias = SetUp(EnvironmentVariables.ExistingCertificateSubjectDN ?? string.Empty);
+            RFPEMManagementAddTests.ExistingAlias = SetUp(EnvironmentVariables.ExistingCertificateSubjectDN ?? string.Empty, EnvironmentVariables.NewCertificaetSubjectDN ?? string.Empty);
         }
 
         public void Dispose()
@@ -124,9 +125,10 @@ namespace RemoteFileIntegrationTests
             TearDown();
         }
 
-        private string SetUp(string certName)
+        private string SetUp(string certName, string newCertName)
         {
-            string existingAlias = BaseRFPEMTest.CreateCertificateAndKey(certName);
+            string existingAlias = BaseRFPEMTest.CreateCertificateAndKey(certName, BaseRFPEMTest.CERT_TYPE_ENUM.PEM);
+            string newAlias = BaseRFPEMTest.CreateCertificateAndKey(newCertName, BaseRFPEMTest.CERT_TYPE_ENUM.PFX);
 
             BaseRFPEMTest.CreateStore(RFPEMManagementAddTests.TestConfigs[0].FileName, RFPEMManagementAddTests.TestConfigs[0].HasSeparatePrivateKey, RFPEMManagementAddTests.TestConfigs[0].WithCertificate, RFPEMManagementAddTests.TestConfigs[0].StoreEnvironment);
             BaseRFPEMTest.CreateStore(RFPEMManagementAddTests.TestConfigs[1].FileName, RFPEMManagementAddTests.TestConfigs[1].HasSeparatePrivateKey, RFPEMManagementAddTests.TestConfigs[1].WithCertificate, RFPEMManagementAddTests.TestConfigs[1].StoreEnvironment);

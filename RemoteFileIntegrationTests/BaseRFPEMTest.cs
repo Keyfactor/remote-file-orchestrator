@@ -17,6 +17,13 @@ namespace RemoteFileIntegrationTests
     {
         private static string pemCertificate = string.Empty;
         private static string pemKey = string.Empty;
+        private static string b64PFXCertificate = string.Empty;
+
+        public enum CERT_TYPE_ENUM
+        {
+            PEM,
+            PFX
+        }
 
 
         public static void CreateStore(string fileName, bool withExtKeyFile, bool withCertificate, STORE_ENVIRONMENT_ENUM storeEnvironment)
@@ -34,9 +41,14 @@ namespace RemoteFileIntegrationTests
                 RemoveFile($"{fileName}.key", storeEnvironment);
         }
 
-        public static string CreateCertificateAndKey(string certNameString)
+        public string GetNewCert()
         {
-            if (!string.IsNullOrEmpty(pemCertificate))
+            return b64PFXCertificate;
+        }
+
+        public static string CreateCertificateAndKey(string certNameString, CERT_TYPE_ENUM certType)
+        {
+            if (!string.IsNullOrEmpty(certType == CERT_TYPE_ENUM.PEM ? pemCertificate : b64PFXCertificate))
                 return string.Empty;
 
             var keyGen = new RsaKeyPairGenerator();
@@ -63,22 +75,38 @@ namespace RemoteFileIntegrationTests
             // Generate the certificate
             X509Certificate certificate = certGen.Generate(new Asn1SignatureFactory("SHA256WITHRSA", keyPair.Private));
 
-            // Export certificate as PEM
-            using (var sw = new StringWriter())
+            if (certType == CERT_TYPE_ENUM.PEM)
             {
-                var pw = new PemWriter(sw);
-                pw.WriteObject(certificate);
-                pw.Writer.Flush();
-                pemCertificate = sw.ToString();
-            }
+                // Export certificate as PEM
+                using (var sw = new StringWriter())
+                {
+                    var pw = new PemWriter(sw);
+                    pw.WriteObject(certificate);
+                    pw.Writer.Flush();
+                    pemCertificate = sw.ToString();
+                }
 
-            // Export private key as PEM (unencrypted)
-            using (var sw = new StringWriter())
+                // Export private key as PEM (unencrypted)
+                using (var sw = new StringWriter())
+                {
+                    var pw = new PemWriter(sw);
+                    pw.WriteObject((new Pkcs8Generator(keyPair.Private)).Generate());
+                    pw.Writer.Flush();
+                    pemKey = sw.ToString();
+                }
+            }
+            else
             {
-                var pw = new PemWriter(sw);
-                pw.WriteObject((new Pkcs8Generator(keyPair.Private)).Generate());
-                pw.Writer.Flush();
-                pemKey = sw.ToString();
+                Pkcs12StoreBuilder builder = new Pkcs12StoreBuilder();
+                Pkcs12Store store = builder.Build();
+                store.SetCertificateEntry("abc", new X509CertificateEntry(certificate));
+                store.SetKeyEntry("abc", new AsymmetricKeyEntry(keyPair.Private), new[] { new X509CertificateEntry(certificate) });
+
+                using (MemoryStream ms = new MemoryStream())
+                {
+                    store.Save(ms, EnvironmentVariables.StorePassword?.ToCharArray(), new SecureRandom());
+                    b64PFXCertificate = Convert.ToBase64String(ms.ToArray());
+                }
             }
 
             return certificate.Thumbprint();

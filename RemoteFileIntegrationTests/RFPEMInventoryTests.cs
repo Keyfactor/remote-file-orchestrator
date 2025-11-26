@@ -110,7 +110,7 @@ namespace RemoteFileIntegrationTests
     {
         public RFPEMInventoryTestsFixture()
         {
-            SetUp();
+            SetUp(EnvironmentVariables.ExistingCertificateSubjectDN ?? string.Empty);
         }
 
         public void Dispose()
@@ -118,9 +118,9 @@ namespace RemoteFileIntegrationTests
             TearDown();
         }
 
-        private void SetUp()
+        private void SetUp(string certName)
         {
-            BaseRFPEMTest.CreateCertificateAndKey(EnvironmentVariables.ExistingCertificateSubjectDN ?? string.Empty);
+            BaseRFPEMTest.CreateCertificateAndKey(certName, BaseRFPEMTest.CERT_TYPE_ENUM.PEM);
 
             BaseRFPEMTest.CreateStore(RFPEMInventoryTests.TestConfigs[0].FileName, RFPEMInventoryTests.TestConfigs[0].HasSeparatePrivateKey, RFPEMInventoryTests.TestConfigs[0].WithCertificate, RFPEMInventoryTests.TestConfigs[0].StoreEnvironment);
             BaseRFPEMTest.CreateStore(RFPEMInventoryTests.TestConfigs[1].FileName, RFPEMInventoryTests.TestConfigs[1].HasSeparatePrivateKey, RFPEMInventoryTests.TestConfigs[1].WithCertificate, RFPEMInventoryTests.TestConfigs[1].StoreEnvironment);
