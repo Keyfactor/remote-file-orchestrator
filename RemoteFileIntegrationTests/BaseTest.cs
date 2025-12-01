@@ -62,6 +62,16 @@ namespace RemoteFileIntegrationTests
                 RemoveFileWindows(fileName);
         }
 
+        public static byte[] ReadFile(string fileName, STORE_ENVIRONMENT_ENUM storeEnvironment)
+        {
+            if (storeEnvironment == STORE_ENVIRONMENT_ENUM.LINUX)
+                return ReadFileLinux(fileName);
+            if (storeEnvironment == STORE_ENVIRONMENT_ENUM.WINDOWS)
+                return ReadFileWindows(fileName);
+
+            return [];
+        }
+
         internal Mock<IPAMSecretResolver> GetMockSecretResolver(JobConfiguration config)
         {
             Mock<IPAMSecretResolver> secretResolver = new Mock<IPAMSecretResolver>();
@@ -121,6 +131,32 @@ namespace RemoteFileIntegrationTests
         private static void RemoveFileWindows(string fileName)
         {
 
+        }
+
+        private static byte[] ReadFileLinux(string fileName)
+        {
+            byte[] contents = [];
+
+            using (SftpClient client = new SftpClient(Connection))
+            {
+                try
+                {
+                    client.OperationTimeout = System.TimeSpan.FromSeconds(60);
+                    client.Connect();
+                    contents = client.ReadAllBytes(EnvironmentVariables.LinuxStorePath + fileName);
+                }
+                finally
+                {
+                    client.Disconnect();
+                }
+            }
+            
+            return contents;
+        }
+
+        private static byte[] ReadFileWindows(string fileName)
+        {
+            return [];
         }
     }
 }

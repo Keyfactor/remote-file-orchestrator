@@ -2,6 +2,7 @@ using Keyfactor.Extensions.Orchestrator.RemoteFile.PEM;
 using Keyfactor.Orchestrators.Common.Enums;
 using Keyfactor.Orchestrators.Extensions;
 using Keyfactor.Orchestrators.Extensions.Interfaces;
+using Keyfactor.PKI.X509;
 
 using Moq;
 
@@ -9,52 +10,88 @@ using Newtonsoft.Json;
 
 using Org.BouncyCastle.X509;
 using Org.BouncyCastle.Utilities.IO.Pem;
+using Org.BouncyCastle.Pkcs;
+using Keyfactor.PKI.Extensions;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel.Client;
-using Microsoft.PowerShell.Commands;
 
 namespace RemoteFileIntegrationTests
 {
     public class RFPEMManagementAddTests : BaseRFPEMTest, IClassFixture<RFPEMManagementAddTestsFixture>
     {
-        public static TestConfig[] TestConfigs = {
-            new TestConfig() { FileName = "Test0001", HasSeparatePrivateKey = false, WithCertificate = false, StoreEnvironment = STORE_ENVIRONMENT_ENUM.LINUX},
-            new TestConfig() { FileName = "Test0002", HasSeparatePrivateKey = false, WithCertificate = true, StoreEnvironment = STORE_ENVIRONMENT_ENUM.LINUX},
-            new TestConfig() { FileName = "Test0003", HasSeparatePrivateKey = true, WithCertificate = false, StoreEnvironment = STORE_ENVIRONMENT_ENUM.LINUX},
-            new TestConfig() { FileName = "Test0004", HasSeparatePrivateKey = true, WithCertificate = true, StoreEnvironment = STORE_ENVIRONMENT_ENUM.LINUX},
+        public static ManagementAddTestConfig[] TestConfigs = {
+            new ManagementAddTestConfig() { FileName = "Test0005", UseExistingAlias = false, HasSeparatePrivateKey = false, WithCertificate = false, Overwrite = false, StoreEnvironment = STORE_ENVIRONMENT_ENUM.LINUX},
+            new ManagementAddTestConfig() { FileName = "Test0006", UseExistingAlias = false, HasSeparatePrivateKey = true, WithCertificate = false, Overwrite = false, StoreEnvironment = STORE_ENVIRONMENT_ENUM.LINUX},
+            new ManagementAddTestConfig() { FileName = "Test0007", UseExistingAlias = true, HasSeparatePrivateKey = false, WithCertificate = true, Overwrite = false, StoreEnvironment = STORE_ENVIRONMENT_ENUM.LINUX},
+            new ManagementAddTestConfig() { FileName = "Test0008", UseExistingAlias = true, HasSeparatePrivateKey = false, WithCertificate = true, Overwrite = true, StoreEnvironment = STORE_ENVIRONMENT_ENUM.LINUX},
+            new ManagementAddTestConfig() { FileName = "Test0009", UseExistingAlias = true, HasSeparatePrivateKey = true, WithCertificate = true, Overwrite = true, StoreEnvironment = STORE_ENVIRONMENT_ENUM.LINUX},
+            new ManagementAddTestConfig() { FileName = "Test0010", UseExistingAlias = false, HasSeparatePrivateKey = false, WithCertificate = true, Overwrite = false, StoreEnvironment = STORE_ENVIRONMENT_ENUM.LINUX},
+            new ManagementAddTestConfig() { FileName = "Test0011", UseExistingAlias = false, HasSeparatePrivateKey = true, WithCertificate = true, Overwrite = true, StoreEnvironment = STORE_ENVIRONMENT_ENUM.LINUX},
         };
 
         public static string ExistingAlias {  get; set; }
 
         [Fact]
-        public void RFPEM_Inventory_InternalPrivateKey_EmptyStore_Linux_Test0001()
+        public void RFPEM_ManagementAdd_NewAlias_InternalKey_EmptyStore_NoOverwrite()
         {
-            RunTest(TestConfigs[0]);
+            RunTest(TestConfigs[0], OrchestratorJobStatusJobResult.Success, string.Empty);
         }
 
         [Fact]
-        public void RFPEM_Inventory_InternalPrivateKey_WithCert_Linux_Test0002()
+        public void RFPEM_ManagementAdd_NewAlias_ExternalKey_EmptyStore_NoOverwrite()
         {
-            RunTest(TestConfigs[1]);
+            RunTest(TestConfigs[1], OrchestratorJobStatusJobResult.Success, string.Empty);
         }
 
         [Fact]
-        public void RFPEM_Inventory_InternalPrivateKey_EmptyStore_Linux_Test0003()
+        public void RFPEM_ManagementAdd_ExistingAlias_InternalKey_NonEmptyStore_NoOverwrite()
         {
-            RunTest(TestConfigs[2]);
+            RunTest(TestConfigs[2], OrchestratorJobStatusJobResult.Warning, "");
         }
 
         [Fact]
-        public void RFPEM_Inventory_InternalPrivateKey_WithCert_Linux_Test0004()
+        public void RFPEM_ManagementAdd_ExistingAlias_InternalKey_NonEmptyStore_YesOverwrite()
         {
-            RunTest(TestConfigs[3]);
+            RunTest(TestConfigs[3], OrchestratorJobStatusJobResult.Success, string.Empty);
         }
 
-        private void RunTest(TestConfig testConfig)
+        [Fact]
+        public void RFPEM_ManagementAdd_ExistingAlias_ExternalKey_NonEmptyStore_YesOverwrite()
         {
-            ManagementJobConfiguration config = BuildBaseInventoryConfig();
-            config.JobCertificate.Alias = testConfig.WithCertificate ? ExistingAlias : string.Empty;
+            RunTest(TestConfigs[4], OrchestratorJobStatusJobResult.Success, string.Empty);
+        }
+
+        [Fact]
+        public void RFPEM_ManagementAdd_NewAlias_InternalKey_NonEmptyStore_NoOverwrite()
+        {
+            RunTest(TestConfigs[5], OrchestratorJobStatusJobResult.Success, string.Empty);
+        }
+
+        [Fact]
+        public void RFPEM_ManagementAdd_NewAlias_ExternalKey_NonEmptyStore_YesOverwrite()
+        {
+            RunTest(TestConfigs[6], OrchestratorJobStatusJobResult.Success, string.Empty);
+        }
+
+        private void RunTest(ManagementAddTestConfig testConfig, OrchestratorJobStatusJobResult expectedResult, string expectedMessage)
+        {
+            ManagementJobConfiguration config = new ManagementJobConfiguration();
+            config.Capability = "Management";
+            config.OperationType = CertStoreOperationType.Add;
+            config.JobId = new Guid();
+            config.ServerUsername = EnvironmentVariables.LinuxUserId;
+            config.ServerPassword = EnvironmentVariables.LinuxUserPassword;
+
+            config.JobProperties = new Dictionary<string, object>();
+
+            config.JobCertificate = new ManagementJobCertificate();
+            config.JobCertificate.Alias = testConfig.UseExistingAlias ? ExistingAlias : string.Empty;
+            config.JobCertificate.PrivateKeyPassword = EnvironmentVariables.PrivateKeyPassword;
+            (config.JobCertificate.Contents, _) = GetNewCert();
+
+            config.CertificateStoreDetails = new CertificateStore();
             config.CertificateStoreDetails.ClientMachine = EnvironmentVariables.LinuxServer;
             config.CertificateStoreDetails.StorePath = EnvironmentVariables.LinuxStorePath + $"{testConfig.FileName}.pem";
+            config.CertificateStoreDetails.StorePassword = string.Empty;
             config.CertificateStoreDetails.Properties = "{}";
             if (testConfig.HasSeparatePrivateKey)
                 config.CertificateStoreDetails.Properties = JsonConvert.SerializeObject(new Dictionary<string, string?>() { { "SeparatePrivateKeyFilePath", Environment.GetEnvironmentVariable("LinuxStorePath") + $"{testConfig.FileName}.key" } });
@@ -63,54 +100,37 @@ namespace RemoteFileIntegrationTests
 
             Mock<IPAMSecretResolver> secretResolver = GetMockSecretResolver(config);
 
-            Mock<SubmitInventoryUpdate> submitInventoryUpdate = new Mock<SubmitInventoryUpdate>();
-
             Management management = new Management(secretResolver.Object);
-            management.ProcessJob(config);
+            JobResult result = management.ProcessJob(config);
 
-            Assert.Equal(OrchestratorJobStatusJobResult.Success, result.Result);
+            Assert.Equal(expectedResult, result.Result);
+            if (!string.IsNullOrEmpty(expectedMessage))
+                Assert.Equal(expectedMessage, result.FailureMessage);
 
-            if (testConfig.WithCertificate)
+            if (expectedResult == OrchestratorJobStatusJobResult.Success)
             {
-                IInvocation invocation = submitInventoryUpdate.Invocations[0];
-                List<CurrentInventoryItem> inventoryItems = (List<CurrentInventoryItem>)invocation.Arguments[0];
-                Assert.Single(inventoryItems);
+                byte[] certificateBytes = ReadFile(testConfig.FileName + ".pem", testConfig.StoreEnvironment);
+                byte[] keyBytes = testConfig.HasSeparatePrivateKey ? ReadFile(testConfig.FileName + ".key", testConfig.StoreEnvironment) : [];
+                string certificatePEM = Convert.ToBase64String(certificateBytes) + (keyBytes.Length > 0 ? Convert.ToBase64String(keyBytes) : string.Empty);
+                Assert.Equal(1, certificatePEM.Split(new string[] { "BEGIN CERTIFICATE" }, StringSplitOptions.None).Length - 1);
+                Assert.Equal(1, certificatePEM.Split(new string[] { "BEGIN PRIVATE KEY" }, StringSplitOptions.None).Length - 1);
 
-                using (StringReader rdr = new StringReader(inventoryItems[0].Certificates.First()))
-                {
-                    PemReader pemReader = new PemReader(rdr);
-                    PemObject pemObject = pemReader.ReadPemObject();
-                    X509CertificateParser parser = new X509CertificateParser();
-                    X509Certificate certificate = parser.ReadCertificate(pemObject.Content);
-
-                    Assert.Equal(EnvironmentVariables.ExistingCertificateSubjectDN, certificate.SubjectDN.ToString());
-                }
+                CertificateConverter converter = CertificateConverterFactory.FromPEM(certificatePEM);
+                X509Certificate certificate = converter.ToBouncyCastleCertificate();
+                (_, string thumbprint) = GetNewCert();
+                Assert.Equal(thumbprint, certificate.Thumbprint());
             }
         }
+    }
 
-        private ManagementJobConfiguration BuildBaseInventoryConfig()
-        {
-            ManagementJobConfiguration config = new ManagementJobConfiguration();
-            config.JobCertificate = new ManagementJobCertificate();
-            config.JobCertificate.Contents = GetNewCert();
-            config.Capability = "Management";
-            config.CertificateStoreDetails = new CertificateStore();
-            config.JobId = new Guid();
-            config.JobProperties = new Dictionary<string, object>();
-            config.ServerUsername = EnvironmentVariables.LinuxUserId;
-            config.ServerPassword = EnvironmentVariables.LinuxUserPassword;
-
-            return config;
-        }
-
-        public class TestConfig
-        {
-            internal string FileName { get; set; }
-            internal bool HasSeparatePrivateKey { get; set; }
-            internal bool WithCertificate { get; set; }
-            internal bool Overwrite {  get; set; }
-            internal BaseTest.STORE_ENVIRONMENT_ENUM StoreEnvironment { get; set; }
-        }
+    public class ManagementAddTestConfig
+    {
+        internal string FileName { get; set; }
+        internal bool UseExistingAlias { get; set; }
+        internal bool HasSeparatePrivateKey { get; set; }
+        internal bool WithCertificate { get; set; }
+        internal bool Overwrite { get; set; }
+        internal BaseTest.STORE_ENVIRONMENT_ENUM StoreEnvironment { get; set; }
     }
 
     public class RFPEMManagementAddTestsFixture : IDisposable
@@ -130,20 +150,20 @@ namespace RemoteFileIntegrationTests
             string existingAlias = BaseRFPEMTest.CreateCertificateAndKey(certName, BaseRFPEMTest.CERT_TYPE_ENUM.PEM);
             string newAlias = BaseRFPEMTest.CreateCertificateAndKey(newCertName, BaseRFPEMTest.CERT_TYPE_ENUM.PFX);
 
-            BaseRFPEMTest.CreateStore(RFPEMManagementAddTests.TestConfigs[0].FileName, RFPEMManagementAddTests.TestConfigs[0].HasSeparatePrivateKey, RFPEMManagementAddTests.TestConfigs[0].WithCertificate, RFPEMManagementAddTests.TestConfigs[0].StoreEnvironment);
-            BaseRFPEMTest.CreateStore(RFPEMManagementAddTests.TestConfigs[1].FileName, RFPEMManagementAddTests.TestConfigs[1].HasSeparatePrivateKey, RFPEMManagementAddTests.TestConfigs[1].WithCertificate, RFPEMManagementAddTests.TestConfigs[1].StoreEnvironment);
-            BaseRFPEMTest.CreateStore(RFPEMManagementAddTests.TestConfigs[2].FileName, RFPEMManagementAddTests.TestConfigs[2].HasSeparatePrivateKey, RFPEMManagementAddTests.TestConfigs[2].WithCertificate, RFPEMManagementAddTests.TestConfigs[2].StoreEnvironment);
-            BaseRFPEMTest.CreateStore(RFPEMManagementAddTests.TestConfigs[3].FileName, RFPEMManagementAddTests.TestConfigs[3].HasSeparatePrivateKey, RFPEMManagementAddTests.TestConfigs[3].WithCertificate, RFPEMManagementAddTests.TestConfigs[3].StoreEnvironment);
+            foreach(ManagementAddTestConfig config in RFPEMManagementAddTests.TestConfigs)
+            {
+                BaseRFPEMTest.CreateStore(config.FileName, config.HasSeparatePrivateKey, config.WithCertificate, config.StoreEnvironment);
+            }
 
             return existingAlias;
         }
 
         private void TearDown()
         {
-            BaseRFPEMTest.RemoveStore(RFPEMManagementAddTests.TestConfigs[0].FileName, RFPEMManagementAddTests.TestConfigs[0].HasSeparatePrivateKey, RFPEMManagementAddTests.TestConfigs[0].StoreEnvironment);
-            BaseRFPEMTest.RemoveStore(RFPEMManagementAddTests.TestConfigs[1].FileName, RFPEMManagementAddTests.TestConfigs[1].HasSeparatePrivateKey, RFPEMManagementAddTests.TestConfigs[1].StoreEnvironment);
-            BaseRFPEMTest.RemoveStore(RFPEMManagementAddTests.TestConfigs[2].FileName, RFPEMManagementAddTests.TestConfigs[2].HasSeparatePrivateKey, RFPEMManagementAddTests.TestConfigs[2].StoreEnvironment);
-            BaseRFPEMTest.RemoveStore(RFPEMManagementAddTests.TestConfigs[3].FileName, RFPEMManagementAddTests.TestConfigs[3].HasSeparatePrivateKey, RFPEMManagementAddTests.TestConfigs[3].StoreEnvironment);
+            foreach (ManagementAddTestConfig config in RFPEMManagementAddTests.TestConfigs)
+            {
+                BaseRFPEMTest.RemoveStore(config.FileName, config.HasSeparatePrivateKey, config.StoreEnvironment);
+            }
         }
     }
 

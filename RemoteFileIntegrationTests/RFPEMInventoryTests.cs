@@ -15,11 +15,11 @@ namespace RemoteFileIntegrationTests
 {
     public class RFPEMInventoryTests : BaseRFPEMTest, IClassFixture<RFPEMInventoryTestsFixture>
     {
-        public static TestConfig[] TestConfigs = {
-            new TestConfig() { FileName = "Test0001", HasSeparatePrivateKey = false, WithCertificate = false, StoreEnvironment = STORE_ENVIRONMENT_ENUM.LINUX},
-            new TestConfig() { FileName = "Test0002", HasSeparatePrivateKey = false, WithCertificate = true, StoreEnvironment = STORE_ENVIRONMENT_ENUM.LINUX},
-            new TestConfig() { FileName = "Test0003", HasSeparatePrivateKey = true, WithCertificate = false, StoreEnvironment = STORE_ENVIRONMENT_ENUM.LINUX},
-            new TestConfig() { FileName = "Test0004", HasSeparatePrivateKey = true, WithCertificate = true, StoreEnvironment = STORE_ENVIRONMENT_ENUM.LINUX},
+        public static InventoryTestConfig[] TestConfigs = {
+            new InventoryTestConfig() { FileName = "Test0001", HasSeparatePrivateKey = false, WithCertificate = false, StoreEnvironment = STORE_ENVIRONMENT_ENUM.LINUX},
+            new InventoryTestConfig() { FileName = "Test0002", HasSeparatePrivateKey = false, WithCertificate = true, StoreEnvironment = STORE_ENVIRONMENT_ENUM.LINUX},
+            new InventoryTestConfig() { FileName = "Test0003", HasSeparatePrivateKey = true, WithCertificate = false, StoreEnvironment = STORE_ENVIRONMENT_ENUM.LINUX},
+            new InventoryTestConfig() { FileName = "Test0004", HasSeparatePrivateKey = true, WithCertificate = true, StoreEnvironment = STORE_ENVIRONMENT_ENUM.LINUX},
         };
 
         [Fact]
@@ -46,9 +46,16 @@ namespace RemoteFileIntegrationTests
             RunTest(TestConfigs[3]);
         }
 
-        private void RunTest(TestConfig testConfig)
+        private void RunTest(InventoryTestConfig testConfig)
         {
-            InventoryJobConfiguration config = BuildBaseInventoryConfig();
+            InventoryJobConfiguration config = new InventoryJobConfiguration();
+            config.JobId = new Guid();
+            config.Capability = "Inventory";
+            config.ServerUsername = EnvironmentVariables.LinuxUserId;
+            config.ServerPassword = EnvironmentVariables.LinuxUserPassword;
+            config.JobProperties = new Dictionary<string, object>();
+
+            config.CertificateStoreDetails = new CertificateStore();
             config.CertificateStoreDetails.ClientMachine = EnvironmentVariables.LinuxServer;
             config.CertificateStoreDetails.StorePath = EnvironmentVariables.LinuxStorePath + $"{testConfig.FileName}.pem";
             config.CertificateStoreDetails.Properties = "{}";
@@ -83,27 +90,14 @@ namespace RemoteFileIntegrationTests
                 }
             }
         }
+    }
 
-        private InventoryJobConfiguration BuildBaseInventoryConfig()
-        {
-            InventoryJobConfiguration config = new InventoryJobConfiguration();
-            config.Capability = "Inventory";
-            config.CertificateStoreDetails = new CertificateStore();
-            config.JobId = new Guid();
-            config.JobProperties = new Dictionary<string, object>();
-            config.ServerUsername = EnvironmentVariables.LinuxUserId;
-            config.ServerPassword = EnvironmentVariables.LinuxUserPassword;
-
-            return config;
-        }
-
-        public class TestConfig
-        {
-            internal string FileName { get; set; }
-            internal bool HasSeparatePrivateKey { get; set; }
-            internal bool WithCertificate { get; set; }
-            internal BaseTest.STORE_ENVIRONMENT_ENUM StoreEnvironment { get; set; }
-        }
+    public class InventoryTestConfig
+    {
+        internal string FileName { get; set; }
+        internal bool HasSeparatePrivateKey { get; set; }
+        internal bool WithCertificate { get; set; }
+        internal BaseTest.STORE_ENVIRONMENT_ENUM StoreEnvironment { get; set; }
     }
 
     public class RFPEMInventoryTestsFixture : IDisposable
@@ -121,19 +115,18 @@ namespace RemoteFileIntegrationTests
         private void SetUp(string certName)
         {
             BaseRFPEMTest.CreateCertificateAndKey(certName, BaseRFPEMTest.CERT_TYPE_ENUM.PEM);
-
-            BaseRFPEMTest.CreateStore(RFPEMInventoryTests.TestConfigs[0].FileName, RFPEMInventoryTests.TestConfigs[0].HasSeparatePrivateKey, RFPEMInventoryTests.TestConfigs[0].WithCertificate, RFPEMInventoryTests.TestConfigs[0].StoreEnvironment);
-            BaseRFPEMTest.CreateStore(RFPEMInventoryTests.TestConfigs[1].FileName, RFPEMInventoryTests.TestConfigs[1].HasSeparatePrivateKey, RFPEMInventoryTests.TestConfigs[1].WithCertificate, RFPEMInventoryTests.TestConfigs[1].StoreEnvironment);
-            BaseRFPEMTest.CreateStore(RFPEMInventoryTests.TestConfigs[2].FileName, RFPEMInventoryTests.TestConfigs[2].HasSeparatePrivateKey, RFPEMInventoryTests.TestConfigs[2].WithCertificate, RFPEMInventoryTests.TestConfigs[2].StoreEnvironment);
-            BaseRFPEMTest.CreateStore(RFPEMInventoryTests.TestConfigs[3].FileName, RFPEMInventoryTests.TestConfigs[3].HasSeparatePrivateKey, RFPEMInventoryTests.TestConfigs[3].WithCertificate, RFPEMInventoryTests.TestConfigs[3].StoreEnvironment);
+            foreach(InventoryTestConfig config in RFPEMInventoryTests.TestConfigs)
+            {
+                BaseRFPEMTest.CreateStore(config.FileName, config.HasSeparatePrivateKey, config.WithCertificate, config.StoreEnvironment);
+            }
         }
 
         private void TearDown()
         {
-            BaseRFPEMTest.RemoveStore(RFPEMInventoryTests.TestConfigs[0].FileName, RFPEMInventoryTests.TestConfigs[0].HasSeparatePrivateKey, RFPEMInventoryTests.TestConfigs[0].StoreEnvironment);
-            BaseRFPEMTest.RemoveStore(RFPEMInventoryTests.TestConfigs[1].FileName, RFPEMInventoryTests.TestConfigs[1].HasSeparatePrivateKey, RFPEMInventoryTests.TestConfigs[1].StoreEnvironment);
-            BaseRFPEMTest.RemoveStore(RFPEMInventoryTests.TestConfigs[2].FileName, RFPEMInventoryTests.TestConfigs[2].HasSeparatePrivateKey, RFPEMInventoryTests.TestConfigs[2].StoreEnvironment);
-            BaseRFPEMTest.RemoveStore(RFPEMInventoryTests.TestConfigs[3].FileName, RFPEMInventoryTests.TestConfigs[3].HasSeparatePrivateKey, RFPEMInventoryTests.TestConfigs[3].StoreEnvironment);
+            foreach (InventoryTestConfig config in RFPEMInventoryTests.TestConfigs)
+            {
+                BaseRFPEMTest.RemoveStore(config.FileName, config.HasSeparatePrivateKey, config.StoreEnvironment);
+            }
         }
     }
 

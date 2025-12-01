@@ -18,6 +18,7 @@ namespace RemoteFileIntegrationTests
         private static string pemCertificate = string.Empty;
         private static string pemKey = string.Empty;
         private static string b64PFXCertificate = string.Empty;
+        private static string newCertThumbprint = string.Empty;
 
         public enum CERT_TYPE_ENUM
         {
@@ -41,9 +42,9 @@ namespace RemoteFileIntegrationTests
                 RemoveFile($"{fileName}.key", storeEnvironment);
         }
 
-        public string GetNewCert()
+        public (string, string) GetNewCert()
         {
-            return b64PFXCertificate;
+            return (b64PFXCertificate, newCertThumbprint);
         }
 
         public static string CreateCertificateAndKey(string certNameString, CERT_TYPE_ENUM certType)
@@ -74,6 +75,7 @@ namespace RemoteFileIntegrationTests
 
             // Generate the certificate
             X509Certificate certificate = certGen.Generate(new Asn1SignatureFactory("SHA256WITHRSA", keyPair.Private));
+            newCertThumbprint = certificate.Thumbprint();
 
             if (certType == CERT_TYPE_ENUM.PEM)
             {
@@ -104,7 +106,7 @@ namespace RemoteFileIntegrationTests
 
                 using (MemoryStream ms = new MemoryStream())
                 {
-                    store.Save(ms, EnvironmentVariables.StorePassword?.ToCharArray(), new SecureRandom());
+                    store.Save(ms, EnvironmentVariables.PrivateKeyPassword?.ToCharArray(), new SecureRandom());
                     b64PFXCertificate = Convert.ToBase64String(ms.ToArray());
                 }
             }
