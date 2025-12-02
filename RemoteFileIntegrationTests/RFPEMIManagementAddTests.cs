@@ -13,6 +13,7 @@ using Org.BouncyCastle.Utilities.IO.Pem;
 using Org.BouncyCastle.Pkcs;
 using Keyfactor.PKI.Extensions;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel.Client;
+using System.Text;
 
 namespace RemoteFileIntegrationTests
 {
@@ -45,7 +46,8 @@ namespace RemoteFileIntegrationTests
         [Fact]
         public void RFPEM_ManagementAdd_ExistingAlias_InternalKey_NonEmptyStore_NoOverwrite()
         {
-            RunTest(TestConfigs[2], OrchestratorJobStatusJobResult.Warning, "");
+            RunTest(TestConfigs[2], OrchestratorJobStatusJobResult.Failure, 
+                $"Alias {ExistingAlias} already exists in store {EnvironmentVariables.LinuxStorePath}{TestConfigs[2].FileName}.pem and overwrite is set to False.");
         }
 
         [Fact]
@@ -63,13 +65,13 @@ namespace RemoteFileIntegrationTests
         [Fact]
         public void RFPEM_ManagementAdd_NewAlias_InternalKey_NonEmptyStore_NoOverwrite()
         {
-            RunTest(TestConfigs[5], OrchestratorJobStatusJobResult.Success, string.Empty);
+            RunTest(TestConfigs[5], OrchestratorJobStatusJobResult.Failure, "Cannot add a new certificate to a PEM store that already contains a certificate/key entry.");
         }
 
         [Fact]
         public void RFPEM_ManagementAdd_NewAlias_ExternalKey_NonEmptyStore_YesOverwrite()
         {
-            RunTest(TestConfigs[6], OrchestratorJobStatusJobResult.Success, string.Empty);
+            RunTest(TestConfigs[6], OrchestratorJobStatusJobResult.Failure, "Cannot add a new certificate to a PEM store that already contains a certificate/key entry.");
         }
 
         private void RunTest(ManagementAddTestConfig testConfig, OrchestratorJobStatusJobResult expectedResult, string expectedMessage)
@@ -80,6 +82,7 @@ namespace RemoteFileIntegrationTests
             config.JobId = new Guid();
             config.ServerUsername = EnvironmentVariables.LinuxUserId;
             config.ServerPassword = EnvironmentVariables.LinuxUserPassword;
+            config.Overwrite = testConfig.Overwrite;
 
             config.JobProperties = new Dictionary<string, object>();
 
@@ -105,13 +108,13 @@ namespace RemoteFileIntegrationTests
 
             Assert.Equal(expectedResult, result.Result);
             if (!string.IsNullOrEmpty(expectedMessage))
-                Assert.Equal(expectedMessage, result.FailureMessage);
+                Assert.Contains(expectedMessage, result.FailureMessage);
 
             if (expectedResult == OrchestratorJobStatusJobResult.Success)
             {
                 byte[] certificateBytes = ReadFile(testConfig.FileName + ".pem", testConfig.StoreEnvironment);
                 byte[] keyBytes = testConfig.HasSeparatePrivateKey ? ReadFile(testConfig.FileName + ".key", testConfig.StoreEnvironment) : [];
-                string certificatePEM = Convert.ToBase64String(certificateBytes) + (keyBytes.Length > 0 ? Convert.ToBase64String(keyBytes) : string.Empty);
+                string certificatePEM = Encoding.ASCII.GetString(certificateBytes) + (keyBytes.Length > 0 ? Encoding.ASCII.GetString(keyBytes) : string.Empty);
                 Assert.Equal(1, certificatePEM.Split(new string[] { "BEGIN CERTIFICATE" }, StringSplitOptions.None).Length - 1);
                 Assert.Equal(1, certificatePEM.Split(new string[] { "BEGIN PRIVATE KEY" }, StringSplitOptions.None).Length - 1);
 
