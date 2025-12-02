@@ -27,7 +27,6 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
         internal bool RemoveRootCertificate { get; set; }
         internal int SSHPort { get; set; }
         internal bool IncludePortInSPN { get; set; }
-        internal ApplicationSettings.FileTransferProtocolEnum FileTransferProtocol { get; set; }
         internal bool CreateCSROnDevice { get; set; }
         internal bool UseShellCommands { get; set; }
         internal string KeyType { get; set; }
@@ -70,37 +69,14 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
                 false :
                 Convert.ToBoolean(properties.IncludePortInSPN.Value);
 
-            CreateCSROnDevice = properties.CreateCSROnDevice == null || string.IsNullOrEmpty(properties.CreateCSROnDevice.Value) ?
-                ApplicationSettings.CreateCSROnDevice :
-                Convert.ToBoolean(properties.CreateCSROnDevice.Value);
-
             UseShellCommands = properties.UseShellCommands == null || string.IsNullOrEmpty(properties.UseShellCommands.Value) ?
                 ApplicationSettings.UseShellCommands :
                 properties.UseShellCommands;
 
-            FileTransferProtocol = ApplicationSettings.FileTransferProtocol;
-            if (properties.FileTransferProtocol != null && !string.IsNullOrEmpty(properties.FileTransferProtocol.Value))
-            {
-                logger.LogDebug($"Attempting to map file transfer protocol from properties. Current Value: {FileTransferProtocol}, Property Value: {properties.FileTransferProtocol.Value}");
-                ApplicationSettings.FileTransferProtocolEnum fileTransferProtocol;
-                if (PropertyUtilities.TryEnumParse(properties.FileTransferProtocol.Value, out bool isFlagCombination, out fileTransferProtocol))
-                {
-                    logger.LogDebug($"Successfully mapped file transfer protocol from properties. Value: {fileTransferProtocol}");
-                    FileTransferProtocol = fileTransferProtocol;
-                }
-
-                // Issue: If received a comma-delimited list ("SCP,SFTP,Both"), it's treating it as a flag combination (i.e. mapping it to 0+1+2=3)
-                // If this happens, we want to default it to Both so it's resolved as a valid mapping.
-                if (isFlagCombination)
-                {
-                    logger.LogWarning($"FileTransferProtocol job property value {properties.FileTransferProtocol.Value} mapped to a flag combination. Setting FileTransferProtocol explicitly to Both.");
-                    FileTransferProtocol = ApplicationSettings.FileTransferProtocolEnum.Both;
-                }
-            }
-
             if (config.JobProperties != null)
             {
                 KeyType = !config.JobProperties.ContainsKey("keyType") || config.JobProperties["keyType"] == null || string.IsNullOrEmpty(config.JobProperties["keyType"].ToString()) ? string.Empty : config.JobProperties["keyType"].ToString();
+                if (KeyType == "ECDSA") KeyType = "ECC";
                 KeySize = !config.JobProperties.ContainsKey("keySize") || config.JobProperties["keySize"] == null || string.IsNullOrEmpty(config.JobProperties["keySize"].ToString()) || !int.TryParse(config.JobProperties["keySize"].ToString(), out int notUsed2) ? 2048 : Convert.ToInt32(config.JobProperties["keySize"]);
                 SubjectText = !config.JobProperties.ContainsKey("subjectText") || config.JobProperties["subjectText"] == null || string.IsNullOrEmpty(config.JobProperties["subjectText"].ToString()) ? string.Empty : config.JobProperties["subjectText"].ToString();
             }
@@ -113,8 +89,6 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             logger.LogDebug($"RemoveRootCertificate: {RemoveRootCertificate}");
             logger.LogDebug($"SSHPort: {SSHPort}");
             logger.LogDebug($"IncludePortInSPN: {IncludePortInSPN}");
-            logger.LogDebug($"FileTransferProtocol: {FileTransferProtocol}");
-            logger.LogDebug($"CreateCSROnDevice: {CreateCSROnDevice}");
             logger.LogDebug($"KeyType: {KeyType}");
             logger.LogDebug($"KeySize: {KeySize}");
             logger.LogDebug($"SubjectText: {SubjectText}");
