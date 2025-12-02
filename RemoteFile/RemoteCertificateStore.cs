@@ -5,30 +5,26 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions
 // and limitations under the License.
 
+using Keyfactor.Extensions.Orchestrator.RemoteFile.Models;
+using Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers;
+using Keyfactor.Logging;
+using Keyfactor.PKI.X509;
+using Keyfactor.PKI.PEM;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+using Org.BouncyCastle.Pkcs;
+using Org.BouncyCastle.Security;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
+using System.Runtime.InteropServices;
+using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
-
-using Microsoft.Extensions.Logging;
-
-using Org.BouncyCastle.Pkcs;
-using Org.BouncyCastle.Security;
-
-using Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers;
-using Keyfactor.Extensions.Orchestrator.RemoteFile.Models;
-using Keyfactor.Logging;
-using System.Runtime.InteropServices;
-using Org.BouncyCastle.Asn1.Pkcs;
-using Org.BouncyCastle.Asn1.X509;
-using Org.BouncyCastle.Asn1;
-using Org.BouncyCastle.Crypto.Generators;
-using Org.BouncyCastle.Crypto.Prng;
-using Org.BouncyCastle.Crypto;
 using static Keyfactor.Extensions.Orchestrator.RemoteFile.ReenrollmentBase;
+using static Keyfactor.PKI.PKIConstants.X509;
+using Keyfactor.PKI.PrivateKeys;
 
 namespace Keyfactor.Extensions.Orchestrator.RemoteFile
 {
@@ -54,7 +50,6 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
         internal ServerTypeEnum ServerType { get; set; }
         internal List<string> DiscoveredStores { get; set; }
         internal string UploadFilePath { get; set; }
-        internal ApplicationSettings.FileTransferProtocolEnum FileTransferProtocol { get; set; }
         internal bool IncludePortInSPN { get; set; }
         internal int SSHPort { get; set; }
         
@@ -64,7 +59,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
 
         internal RemoteCertificateStore() { }
 
-        internal RemoteCertificateStore(string server, string serverId, string serverPassword, string storeFileAndPath, string storePassword, ApplicationSettings.FileTransferProtocolEnum fileTransferProtocol, int sshPort, bool includePortInSPN)
+        internal RemoteCertificateStore(string server, string serverId, string serverPassword, string storeFileAndPath, string storePassword, int sshPort, bool includePortInSPN)
         {
             logger = LogHandler.GetClassLogger(this.GetType());
             logger.MethodEntry(LogLevel.Debug);
@@ -80,7 +75,6 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             StorePassword = storePassword;
             ServerType = StorePath.Substring(0, 1) == "/" ? ServerTypeEnum.Linux : ServerTypeEnum.Windows;
             UploadFilePath = !string.IsNullOrEmpty(ApplicationSettings.SeparateUploadFilePath) && ServerType == ServerTypeEnum.Linux ? ApplicationSettings.SeparateUploadFilePath : StorePath;
-            FileTransferProtocol = fileTransferProtocol;
             SSHPort = sshPort;
             IncludePortInSPN = includePortInSPN;
             logger.LogDebug($"UploadFilePath: {UploadFilePath}");
@@ -163,36 +157,25 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             return ServerType == ServerTypeEnum.Linux ? FindStoresLinux(paths, extensions, files, ignoredDirs, includeSymLinks) : FindStoresWindows(paths, extensions, files);
         }
 
-        internal List<X509Certificate2Collection> GetCertificateChains()
+        internal List<X509CertificateEntryCollection> GetCertificateChains()
         {
             logger.MethodEntry(LogLevel.Debug);
-
-            List<X509Certificate2Collection> certificateChains = new List<X509Certificate2Collection>();
+            
+            List<X509CertificateEntryCollection> certificateChains = new List<X509CertificateEntryCollection>();
 
             foreach(string alias in CertificateStore.Aliases)
             {
-                X509Certificate2Collection chain = new X509Certificate2Collection();
-                X509CertificateEntry[] entries;
-
-                if (CertificateStore.IsKeyEntry(alias))
+                bool hasPrivateKey = CertificateStore.IsKeyEntry(alias);
+                X509CertificateEntryCollection entries = new X509CertificateEntryCollection()
                 {
-                    entries = CertificateStore.GetCertificateChain(alias);
-                }
-                else
-                {
-                    X509CertificateEntry entry = CertificateStore.GetCertificate(alias);
-                    entries = new X509CertificateEntry[] { entry };
-                }
+                    Alias = alias,
+                    HasPrivateKey = hasPrivateKey,
+                    CertificateChain = hasPrivateKey ?
+                        CertificateStore.GetCertificateChain(alias).ToList() :
+                        new List<X509CertificateEntry>() { CertificateStore.GetCertificate(alias) }
+                };
 
-                foreach(X509CertificateEntry entry in entries)
-                {
-                    X509Certificate2Ext cert = new X509Certificate2Ext(entry.Certificate.GetEncoded());
-                    cert.FriendlyNameExt = alias;
-                    cert.HasPrivateKey = CertificateStore.IsKeyEntry(alias);
-                    chain.Add(cert);
-                }
-
-                certificateChains.Add(chain);
+                certificateChains.Add(entries);
             }
 
             logger.MethodExit(LogLevel.Debug);
@@ -236,14 +219,31 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             logger.MethodExit(LogLevel.Debug);
         }
 
-        internal void CreateCertificateStore(ICertificateStoreSerializer certificateStoreSerializer, string storePath, string linuxFilePermissions, string linuxFileOwner)
+        internal void CreateCertificateStore(ICertificateStoreSerializer certificateStoreSerializer, string properties, string storePath, ILogger logger)
         {
             logger.MethodEntry(LogLevel.Debug);
+
+            dynamic propertiesCollection = JsonConvert.DeserializeObject(properties);
+            string linuxFilePermissions = propertiesCollection.LinuxFilePermissionsOnStoreCreation == null || string.IsNullOrEmpty(propertiesCollection.LinuxFilePermissionsOnStoreCreation.Value) ?
+                ApplicationSettings.DefaultLinuxPermissionsOnStoreCreation :
+                propertiesCollection.LinuxFilePermissionsOnStoreCreation.Value;
+
+            string linuxFileOwner = propertiesCollection.LinuxFileOwnerOnStoreCreation == null || string.IsNullOrEmpty(propertiesCollection.LinuxFileOwnerOnStoreCreation.Value) ?
+                ApplicationSettings.DefaultOwnerOnStoreCreation :
+                propertiesCollection.LinuxFileOwnerOnStoreCreation.Value;
 
             RemoteHandler.CreateEmptyStoreFile(storePath, linuxFilePermissions, linuxFileOwner);
             string privateKeyPath = certificateStoreSerializer.GetPrivateKeyPath();
             if (!string.IsNullOrEmpty(privateKeyPath))
                 RemoteHandler.CreateEmptyStoreFile(privateKeyPath, linuxFilePermissions, linuxFileOwner);
+
+            logger.MethodExit(LogLevel.Debug);
+        }
+
+        internal void CreateCertificateStore(ICertificateStoreSerializer certificateStoreSerializer, string storePath, string linuxFilePermissions, string linuxFileOwner)
+        {
+            logger.MethodEntry(LogLevel.Debug);
+
 
 
             logger.MethodExit(LogLevel.Debug);
@@ -257,18 +257,13 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             try
             {
                 Pkcs12StoreBuilder storeBuilder = new Pkcs12StoreBuilder();
-                Pkcs12Store certs = storeBuilder.Build();
+                Pkcs12Store newEntry = storeBuilder.Build();
 
                 byte[] newCertBytes = removeRootCertificate && !string.IsNullOrEmpty(pfxPassword) ? 
                     RemoveRootCertificate(Convert.FromBase64String(certificateEntry), pfxPassword) : 
                     Convert.FromBase64String(certificateEntry);
 
-                Pkcs12Store newEntry = storeBuilder.Build();
-
-                X509Certificate2 cert = new X509Certificate2(newCertBytes, pfxPassword, X509KeyStorageFlags.Exportable | X509KeyStorageFlags.EphemeralKeySet);
-                byte[] binaryCert = cert.Export(X509ContentType.Pkcs12, pfxPassword);
-
-                using (MemoryStream ms = new MemoryStream(string.IsNullOrEmpty(pfxPassword) ? binaryCert : newCertBytes))
+                using (MemoryStream ms = new MemoryStream(newCertBytes))
                 {
                     newEntry.Load(ms, string.IsNullOrEmpty(pfxPassword) ? new char[0] : pfxPassword.ToCharArray());
                 }
@@ -295,7 +290,8 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
 
                 if (string.IsNullOrEmpty(checkAliasExists))
                 {
-                    Org.BouncyCastle.X509.X509Certificate bcCert = DotNetUtilities.FromX509Certificate(cert);
+                    //Org.BouncyCastle.X509.X509Certificate bcCert = DotNetUtilities.FromX509Certificate(cert);
+                    Org.BouncyCastle.X509.X509Certificate bcCert = new Org.BouncyCastle.X509.X509Certificate(newCertBytes);
                     X509CertificateEntry bcEntry = new X509CertificateEntry(bcCert);
                     if (CertificateStore.ContainsAlias(alias))
                     {
@@ -353,103 +349,24 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             }
         }
 
-        internal string GenerateCSR(string subjectText, SupportedKeyTypeEnum keyType, int keySize, List<string> sans)
+        internal string GenerateCSR(string subjectText, bool overwrite, string alias, SupportedKeyTypeEnum keyType, int keySize, Dictionary<string, string[]> sans, out AsymmetricAlgorithm privateKey)
         {
-            IAsymmetricCipherKeyPairGenerator keyPairGenerator = null;
-            string algorithm = string.Empty;
-            switch (keyType)
+            if (CertificateStore.ContainsAlias(alias) && !overwrite)
             {
-                case SupportedKeyTypeEnum.RSA:
-                    keyPairGenerator = new RsaKeyPairGenerator();
-                    algorithm = "SHA256withRSA";
-                    break;
-                case SupportedKeyTypeEnum.ECC:
-                    keyPairGenerator = new ECKeyPairGenerator();
-                    algorithm = "SHA256withECDSA";
-                    if (keySize == 384) algorithm = "SHA384withECDSA";
-                    if (keySize == 521) algorithm = "SHA512withECDSA";
-                    break;
+                throw new RemoteFileException($"Alias {alias} already exists in store {StorePath + StoreFileName} and overwrite is set to False.  Please try again with overwrite set to True if you wish to replace this entry.");
             }
 
-            var keyGenParams = new KeyGenerationParameters(new Org.BouncyCastle.Security.SecureRandom(new CryptoApiRandomGenerator()), keySize);
-            keyPairGenerator.Init(keyGenParams);
-            var keyPair = keyPairGenerator.GenerateKeyPair();
+            List<string> sansList = sans
+                .SelectMany(san => san.Value.Select(value => $"{san.Key}={value}"))
+                .ToList();
 
-            var subject = new X509Name(subjectText);
+            RequestGenerator generator = new RequestGenerator(keyType.ToString(), keySize);
+            generator.SANs = X509Utilities.ParseSANs(sansList);
+            generator.Subject = subjectText;
+            string csr = PemUtilities.DERToPEM(generator.CreatePKCS10Request(), PKI.PEM.PemUtilities.PemObjectType.CertRequest);
 
-            // Add SAN entries
-            var subAltNameList = new List<GeneralName>();
-            sans.ForEach(san => subAltNameList.Add(new GeneralName(GeneralName.DnsName, san.Trim())));
-            var generalSubAltNames = new GeneralNames(subAltNameList.ToArray());
-
-            var extensionsGenerator = new X509ExtensionsGenerator();
-            extensionsGenerator.AddExtension(X509Extensions.SubjectAlternativeName, false, generalSubAltNames);
-            var attributeSet = new DerSet(new AttributePkcs(PkcsObjectIdentifiers.Pkcs9AtExtensionRequest, new DerSet(extensionsGenerator.Generate())));
-
-            Pkcs10CertificationRequest csr = new Pkcs10CertificationRequest(algorithm, subject, keyPair.Public, (DerSet)attributeSet, keyPair.Private);
-
-            // encode the CSR as base64
-            var encodedCsr = Convert.ToBase64String(csr.GetEncoded());
-            return encodedCsr;
-        }
-
-        internal string GenerateCSROnDevice(string subjectText, SupportedKeyTypeEnum keyType, int keySize, List<string> sans, out string privateKey)
-        {
-            string path = ApplicationSettings.TempFilePathForODKG;
-            if (path.Substring(path.Length - 1, 1) != "/") path += "/";
-            string fileName = Guid.NewGuid().ToString();
-
-            X500DistinguishedName dn = new X500DistinguishedName(subjectText);
-            string opensslSubject = dn.Format(true).Replace("S=","ST=");
-            opensslSubject = opensslSubject.Replace(System.Environment.NewLine, "/");
-            opensslSubject = "/" + opensslSubject.Substring(0, opensslSubject.Length - 1);
-
-            string cmd = $"openssl req -new -newkey REPLACE -nodes -keyout {path}{fileName}.key -out {path}{fileName}.csr -subj '{opensslSubject}'";
-            switch (keyType)
-            {
-                case SupportedKeyTypeEnum.RSA:
-                    cmd = cmd.Replace("REPLACE", $"rsa:{keySize.ToString()}");
-                    break;
-                case SupportedKeyTypeEnum.ECC:
-                    string algName = "prime256v1";
-                    switch (keySize)
-                    {
-                        case 384:
-                            algName = "secp384r1";
-                            break;
-                        case 521:
-                            algName = "secp521r1";
-                            break;
-                    }
-                    cmd = cmd.Replace("REPLACE", $"ec:<(openssl ecparam -name {algName})");
-                    break;
-            }
-
-            string csr = string.Empty;
-            privateKey = string.Empty;
-            try
-            {
-                try
-                {
-                    RemoteHandler.RunCommand(cmd, null, ApplicationSettings.UseSudo, null);
-                }
-                catch (Exception ex)
-                {
-                    if (!ex.Message.Contains("----"))
-                        throw;
-                }
-
-                privateKey = Encoding.UTF8.GetString(RemoteHandler.DownloadCertificateFile(path + fileName + ".key"));
-                csr = Encoding.UTF8.GetString(RemoteHandler.DownloadCertificateFile(path + fileName + ".csr"));
-            }
-            finally
-            {
-                if (RemoteHandler.DoesFileExist(path + fileName + ".key"))
-                    RemoteHandler.RemoveCertificateFile(path, fileName + ".key");
-                if (RemoteHandler.DoesFileExist(path + fileName + ".csr"))
-                    RemoteHandler.RemoveCertificateFile(path, fileName + ".csr");
-            }
-
+            privateKey = generator.GetRequestPrivateKey().ToNetPrivateKey();
+            
             return csr;
         }
 
@@ -460,7 +377,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             bool treatAsLocal = Server.ToLower().EndsWith(LOCAL_MACHINE_SUFFIX);
 
             if (ServerType == ServerTypeEnum.Linux || RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
-                RemoteHandler = treatAsLocal ? new LinuxLocalHandler() as IRemoteHandler : new SSHHandler(Server, ServerId, ServerPassword, ServerType == ServerTypeEnum.Linux, FileTransferProtocol, SSHPort, sudoImpersonatedUser, useShellCommands) as IRemoteHandler;
+                RemoteHandler = treatAsLocal ? new LinuxLocalHandler() as IRemoteHandler : new SSHHandler(Server, ServerId, ServerPassword, ServerType == ServerTypeEnum.Linux, SSHPort, sudoImpersonatedUser, useShellCommands) as IRemoteHandler;
             else
                 RemoteHandler = new WinRMHandler(Server, ServerId, ServerPassword, treatAsLocal, IncludePortInSPN);
 
