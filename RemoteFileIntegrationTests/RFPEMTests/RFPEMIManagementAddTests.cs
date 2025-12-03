@@ -15,7 +15,7 @@ using Keyfactor.PKI.Extensions;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel.Client;
 using System.Text;
 
-namespace RemoteFileIntegrationTests
+namespace Keyfactor.Extensions.Orchestrator.RemoteFileIntegrationTests.RFPEMTests
 {
     public class RFPEMManagementAddTests : BaseRFPEMTest, IClassFixture<RFPEMManagementAddTestsFixture>
     {

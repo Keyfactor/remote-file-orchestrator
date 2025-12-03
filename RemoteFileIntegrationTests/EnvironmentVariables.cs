@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RemoteFileIntegrationTests
+namespace Keyfactor.Extensions.Orchestrator.RemoteFileIntegrationTests
 {
     internal class EnvironmentVariables
     {

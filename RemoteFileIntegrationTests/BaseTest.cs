@@ -5,7 +5,7 @@ using Keyfactor.Orchestrators.Extensions.Interfaces;
 using static Org.BouncyCastle.Math.EC.ECCurve;
 using Keyfactor.Orchestrators.Extensions;
 
-namespace RemoteFileIntegrationTests
+namespace Keyfactor.Extensions.Orchestrator.RemoteFileIntegrationTests
 {
     public abstract class BaseTest
     {

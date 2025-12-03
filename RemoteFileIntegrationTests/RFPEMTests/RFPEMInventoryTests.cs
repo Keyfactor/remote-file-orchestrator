@@ -11,7 +11,7 @@ using Org.BouncyCastle.X509;
 using Org.BouncyCastle.Utilities.IO.Pem;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel.Client;
 
-namespace RemoteFileIntegrationTests
+namespace Keyfactor.Extensions.Orchestrator.RemoteFileIntegrationTests.RFPEMTests
 {
     public class RFPEMInventoryTests : BaseRFPEMTest, IClassFixture<RFPEMInventoryTestsFixture>
     {

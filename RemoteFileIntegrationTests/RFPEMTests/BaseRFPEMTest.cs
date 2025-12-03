@@ -8,10 +8,9 @@ using Org.BouncyCastle.OpenSsl;
 using Org.BouncyCastle.Pkcs;
 using Org.BouncyCastle.Security;
 using Org.BouncyCastle.X509;
-
 using System.Text;
 
-namespace RemoteFileIntegrationTests
+namespace Keyfactor.Extensions.Orchestrator.RemoteFileIntegrationTests.RFPEMTests
 {
     public class BaseRFPEMTest : BaseTest
     {
@@ -29,7 +28,7 @@ namespace RemoteFileIntegrationTests
 
         public static void CreateStore(string fileName, bool withExtKeyFile, bool withCertificate, STORE_ENVIRONMENT_ENUM storeEnvironment)
         {
-            string storeContents = withCertificate ? (withExtKeyFile ? pemCertificate : pemCertificate + System.Environment.NewLine + pemKey) : string.Empty;
+            string storeContents = withCertificate ? withExtKeyFile ? pemCertificate : pemCertificate + Environment.NewLine + pemKey : string.Empty;
             CreateFile($"{fileName}.pem", Encoding.ASCII.GetBytes(storeContents), storeEnvironment);
             if (withExtKeyFile)
                 CreateFile($"{fileName}.key", Encoding.ASCII.GetBytes(withCertificate ? pemKey : string.Empty), storeEnvironment);
@@ -92,7 +91,7 @@ namespace RemoteFileIntegrationTests
                 using (var sw = new StringWriter())
                 {
                     var pw = new PemWriter(sw);
-                    pw.WriteObject((new Pkcs8Generator(keyPair.Private)).Generate());
+                    pw.WriteObject(new Pkcs8Generator(keyPair.Private).Generate());
                     pw.Writer.Flush();
                     pemKey = sw.ToString();
                 }
