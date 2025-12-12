@@ -7,4 +7,18 @@
   "DefaultLinuxPermissionsOnStoreCreation": "600",
   "DefaultOwnerOnStoreCreation": "",
   "SSHPort":  ""
+
+  "PostJobCommands":
+  [
+    {
+      "Name": "Apache",
+      "Environment": "Linux",
+      "Command": "sudo mkdir /home/localadmin/Apache"
+    },
+    {
+      "Name": "Tomcat",
+      "Environment": "Linux",
+      "Command": "sudo mkdir /home/localadmin/Tomcat"
+    }
+  ]
 }

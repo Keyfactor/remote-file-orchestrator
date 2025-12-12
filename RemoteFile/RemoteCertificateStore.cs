@@ -370,6 +370,15 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             return csr;
         }
 
+        internal void RunPostJobCommand(string applicationName)
+        {
+            string cmd = ApplicationSettings.PostJobCommands.FirstOrDefault(p => p.Name == applicationName && p.Environment == ServerType.ToString()).Command;
+            if (string.IsNullOrEmpty(cmd))
+                throw new RemoteFileException($"Post job application {applicationName} command mapping not found in config.json.");
+
+            RemoteHandler.RunCommand(cmd, null, false, null);
+        }
+
         internal void Initialize(string sudoImpersonatedUser, bool useShellCommands)
         {
             logger.MethodEntry(LogLevel.Debug);

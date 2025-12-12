@@ -53,6 +53,20 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
                 }
             }
         }
+        public static List<PostJobCommand> PostJobCommands 
+        {
+            get
+            {
+                if (configuration.ContainsKey("PostJobCommands") && !string.IsNullOrEmpty(configuration["PostJobCommands"]))
+                {
+                    return JsonConvert.DeserializeObject<List<PostJobCommand>>(configuration["PostJobCommands"]);
+                }
+                else
+                {
+                    return new List<PostJobCommand>();
+                }
+            }
+        }
 
         static ApplicationSettings()
         {
@@ -112,6 +126,13 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
         private static string AddTrailingSlash(string path)
         {
             return string.IsNullOrEmpty(path) ? path : path.Substring(path.Length - 1, 1) == @"/" ? path : path += @"/";
+        }
+
+        public class PostJobCommand
+        {
+            public string Name { get; set; }
+            public string Environment { get; set; }
+            public string Command { get; set; }
         }
     }
 }
