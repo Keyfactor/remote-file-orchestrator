@@ -6,7 +6,7 @@
   "SeparateUploadFilePath": "",
   "DefaultLinuxPermissionsOnStoreCreation": "600",
   "DefaultOwnerOnStoreCreation": "",
-  "SSHPort":  ""
+  "SSHPort":  "",
 
   "PostJobCommands":
   [
