@@ -372,7 +372,17 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
 
         internal void RunPostJobCommand(string applicationName)
         {
-            string cmd = ApplicationSettings.PostJobCommands.FirstOrDefault(p => p.Name == applicationName && p.Environment == ServerType.ToString()).Command;
+            string cmd = string.Empty;
+            try
+            {
+                cmd = ApplicationSettings.PostJobCommands.FirstOrDefault(p => p.Name == applicationName && p.Environment == ServerType.ToString())?.Command;
+            }
+            catch (Exception ex)
+            {
+                string errMessage = RemoteFileException.FlattenExceptionMessages(ex, "Error reading config.json PostJobCommands Setting: ");
+                logger.LogError(errMessage);
+                throw new RemoteFileException(errMessage);
+            }
             if (string.IsNullOrEmpty(cmd))
                 throw new RemoteFileException($"Post job application {applicationName} command mapping not found in config.json.");
 
