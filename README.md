@@ -284,6 +284,7 @@ the Keyfactor Command Portal
    | IncludePortInSPN | Include Port in SPN for WinRM | Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations. | Bool | False | 🔲 Unchecked |
    | SSHPort | SSH Port | Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting. | String |  | 🔲 Unchecked |
    | UseShellCommands | Use Shell Commands | Recommended to be set to the default value of 'Y'.  For a detailed explanation of this setting, please refer to [Use Shell Commands Setting](#use-shell-commands-setting) | Bool | True | 🔲 Unchecked |
+   | PostJobApplicationRestart | Post Job Application Restart | Select the service that will be restarted after a Management Add or ODKG job executes.  Leave unselected if no restart is desired. | MultipleChoice | Apache Tomcat Restart,Jetty Restart | 🔲 Unchecked |
 
    The Custom Fields tab should look like this:
 
@@ -356,6 +357,13 @@ the Keyfactor Command Portal
    Recommended to be set to the default value of 'Y'.  For a detailed explanation of this setting, please refer to [Use Shell Commands Setting](#use-shell-commands-setting)
 
    ![RFJKS Custom Field - UseShellCommands](docsource/images/RFJKS-custom-field-UseShellCommands-dialog.png)
+
+
+
+   ###### Post Job Application Restart
+   Select the service that will be restarted after a Management Add or ODKG job executes.  Leave unselected if no restart is desired.
+
+   ![RFJKS Custom Field - PostJobApplicationRestart](docsource/images/RFJKS-custom-field-PostJobApplicationRestart-dialog.png)
 
 
 
@@ -479,7 +487,7 @@ the Keyfactor Command Portal
    | IncludePortInSPN | Include Port in SPN for WinRM | Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations. | Bool | False | 🔲 Unchecked |
    | SSHPort | SSH Port | Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting. | String |  | 🔲 Unchecked |
    | UseShellCommands | Use Shell Commands | Recommended to be set to the default value of 'Y'.  For a detailed explanation of this setting, please refer to [Use Shell Commands Setting](#use-shell-commands-setting) | Bool | True | 🔲 Unchecked |
-   | PostJobApplicationRestart | Post Job Application Restart | Select the service that will be restarted after a Management Add or ODKG job executes.  Leave unselected if no restart is desired. | MultipleChoice | Apache,Tomcat | 🔲 Unchecked |
+   | PostJobApplicationRestart | Post Job Application Restart | Select the service that will be restarted after a Management Add or ODKG job executes.  Leave unselected if no restart is desired. | MultipleChoice | Apache HTTPD Restart,NGNIX Restart,HAProxy Restart,Envoy Proxy Restart | 🔲 Unchecked |
 
    The Custom Fields tab should look like this:
 
@@ -1413,7 +1421,39 @@ The Remote File Orchestrator Extension uses a JSON configuration file. It is loc
   "DefaultLinuxPermissionsOnStoreCreation": "600",
   "DefaultOwnerOnStoreCreation": "",
   "SSHPort": "",
-  "UseShellCommands":  "Y"
+  "UseShellCommands":  "Y",
+  "PostJobCommands": [
+    {
+      "Name": "Apache Tomcat Restart",
+      "Environment": "Linux",
+      "Command": "sudo systemctl restart tomcat"
+    },
+    {
+      "Name": "Apache HTTPD Restart",
+      "Environment": "Linux",
+      "Command": "sudo systemctl restart httpd"
+    },
+    {
+      "Name": "NGNIX Restart",
+      "Environment": "Linux",
+      "Command": "sudo systemctl restart nginx"
+    },
+    {
+      "Name": "HAProxy Restart",
+      "Environment": "Linux",
+      "Command": "sudo systemctl restart haproxy"
+    },
+    {
+      "Name": "Envoy Proxy Restart",
+      "Environment": "Linux",
+      "Command": "sudo systemctl restart envoy"
+    },
+    {
+      "Name": "Jetty Restart",
+      "Environment": "Linux",
+      "Command": "sudo systemctl restart jetty"
+    }
+  ]
 }
 ``` 
 
@@ -1427,7 +1467,8 @@ The Remote File Orchestrator Extension uses a JSON configuration file. It is loc
 | `DefaultLinuxPermissionsOnStoreCreation` | `600`         | Any 3-digit value from 000-777        | Linux file permissions set on new certificate stores. If blank, permissions from the parent folder will be used. Only applicable for Linux hosted certificate stores.                                                                                    |
 | `DefaultOwnerOnStoreCreation`            |               | Any valid user id                     | Sets the owner for newly created certificate stores. Can include group with format `ownerId:groupId`. If blank, the owner of the parent folder will be used. Only applicable for Linux hosted certificate stores.                                        |
 | `SSHPort`                                |               | Any valid integer representing a port | The port that SSH is listening on. Default is 22. Only applicable for Linux hosted certificate stores.                                                                                                                                                   |
-| `UseShellCommands`                       | `Y`           | `Y/N`                                 | Recommended to be set to the default value of 'Y'.  For a detailed explanation of this setting, please refer to [Use Shell Commands Setting](#use-shell-commands-setting)                                                                                |
+| `UseShellCommands`                       | `Y`           | `Y/N`                                 | Recommended to be set to the default value of 'Y'.  For a detailed explanation of this setting, please refer to [Use Shell Commands Setting](#use-shell-commands-setting).                                                                               |
+| `PostJobCommands`                        |               | See JSON above                        | JSON values representing post processing commands for Management-Add and ODKG job.  For a detailed explanation of this optional setting, please refer to [Post Job Command Execution](#post-job-command-execution).                                      |
 
 
 ## Defining Certificate Stores
@@ -1468,6 +1509,7 @@ The Remote File Universal Orchestrator extension implements 6 Certificate Store 
    | IncludePortInSPN | Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations. |
    | SSHPort | Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting. |
    | UseShellCommands | Recommended to be set to the default value of 'Y'.  For a detailed explanation of this setting, please refer to [Use Shell Commands Setting](#use-shell-commands-setting) |
+   | PostJobApplicationRestart | Select the service that will be restarted after a Management Add or ODKG job executes.  Leave unselected if no restart is desired. |
 
 </details>
 
@@ -1503,6 +1545,7 @@ The Remote File Universal Orchestrator extension implements 6 Certificate Store 
    | Properties.IncludePortInSPN | Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations. |
    | Properties.SSHPort | Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting. |
    | Properties.UseShellCommands | Recommended to be set to the default value of 'Y'.  For a detailed explanation of this setting, please refer to [Use Shell Commands Setting](#use-shell-commands-setting) |
+   | Properties.PostJobApplicationRestart | Select the service that will be restarted after a Management Add or ODKG job executes.  Leave unselected if no restart is desired. |
 
 3. **Import the CSV file to create the certificate stores**
 
@@ -2130,6 +2173,33 @@ will still be executed when Use Shell Commands is set to Y.
 6. If executing in local mode ('|LocalMachine' at the end of your client machine name for your certificate store), Use Shell
 Commands = 'N' will have no effect.  Shell commands will continue to be used because there will be no SSH connection
 available from which to execute SFTP commands.
+
+## Post Job Command Execution
+
+Beginning in Release 4.0 of the RemoteFile Orchestrator Extension, you can designate a single command to be run after Management-Add
+and ODKG jobs.  The typical (although not necessarily only) use case for this functionality would be to restart a process or service
+after a certificate has been added or renewed/replaced in a certificate store so that the new certificate will be loaded into the 
+consuming process/service.
+
+Steps to Implement:
+1. Install RemoteFile Orchestrator Extension version 4.0 or later.
+2. On the Universal Orchestrator server where RemoteFile is installed, modify the config.json PostJobCommands section to add/modify a post job command.  The format of this section is an array of JSON objects containing:
+   * `Name` - The name of the command.  Value must match what is entered one of the `Multiple Choice Options` for the Custom Field created in Step 3.
+   * `Environment` - Linux or Windows.  This determines which managed environment (the server the store resides on) this command is valid for.
+   * `Command` - This is the actual command that will be run if selected for the certificate store being managed after a Management-Add or ODKG job.
+3. Add a new (or edit the existing) Custom Field to the store type (RFJKS, RFPEM, etc) you wish to allow Management-Add and ODKG jobs to run commands after:
+   * Name = `PostJobApplicationRestart` (name and case must be exact)
+   * Display Name = your preference
+   * Type = `MultipleChoice`
+   * Multiple Choice Options = Comma delimited list of command name values.  Each should match an entry in the config.json PostJobCommands as mentioned in Step 2.  PLEASE NOTE: if you are on a Keyfactor Command release prior to 25.2, you will need to enter a leading "," (comma) in the Multiple Choice Options to have a default blank option (no command run) when creating your certificate store(s).  For 25.2 or later, the comma is not needed, and a blank option will automatically be the default.
+   * Depends On = unchecked
+   * Required = unchecked
+4. Restart the Universal Orchestrator
+5. Create or modify a Keyfactor Command Certificate Store of the type modified in Step 3.  You should see a dropdown list labeled based on the Display Name you entered in Step 3.  The possible values in the dropdown should match the Multiple Choice Options you entered in Step 3 and should match an entry in the config.json from Step 2.  Select a value and save the store.  For all successful Management-Add and ODKG jobs run for this store, the command entered in the config.json corresponding to the dropdown selection should be run over the SSH/WinRM connection used to process the job.
+
+Release 4.0 of the RemoteFile Orchestrator extension comes delivered with a config.json file containing an initial PostJobCommands section.  You may keep these settings as is or modify based on the steps above.  The integration-manifest.json file delivered with this integration contains the mappings of store types to these commands if you choose to use `kfutil` to create your RemoteFile store types.
+
+**<span style="color:red">PLEASE NOTE: The commands entered for Post Job Commands are the responsibility of the user.  Keyfactor does not provide support for any issues arising from the use of these Post Job Commands INCLUDING those delivered with this release.</span>
 
 ## Developer Notes
 
