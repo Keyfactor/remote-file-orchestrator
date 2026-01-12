@@ -123,6 +123,15 @@
                       "Type": "Bool",
                       "DefaultValue": "True",
                       "Description": "Recommended to be set to the default value of 'Y'.  For a detailed explanation of this setting, please refer to [Use Shell Commands Setting](#use-shell-commands-setting)"
+                    },
+                    {
+                      "Name": "PostJobApplicationRestart",
+                      "DisplayName": "Post Job Application Restart",
+                      "Required": false,
+                      "DependsOn": "",
+                      "Type": "MultipleChoice",
+                      "DefaultValue": "Apache Tomcat Restart,Jetty Restart",
+                      "Description": "Select the service that will be restarted after a Management Add or ODKG job executes.  Leave unselected if no restart is desired."
                     }
                   ],
                     "EntryParameters": [],
@@ -280,7 +289,7 @@
                       "Required": false,
                       "DependsOn": "",
                       "Type": "MultipleChoice",
-                      "DefaultValue": "Apache,Tomcat",
+                      "DefaultValue": "Apache HTTPD Restart,NGNIX Restart,HAProxy Restart,Envoy Proxy Restart",
                       "Description": "Select the service that will be restarted after a Management Add or ODKG job executes.  Leave unselected if no restart is desired."
                     }
                   ],

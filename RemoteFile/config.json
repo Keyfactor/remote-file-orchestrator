@@ -8,17 +8,36 @@
   "DefaultOwnerOnStoreCreation": "",
   "SSHPort":  "",
 
-  "PostJobCommands":
-  [
+  "PostJobCommands": [
     {
-      "Name": "Apache",
+      "Name": "Apache Tomcat Restart",
       "Environment": "Linux",
-      "Command": "sudo mkdir /home/localadmin/Apache"
+      "Command": "sudo systemctl restart tomcat"
     },
     {
-      "Name": "Tomcat",
+      "Name": "Apache HTTPD Restart",
       "Environment": "Linux",
-      "Command": "sudo mkdir /home/localadmin/Tomcat"
+      "Command": "sudo systemctl restart httpd"
+    },
+    {
+      "Name": "NGNIX Restart",
+      "Environment": "Linux",
+      "Command": "sudo systemctl restart nginx"
+    },
+    {
+      "Name": "HAProxy Restart",
+      "Environment": "Linux",
+      "Command": "sudo systemctl restart haproxy"
+    },
+    {
+      "Name": "Envoy Proxy Restart",
+      "Environment": "Linux",
+      "Command": "sudo systemctl restart envoy"
+    },
+    {
+      "Name": "Jetty Restart",
+      "Environment": "Linux",
+      "Command": "sudo systemctl restart jetty"
     }
   ]
 }
