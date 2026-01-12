@@ -260,7 +260,7 @@ Steps to Implement:
    * `Name` - The name of the command.  Value must match what is entered for one of the `Multiple Choice Options` for the Custom Field created in Step 3.
    * `Environment` - Linux or Windows.  The certificate store server environment this command is valid for.
    * `Command` - This is the actual command that will be run after a Management-Add or ODKG job if selected for the certificate store being managed.
-3. Add a new (or edit the existing) Custom Field to the store type (RFJKS, RFPEM, etc) you wish to allow Management-Add and ODKG jobs to run commands after:
+3. Add a new (or edit the existing) Custom Field to the store type (RFJKS, RFPEM, etc) you wish to allow post Management-Add and ODKG job commands to be run commands after:
    * Name = `PostJobApplicationRestart` (name and case must be exact)
    * Display Name = your preference
    * Type = `MultipleChoice`
