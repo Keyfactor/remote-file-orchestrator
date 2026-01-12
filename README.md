@@ -2183,10 +2183,10 @@ consuming process/service.
 
 Steps to Implement:
 1. Install RemoteFile Orchestrator Extension version 4.0 or later.
-2. On the Universal Orchestrator server where RemoteFile is installed, modify the config.json PostJobCommands section to add/modify a post job command.  The format of this section is an array of JSON objects containing:
-   * `Name` - The name of the command.  Value must match what is entered one of the `Multiple Choice Options` for the Custom Field created in Step 3.
-   * `Environment` - Linux or Windows.  This determines which managed environment (the server the store resides on) this command is valid for.
-   * `Command` - This is the actual command that will be run if selected for the certificate store being managed after a Management-Add or ODKG job.
+2. On the Universal Orchestrator server where RemoteFile is installed, modify the [config.json PostJobCommands section](#post-installation) to add/modify a post job command.  The format of this section is an array of JSON objects containing:
+   * `Name` - The name of the command.  Value must match what is entered for one of the `Multiple Choice Options` for the Custom Field created in Step 3.
+   * `Environment` - Linux or Windows.  The certificate store server environment this command is valid for.
+   * `Command` - This is the actual command that will be run after a Management-Add or ODKG job if selected for the certificate store being managed.
 3. Add a new (or edit the existing) Custom Field to the store type (RFJKS, RFPEM, etc) you wish to allow Management-Add and ODKG jobs to run commands after:
    * Name = `PostJobApplicationRestart` (name and case must be exact)
    * Display Name = your preference
@@ -2199,7 +2199,7 @@ Steps to Implement:
 
 Release 4.0 of the RemoteFile Orchestrator extension comes delivered with a config.json file containing an initial PostJobCommands section.  You may keep these settings as is or modify based on the steps above.  The integration-manifest.json file delivered with this integration contains the mappings of store types to these commands if you choose to use `kfutil` to create your RemoteFile store types.
 
-**<span style="color:red">PLEASE NOTE: The commands entered for Post Job Commands are the responsibility of the user.  Keyfactor does not provide support for any issues arising from the use of these Post Job Commands INCLUDING those delivered with this release.</span>
+**PLEASE NOTE: The commands entered for Post Job Commands are the responsibility of the user.  Keyfactor does not provide support for any issues arising from the use of these Post Job Commands INCLUDING those delivered with this release.**
 
 ## Developer Notes
 
