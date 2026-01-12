@@ -272,7 +272,7 @@ Steps to Implement:
 
 Release 4.0 of the RemoteFile Orchestrator extension comes delivered with a config.json file containing an initial PostJobCommands section.  You may keep these settings as is or modify based on the steps above.  The integration-manifest.json file delivered with this integration contains the mappings of store types to these commands if you choose to use `kfutil` to create your RemoteFile store types.
 
-**<span style="color:red">PLEASE NOTE: The commands entered for Post Job Commands are the responsibility of the user.  Keyfactor does not provide support for any issues arising from the use of these Post Job Commands INCLUDING those delivered with this release.</span>
+**PLEASE NOTE: The commands entered for Post Job Commands are the responsibility of the user.  Keyfactor does not provide support for any issues arising from the use of these Post Job Commands INCLUDING those delivered with this release.**
 
 
 ## Developer Notes
