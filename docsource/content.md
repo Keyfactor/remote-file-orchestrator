@@ -268,7 +268,9 @@ Steps to Implement:
    * Depends On = unchecked
    * Required = unchecked
 4. Restart the Universal Orchestrator
-5. Create or modify a Keyfactor Command Certificate Store of the type modified in Step 3.  You should see a dropdown list labeled based on the Display Name you entered in Step 3.  The possible values in the dropdown should match the Multiple Choice Options you entered in Step 3 and should match an entry in the config.json from Step 2.  Select a value and save the store.  For all successful Management-Add and ODKG jobs run for this store, the command entered in the config.json corresponding to the dropdown selection should be run over the SSH/WinRM connection used to process the job.
+5. Create or modify a Keyfactor Command Certificate Store of the type modified in Step 3.  You should see a dropdown list with a label matching the Display Name you entered in Step 3.  The options in the dropdown should match the Multiple Choice Options you entered in Step 3 and each should match an entry in the config.json from Step 2.  Select a value and save the store.  For all successful Management-Add and ODKG jobs run for this store, the command entered in the config.json corresponding to the dropdown selection should be run over the SSH/WinRM connection used to process the job.
+
+When a Management-Add or ODKG job is run for a Keyfactor Command Certificate Store that has a Post Job Command selected in the dropdown, the associated `Command` in the config.json will be run after job completeion as long as the Management-Add/ODKG job completes successfully.
 
 Release 4.0 of the RemoteFile Orchestrator extension comes delivered with a config.json file containing an initial PostJobCommands section.  You may keep these settings as is or modify based on the steps above.  The integration-manifest.json file delivered with this integration contains the mappings of store types to these commands if you choose to use `kfutil` to create your RemoteFile store types.
 
