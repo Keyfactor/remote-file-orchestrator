@@ -131,7 +131,7 @@
                       "DependsOn": "",
                       "Type": "MultipleChoice",
                       "DefaultValue": "Apache Tomcat Restart,Jetty Restart",
-                      "Description": "Select the service that will be restarted after a Management Add or ODKG job executes.  Leave unselected if no restart is desired."
+                      "Description": "Select the command to be run after a Management Add or ODKG job executes.  Leave unselected if no command is desired."
                     }
                   ],
                     "EntryParameters": [],
@@ -290,7 +290,7 @@
                       "DependsOn": "",
                       "Type": "MultipleChoice",
                       "DefaultValue": "Apache HTTPD Restart,NGNIX Restart,HAProxy Restart,Envoy Proxy Restart",
-                      "Description": "Select the service that will be restarted after a Management Add or ODKG job executes.  Leave unselected if no restart is desired."
+                      "Description": "Select the command to be run after a Management Add or ODKG job executes.  Leave unselected if no command is desired."
                     }
                   ],
                     "EntryParameters": [],
