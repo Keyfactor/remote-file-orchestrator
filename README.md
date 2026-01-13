@@ -284,7 +284,7 @@ the Keyfactor Command Portal
    | IncludePortInSPN | Include Port in SPN for WinRM | Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations. | Bool | False | 🔲 Unchecked |
    | SSHPort | SSH Port | Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting. | String |  | 🔲 Unchecked |
    | UseShellCommands | Use Shell Commands | Recommended to be set to the default value of 'Y'.  For a detailed explanation of this setting, please refer to [Use Shell Commands Setting](#use-shell-commands-setting) | Bool | True | 🔲 Unchecked |
-   | PostJobApplicationRestart | Post Job Application Restart | Select the service that will be restarted after a Management Add or ODKG job executes.  Leave unselected if no restart is desired. | MultipleChoice | Apache Tomcat Restart,Jetty Restart | 🔲 Unchecked |
+   | PostJobApplicationRestart | Post Job Application Restart | Select the command to be run after a Management Add or ODKG job executes.  Leave unselected if no command is desired. | MultipleChoice | Apache Tomcat Restart,Jetty Restart | 🔲 Unchecked |
 
    The Custom Fields tab should look like this:
 
@@ -361,7 +361,7 @@ the Keyfactor Command Portal
 
 
    ###### Post Job Application Restart
-   Select the service that will be restarted after a Management Add or ODKG job executes.  Leave unselected if no restart is desired.
+   Select the command to be run after a Management Add or ODKG job executes.  Leave unselected if no command is desired.
 
    ![RFJKS Custom Field - PostJobApplicationRestart](docsource/images/RFJKS-custom-field-PostJobApplicationRestart-dialog.png)
 
@@ -487,7 +487,7 @@ the Keyfactor Command Portal
    | IncludePortInSPN | Include Port in SPN for WinRM | Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations. | Bool | False | 🔲 Unchecked |
    | SSHPort | SSH Port | Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting. | String |  | 🔲 Unchecked |
    | UseShellCommands | Use Shell Commands | Recommended to be set to the default value of 'Y'.  For a detailed explanation of this setting, please refer to [Use Shell Commands Setting](#use-shell-commands-setting) | Bool | True | 🔲 Unchecked |
-   | PostJobApplicationRestart | Post Job Application Restart | Select the service that will be restarted after a Management Add or ODKG job executes.  Leave unselected if no restart is desired. | MultipleChoice | Apache HTTPD Restart,NGNIX Restart,HAProxy Restart,Envoy Proxy Restart | 🔲 Unchecked |
+   | PostJobApplicationRestart | Post Job Application Restart | Select the command to be run after a Management Add or ODKG job executes.  Leave unselected if no command is desired. | MultipleChoice | Apache HTTPD Restart,NGNIX Restart,HAProxy Restart,Envoy Proxy Restart | 🔲 Unchecked |
 
    The Custom Fields tab should look like this:
 
@@ -592,7 +592,7 @@ the Keyfactor Command Portal
 
 
    ###### Post Job Application Restart
-   Select the service that will be restarted after a Management Add or ODKG job executes.  Leave unselected if no restart is desired.
+   Select the command to be run after a Management Add or ODKG job executes.  Leave unselected if no command is desired.
 
    ![RFPEM Custom Field - PostJobApplicationRestart](docsource/images/RFPEM-custom-field-PostJobApplicationRestart-dialog.png)
 
@@ -1509,7 +1509,7 @@ The Remote File Universal Orchestrator extension implements 6 Certificate Store 
    | IncludePortInSPN | Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations. |
    | SSHPort | Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting. |
    | UseShellCommands | Recommended to be set to the default value of 'Y'.  For a detailed explanation of this setting, please refer to [Use Shell Commands Setting](#use-shell-commands-setting) |
-   | PostJobApplicationRestart | Select the service that will be restarted after a Management Add or ODKG job executes.  Leave unselected if no restart is desired. |
+   | PostJobApplicationRestart | Select the command to be run after a Management Add or ODKG job executes.  Leave unselected if no command is desired. |
 
 </details>
 
@@ -1545,7 +1545,7 @@ The Remote File Universal Orchestrator extension implements 6 Certificate Store 
    | Properties.IncludePortInSPN | Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations. |
    | Properties.SSHPort | Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting. |
    | Properties.UseShellCommands | Recommended to be set to the default value of 'Y'.  For a detailed explanation of this setting, please refer to [Use Shell Commands Setting](#use-shell-commands-setting) |
-   | Properties.PostJobApplicationRestart | Select the service that will be restarted after a Management Add or ODKG job executes.  Leave unselected if no restart is desired. |
+   | Properties.PostJobApplicationRestart | Select the command to be run after a Management Add or ODKG job executes.  Leave unselected if no command is desired. |
 
 3. **Import the CSV file to create the certificate stores**
 
@@ -1616,7 +1616,7 @@ Please refer to the **Universal Orchestrator (remote)** usage section ([PAM prov
    | IncludePortInSPN | Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations. |
    | SSHPort | Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting. |
    | UseShellCommands | Recommended to be set to the default value of 'Y'.  For a detailed explanation of this setting, please refer to [Use Shell Commands Setting](#use-shell-commands-setting) |
-   | PostJobApplicationRestart | Select the service that will be restarted after a Management Add or ODKG job executes.  Leave unselected if no restart is desired. |
+   | PostJobApplicationRestart | Select the command to be run after a Management Add or ODKG job executes.  Leave unselected if no command is desired. |
 
 </details>
 
@@ -1656,7 +1656,7 @@ Please refer to the **Universal Orchestrator (remote)** usage section ([PAM prov
    | Properties.IncludePortInSPN | Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations. |
    | Properties.SSHPort | Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting. |
    | Properties.UseShellCommands | Recommended to be set to the default value of 'Y'.  For a detailed explanation of this setting, please refer to [Use Shell Commands Setting](#use-shell-commands-setting) |
-   | Properties.PostJobApplicationRestart | Select the service that will be restarted after a Management Add or ODKG job executes.  Leave unselected if no restart is desired. |
+   | Properties.PostJobApplicationRestart | Select the command to be run after a Management Add or ODKG job executes.  Leave unselected if no command is desired. |
 
 3. **Import the CSV file to create the certificate stores**
 
