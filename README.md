@@ -315,6 +315,7 @@ the Keyfactor Command Portal
    The LinuxFilePermissionsOnStoreCreation field should contain a three-digit value between 000 and 777 representing the Linux file permissions to be set for the certificate store upon creation. Example: '600' or '755'.  Overrides DefaultLinuxPermissionOnStoreCreation [config.json](#post-installation) setting.
 
    ![RFJKS Custom Field - LinuxFilePermissionsOnStoreCreation](docsource/images/RFJKS-custom-field-LinuxFilePermissionsOnStoreCreation-dialog.png)
+   ![RFJKS Custom Field - LinuxFilePermissionsOnStoreCreation](docsource/images/RFJKS-custom-field-LinuxFilePermissionsOnStoreCreation-validation-options-dialog.png)
 
 
 
@@ -322,6 +323,7 @@ the Keyfactor Command Portal
    The LinuxFileOwnerOnStoreCreation field should contain a valid user ID recognized by the destination Linux server, optionally followed by a colon and a group ID if the group owner differs. Example: 'userID' or 'userID:groupID'.  Overrides DefaultOwnerOnStoreCreation [config.json](#post-installation) setting.
 
    ![RFJKS Custom Field - LinuxFileOwnerOnStoreCreation](docsource/images/RFJKS-custom-field-LinuxFileOwnerOnStoreCreation-dialog.png)
+   ![RFJKS Custom Field - LinuxFileOwnerOnStoreCreation](docsource/images/RFJKS-custom-field-LinuxFileOwnerOnStoreCreation-validation-options-dialog.png)
 
 
 
@@ -329,6 +331,7 @@ the Keyfactor Command Portal
    The SudoImpersonatingUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'.  Overrides DefaultSudoImpersonatedUser [config.json](#post-installation) setting.
 
    ![RFJKS Custom Field - SudoImpersonatingUser](docsource/images/RFJKS-custom-field-SudoImpersonatingUser-dialog.png)
+   ![RFJKS Custom Field - SudoImpersonatingUser](docsource/images/RFJKS-custom-field-SudoImpersonatingUser-validation-options-dialog.png)
 
 
 
@@ -336,6 +339,7 @@ the Keyfactor Command Portal
    Remove root certificate from chain when adding/renewing a certificate in a store.
 
    ![RFJKS Custom Field - RemoveRootCertificate](docsource/images/RFJKS-custom-field-RemoveRootCertificate-dialog.png)
+   ![RFJKS Custom Field - RemoveRootCertificate](docsource/images/RFJKS-custom-field-RemoveRootCertificate-validation-options-dialog.png)
 
 
 
@@ -343,6 +347,7 @@ the Keyfactor Command Portal
    Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations.
 
    ![RFJKS Custom Field - IncludePortInSPN](docsource/images/RFJKS-custom-field-IncludePortInSPN-dialog.png)
+   ![RFJKS Custom Field - IncludePortInSPN](docsource/images/RFJKS-custom-field-IncludePortInSPN-validation-options-dialog.png)
 
 
 
@@ -350,6 +355,7 @@ the Keyfactor Command Portal
    Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting.
 
    ![RFJKS Custom Field - SSHPort](docsource/images/RFJKS-custom-field-SSHPort-dialog.png)
+   ![RFJKS Custom Field - SSHPort](docsource/images/RFJKS-custom-field-SSHPort-validation-options-dialog.png)
 
 
 
@@ -357,6 +363,7 @@ the Keyfactor Command Portal
    Recommended to be set to the default value of 'Y'.  For a detailed explanation of this setting, please refer to [Use Shell Commands Setting](#use-shell-commands-setting)
 
    ![RFJKS Custom Field - UseShellCommands](docsource/images/RFJKS-custom-field-UseShellCommands-dialog.png)
+   ![RFJKS Custom Field - UseShellCommands](docsource/images/RFJKS-custom-field-UseShellCommands-validation-options-dialog.png)
 
 
 
@@ -364,6 +371,7 @@ the Keyfactor Command Portal
    Select the command to be run after a Management Add or ODKG job executes.  Leave unselected if no command is desired.
 
    ![RFJKS Custom Field - PostJobApplicationRestart](docsource/images/RFJKS-custom-field-PostJobApplicationRestart-dialog.png)
+   ![RFJKS Custom Field - PostJobApplicationRestart](docsource/images/RFJKS-custom-field-PostJobApplicationRestart-validation-options-dialog.png)
 
 
 
@@ -518,6 +526,7 @@ the Keyfactor Command Portal
    The LinuxFilePermissionsOnStoreCreation field should contain a three-digit value between 000 and 777 representing the Linux file permissions to be set for the certificate store upon creation. Example: '600' or '755'.  Overrides DefaultLinuxPermissionOnStoreCreation [config.json](#post-installation) setting.
 
    ![RFPEM Custom Field - LinuxFilePermissionsOnStoreCreation](docsource/images/RFPEM-custom-field-LinuxFilePermissionsOnStoreCreation-dialog.png)
+   ![RFPEM Custom Field - LinuxFilePermissionsOnStoreCreation](docsource/images/RFPEM-custom-field-LinuxFilePermissionsOnStoreCreation-validation-options-dialog.png)
 
 
 
@@ -525,6 +534,7 @@ the Keyfactor Command Portal
    The LinuxFileOwnerOnStoreCreation field should contain a valid user ID recognized by the destination Linux server, optionally followed by a colon and a group ID if the group owner differs. Example: 'userID' or 'userID:groupID'.  Overrides DefaultOwnerOnStoreCreation [config.json](#post-installation) setting.
 
    ![RFPEM Custom Field - LinuxFileOwnerOnStoreCreation](docsource/images/RFPEM-custom-field-LinuxFileOwnerOnStoreCreation-dialog.png)
+   ![RFPEM Custom Field - LinuxFileOwnerOnStoreCreation](docsource/images/RFPEM-custom-field-LinuxFileOwnerOnStoreCreation-validation-options-dialog.png)
 
 
 
@@ -532,6 +542,7 @@ the Keyfactor Command Portal
    The SudoImpersonatingUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'.  Overrides [config.json](#post-installation) DefaultSudoImpersonatedUser setting..
 
    ![RFPEM Custom Field - SudoImpersonatingUser](docsource/images/RFPEM-custom-field-SudoImpersonatingUser-dialog.png)
+   ![RFPEM Custom Field - SudoImpersonatingUser](docsource/images/RFPEM-custom-field-SudoImpersonatingUser-validation-options-dialog.png)
 
 
 
@@ -539,6 +550,7 @@ the Keyfactor Command Portal
    The IsTrustStore field should contain a boolean value ('true' or 'false') indicating whether the store will be identified as a trust store, which can hold multiple certificates without private keys. Example: 'true' for a trust store or 'false' for a store with a single certificate and private key.
 
    ![RFPEM Custom Field - IsTrustStore](docsource/images/RFPEM-custom-field-IsTrustStore-dialog.png)
+   ![RFPEM Custom Field - IsTrustStore](docsource/images/RFPEM-custom-field-IsTrustStore-validation-options-dialog.png)
 
 
 
@@ -546,6 +558,7 @@ the Keyfactor Command Portal
    The IncludesChain field should contain a boolean value ('true' or 'false') indicating whether the certificate store includes the full certificate chain along with the end entity certificate. Example: 'true' to include the full chain or 'false' to exclude it.
 
    ![RFPEM Custom Field - IncludesChain](docsource/images/RFPEM-custom-field-IncludesChain-dialog.png)
+   ![RFPEM Custom Field - IncludesChain](docsource/images/RFPEM-custom-field-IncludesChain-validation-options-dialog.png)
 
 
 
@@ -553,6 +566,7 @@ the Keyfactor Command Portal
    The SeparatePrivateKeyFilePath field should contain the full path and file name where the separate private key file will be stored if it is to be kept outside the main certificate file. Example: '/path/to/privatekey.pem'.
 
    ![RFPEM Custom Field - SeparatePrivateKeyFilePath](docsource/images/RFPEM-custom-field-SeparatePrivateKeyFilePath-dialog.png)
+   ![RFPEM Custom Field - SeparatePrivateKeyFilePath](docsource/images/RFPEM-custom-field-SeparatePrivateKeyFilePath-validation-options-dialog.png)
 
 
 
@@ -560,6 +574,7 @@ the Keyfactor Command Portal
    The IgnorePrivateKeyOnInventory field should contain a boolean value ('true' or 'false') indicating whether to disregard the private key during inventory. Setting this to 'true' will allow inventory for the store without needing to supply the location of the private key or the password if the key is encrypted.  However, doing this makes the store in effect inventory-only and no management jobs will be able to be run for this store. Example: 'true' to ignore the private key or 'false' to include it.
 
    ![RFPEM Custom Field - IgnorePrivateKeyOnInventory](docsource/images/RFPEM-custom-field-IgnorePrivateKeyOnInventory-dialog.png)
+   ![RFPEM Custom Field - IgnorePrivateKeyOnInventory](docsource/images/RFPEM-custom-field-IgnorePrivateKeyOnInventory-validation-options-dialog.png)
 
 
 
@@ -567,6 +582,7 @@ the Keyfactor Command Portal
    Remove root certificate from chain when adding/renewing a certificate in a store.
 
    ![RFPEM Custom Field - RemoveRootCertificate](docsource/images/RFPEM-custom-field-RemoveRootCertificate-dialog.png)
+   ![RFPEM Custom Field - RemoveRootCertificate](docsource/images/RFPEM-custom-field-RemoveRootCertificate-validation-options-dialog.png)
 
 
 
@@ -574,6 +590,7 @@ the Keyfactor Command Portal
    Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations.
 
    ![RFPEM Custom Field - IncludePortInSPN](docsource/images/RFPEM-custom-field-IncludePortInSPN-dialog.png)
+   ![RFPEM Custom Field - IncludePortInSPN](docsource/images/RFPEM-custom-field-IncludePortInSPN-validation-options-dialog.png)
 
 
 
@@ -581,6 +598,7 @@ the Keyfactor Command Portal
    Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting.
 
    ![RFPEM Custom Field - SSHPort](docsource/images/RFPEM-custom-field-SSHPort-dialog.png)
+   ![RFPEM Custom Field - SSHPort](docsource/images/RFPEM-custom-field-SSHPort-validation-options-dialog.png)
 
 
 
@@ -588,6 +606,7 @@ the Keyfactor Command Portal
    Recommended to be set to the default value of 'Y'.  For a detailed explanation of this setting, please refer to [Use Shell Commands Setting](#use-shell-commands-setting)
 
    ![RFPEM Custom Field - UseShellCommands](docsource/images/RFPEM-custom-field-UseShellCommands-dialog.png)
+   ![RFPEM Custom Field - UseShellCommands](docsource/images/RFPEM-custom-field-UseShellCommands-validation-options-dialog.png)
 
 
 
@@ -595,6 +614,7 @@ the Keyfactor Command Portal
    Select the command to be run after a Management Add or ODKG job executes.  Leave unselected if no command is desired.
 
    ![RFPEM Custom Field - PostJobApplicationRestart](docsource/images/RFPEM-custom-field-PostJobApplicationRestart-dialog.png)
+   ![RFPEM Custom Field - PostJobApplicationRestart](docsource/images/RFPEM-custom-field-PostJobApplicationRestart-validation-options-dialog.png)
 
 
 
@@ -742,6 +762,7 @@ the Keyfactor Command Portal
    The LinuxFilePermissionsOnStoreCreation field should contain a three-digit value between 000 and 777 representing the Linux file permissions to be set for the certificate store upon creation. Example: '600' or '755'.  Overrides DefaultLinuxPermissionOnStoreCreation [config.json](#post-installation) setting.
 
    ![RFPkcs12 Custom Field - LinuxFilePermissionsOnStoreCreation](docsource/images/RFPkcs12-custom-field-LinuxFilePermissionsOnStoreCreation-dialog.png)
+   ![RFPkcs12 Custom Field - LinuxFilePermissionsOnStoreCreation](docsource/images/RFPkcs12-custom-field-LinuxFilePermissionsOnStoreCreation-validation-options-dialog.png)
 
 
 
@@ -749,6 +770,7 @@ the Keyfactor Command Portal
    The LinuxFileOwnerOnStoreCreation field should contain a valid user ID recognized by the destination Linux server, optionally followed by a colon and a group ID if the group owner differs. Example: 'userID' or 'userID:groupID'.  Overrides DefaultOwnerOnStoreCreation [config.json](#post-installation) setting.
 
    ![RFPkcs12 Custom Field - LinuxFileOwnerOnStoreCreation](docsource/images/RFPkcs12-custom-field-LinuxFileOwnerOnStoreCreation-dialog.png)
+   ![RFPkcs12 Custom Field - LinuxFileOwnerOnStoreCreation](docsource/images/RFPkcs12-custom-field-LinuxFileOwnerOnStoreCreation-validation-options-dialog.png)
 
 
 
@@ -756,6 +778,7 @@ the Keyfactor Command Portal
    The SudoImpersonatingUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'.  Overrides DefaultSudoImpersonatedUser [config.json](#post-installation) setting.
 
    ![RFPkcs12 Custom Field - SudoImpersonatingUser](docsource/images/RFPkcs12-custom-field-SudoImpersonatingUser-dialog.png)
+   ![RFPkcs12 Custom Field - SudoImpersonatingUser](docsource/images/RFPkcs12-custom-field-SudoImpersonatingUser-validation-options-dialog.png)
 
 
 
@@ -763,6 +786,7 @@ the Keyfactor Command Portal
    Remove root certificate from chain when adding/renewing a certificate in a store.
 
    ![RFPkcs12 Custom Field - RemoveRootCertificate](docsource/images/RFPkcs12-custom-field-RemoveRootCertificate-dialog.png)
+   ![RFPkcs12 Custom Field - RemoveRootCertificate](docsource/images/RFPkcs12-custom-field-RemoveRootCertificate-validation-options-dialog.png)
 
 
 
@@ -770,6 +794,7 @@ the Keyfactor Command Portal
    Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations.
 
    ![RFPkcs12 Custom Field - IncludePortInSPN](docsource/images/RFPkcs12-custom-field-IncludePortInSPN-dialog.png)
+   ![RFPkcs12 Custom Field - IncludePortInSPN](docsource/images/RFPkcs12-custom-field-IncludePortInSPN-validation-options-dialog.png)
 
 
 
@@ -777,6 +802,7 @@ the Keyfactor Command Portal
    Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting.
 
    ![RFPkcs12 Custom Field - SSHPort](docsource/images/RFPkcs12-custom-field-SSHPort-dialog.png)
+   ![RFPkcs12 Custom Field - SSHPort](docsource/images/RFPkcs12-custom-field-SSHPort-validation-options-dialog.png)
 
 
 
@@ -784,6 +810,7 @@ the Keyfactor Command Portal
    Recommended to be set to the default value of 'Y'.  For a detailed explanation of this setting, please refer to [Use Shell Commands Setting](#use-shell-commands-setting)
 
    ![RFPkcs12 Custom Field - UseShellCommands](docsource/images/RFPkcs12-custom-field-UseShellCommands-dialog.png)
+   ![RFPkcs12 Custom Field - UseShellCommands](docsource/images/RFPkcs12-custom-field-UseShellCommands-validation-options-dialog.png)
 
 
 
@@ -926,6 +953,7 @@ the Keyfactor Command Portal
    The LinuxFilePermissionsOnStoreCreation field should contain a three-digit value between 000 and 777 representing the Linux file permissions to be set for the certificate store upon creation. Example: '600' or '755'.  Overrides DefaultLinuxPermissionOnStoreCreation [config.json](#post-installation) setting.
 
    ![RFDER Custom Field - LinuxFilePermissionsOnStoreCreation](docsource/images/RFDER-custom-field-LinuxFilePermissionsOnStoreCreation-dialog.png)
+   ![RFDER Custom Field - LinuxFilePermissionsOnStoreCreation](docsource/images/RFDER-custom-field-LinuxFilePermissionsOnStoreCreation-validation-options-dialog.png)
 
 
 
@@ -933,6 +961,7 @@ the Keyfactor Command Portal
    The LinuxFileOwnerOnStoreCreation field should contain a valid user ID recognized by the destination Linux server, optionally followed by a colon and a group ID if the group owner differs. Example: 'userID' or 'userID:groupID'.  Overrides DefaultOwnerOnStoreCreation [config.json](#post-installation) setting.
 
    ![RFDER Custom Field - LinuxFileOwnerOnStoreCreation](docsource/images/RFDER-custom-field-LinuxFileOwnerOnStoreCreation-dialog.png)
+   ![RFDER Custom Field - LinuxFileOwnerOnStoreCreation](docsource/images/RFDER-custom-field-LinuxFileOwnerOnStoreCreation-validation-options-dialog.png)
 
 
 
@@ -940,6 +969,7 @@ the Keyfactor Command Portal
    The SudoImpersonatingUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'.  Overrides [config.json](#post-installation) DefaultSudoImpersonatedUser setting.
 
    ![RFDER Custom Field - SudoImpersonatingUser](docsource/images/RFDER-custom-field-SudoImpersonatingUser-dialog.png)
+   ![RFDER Custom Field - SudoImpersonatingUser](docsource/images/RFDER-custom-field-SudoImpersonatingUser-validation-options-dialog.png)
 
 
 
@@ -947,6 +977,7 @@ the Keyfactor Command Portal
    The SeparatePrivateKeyFilePath field should contain the full path and file name where the separate private key file will be stored if it is to be kept outside the main certificate file. Example: '/path/to/privatekey.der'.
 
    ![RFDER Custom Field - SeparatePrivateKeyFilePath](docsource/images/RFDER-custom-field-SeparatePrivateKeyFilePath-dialog.png)
+   ![RFDER Custom Field - SeparatePrivateKeyFilePath](docsource/images/RFDER-custom-field-SeparatePrivateKeyFilePath-validation-options-dialog.png)
 
 
 
@@ -954,6 +985,7 @@ the Keyfactor Command Portal
    Remove root certificate from chain when adding/renewing a certificate in a store.
 
    ![RFDER Custom Field - RemoveRootCertificate](docsource/images/RFDER-custom-field-RemoveRootCertificate-dialog.png)
+   ![RFDER Custom Field - RemoveRootCertificate](docsource/images/RFDER-custom-field-RemoveRootCertificate-validation-options-dialog.png)
 
 
 
@@ -961,6 +993,7 @@ the Keyfactor Command Portal
    Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations.
 
    ![RFDER Custom Field - IncludePortInSPN](docsource/images/RFDER-custom-field-IncludePortInSPN-dialog.png)
+   ![RFDER Custom Field - IncludePortInSPN](docsource/images/RFDER-custom-field-IncludePortInSPN-validation-options-dialog.png)
 
 
 
@@ -968,6 +1001,7 @@ the Keyfactor Command Portal
    Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting.
 
    ![RFDER Custom Field - SSHPort](docsource/images/RFDER-custom-field-SSHPort-dialog.png)
+   ![RFDER Custom Field - SSHPort](docsource/images/RFDER-custom-field-SSHPort-validation-options-dialog.png)
 
 
 
@@ -975,6 +1009,7 @@ the Keyfactor Command Portal
    Recommended to be set to the default value of 'Y'.  For a detailed explanation of this setting, please refer to [Use Shell Commands Setting](#use-shell-commands-setting)
 
    ![RFDER Custom Field - UseShellCommands](docsource/images/RFDER-custom-field-UseShellCommands-dialog.png)
+   ![RFDER Custom Field - UseShellCommands](docsource/images/RFDER-custom-field-UseShellCommands-validation-options-dialog.png)
 
 
 
@@ -1119,6 +1154,7 @@ the Keyfactor Command Portal
    The LinuxFilePermissionsOnStoreCreation field should contain a three-digit value between 000 and 777 representing the Linux file permissions to be set for the certificate store upon creation. Example: '600' or '755'.  Overrides DefaultLinuxPermissionOnStoreCreation [config.json](#post-installation) setting.
 
    ![RFKDB Custom Field - LinuxFilePermissionsOnStoreCreation](docsource/images/RFKDB-custom-field-LinuxFilePermissionsOnStoreCreation-dialog.png)
+   ![RFKDB Custom Field - LinuxFilePermissionsOnStoreCreation](docsource/images/RFKDB-custom-field-LinuxFilePermissionsOnStoreCreation-validation-options-dialog.png)
 
 
 
@@ -1126,6 +1162,7 @@ the Keyfactor Command Portal
    The LinuxFileOwnerOnStoreCreation field should contain a valid user ID recognized by the destination Linux server, optionally followed by a colon and a group ID if the group owner differs. Example: 'userID' or 'userID:groupID'.  Overrides DefaultOwnerOnStoreCreation [config.json](#post-installation) setting.
 
    ![RFKDB Custom Field - LinuxFileOwnerOnStoreCreation](docsource/images/RFKDB-custom-field-LinuxFileOwnerOnStoreCreation-dialog.png)
+   ![RFKDB Custom Field - LinuxFileOwnerOnStoreCreation](docsource/images/RFKDB-custom-field-LinuxFileOwnerOnStoreCreation-validation-options-dialog.png)
 
 
 
@@ -1133,6 +1170,7 @@ the Keyfactor Command Portal
    The SudoImpersonatingUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'.  Overrides [config.json](#post-installation) DefaultSudoImpersonatedUser setting.
 
    ![RFKDB Custom Field - SudoImpersonatingUser](docsource/images/RFKDB-custom-field-SudoImpersonatingUser-dialog.png)
+   ![RFKDB Custom Field - SudoImpersonatingUser](docsource/images/RFKDB-custom-field-SudoImpersonatingUser-validation-options-dialog.png)
 
 
 
@@ -1140,6 +1178,7 @@ the Keyfactor Command Portal
    Remove root certificate from chain when adding/renewing a certificate in a store.
 
    ![RFKDB Custom Field - RemoveRootCertificate](docsource/images/RFKDB-custom-field-RemoveRootCertificate-dialog.png)
+   ![RFKDB Custom Field - RemoveRootCertificate](docsource/images/RFKDB-custom-field-RemoveRootCertificate-validation-options-dialog.png)
 
 
 
@@ -1147,6 +1186,7 @@ the Keyfactor Command Portal
    Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations.
 
    ![RFKDB Custom Field - IncludePortInSPN](docsource/images/RFKDB-custom-field-IncludePortInSPN-dialog.png)
+   ![RFKDB Custom Field - IncludePortInSPN](docsource/images/RFKDB-custom-field-IncludePortInSPN-validation-options-dialog.png)
 
 
 
@@ -1154,6 +1194,7 @@ the Keyfactor Command Portal
    Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting.
 
    ![RFKDB Custom Field - SSHPort](docsource/images/RFKDB-custom-field-SSHPort-dialog.png)
+   ![RFKDB Custom Field - SSHPort](docsource/images/RFKDB-custom-field-SSHPort-validation-options-dialog.png)
 
 
 
@@ -1161,6 +1202,7 @@ the Keyfactor Command Portal
    Recommended to be set to the default value of 'Y'.  For a detailed explanation of this setting, please refer to [Use Shell Commands Setting](#use-shell-commands-setting)
 
    ![RFKDB Custom Field - UseShellCommands](docsource/images/RFKDB-custom-field-UseShellCommands-dialog.png)
+   ![RFKDB Custom Field - UseShellCommands](docsource/images/RFKDB-custom-field-UseShellCommands-validation-options-dialog.png)
 
 
 
@@ -1307,6 +1349,7 @@ the Keyfactor Command Portal
    The LinuxFilePermissionsOnStoreCreation field should contain a three-digit value between 000 and 777 representing the Linux file permissions to be set for the certificate store upon creation. Example: '600' or '755'.  Overrides DefaultLinuxPermissionOnStoreCreation [config.json](#post-installation) setting.
 
    ![RFORA Custom Field - LinuxFilePermissionsOnStoreCreation](docsource/images/RFORA-custom-field-LinuxFilePermissionsOnStoreCreation-dialog.png)
+   ![RFORA Custom Field - LinuxFilePermissionsOnStoreCreation](docsource/images/RFORA-custom-field-LinuxFilePermissionsOnStoreCreation-validation-options-dialog.png)
 
 
 
@@ -1314,6 +1357,7 @@ the Keyfactor Command Portal
    The LinuxFileOwnerOnStoreCreation field should contain a valid user ID recognized by the destination Linux server, optionally followed by a colon and a group ID if the group owner differs. Example: 'userID' or 'userID:groupID'.  Overrides DefaultOwnerOnStoreCreation [config.json](#post-installation) setting.
 
    ![RFORA Custom Field - LinuxFileOwnerOnStoreCreation](docsource/images/RFORA-custom-field-LinuxFileOwnerOnStoreCreation-dialog.png)
+   ![RFORA Custom Field - LinuxFileOwnerOnStoreCreation](docsource/images/RFORA-custom-field-LinuxFileOwnerOnStoreCreation-validation-options-dialog.png)
 
 
 
@@ -1321,6 +1365,7 @@ the Keyfactor Command Portal
    The SudoImpersonatingUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'.  Overrides [config.json](#post-installation) DefaultSudoImpersonatedUser setting.
 
    ![RFORA Custom Field - SudoImpersonatingUser](docsource/images/RFORA-custom-field-SudoImpersonatingUser-dialog.png)
+   ![RFORA Custom Field - SudoImpersonatingUser](docsource/images/RFORA-custom-field-SudoImpersonatingUser-validation-options-dialog.png)
 
 
 
@@ -1328,6 +1373,7 @@ the Keyfactor Command Portal
    The WorkFolder field should contain the path on the managed server where temporary work files can be created, modified, and deleted during Inventory and Management jobs. Example: '/path/to/workfolder'.
 
    ![RFORA Custom Field - WorkFolder](docsource/images/RFORA-custom-field-WorkFolder-dialog.png)
+   ![RFORA Custom Field - WorkFolder](docsource/images/RFORA-custom-field-WorkFolder-validation-options-dialog.png)
 
 
 
@@ -1335,6 +1381,7 @@ the Keyfactor Command Portal
    Remove root certificate from chain when adding/renewing a certificate in a store.
 
    ![RFORA Custom Field - RemoveRootCertificate](docsource/images/RFORA-custom-field-RemoveRootCertificate-dialog.png)
+   ![RFORA Custom Field - RemoveRootCertificate](docsource/images/RFORA-custom-field-RemoveRootCertificate-validation-options-dialog.png)
 
 
 
@@ -1342,6 +1389,7 @@ the Keyfactor Command Portal
    Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations.
 
    ![RFORA Custom Field - IncludePortInSPN](docsource/images/RFORA-custom-field-IncludePortInSPN-dialog.png)
+   ![RFORA Custom Field - IncludePortInSPN](docsource/images/RFORA-custom-field-IncludePortInSPN-validation-options-dialog.png)
 
 
 
@@ -1349,6 +1397,7 @@ the Keyfactor Command Portal
    Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting.
 
    ![RFORA Custom Field - SSHPort](docsource/images/RFORA-custom-field-SSHPort-dialog.png)
+   ![RFORA Custom Field - SSHPort](docsource/images/RFORA-custom-field-SSHPort-validation-options-dialog.png)
 
 
 
@@ -1356,6 +1405,7 @@ the Keyfactor Command Portal
    Recommended to be set to the default value of 'Y'.  For a detailed explanation of this setting, please refer to [Use Shell Commands Setting](#use-shell-commands-setting)
 
    ![RFORA Custom Field - UseShellCommands](docsource/images/RFORA-custom-field-UseShellCommands-dialog.png)
+   ![RFORA Custom Field - UseShellCommands](docsource/images/RFORA-custom-field-UseShellCommands-validation-options-dialog.png)
 
 
 
