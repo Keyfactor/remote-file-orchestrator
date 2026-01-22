@@ -25,6 +25,8 @@ using System.Text.RegularExpressions;
 using static Keyfactor.Extensions.Orchestrator.RemoteFile.ReenrollmentBase;
 using static Keyfactor.PKI.PKIConstants.X509;
 using Keyfactor.PKI.PrivateKeys;
+using Keyfactor.PKI.CryptographicObjects.Formatters;
+using Org.BouncyCastle.X509;
 
 namespace Keyfactor.Extensions.Orchestrator.RemoteFile
 {
@@ -263,7 +265,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
                     RemoveRootCertificate(Convert.FromBase64String(certificateEntry), pfxPassword) : 
                     Convert.FromBase64String(certificateEntry);
 
-                using (MemoryStream ms = new MemoryStream(newCertBytes))
+                using (MemoryStream ms = new MemoryStream(string.IsNullOrEmpty(pfxPassword) ? ConvertDERToP12(newCertBytes) : newCertBytes))
                 {
                     newEntry.Load(ms, string.IsNullOrEmpty(pfxPassword) ? new char[0] : pfxPassword.ToCharArray());
                 }
@@ -579,6 +581,23 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             logger.MethodExit(LogLevel.Debug);
 
             return "'" + path + (path.Substring(path.Length - 1) == @"\" ? string.Empty : @"\") + "'";
+        }
+
+        private byte[] ConvertDERToP12(byte[] cert)
+        {
+            X509Certificate x509Cert = new X509CertificateParser().ReadCertificate(cert);
+            Pkcs12Store store = new Pkcs12StoreBuilder().Build();
+            store.SetCertificateEntry("temp", new X509CertificateEntry(x509Cert));
+
+            using (var ms = new MemoryStream())
+            {
+                store.Save(
+                    ms,
+                    new char[] {},
+                    new SecureRandom()
+                );
+                return ms.ToArray();
+            }
         }
     }
 

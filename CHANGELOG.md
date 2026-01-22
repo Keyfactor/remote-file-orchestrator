@@ -1,5 +1,6 @@
 v4.0.0
 - Added ability to run post job commands for Management-Add and ODKG jobs.
+- Bug Fix: Issue adding certificates without private keys introduced in 3.0.0
 
 v3.0.0
 - Added support for post quantum ML-DSA certificates for store types RFPEM, RFJKS, RFPkcs12, and RFDER
