@@ -25,6 +25,8 @@ using System.Text.RegularExpressions;
 using static Keyfactor.Extensions.Orchestrator.RemoteFile.ReenrollmentBase;
 using static Keyfactor.PKI.PKIConstants.X509;
 using Keyfactor.PKI.PrivateKeys;
+using Keyfactor.PKI.CryptographicObjects.Formatters;
+using Org.BouncyCastle.X509;
 
 namespace Keyfactor.Extensions.Orchestrator.RemoteFile
 {
@@ -33,6 +35,8 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
         private const string NO_EXTENSION = "noext";
         private const string FULL_SCAN = "fullscan";
         private const string LOCAL_MACHINE_SUFFIX = "|localmachine";
+        private const string POST_JOB_COMMAND_ARG1 = "%StorePath%";
+        private const string POST_JOB_COMMAND_ARG2 = "%SeparatePrivateKeyFilePath%";
 
         internal enum ServerTypeEnum
         {
@@ -263,7 +267,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
                     RemoveRootCertificate(Convert.FromBase64String(certificateEntry), pfxPassword) : 
                     Convert.FromBase64String(certificateEntry);
 
-                using (MemoryStream ms = new MemoryStream(newCertBytes))
+                using (MemoryStream ms = new MemoryStream(string.IsNullOrEmpty(pfxPassword) ? ConvertDERToP12(newCertBytes) : newCertBytes))
                 {
                     newEntry.Load(ms, string.IsNullOrEmpty(pfxPassword) ? new char[0] : pfxPassword.ToCharArray());
                 }
@@ -368,6 +372,28 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             privateKey = generator.GetRequestPrivateKey().ToNetPrivateKey();
             
             return csr;
+        }
+
+        internal void RunPostJobCommand(string applicationName, string storePath, string separatePrivateKeyFilePath)
+        {
+            string cmd = string.Empty;
+            try
+            {
+                cmd = ApplicationSettings.PostJobCommands.FirstOrDefault(p => p.Name == applicationName && p.Environment == ServerType.ToString())?.Command;
+            }
+            catch (Exception ex)
+            {
+                string errMessage = RemoteFileException.FlattenExceptionMessages(ex, "Error reading config.json PostJobCommands Setting: ");
+                logger.LogError(errMessage);
+                throw new RemoteFileException(errMessage);
+            }
+            if (string.IsNullOrEmpty(cmd))
+                throw new RemoteFileException($"Post job application {applicationName} command mapping not found in config.json.");
+
+            if (!string.IsNullOrEmpty(storePath)) cmd = cmd.Replace(POST_JOB_COMMAND_ARG1, storePath);
+            if (!string.IsNullOrEmpty(separatePrivateKeyFilePath)) cmd = cmd.Replace(POST_JOB_COMMAND_ARG2, separatePrivateKeyFilePath);
+
+            RemoteHandler.RunCommand(cmd, null, false, null);
         }
 
         internal void Initialize(string sudoImpersonatedUser, bool useShellCommands)
@@ -560,6 +586,23 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             logger.MethodExit(LogLevel.Debug);
 
             return "'" + path + (path.Substring(path.Length - 1) == @"\" ? string.Empty : @"\") + "'";
+        }
+
+        private byte[] ConvertDERToP12(byte[] cert)
+        {
+            X509Certificate x509Cert = new X509CertificateParser().ReadCertificate(cert);
+            Pkcs12Store store = new Pkcs12StoreBuilder().Build();
+            store.SetCertificateEntry("temp", new X509CertificateEntry(x509Cert));
+
+            using (var ms = new MemoryStream())
+            {
+                store.Save(
+                    ms,
+                    new char[] {},
+                    new SecureRandom()
+                );
+                return ms.ToArray();
+            }
         }
     }
 

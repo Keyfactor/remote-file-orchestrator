@@ -127,7 +127,39 @@ The Remote File Orchestrator Extension uses a JSON configuration file. It is loc
   "DefaultLinuxPermissionsOnStoreCreation": "600",
   "DefaultOwnerOnStoreCreation": "",
   "SSHPort": "",
-  "UseShellCommands":  "Y"
+  "UseShellCommands":  "Y",
+  "PostJobCommands": [
+    {
+      "Name": "Apache Tomcat Restart",
+      "Environment": "Linux",
+      "Command": "sudo systemctl restart tomcat"
+    },
+    {
+      "Name": "Apache HTTPD Restart",
+      "Environment": "Linux",
+      "Command": "sudo systemctl restart httpd"
+    },
+    {
+      "Name": "NGNIX Restart",
+      "Environment": "Linux",
+      "Command": "sudo systemctl restart nginx"
+    },
+    {
+      "Name": "HAProxy Restart",
+      "Environment": "Linux",
+      "Command": "sudo systemctl restart haproxy"
+    },
+    {
+      "Name": "Envoy Proxy Restart",
+      "Environment": "Linux",
+      "Command": "sudo systemctl restart envoy"
+    },
+    {
+      "Name": "Jetty Restart",
+      "Environment": "Linux",
+      "Command": "sudo systemctl restart jetty"
+    }
+  ]
 }
 ``` 
 
@@ -141,7 +173,8 @@ The Remote File Orchestrator Extension uses a JSON configuration file. It is loc
 | `DefaultLinuxPermissionsOnStoreCreation` | `600`         | Any 3-digit value from 000-777        | Linux file permissions set on new certificate stores. If blank, permissions from the parent folder will be used. Only applicable for Linux hosted certificate stores.                                                                                    |
 | `DefaultOwnerOnStoreCreation`            |               | Any valid user id                     | Sets the owner for newly created certificate stores. Can include group with format `ownerId:groupId`. If blank, the owner of the parent folder will be used. Only applicable for Linux hosted certificate stores.                                        |
 | `SSHPort`                                |               | Any valid integer representing a port | The port that SSH is listening on. Default is 22. Only applicable for Linux hosted certificate stores.                                                                                                                                                   |
-| `UseShellCommands`                       | `Y`           | `Y/N`                                 | Recommended to be set to the default value of 'Y'.  For a detailed explanation of this setting, please refer to [Use Shell Commands Setting](#use-shell-commands-setting)                                                                                |
+| `UseShellCommands`                       | `Y`           | `Y/N`                                 | Recommended to be set to the default value of 'Y'.  For a detailed explanation of this setting, please refer to [Use Shell Commands Setting](#use-shell-commands-setting).                                                                               |
+| `PostJobCommands`                        |               | See JSON above                        | JSON values representing post processing commands for Management-Add and ODKG job.  For a detailed explanation of this optional setting, please refer to [Post Job Command Execution](#post-job-command-execution).                                      |
 
 ## Discovery
 
@@ -213,6 +246,35 @@ will still be executed when Use Shell Commands is set to Y.
 6. If executing in local mode ('|LocalMachine' at the end of your client machine name for your certificate store), Use Shell
 Commands = 'N' will have no effect.  Shell commands will continue to be used because there will be no SSH connection
 available from which to execute SFTP commands.
+
+## Post Job Command Execution
+
+Beginning in Release 4.0 of the RemoteFile Orchestrator Extension, you can designate a single command to be run after Management-Add
+and ODKG jobs.  The typical (although not necessarily only) use case for this functionality would be to restart a process or service
+after a certificate has been added or renewed/replaced in a certificate store so that the new certificate will be loaded into the 
+consuming process/service.
+
+Steps to Implement:
+1. Install RemoteFile Orchestrator Extension version 4.0 or later.
+2. On the Universal Orchestrator server where RemoteFile is installed, modify the [config.json PostJobCommands section](#post-installation) to add/modify a post job command.  The format of this section is an array of JSON objects containing:
+   * `Name` - The name of the command.  Value must match what is entered for one of the `Multiple Choice Options` for the Custom Field created in Step 3.
+   * `Environment` - Linux or Windows.  The certificate store server environment this command is valid for.
+   * `Command` - This is the actual command that will be run after a Management-Add or ODKG job if selected for the certificate store being managed.  There up to 2 optional arguments you can pass into this command: %StorePath% and %SeparatePrivateKeyFilePath%.  If either or both of these values appear in the entered command, they will be replaced with the values of the certificate store Store Path and Separate Private Key File Location (RFPEM and RFDER only) fields.  This may be useful if the command you run calls a script on the local device that may need these values.
+3. Add a new (or edit the existing) Custom Field to the store type (RFJKS, RFPEM, etc) you wish to allow post Management-Add and ODKG job commands to be run commands after:
+   * Name = `PostJobApplicationRestart` (name and case must be exact)
+   * Display Name = your preference
+   * Type = `MultipleChoice`
+   * Multiple Choice Options = Comma delimited list of command name values.  Each should match an entry in the config.json PostJobCommands as mentioned in Step 2.  PLEASE NOTE: if you are on a Keyfactor Command release prior to 25.2, you will need to enter a leading "," (comma) in the Multiple Choice Options to have a default blank option (no command run) when creating your certificate store(s).  For 25.2 or later, the comma is not needed, and a blank option will automatically be the default.
+   * Depends On = unchecked
+   * Required = unchecked
+4. Restart the Universal Orchestrator
+5. Create or modify a Keyfactor Command Certificate Store of the type modified in Step 3.  You should see a dropdown list with a label matching the Display Name you entered in Step 3.  The options in the dropdown should match the Multiple Choice Options you entered in Step 3 and each should match an entry in the config.json from Step 2.  Select a value and save the store.  For all successful Management-Add and ODKG jobs run for this store, the command entered in the config.json corresponding to the dropdown selection should be run over the SSH/WinRM connection used to process the job.
+
+When a Management-Add or ODKG job is run for a Keyfactor Command Certificate Store that has a Post Job Command selected in the dropdown, the associated `Command` in the config.json will be run after job completeion as long as the Management-Add/ODKG job completes successfully.
+
+Release 4.0 of the RemoteFile Orchestrator extension comes delivered with a config.json file containing an initial PostJobCommands section.  You may keep these settings as is or modify based on the steps above.  The integration-manifest.json file delivered with this integration contains the mappings of store types to these commands if you choose to use `kfutil` to create your RemoteFile store types.
+
+**PLEASE NOTE: The commands entered for Post Job Commands are the responsibility of the user.  Keyfactor does not provide support for any issues arising from the use of these Post Job Commands INCLUDING those delivered with this release.**
 
 
 ## Developer Notes

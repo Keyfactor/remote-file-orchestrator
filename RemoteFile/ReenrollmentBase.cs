@@ -104,7 +104,20 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
                 certificateStore.AddCertificate(config.Alias ?? cert.Thumbprint, Convert.ToBase64String(cert.Export(X509ContentType.Pfx)), config.Overwrite, null, RemoveRootCertificate);
                 certificateStore.SaveCertificateStore(certificateStoreSerializer.SerializeRemoteCertificateStore(certificateStore.GetCertificateStore(), storePathFile.Path, storePathFile.File, StorePassword, certificateStore.RemoteHandler));
 
-                logger.LogDebug($"END add Operation for {config.CertificateStoreDetails.StorePath} on {config.CertificateStoreDetails.ClientMachine}.");
+                try
+                {
+                    if (!string.IsNullOrEmpty(PostJobApplicationRestart))
+                        certificateStore.RunPostJobCommand(PostJobApplicationRestart, config.CertificateStoreDetails.StorePath, certificateStoreSerializer.GetPrivateKeyPath());
+                }
+                catch (Exception ex)
+                {
+                    logger.LogError($"Exception for {config.Capability} attempting post job command for {PostJobApplicationRestart}: {RemoteFileException.FlattenExceptionMessages(ex, string.Empty)} for job id {config.JobId}");
+                    return new JobResult() { Result = OrchestratorJobStatusJobResult.Warning, JobHistoryId = config.JobHistoryId, FailureMessage = RemoteFileException.FlattenExceptionMessages(ex, $"Site {config.CertificateStoreDetails.StorePath} on server {config.CertificateStoreDetails.ClientMachine}: Certificate was successfully added to store, but post job command for {PostJobApplicationRestart} failed with:  ") };
+                }
+                finally
+                {
+                    logger.LogDebug($"END add Operation for {config.CertificateStoreDetails.StorePath} on {config.CertificateStoreDetails.ClientMachine}.");
+                }
             }
 
             catch (Exception ex)
