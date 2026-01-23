@@ -259,7 +259,7 @@ Steps to Implement:
 2. On the Universal Orchestrator server where RemoteFile is installed, modify the [config.json PostJobCommands section](#post-installation) to add/modify a post job command.  The format of this section is an array of JSON objects containing:
    * `Name` - The name of the command.  Value must match what is entered for one of the `Multiple Choice Options` for the Custom Field created in Step 3.
    * `Environment` - Linux or Windows.  The certificate store server environment this command is valid for.
-   * `Command` - This is the actual command that will be run after a Management-Add or ODKG job if selected for the certificate store being managed.
+   * `Command` - This is the actual command that will be run after a Management-Add or ODKG job if selected for the certificate store being managed.  There up to 2 optional arguments you can pass into this command: %StorePath% and %SeparatePrivateKeyFilePath%.  If either or both of these values appear in the entered command, they will be replaced with the values of the certificate store Store Path and Separate Private Key File Location (RFPEM and RFDER only) fields.  This may be useful if the command you run calls a script on the local device that may need these values.
 3. Add a new (or edit the existing) Custom Field to the store type (RFJKS, RFPEM, etc) you wish to allow post Management-Add and ODKG job commands to be run commands after:
    * Name = `PostJobApplicationRestart` (name and case must be exact)
    * Display Name = your preference
