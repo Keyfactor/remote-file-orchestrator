@@ -35,6 +35,8 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
         private const string NO_EXTENSION = "noext";
         private const string FULL_SCAN = "fullscan";
         private const string LOCAL_MACHINE_SUFFIX = "|localmachine";
+        private const string POST_JOB_COMMAND_ARG1 = "%StorePath%";
+        private const string POST_JOB_COMMAND_ARG2 = "%SeparatePrivateKeyFilePath%";
 
         internal enum ServerTypeEnum
         {
@@ -372,7 +374,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             return csr;
         }
 
-        internal void RunPostJobCommand(string applicationName)
+        internal void RunPostJobCommand(string applicationName, string storePath, string separatePrivateKeyFilePath)
         {
             string cmd = string.Empty;
             try
@@ -387,6 +389,9 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             }
             if (string.IsNullOrEmpty(cmd))
                 throw new RemoteFileException($"Post job application {applicationName} command mapping not found in config.json.");
+
+            if (!string.IsNullOrEmpty(storePath)) cmd = cmd.Replace(POST_JOB_COMMAND_ARG1, storePath);
+            if (!string.IsNullOrEmpty(separatePrivateKeyFilePath)) cmd = cmd.Replace(POST_JOB_COMMAND_ARG2, separatePrivateKeyFilePath);
 
             RemoteHandler.RunCommand(cmd, null, false, null);
         }

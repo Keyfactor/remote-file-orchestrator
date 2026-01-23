@@ -107,7 +107,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
                 try
                 {
                     if (!string.IsNullOrEmpty(PostJobApplicationRestart))
-                        certificateStore.RunPostJobCommand(PostJobApplicationRestart);
+                        certificateStore.RunPostJobCommand(PostJobApplicationRestart, config.CertificateStoreDetails.StorePath, certificateStoreSerializer.GetPrivateKeyPath());
                 }
                 catch (Exception ex)
                 {
