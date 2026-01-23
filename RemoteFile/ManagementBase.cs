@@ -15,6 +15,7 @@ using Org.BouncyCastle.Pkcs;
 using Org.BouncyCastle.X509;
 using System;
 using System.IO;
+using System.Linq.Expressions;
 using static Org.BouncyCastle.Math.EC.ECCurve;
 
 namespace Keyfactor.Extensions.Orchestrator.RemoteFile
@@ -55,7 +56,21 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
                         certificateStore.AddCertificate(config.JobCertificate.Alias ?? GetThumbprint(config.JobCertificate, logger), config.JobCertificate.Contents, config.Overwrite, config.JobCertificate.PrivateKeyPassword, RemoveRootCertificate);
                         certificateStore.SaveCertificateStore(certificateStoreSerializer.SerializeRemoteCertificateStore(certificateStore.GetCertificateStore(), storePathFile.Path, storePathFile.File, StorePassword, certificateStore.RemoteHandler));
 
-                        logger.LogDebug($"END add Operation for {config.CertificateStoreDetails.StorePath} on {config.CertificateStoreDetails.ClientMachine}.");
+                        try
+                        {
+                            if (!string.IsNullOrEmpty(PostJobApplicationRestart))
+                                certificateStore.RunPostJobCommand(PostJobApplicationRestart);
+                        }
+                        catch (Exception ex)
+                        {
+                            logger.LogError($"Exception for {config.Capability} attempting post job command for {PostJobApplicationRestart}: {RemoteFileException.FlattenExceptionMessages(ex, string.Empty)} for job id {config.JobId}");
+                            return new JobResult() { Result = OrchestratorJobStatusJobResult.Warning, JobHistoryId = config.JobHistoryId, FailureMessage = RemoteFileException.FlattenExceptionMessages(ex, $"Site {config.CertificateStoreDetails.StorePath} on server {config.CertificateStoreDetails.ClientMachine}: Certificate was successfully added to store, but post job command for {PostJobApplicationRestart} failed with:  ") };
+                        }
+                        finally
+                        {
+                            logger.LogDebug($"END add Operation for {config.CertificateStoreDetails.StorePath} on {config.CertificateStoreDetails.ClientMachine}.");
+                        }
+
                         break;
 
                     case CertStoreOperationType.Remove:
@@ -112,17 +127,25 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
 
             string thumbprint = string.Empty;
 
-            using (MemoryStream ms = new MemoryStream(Convert.FromBase64String(jobCertificate.Contents)))
+            if (string.IsNullOrEmpty(jobCertificate.PrivateKeyPassword))
             {
-                Pkcs12StoreBuilder storeBuilder = new Pkcs12StoreBuilder();
-                Pkcs12Store store = storeBuilder.Build();
-
-                store.Load(ms, jobCertificate.PrivateKeyPassword.ToCharArray());
-
-                foreach (string alias in store.Aliases)
+                X509Certificate x = new X509Certificate(Convert.FromBase64String(jobCertificate.Contents));
+                thumbprint = x.Thumbprint();
+            }
+            else
+            {
+                using (MemoryStream ms = new MemoryStream(Convert.FromBase64String(jobCertificate.Contents)))
                 {
-                    thumbprint = store.GetCertificate(alias).Certificate.Thumbprint();
-                    break;
+                    Pkcs12StoreBuilder storeBuilder = new Pkcs12StoreBuilder();
+                    Pkcs12Store store = storeBuilder.Build();
+
+                    store.Load(ms, jobCertificate.PrivateKeyPassword.ToCharArray());
+
+                    foreach (string alias in store.Aliases)
+                    {
+                        thumbprint = store.GetCertificate(alias).Certificate.Thumbprint();
+                        break;
+                    }
                 }
             }
 
