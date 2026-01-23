@@ -15,6 +15,7 @@ using Org.BouncyCastle.Pkcs;
 using Org.BouncyCastle.X509;
 using System;
 using System.IO;
+using System.Linq.Expressions;
 using static Org.BouncyCastle.Math.EC.ECCurve;
 
 namespace Keyfactor.Extensions.Orchestrator.RemoteFile
@@ -126,17 +127,25 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
 
             string thumbprint = string.Empty;
 
-            using (MemoryStream ms = new MemoryStream(Convert.FromBase64String(jobCertificate.Contents)))
+            if (string.IsNullOrEmpty(jobCertificate.PrivateKeyPassword))
             {
-                Pkcs12StoreBuilder storeBuilder = new Pkcs12StoreBuilder();
-                Pkcs12Store store = storeBuilder.Build();
-
-                store.Load(ms, jobCertificate.PrivateKeyPassword.ToCharArray());
-
-                foreach (string alias in store.Aliases)
+                X509Certificate x = new X509Certificate(Convert.FromBase64String(jobCertificate.Contents));
+                thumbprint = x.Thumbprint();
+            }
+            else
+            {
+                using (MemoryStream ms = new MemoryStream(Convert.FromBase64String(jobCertificate.Contents)))
                 {
-                    thumbprint = store.GetCertificate(alias).Certificate.Thumbprint();
-                    break;
+                    Pkcs12StoreBuilder storeBuilder = new Pkcs12StoreBuilder();
+                    Pkcs12Store store = storeBuilder.Build();
+
+                    store.Load(ms, jobCertificate.PrivateKeyPassword.ToCharArray());
+
+                    foreach (string alias in store.Aliases)
+                    {
+                        thumbprint = store.GetCertificate(alias).Certificate.Thumbprint();
+                        break;
+                    }
                 }
             }
 
