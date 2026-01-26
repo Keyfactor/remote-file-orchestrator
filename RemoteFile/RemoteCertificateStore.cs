@@ -390,8 +390,8 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             if (string.IsNullOrEmpty(cmd))
                 throw new RemoteFileException($"Post job application {applicationName} command mapping not found in config.json.");
 
-            if (!string.IsNullOrEmpty(storePath)) cmd = cmd.Replace(POST_JOB_COMMAND_ARG1, storePath);
-            if (!string.IsNullOrEmpty(separatePrivateKeyFilePath)) cmd = cmd.Replace(POST_JOB_COMMAND_ARG2, separatePrivateKeyFilePath);
+            if (cmd.IndexOf(POST_JOB_COMMAND_ARG1) > -1) cmd = cmd.Replace(POST_JOB_COMMAND_ARG1, storePath ?? string.Empty);
+            if (cmd.IndexOf(POST_JOB_COMMAND_ARG2) > -1) cmd = cmd.Replace(POST_JOB_COMMAND_ARG2, separatePrivateKeyFilePath ?? string.Empty);
 
             RemoteHandler.RunCommand(cmd, null, false, null);
         }
