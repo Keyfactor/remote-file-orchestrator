@@ -131,6 +131,13 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
                 linuxFileGroup = $"-g {linuxGroupOwner[1]}";
             }
 
+            string pathOnly = string.Empty;
+            string fileName = string.Empty;
+            SplitStorePathFile(path, out pathOnly, out fileName);
+
+            linuxFilePermissions = string.IsNullOrEmpty(linuxFilePermissions) ? GetFolderPermissions(pathOnly) : linuxFilePermissions;
+            linuxFileOwner = string.IsNullOrEmpty(linuxFileOwner) ? GetFolderOwner(pathOnly) : linuxFileOwner;
+
             AreLinuxPermissionsValid(linuxFilePermissions);
             RunCommand($"install -m {linuxFilePermissions} -o {linuxFileOwner} {linuxFileGroup} /dev/null {path}", null, ApplicationSettings.UseSudo, null);
 
@@ -150,6 +157,53 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
             _logger.LogDebug($"RemoveCertificateFile: {path} {fileName}");
 
             RunCommand($"rm {path}{fileName}", null, ApplicationSettings.UseSudo, null);
+        }
+
+        private string GetFolderPermissions(string path)
+        {
+            _logger.MethodEntry(LogLevel.Debug);
+
+            try
+            {
+                return RunCommand($"stat -c '%a' {path}", null, ApplicationSettings.UseSudo, null).Replace($"\n", string.Empty);
+            }
+            finally
+            {
+                _logger.MethodExit(LogLevel.Debug);
+            }
+        }
+
+        private string GetFolderOwner(string path)
+        {
+            _logger.MethodEntry(LogLevel.Debug);
+
+            try
+            {
+                return RunCommand($"stat -c '%U' {path}", null, ApplicationSettings.UseSudo, null).Replace($"\n", string.Empty);
+            }
+            finally
+            {
+
+                _logger.MethodExit(LogLevel.Debug);
+            }
+        }
+
+        private void SplitStorePathFile(string pathFileName, out string path, out string fileName)
+        {
+            _logger.MethodEntry(LogLevel.Debug);
+
+            try
+            {
+                int separatorIndex = pathFileName.LastIndexOf(pathFileName.Substring(0, 1) == "/" ? @"/" : @"\");
+                fileName = pathFileName.Substring(separatorIndex + 1);
+                path = pathFileName.Substring(0, separatorIndex + 1);
+            }
+            catch (Exception ex)
+            {
+                throw new RemoteFileException($"Error attempting to parse certficate store/key path={pathFileName}.", ex);
+            }
+
+            _logger.MethodEntry(LogLevel.Debug);
         }
     }
 }
