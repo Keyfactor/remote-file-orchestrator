@@ -6,5 +6,38 @@
   "SeparateUploadFilePath": "",
   "DefaultLinuxPermissionsOnStoreCreation": "600",
   "DefaultOwnerOnStoreCreation": "",
-  "SSHPort":  ""
+  "SSHPort":  "",
+
+  "PostJobCommands": [
+    {
+      "Name": "Apache Tomcat Restart",
+      "Environment": "Linux",
+      "Command": "sudo systemctl restart tomcat"
+    },
+    {
+      "Name": "Apache HTTPD Restart",
+      "Environment": "Linux",
+      "Command": "sudo systemctl restart httpd"
+    },
+    {
+      "Name": "NGNIX Restart",
+      "Environment": "Linux",
+      "Command": "sudo systemctl restart nginx"
+    },
+    {
+      "Name": "HAProxy Restart",
+      "Environment": "Linux",
+      "Command": "sudo systemctl restart haproxy"
+    },
+    {
+      "Name": "Envoy Proxy Restart",
+      "Environment": "Linux",
+      "Command": "sudo systemctl restart envoy"
+    },
+    {
+      "Name": "Jetty Restart",
+      "Environment": "Linux",
+      "Command": "sudo systemctl restart jetty"
+    }
+  ]
 }
