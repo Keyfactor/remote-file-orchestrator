@@ -93,8 +93,8 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.OraWlt
             try
             {
                 remoteHandler.UploadCertificateFile($"{WorkFolder}", $"{tempStoreFileJKS}", jksStoreInfo[0].Contents);
-                remoteHandler.RunCommand(orapkiCommand1, null, ApplicationSettings.UseSudo, null);
-                remoteHandler.RunCommand(orapkiCommand2, null, ApplicationSettings.UseSudo, null);
+                remoteHandler.RunCommand(orapkiCommand1, null, ApplicationSettings.UseSudo, [storePassword]);
+                remoteHandler.RunCommand(orapkiCommand2, null, ApplicationSettings.UseSudo, [storePassword]);
 
                 byte[] storeContents = remoteHandler.DownloadCertificateFile($"{WorkFolder}ewallet.p12");
 

@@ -29,6 +29,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
         internal bool IncludePortInSPN { get; set; }
         internal bool CreateCSROnDevice { get; set; }
         internal bool UseShellCommands { get; set; }
+        internal string PostJobApplicationRestart {  get; set; }
         internal string KeyType { get; set; }
         internal int KeySize { get; set; }
         internal string SubjectText { get; set; }
@@ -73,6 +74,10 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
                 ApplicationSettings.UseShellCommands :
                 properties.UseShellCommands;
 
+            PostJobApplicationRestart = properties.PostJobApplicationRestart == null || string.IsNullOrEmpty(properties.PostJobApplicationRestart.Value) ?
+                null :
+                properties.PostJobApplicationRestart;
+
             if (config.JobProperties != null)
             {
                 KeyType = !config.JobProperties.ContainsKey("keyType") || config.JobProperties["keyType"] == null || string.IsNullOrEmpty(config.JobProperties["keyType"].ToString()) ? string.Empty : config.JobProperties["keyType"].ToString();
@@ -89,6 +94,8 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             logger.LogDebug($"RemoveRootCertificate: {RemoveRootCertificate}");
             logger.LogDebug($"SSHPort: {SSHPort}");
             logger.LogDebug($"IncludePortInSPN: {IncludePortInSPN}");
+            logger.LogDebug($"UseShellCommands: {UseShellCommands}");
+            logger.LogDebug($"PostJobApplicationRestart: {PostJobApplicationRestart}");
             logger.LogDebug($"KeyType: {KeyType}");
             logger.LogDebug($"KeySize: {KeySize}");
             logger.LogDebug($"SubjectText: {SubjectText}");
