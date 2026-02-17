@@ -1,5 +1,6 @@
 v4.0.0
 - Added ability to run post job commands for Management-Add and ODKG jobs.
+- Added "+" as an allowed character for store paths and file names
 - Bug Fix: Issue adding certificates without private keys introduced in 3.0.0
 - Bug Fix: Issue creating stores on a Linux UO in agent mode (client machine value ending in |LocalMachine)
 - Bug Fix: Logging issue with RFORA
