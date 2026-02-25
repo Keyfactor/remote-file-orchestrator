@@ -112,14 +112,8 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
         {
             logger.MethodEntry(LogLevel.Debug);
 
-            Pkcs12StoreBuilder storeBuilder = new Pkcs12StoreBuilder();
-            CertificateStore = storeBuilder.Build();
-
             byte[] byteContents = RemoteHandler.DownloadCertificateFile(StorePath + StoreFileName);
-            if (byteContents.Length < 5)
-                return;
-
-            CertificateStore = certificateStoreSerializer.DeserializeRemoteCertificateStore(byteContents, StorePath, StorePassword, RemoteHandler, isInventory);
+            Pkcs12Store CertificateStore = certificateStoreSerializer.DeserializeRemoteCertificateStore(byteContents, StorePath, StorePassword, RemoteHandler, isInventory);
 
             logger.MethodExit(LogLevel.Debug);
         }
