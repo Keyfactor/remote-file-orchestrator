@@ -30,6 +30,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
         internal bool CreateCSROnDevice { get; set; }
         internal bool UseShellCommands { get; set; }
         internal string PostJobApplicationRestart {  get; set; }
+        internal bool RequiresLegacyEncryption { get; set; }
         internal string KeyType { get; set; }
         internal int KeySize { get; set; }
         internal string SubjectText { get; set; }
@@ -77,6 +78,10 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             PostJobApplicationRestart = properties.PostJobApplicationRestart == null || string.IsNullOrEmpty(properties.PostJobApplicationRestart.Value) ?
                 null :
                 properties.PostJobApplicationRestart;
+
+            RequiresLegacyEncryption = properties.RequiresLegacyEncryption == null || string.IsNullOrEmpty(properties.RequiresLegacyEncryption.Value) ?
+                false :
+                properties.RequiresLegacyEncryption;
 
             if (config.JobProperties != null)
             {
