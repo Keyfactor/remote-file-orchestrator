@@ -1,3 +1,6 @@
+v4.0.1
+- Bug Fix: Error running ODKG jobs found in v4.0.0
+
 v4.0.0
 - Added ability to run post job commands for Management-Add and ODKG jobs.
 - Added "+" as an allowed character for store paths and file names

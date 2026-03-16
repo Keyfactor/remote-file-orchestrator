@@ -101,7 +101,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
                 }
 
                 // save certificate
-                certificateStore.AddCertificate(config.Alias ?? cert.Thumbprint, Convert.ToBase64String(cert.Export(X509ContentType.Pfx)), config.Overwrite, null, RemoveRootCertificate);
+                certificateStore.AddCertificate(config.Alias ?? cert.Thumbprint, Convert.ToBase64String(cert.Export(X509ContentType.Pfx, "password")), config.Overwrite, "password", RemoveRootCertificate);
                 certificateStore.SaveCertificateStore(certificateStoreSerializer.SerializeRemoteCertificateStore(certificateStore.GetCertificateStore(), storePathFile.Path, storePathFile.File, StorePassword, certificateStore.RemoteHandler));
 
                 try
