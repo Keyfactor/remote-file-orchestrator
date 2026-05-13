@@ -1,3 +1,6 @@
+v4.1.0
+- Add custom field to select legacy encryption for certificate stores
+
 v4.0.0
 - Added ability to run post job commands for Management-Add and ODKG jobs.
 - Added "+" as an allowed character for store paths and file names
