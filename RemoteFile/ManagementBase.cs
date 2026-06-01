@@ -54,7 +54,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
                         }
                         certificateStore.LoadCertificateStore(certificateStoreSerializer, false);
                         certificateStore.AddCertificate(config.JobCertificate.Alias ?? GetThumbprint(config.JobCertificate, logger), config.JobCertificate.Contents, config.Overwrite, config.JobCertificate.PrivateKeyPassword, RemoveRootCertificate);
-                        certificateStore.SaveCertificateStore(certificateStoreSerializer.SerializeRemoteCertificateStore(certificateStore.GetCertificateStore(), storePathFile.Path, storePathFile.File, StorePassword, certificateStore.RemoteHandler));
+                        certificateStore.SaveCertificateStore(certificateStoreSerializer.SerializeRemoteCertificateStore(certificateStore.GetCertificateStore(RequiresLegacyEncryption), storePathFile.Path, storePathFile.File, StorePassword, certificateStore.RemoteHandler));
 
                         try
                         {
@@ -83,7 +83,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
                         {
                             certificateStore.LoadCertificateStore(certificateStoreSerializer, false);
                             certificateStore.DeleteCertificateByAlias(config.JobCertificate.Alias);
-                            certificateStore.SaveCertificateStore(certificateStoreSerializer.SerializeRemoteCertificateStore(certificateStore.GetCertificateStore(), storePathFile.Path, storePathFile.File, StorePassword, certificateStore.RemoteHandler));
+                            certificateStore.SaveCertificateStore(certificateStoreSerializer.SerializeRemoteCertificateStore(certificateStore.GetCertificateStore(RequiresLegacyEncryption), storePathFile.Path, storePathFile.File, StorePassword, certificateStore.RemoteHandler));
                         }
                         logger.LogDebug($"END Delete Operation for {config.CertificateStoreDetails.StorePath} on {config.CertificateStoreDetails.ClientMachine}.");
                         break;
