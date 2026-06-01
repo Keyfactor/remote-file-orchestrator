@@ -33,6 +33,8 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.KDB
             logger.MethodEntry(LogLevel.Debug);
 
             string bashCommand = storePath.Substring(0, 1) == "/" ? "bash " : string.Empty;
+            if (storePath.Substring(0, 1) == "|")
+                storePath = "/" + storePath.Substring(1);
 
             Pkcs12StoreBuilder storeBuilder = new Pkcs12StoreBuilder();
             Pkcs12Store store = storeBuilder.Build();
@@ -51,9 +53,15 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.KDB
                 byte[] storeBytes = remoteHandler.DownloadCertificateFile($"{storePath}{tempCertFile}");
                 store.Load(new MemoryStream(storeBytes), string.IsNullOrEmpty(storePassword) ? new char[0] : storePassword.ToCharArray());
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                if (ex.Message.Contains("cannot execute binary file", StringComparison.InvariantCultureIgnoreCase) && storePath.Substring(0, 1) == "/")
+                {
+                    storePath = "|" + storePath.Substring(1);
+                    store = DeserializeRemoteCertificateStore(storeContentBytes, storePath, storePassword, remoteHandler, isInventory);
+                }
+                else
+                    throw;
             }
             finally
             {
