@@ -119,7 +119,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.KDB
             return storeInfo;
         }
 
-        public string GetPrivateKeyPath()
+        public string GetPrivateKeyPath() 
         {
             return null;
         }
