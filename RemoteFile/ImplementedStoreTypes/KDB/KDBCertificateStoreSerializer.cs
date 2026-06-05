@@ -78,7 +78,10 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.KDB
             logger.MethodEntry(LogLevel.Debug);
 
             List<SerializedStoreInfo> storeInfo = new List<SerializedStoreInfo>();
+
             string bashCommand = storePath.Substring(0, 1) == "/" ? "bash " : string.Empty;
+            if (storePath.Substring(0, 1) == "|")
+                storePath = "/" + storePath.Substring(1);
 
             string tempStoreFile = Guid.NewGuid().ToString().Replace("-", string.Empty) + ".kdb";
             string tempCertFile = Guid.NewGuid().ToString().Replace("-", string.Empty) + ".p12";
@@ -96,17 +99,24 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.KDB
                 byte[] storeContents = remoteHandler.DownloadCertificateFile($"{storePath}{tempStoreFile}");
 
                 storeInfo.Add(new SerializedStoreInfo() { Contents = storeContents, FilePath = storePath+storeFileName });
-                return storeInfo;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                if (ex.Message.Contains("cannot execute binary file", StringComparison.InvariantCultureIgnoreCase) && storePath.Substring(0, 1) == "/")
+                {
+                    storePath = "|" + storePath.Substring(1);
+                    storeInfo = SerializeRemoteCertificateStore(certificateStore, storePath, storeFileName, storePassword, remoteHandler);
+                }
+                else
+                    throw;
             }
             finally
             {
                 try { remoteHandler.RemoveCertificateFile(storePath, tempStoreFile); } catch (Exception) { };
                 try { remoteHandler.RemoveCertificateFile(storePath, tempCertFile); } catch (Exception) { };
             }
+
+            return storeInfo;
         }
 
         public string GetPrivateKeyPath()
