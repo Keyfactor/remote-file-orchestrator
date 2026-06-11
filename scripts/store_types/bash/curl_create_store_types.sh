@@ -432,6 +432,15 @@ curl -s -X POST "https://${KEYFACTOR_HOSTNAME}/${KEYFACTOR_API_PATH}/Certificate
       "Description": "Recommended to be set to the default value of 'Y'.  For a detailed explanation of this setting, please refer to [Use Shell Commands Setting](#use-shell-commands-setting)"
     },
     {
+      "Name": "PostJobApplicationRestart",
+      "DisplayName": "Post Job Application Restart",
+      "Required": false,
+      "DependsOn": "",
+      "Type": "MultipleChoice",
+      "DefaultValue": "None",
+      "Description": "Select the command to be run after a Management Add or ODKG job executes.  Leave unselected if no command is desired.  No options are initially delivered for RFPkcs12."
+    },
+    {
       "Name": "RequiresLegacyEncryption",
       "DisplayName": "Requires Legacy Encryption",
       "Required": false,
@@ -568,6 +577,15 @@ curl -s -X POST "https://${KEYFACTOR_HOSTNAME}/${KEYFACTOR_API_PATH}/Certificate
       "Description": "Recommended to be set to the default value of 'Y'.  For a detailed explanation of this setting, please refer to [Use Shell Commands Setting](#use-shell-commands-setting)"
     },
     {
+      "Name": "PostJobApplicationRestart",
+      "DisplayName": "Post Job Application Restart",
+      "Required": false,
+      "DependsOn": "",
+      "Type": "MultipleChoice",
+      "DefaultValue": "None",
+      "Description": "Select the command to be run after a Management Add or ODKG job executes.  Leave unselected if no command is desired.  No options are initially delivered for RFDER."
+    },
+    {
       "Name": "RequiresLegacyEncryption",
       "DisplayName": "Requires Legacy Encryption",
       "Required": false,
@@ -693,6 +711,15 @@ curl -s -X POST "https://${KEYFACTOR_HOSTNAME}/${KEYFACTOR_API_PATH}/Certificate
       "Type": "Bool",
       "DefaultValue": "True",
       "Description": "Recommended to be set to the default value of 'Y'.  For a detailed explanation of this setting, please refer to [Use Shell Commands Setting](#use-shell-commands-setting)"
+    },
+    {
+      "Name": "PostJobApplicationRestart",
+      "DisplayName": "Post Job Application Restart",
+      "Required": false,
+      "DependsOn": "",
+      "Type": "MultipleChoice",
+      "DefaultValue": "None",
+      "Description": "Select the command to be run after a Management Add or ODKG job executes.  Leave unselected if no command is desired.  No options are initially delivered for RFKDB."
     },
     {
       "Name": "RequiresLegacyEncryption",
@@ -829,6 +856,15 @@ curl -s -X POST "https://${KEYFACTOR_HOSTNAME}/${KEYFACTOR_API_PATH}/Certificate
       "Type": "Bool",
       "DefaultValue": "True",
       "Description": "Recommended to be set to the default value of 'Y'.  For a detailed explanation of this setting, please refer to [Use Shell Commands Setting](#use-shell-commands-setting)"
+    },
+    {
+      "Name": "PostJobApplicationRestart",
+      "DisplayName": "Post Job Application Restart",
+      "Required": false,
+      "DependsOn": "",
+      "Type": "MultipleChoice",
+      "DefaultValue": "None",
+      "Description": "Select the command to be run after a Management Add or ODKG job executes.  Leave unselected if no command is desired.  No options are initially delivered for RFORA."
     },
     {
       "Name": "RequiresLegacyEncryption",

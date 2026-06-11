@@ -697,6 +697,7 @@ the Keyfactor Command Portal
    | IncludePortInSPN | Include Port in SPN for WinRM | Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations. | Bool | False | 🔲 Unchecked |
    | SSHPort | SSH Port | Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting. | String |  | 🔲 Unchecked |
    | UseShellCommands | Use Shell Commands | Recommended to be set to the default value of 'Y'.  For a detailed explanation of this setting, please refer to [Use Shell Commands Setting](#use-shell-commands-setting) | Bool | True | 🔲 Unchecked |
+   | PostJobApplicationRestart | Post Job Application Restart | Select the command to be run after a Management Add or ODKG job executes.  Leave unselected if no command is desired.  No options are initially delivered for RFPkcs12. | MultipleChoice | None | 🔲 Unchecked |
    | RequiresLegacyEncryption | Requires Legacy Encryption | Optional setting.  If set to true, PkcsObjectIdentifiers.PbeWithShaAnd3KeyTripleDesCbc and PkcsObjectIdentifiers.PbewithShaAnd40BitRC2Cbc algorithms will be used to create the underlying BouncyCastle Pkcs12Store used to feed the certificate store being managed during Management jobs.  Should be left not implemented or set to False for most instances. | Bool | False | 🔲 Unchecked |
 
    The Custom Fields tab should look like this:
@@ -766,6 +767,13 @@ the Keyfactor Command Portal
 
    ![RFPkcs12 Custom Field - UseShellCommands](docsource/images/RFPkcs12-custom-field-UseShellCommands-dialog.svg)
    ![RFPkcs12 Custom Field - UseShellCommands](docsource/images/RFPkcs12-custom-field-UseShellCommands-validation-options-dialog.svg)
+
+
+   ###### Post Job Application Restart
+   Select the command to be run after a Management Add or ODKG job executes.  Leave unselected if no command is desired.  No options are initially delivered for RFPkcs12.
+
+   ![RFPkcs12 Custom Field - PostJobApplicationRestart](docsource/images/RFPkcs12-custom-field-PostJobApplicationRestart-dialog.svg)
+   ![RFPkcs12 Custom Field - PostJobApplicationRestart](docsource/images/RFPkcs12-custom-field-PostJobApplicationRestart-validation-options-dialog.svg)
 
 
    ###### Requires Legacy Encryption
@@ -879,6 +887,7 @@ the Keyfactor Command Portal
    | IncludePortInSPN | Include Port in SPN for WinRM | Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations. | Bool | False | 🔲 Unchecked |
    | SSHPort | SSH Port | Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting. | String |  | 🔲 Unchecked |
    | UseShellCommands | Use Shell Commands | Recommended to be set to the default value of 'Y'.  For a detailed explanation of this setting, please refer to [Use Shell Commands Setting](#use-shell-commands-setting) | Bool | True | 🔲 Unchecked |
+   | PostJobApplicationRestart | Post Job Application Restart | Select the command to be run after a Management Add or ODKG job executes.  Leave unselected if no command is desired.  No options are initially delivered for RFDER. | MultipleChoice | None | 🔲 Unchecked |
    | RequiresLegacyEncryption | Requires Legacy Encryption | Optional setting.  If set to true, PkcsObjectIdentifiers.PbeWithShaAnd3KeyTripleDesCbc and PkcsObjectIdentifiers.PbewithShaAnd40BitRC2Cbc algorithms will be used to create the underlying BouncyCastle Pkcs12Store used to feed the certificate store being managed during Management jobs.  Should be left not implemented or set to False for most instances. | Bool | False | 🔲 Unchecked |
 
    The Custom Fields tab should look like this:
@@ -955,6 +964,13 @@ the Keyfactor Command Portal
 
    ![RFDER Custom Field - UseShellCommands](docsource/images/RFDER-custom-field-UseShellCommands-dialog.svg)
    ![RFDER Custom Field - UseShellCommands](docsource/images/RFDER-custom-field-UseShellCommands-validation-options-dialog.svg)
+
+
+   ###### Post Job Application Restart
+   Select the command to be run after a Management Add or ODKG job executes.  Leave unselected if no command is desired.  No options are initially delivered for RFDER.
+
+   ![RFDER Custom Field - PostJobApplicationRestart](docsource/images/RFDER-custom-field-PostJobApplicationRestart-dialog.svg)
+   ![RFDER Custom Field - PostJobApplicationRestart](docsource/images/RFDER-custom-field-PostJobApplicationRestart-validation-options-dialog.svg)
 
 
    ###### Requires Legacy Encryption
@@ -1070,6 +1086,7 @@ the Keyfactor Command Portal
    | IncludePortInSPN | Include Port in SPN for WinRM | Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations. | Bool | False | 🔲 Unchecked |
    | SSHPort | SSH Port | Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting. | String |  | 🔲 Unchecked |
    | UseShellCommands | Use Shell Commands | Recommended to be set to the default value of 'Y'.  For a detailed explanation of this setting, please refer to [Use Shell Commands Setting](#use-shell-commands-setting) | Bool | True | 🔲 Unchecked |
+   | PostJobApplicationRestart | Post Job Application Restart | Select the command to be run after a Management Add or ODKG job executes.  Leave unselected if no command is desired.  No options are initially delivered for RFKDB. | MultipleChoice | None | 🔲 Unchecked |
    | RequiresLegacyEncryption | Requires Legacy Encryption | Optional setting.  If set to true, PkcsObjectIdentifiers.PbeWithShaAnd3KeyTripleDesCbc and PkcsObjectIdentifiers.PbewithShaAnd40BitRC2Cbc algorithms will be used to create the underlying BouncyCastle Pkcs12Store used to feed the certificate store being managed during Management jobs.  Should be left not implemented or set to False for most instances. | Bool | False | 🔲 Unchecked |
 
    The Custom Fields tab should look like this:
@@ -1139,6 +1156,13 @@ the Keyfactor Command Portal
 
    ![RFKDB Custom Field - UseShellCommands](docsource/images/RFKDB-custom-field-UseShellCommands-dialog.svg)
    ![RFKDB Custom Field - UseShellCommands](docsource/images/RFKDB-custom-field-UseShellCommands-validation-options-dialog.svg)
+
+
+   ###### Post Job Application Restart
+   Select the command to be run after a Management Add or ODKG job executes.  Leave unselected if no command is desired.  No options are initially delivered for RFKDB.
+
+   ![RFKDB Custom Field - PostJobApplicationRestart](docsource/images/RFKDB-custom-field-PostJobApplicationRestart-dialog.svg)
+   ![RFKDB Custom Field - PostJobApplicationRestart](docsource/images/RFKDB-custom-field-PostJobApplicationRestart-validation-options-dialog.svg)
 
 
    ###### Requires Legacy Encryption
@@ -1256,6 +1280,7 @@ the Keyfactor Command Portal
    | IncludePortInSPN | Include Port in SPN for WinRM | Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations. | Bool | False | 🔲 Unchecked |
    | SSHPort | SSH Port | Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting. | String |  | 🔲 Unchecked |
    | UseShellCommands | Use Shell Commands | Recommended to be set to the default value of 'Y'.  For a detailed explanation of this setting, please refer to [Use Shell Commands Setting](#use-shell-commands-setting) | Bool | True | 🔲 Unchecked |
+   | PostJobApplicationRestart | Post Job Application Restart | Select the command to be run after a Management Add or ODKG job executes.  Leave unselected if no command is desired.  No options are initially delivered for RFORA. | MultipleChoice | None | 🔲 Unchecked |
    | RequiresLegacyEncryption | Requires Legacy Encryption | Optional setting.  If set to true, PkcsObjectIdentifiers.PbeWithShaAnd3KeyTripleDesCbc and PkcsObjectIdentifiers.PbewithShaAnd40BitRC2Cbc algorithms will be used to create the underlying BouncyCastle Pkcs12Store used to feed the certificate store being managed during Management jobs.  Should be left not implemented or set to False for most instances. | Bool | False | 🔲 Unchecked |
 
    The Custom Fields tab should look like this:
@@ -1332,6 +1357,13 @@ the Keyfactor Command Portal
 
    ![RFORA Custom Field - UseShellCommands](docsource/images/RFORA-custom-field-UseShellCommands-dialog.svg)
    ![RFORA Custom Field - UseShellCommands](docsource/images/RFORA-custom-field-UseShellCommands-validation-options-dialog.svg)
+
+
+   ###### Post Job Application Restart
+   Select the command to be run after a Management Add or ODKG job executes.  Leave unselected if no command is desired.  No options are initially delivered for RFORA.
+
+   ![RFORA Custom Field - PostJobApplicationRestart](docsource/images/RFORA-custom-field-PostJobApplicationRestart-dialog.svg)
+   ![RFORA Custom Field - PostJobApplicationRestart](docsource/images/RFORA-custom-field-PostJobApplicationRestart-validation-options-dialog.svg)
 
 
    ###### Requires Legacy Encryption
@@ -1690,6 +1722,7 @@ Please refer to the **Universal Orchestrator (remote)** usage section ([PAM prov
    | IncludePortInSPN | Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations. |
    | SSHPort | Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting. |
    | UseShellCommands | Recommended to be set to the default value of 'Y'.  For a detailed explanation of this setting, please refer to [Use Shell Commands Setting](#use-shell-commands-setting) |
+   | PostJobApplicationRestart | Select the command to be run after a Management Add or ODKG job executes.  Leave unselected if no command is desired.  No options are initially delivered for RFPkcs12. |
    | RequiresLegacyEncryption | Optional setting.  If set to true, PkcsObjectIdentifiers.PbeWithShaAnd3KeyTripleDesCbc and PkcsObjectIdentifiers.PbewithShaAnd40BitRC2Cbc algorithms will be used to create the underlying BouncyCastle Pkcs12Store used to feed the certificate store being managed during Management jobs.  Should be left not implemented or set to False for most instances. |
 
 </details>
@@ -1724,6 +1757,7 @@ Please refer to the **Universal Orchestrator (remote)** usage section ([PAM prov
    | Properties.IncludePortInSPN | Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations. |
    | Properties.SSHPort | Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting. |
    | Properties.UseShellCommands | Recommended to be set to the default value of 'Y'.  For a detailed explanation of this setting, please refer to [Use Shell Commands Setting](#use-shell-commands-setting) |
+   | Properties.PostJobApplicationRestart | Select the command to be run after a Management Add or ODKG job executes.  Leave unselected if no command is desired.  No options are initially delivered for RFPkcs12. |
    | Properties.RequiresLegacyEncryption | Optional setting.  If set to true, PkcsObjectIdentifiers.PbeWithShaAnd3KeyTripleDesCbc and PkcsObjectIdentifiers.PbewithShaAnd40BitRC2Cbc algorithms will be used to create the underlying BouncyCastle Pkcs12Store used to feed the certificate store being managed during Management jobs.  Should be left not implemented or set to False for most instances. |
 
 3. **Import the CSV file to create the certificate stores**
@@ -1788,6 +1822,7 @@ Please refer to the **Universal Orchestrator (remote)** usage section ([PAM prov
    | IncludePortInSPN | Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations. |
    | SSHPort | Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting. |
    | UseShellCommands | Recommended to be set to the default value of 'Y'.  For a detailed explanation of this setting, please refer to [Use Shell Commands Setting](#use-shell-commands-setting) |
+   | PostJobApplicationRestart | Select the command to be run after a Management Add or ODKG job executes.  Leave unselected if no command is desired.  No options are initially delivered for RFDER. |
    | RequiresLegacyEncryption | Optional setting.  If set to true, PkcsObjectIdentifiers.PbeWithShaAnd3KeyTripleDesCbc and PkcsObjectIdentifiers.PbewithShaAnd40BitRC2Cbc algorithms will be used to create the underlying BouncyCastle Pkcs12Store used to feed the certificate store being managed during Management jobs.  Should be left not implemented or set to False for most instances. |
 
 </details>
@@ -1823,6 +1858,7 @@ Please refer to the **Universal Orchestrator (remote)** usage section ([PAM prov
    | Properties.IncludePortInSPN | Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations. |
    | Properties.SSHPort | Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting. |
    | Properties.UseShellCommands | Recommended to be set to the default value of 'Y'.  For a detailed explanation of this setting, please refer to [Use Shell Commands Setting](#use-shell-commands-setting) |
+   | Properties.PostJobApplicationRestart | Select the command to be run after a Management Add or ODKG job executes.  Leave unselected if no command is desired.  No options are initially delivered for RFDER. |
    | Properties.RequiresLegacyEncryption | Optional setting.  If set to true, PkcsObjectIdentifiers.PbeWithShaAnd3KeyTripleDesCbc and PkcsObjectIdentifiers.PbewithShaAnd40BitRC2Cbc algorithms will be used to create the underlying BouncyCastle Pkcs12Store used to feed the certificate store being managed during Management jobs.  Should be left not implemented or set to False for most instances. |
 
 3. **Import the CSV file to create the certificate stores**
@@ -1886,6 +1922,7 @@ Please refer to the **Universal Orchestrator (remote)** usage section ([PAM prov
    | IncludePortInSPN | Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations. |
    | SSHPort | Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting. |
    | UseShellCommands | Recommended to be set to the default value of 'Y'.  For a detailed explanation of this setting, please refer to [Use Shell Commands Setting](#use-shell-commands-setting) |
+   | PostJobApplicationRestart | Select the command to be run after a Management Add or ODKG job executes.  Leave unselected if no command is desired.  No options are initially delivered for RFKDB. |
    | RequiresLegacyEncryption | Optional setting.  If set to true, PkcsObjectIdentifiers.PbeWithShaAnd3KeyTripleDesCbc and PkcsObjectIdentifiers.PbewithShaAnd40BitRC2Cbc algorithms will be used to create the underlying BouncyCastle Pkcs12Store used to feed the certificate store being managed during Management jobs.  Should be left not implemented or set to False for most instances. |
 
 </details>
@@ -1920,6 +1957,7 @@ Please refer to the **Universal Orchestrator (remote)** usage section ([PAM prov
    | Properties.IncludePortInSPN | Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations. |
    | Properties.SSHPort | Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting. |
    | Properties.UseShellCommands | Recommended to be set to the default value of 'Y'.  For a detailed explanation of this setting, please refer to [Use Shell Commands Setting](#use-shell-commands-setting) |
+   | Properties.PostJobApplicationRestart | Select the command to be run after a Management Add or ODKG job executes.  Leave unselected if no command is desired.  No options are initially delivered for RFKDB. |
    | Properties.RequiresLegacyEncryption | Optional setting.  If set to true, PkcsObjectIdentifiers.PbeWithShaAnd3KeyTripleDesCbc and PkcsObjectIdentifiers.PbewithShaAnd40BitRC2Cbc algorithms will be used to create the underlying BouncyCastle Pkcs12Store used to feed the certificate store being managed during Management jobs.  Should be left not implemented or set to False for most instances. |
 
 3. **Import the CSV file to create the certificate stores**
@@ -1984,6 +2022,7 @@ Please refer to the **Universal Orchestrator (remote)** usage section ([PAM prov
    | IncludePortInSPN | Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations. |
    | SSHPort | Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting. |
    | UseShellCommands | Recommended to be set to the default value of 'Y'.  For a detailed explanation of this setting, please refer to [Use Shell Commands Setting](#use-shell-commands-setting) |
+   | PostJobApplicationRestart | Select the command to be run after a Management Add or ODKG job executes.  Leave unselected if no command is desired.  No options are initially delivered for RFORA. |
    | RequiresLegacyEncryption | Optional setting.  If set to true, PkcsObjectIdentifiers.PbeWithShaAnd3KeyTripleDesCbc and PkcsObjectIdentifiers.PbewithShaAnd40BitRC2Cbc algorithms will be used to create the underlying BouncyCastle Pkcs12Store used to feed the certificate store being managed during Management jobs.  Should be left not implemented or set to False for most instances. |
 
 </details>
@@ -2019,6 +2058,7 @@ Please refer to the **Universal Orchestrator (remote)** usage section ([PAM prov
    | Properties.IncludePortInSPN | Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations. |
    | Properties.SSHPort | Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting. |
    | Properties.UseShellCommands | Recommended to be set to the default value of 'Y'.  For a detailed explanation of this setting, please refer to [Use Shell Commands Setting](#use-shell-commands-setting) |
+   | Properties.PostJobApplicationRestart | Select the command to be run after a Management Add or ODKG job executes.  Leave unselected if no command is desired.  No options are initially delivered for RFORA. |
    | Properties.RequiresLegacyEncryption | Optional setting.  If set to true, PkcsObjectIdentifiers.PbeWithShaAnd3KeyTripleDesCbc and PkcsObjectIdentifiers.PbewithShaAnd40BitRC2Cbc algorithms will be used to create the underlying BouncyCastle Pkcs12Store used to feed the certificate store being managed during Management jobs.  Should be left not implemented or set to False for most instances. |
 
 3. **Import the CSV file to create the certificate stores**
