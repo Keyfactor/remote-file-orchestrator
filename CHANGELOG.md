@@ -2,6 +2,7 @@ v4.1.0
 - Add custom field to select legacy encryption for certificate stores
 - Improve error message when attempting a management or ODKG job and Ignore Private Key on Inventory is selected.
 - For RFKDB, retry gskcapicmd commands without "bash" on Linux if gskcapicmd CLI utility is a binary file.
+- Added Post Job Application Restart Entry Parameter for RFPkcs12, RFDER, RFORA and RFKDB.  Intitialized each with a default "None" option.
 
 v4.0.0
 - Added ability to run post job commands for Management-Add and ODKG jobs.

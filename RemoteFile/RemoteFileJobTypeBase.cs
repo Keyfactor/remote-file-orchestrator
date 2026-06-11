@@ -17,6 +17,8 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
 {
     public abstract class RemoteFileJobTypeBase
     {
+        private const string POST_JOB_APPLICATION_RESTART_NO_VALUE = "None";
+
         public IPAMSecretResolver _resolver;
         internal abstract ICertificateStoreSerializer GetCertificateStoreSerializer(string storeProperties);
 
@@ -75,7 +77,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
                 ApplicationSettings.UseShellCommands :
                 properties.UseShellCommands;
 
-            PostJobApplicationRestart = properties.PostJobApplicationRestart == null || string.IsNullOrEmpty(properties.PostJobApplicationRestart.Value) ?
+            PostJobApplicationRestart = properties.PostJobApplicationRestart == null || string.IsNullOrEmpty(properties.PostJobApplicationRestart.Value) || properties.PostJobApplicationRestart.Value == POST_JOB_APPLICATION_RESTART_NO_VALUE ?
                 null :
                 properties.PostJobApplicationRestart;
 
