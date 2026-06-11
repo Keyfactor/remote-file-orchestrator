@@ -17,6 +17,8 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
 {
     public abstract class RemoteFileJobTypeBase
     {
+        private const string POST_JOB_APPLICATION_RESTART_NO_VALUE = "None";
+
         public IPAMSecretResolver _resolver;
         internal abstract ICertificateStoreSerializer GetCertificateStoreSerializer(string storeProperties);
 
@@ -30,6 +32,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
         internal bool CreateCSROnDevice { get; set; }
         internal bool UseShellCommands { get; set; }
         internal string PostJobApplicationRestart {  get; set; }
+        internal bool RequiresLegacyEncryption { get; set; }
         internal string KeyType { get; set; }
         internal int KeySize { get; set; }
         internal string SubjectText { get; set; }
@@ -74,9 +77,13 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
                 ApplicationSettings.UseShellCommands :
                 properties.UseShellCommands;
 
-            PostJobApplicationRestart = properties.PostJobApplicationRestart == null || string.IsNullOrEmpty(properties.PostJobApplicationRestart.Value) ?
+            PostJobApplicationRestart = properties.PostJobApplicationRestart == null || string.IsNullOrEmpty(properties.PostJobApplicationRestart.Value) || properties.PostJobApplicationRestart.Value == POST_JOB_APPLICATION_RESTART_NO_VALUE ?
                 null :
                 properties.PostJobApplicationRestart;
+
+            RequiresLegacyEncryption = properties.RequiresLegacyEncryption == null || string.IsNullOrEmpty(properties.RequiresLegacyEncryption.Value) ?
+                false :
+                properties.RequiresLegacyEncryption;
 
             if (config.JobProperties != null)
             {
