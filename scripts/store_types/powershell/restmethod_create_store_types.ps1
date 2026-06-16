@@ -813,15 +813,6 @@ $Body = @'
       "Description": "The SudoImpersonatingUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'.  Overrides [config.json](#post-installation) DefaultSudoImpersonatedUser setting."
     },
     {
-      "Name": "WorkFolder",
-      "DisplayName": "Location to use for creation/removal of work files",
-      "Required": true,
-      "DependsOn": "",
-      "Type": "String",
-      "DefaultValue": "",
-      "Description": "The WorkFolder field should contain the path on the managed server where temporary work files can be created, modified, and deleted during Inventory and Management jobs. Example: '/path/to/workfolder'."
-    },
-    {
       "Name": "RemoveRootCertificate",
       "DisplayName": "Remove Root Certificate from Chain",
       "Required": false,
