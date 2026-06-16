@@ -69,6 +69,9 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.PEM
             string storeContents = Encoding.ASCII.GetString(storeContentBytes);
             X509CertificateEntry[] certificates = GetCertificates(storeContents);
 
+            if (!isInventory && IgnorePrivateKeyOnInventory)
+                throw new RemoteFileException("RFPEM stores with Ignore Private Key On Inventory set to True do not support Management or ODKG jobs.  Only Inventory may be run.");
+
             if (IsTrustStore || (isInventory && IgnorePrivateKeyOnInventory))
             {
                 foreach (X509CertificateEntry certificate in certificates)

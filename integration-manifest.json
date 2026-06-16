@@ -132,6 +132,15 @@
                       "Type": "MultipleChoice",
                       "DefaultValue": "Apache Tomcat Restart,Jetty Restart",
                       "Description": "Select the command to be run after a Management Add or ODKG job executes.  Leave unselected if no command is desired."
+                    },
+                    {
+                      "Name": "RequiresLegacyEncryption",
+                      "DisplayName": "Requires Legacy Encryption",
+                      "Required": false,
+                      "DependsOn": "",
+                      "Type": "Bool",
+                      "DefaultValue": "False",
+                      "Description": "Optional setting.  If set to true, PkcsObjectIdentifiers.PbeWithShaAnd3KeyTripleDesCbc and PkcsObjectIdentifiers.PbewithShaAnd40BitRC2Cbc algorithms will be used to create the underlying BouncyCastle Pkcs12Store used to feed the certificate store being managed during Management jobs.  Should be left not implemented or set to False for most instances."
                     }
                   ],
                     "EntryParameters": [],
@@ -291,6 +300,15 @@
                       "Type": "MultipleChoice",
                       "DefaultValue": "Apache HTTPD Restart,NGNIX Restart,HAProxy Restart,Envoy Proxy Restart",
                       "Description": "Select the command to be run after a Management Add or ODKG job executes.  Leave unselected if no command is desired."
+                    },
+                    {
+                      "Name": "RequiresLegacyEncryption",
+                      "DisplayName": "Requires Legacy Encryption",
+                      "Required": false,
+                      "DependsOn": "",
+                      "Type": "Bool",
+                      "DefaultValue": "False",
+                      "Description": "Optional setting.  If set to true, PkcsObjectIdentifiers.PbeWithShaAnd3KeyTripleDesCbc and PkcsObjectIdentifiers.PbewithShaAnd40BitRC2Cbc algorithms will be used to create the underlying BouncyCastle Pkcs12Store used to feed the certificate store being managed during Management jobs.  Should be left not implemented or set to False for most instances."
                     }
                   ],
                     "EntryParameters": [],
@@ -405,6 +423,24 @@
                       "Type": "Bool",
                       "DefaultValue": "True",
                       "Description": "Recommended to be set to the default value of 'Y'.  For a detailed explanation of this setting, please refer to [Use Shell Commands Setting](#use-shell-commands-setting)"
+                    },
+                    {
+                      "Name": "PostJobApplicationRestart",
+                      "DisplayName": "Post Job Application Restart",
+                      "Required": false,
+                      "DependsOn": "",
+                      "Type": "MultipleChoice",
+                      "DefaultValue": "None",
+                      "Description": "Select the command to be run after a Management Add or ODKG job executes.  Leave unselected if no command is desired.  No options are initially delivered for RFPkcs12."
+                    },
+                    {
+                      "Name": "RequiresLegacyEncryption",
+                      "DisplayName": "Requires Legacy Encryption",
+                      "Required": false,
+                      "DependsOn": "",
+                      "Type": "Bool",
+                      "DefaultValue": "False",
+                      "Description": "Optional setting.  If set to true, PkcsObjectIdentifiers.PbeWithShaAnd3KeyTripleDesCbc and PkcsObjectIdentifiers.PbewithShaAnd40BitRC2Cbc algorithms will be used to create the underlying BouncyCastle Pkcs12Store used to feed the certificate store being managed during Management jobs.  Should be left not implemented or set to False for most instances."
                     }
                   ],
                     "EntryParameters": [],
@@ -528,6 +564,24 @@
                       "Type": "Bool",
                       "DefaultValue": "True",
                       "Description": "Recommended to be set to the default value of 'Y'.  For a detailed explanation of this setting, please refer to [Use Shell Commands Setting](#use-shell-commands-setting)"
+                    },
+                    {
+                      "Name": "PostJobApplicationRestart",
+                      "DisplayName": "Post Job Application Restart",
+                      "Required": false,
+                      "DependsOn": "",
+                      "Type": "MultipleChoice",
+                      "DefaultValue": "None",
+                      "Description": "Select the command to be run after a Management Add or ODKG job executes.  Leave unselected if no command is desired.  No options are initially delivered for RFDER."
+                    },
+                    {
+                      "Name": "RequiresLegacyEncryption",
+                      "DisplayName": "Requires Legacy Encryption",
+                      "Required": false,
+                      "DependsOn": "",
+                      "Type": "Bool",
+                      "DefaultValue": "False",
+                      "Description": "Optional setting.  If set to true, PkcsObjectIdentifiers.PbeWithShaAnd3KeyTripleDesCbc and PkcsObjectIdentifiers.PbewithShaAnd40BitRC2Cbc algorithms will be used to create the underlying BouncyCastle Pkcs12Store used to feed the certificate store being managed during Management jobs.  Should be left not implemented or set to False for most instances."
                     }
                   ],
                     "EntryParameters": [],
@@ -642,6 +696,24 @@
                       "Type": "Bool",
                       "DefaultValue": "True",
                       "Description": "Recommended to be set to the default value of 'Y'.  For a detailed explanation of this setting, please refer to [Use Shell Commands Setting](#use-shell-commands-setting)"
+                    },
+                    {
+                      "Name": "PostJobApplicationRestart",
+                      "DisplayName": "Post Job Application Restart",
+                      "Required": false,
+                      "DependsOn": "",
+                      "Type": "MultipleChoice",
+                      "DefaultValue": "None",
+                      "Description": "Select the command to be run after a Management Add or ODKG job executes.  Leave unselected if no command is desired.  No options are initially delivered for RFKDB."
+                    },
+                    {
+                      "Name": "RequiresLegacyEncryption",
+                      "DisplayName": "Requires Legacy Encryption",
+                      "Required": false,
+                      "DependsOn": "",
+                      "Type": "Bool",
+                      "DefaultValue": "False",
+                      "Description": "Optional setting.  If set to true, PkcsObjectIdentifiers.PbeWithShaAnd3KeyTripleDesCbc and PkcsObjectIdentifiers.PbewithShaAnd40BitRC2Cbc algorithms will be used to create the underlying BouncyCastle Pkcs12Store used to feed the certificate store being managed during Management jobs.  Should be left not implemented or set to False for most instances."
                     }
                   ],
                     "EntryParameters": [],
@@ -722,15 +794,6 @@
                       "Description": "The SudoImpersonatingUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'.  Overrides [config.json](#post-installation) DefaultSudoImpersonatedUser setting."
                     },
                     {
-                      "Name": "WorkFolder",
-                      "DisplayName": "Location to use for creation/removal of work files",
-                      "Required": true,
-                      "DependsOn": "",
-                      "Type": "String",
-                      "DefaultValue": "",
-                      "Description": "The WorkFolder field should contain the path on the managed server where temporary work files can be created, modified, and deleted during Inventory and Management jobs. Example: '/path/to/workfolder'."
-                    },
-                    {
                       "Name": "RemoveRootCertificate",
                       "DisplayName": "Remove Root Certificate from Chain",
                       "Required": false,
@@ -765,11 +828,29 @@
                       "Type": "Bool",
                       "DefaultValue": "True",
                       "Description": "Recommended to be set to the default value of 'Y'.  For a detailed explanation of this setting, please refer to [Use Shell Commands Setting](#use-shell-commands-setting)"
+                    },
+                    {
+                      "Name": "PostJobApplicationRestart",
+                      "DisplayName": "Post Job Application Restart",
+                      "Required": false,
+                      "DependsOn": "",
+                      "Type": "MultipleChoice",
+                      "DefaultValue": "None",
+                      "Description": "Select the command to be run after a Management Add or ODKG job executes.  Leave unselected if no command is desired.  No options are initially delivered for RFORA."
+                    },
+                    {
+                      "Name": "RequiresLegacyEncryption",
+                      "DisplayName": "Requires Legacy Encryption",
+                      "Required": false,
+                      "DependsOn": "",
+                      "Type": "Bool",
+                      "DefaultValue": "False",
+                      "Description": "Optional setting.  If set to true, PkcsObjectIdentifiers.PbeWithShaAnd3KeyTripleDesCbc and PkcsObjectIdentifiers.PbewithShaAnd40BitRC2Cbc algorithms will be used to create the underlying BouncyCastle Pkcs12Store used to feed the certificate store being managed during Management jobs.  Should be left not implemented or set to False for most instances."
                     }
                   ],
                     "EntryParameters": [],
                     "ClientMachineDescription": "The Client Machine field should contain the DNS name or IP address of the remote orchestrated server for Linux orchestrated servers, formatted as a URL (protocol://dns-or-ip:port) for Windows orchestrated servers, or '1.1.1.1|LocalMachine' for local agents. Example: 'https://myserver.mydomain.com:5986' or '1.1.1.1|LocalMachine' for local access.",
-                    "StorePathDescription": "The Store Path field should contain the full path and file name of the Oracle Wallet, including the 'eWallet.p12' file name by convention. Example: '/path/to/eWallet.p12' or 'c:\\path\\to\\eWallet.p12'."
+                    "StorePathDescription": "The Store Path field should contain the full path and file name of the Oracle Wallet, including the 'eWallet.p12' file name that is generally used by convention. Example: '/path/to/eWallet.p12' or 'c:\\path\\to\\eWallet.p12'."
                 }
             ]
         }
