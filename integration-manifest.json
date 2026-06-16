@@ -794,15 +794,6 @@
                       "Description": "The SudoImpersonatingUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'.  Overrides [config.json](#post-installation) DefaultSudoImpersonatedUser setting."
                     },
                     {
-                      "Name": "WorkFolder",
-                      "DisplayName": "Location to use for creation/removal of work files",
-                      "Required": true,
-                      "DependsOn": "",
-                      "Type": "String",
-                      "DefaultValue": "",
-                      "Description": "The WorkFolder field should contain the path on the managed server where temporary work files can be created, modified, and deleted during Inventory and Management jobs. Example: '/path/to/workfolder'."
-                    },
-                    {
                       "Name": "RemoveRootCertificate",
                       "DisplayName": "Remove Root Certificate from Chain",
                       "Required": false,
@@ -859,7 +850,7 @@
                   ],
                     "EntryParameters": [],
                     "ClientMachineDescription": "The Client Machine field should contain the DNS name or IP address of the remote orchestrated server for Linux orchestrated servers, formatted as a URL (protocol://dns-or-ip:port) for Windows orchestrated servers, or '1.1.1.1|LocalMachine' for local agents. Example: 'https://myserver.mydomain.com:5986' or '1.1.1.1|LocalMachine' for local access.",
-                    "StorePathDescription": "The Store Path field should contain the full path and file name of the Oracle Wallet, including the 'eWallet.p12' file name by convention. Example: '/path/to/eWallet.p12' or 'c:\\path\\to\\eWallet.p12'."
+                    "StorePathDescription": "The Store Path field should contain the full path and file name of the Oracle Wallet, including the 'eWallet.p12' file name that is generally used by convention. Example: '/path/to/eWallet.p12' or 'c:\\path\\to\\eWallet.p12'."
                 }
             ]
         }
