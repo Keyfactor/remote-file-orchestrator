@@ -276,7 +276,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
                 catch (Exception ex)
                 {
                     scpError = true;
-                    _logger.LogError($"Upload Exception: {RemoteFileException.FlattenExceptionMessages(ex, "Exception during SCP download...")}");
+                    _logger.LogError($"Download Exception: {RemoteFileException.FlattenExceptionMessages(ex, "Exception during SCP download...")}");
                     _logger.LogDebug($"SCP download failed.  Attempting with SFTP protocol...");
                 }
                 finally

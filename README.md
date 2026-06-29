@@ -64,25 +64,19 @@ destination store file will be recreated. When this occurs, current AES encrypti
 certificates and certificate store files.
 
 The Remote File Universal Orchestrator extension implements 6 Certificate Store Types. Depending on your use case, you may elect to use one, or all of these Certificate Store Types. Descriptions of each are provided below.
-
 - [RFJKS](#RFJKS)
-
 - [RFPEM](#RFPEM)
-
 - [RFPkcs12](#RFPkcs12)
-
 - [RFDER](#RFDER)
-
 - [RFKDB](#RFKDB)
-
 - [RFORA](#RFORA)
-
 
 ## Compatibility
 
 This integration is compatible with Keyfactor Universal Orchestrator version 10.4 and later.
 
 ## Support
+
 The Remote File Universal Orchestrator extension is supported by Keyfactor. If you require support for any issues or have feature request, please open a support ticket by either contacting your Keyfactor representative or via the Keyfactor Support Portal at https://support.keyfactor.com.
 
 > If you want to contribute bug fixes or additional enhancements, use the **[Pull requests](../../pulls)** tab.
@@ -90,7 +84,6 @@ The Remote File Universal Orchestrator extension is supported by Keyfactor. If y
 ## Requirements & Prerequisites
 
 Before installing the Remote File Universal Orchestrator extension, we recommend that you install [kfutil](https://github.com/Keyfactor/kfutil). Kfutil is a command-line tool that simplifies the process of creating store types, installing extensions, and instantiating certificate stores in Keyfactor Command.
-
 
 <details>
 <summary><b>Certificate stores hosted on Linux servers:</b></summary>
@@ -171,7 +164,6 @@ creating certificate stores for the `RemoteFile` Orchestrator Extension.
 C
 Please consult with your system administrator for more information on configuring `SSH/SCP/SFTP` or `WinRM` in your environment.
 
-
 ## Certificate Store Types
 
 To use the Remote File Universal Orchestrator extension, you **must** create the Certificate Store Types required for your use-case. This only needs to happen _once_ per Keyfactor Command instance.
@@ -182,7 +174,6 @@ The Remote File Universal Orchestrator extension implements 6 Certificate Store 
 
 <details><summary>Click to expand details</summary>
 
-
 The `RFJKS` store type can be used to manage java keystores of types `JKS` or `PKCS12`.  If creating a new java keystore 
 and adding a certificate all via Keyfactor Command, the created java keystore will be of type `PKCS12`, as java keystores 
 of type `JKS` have been deprecated as of `JDK 9`.
@@ -192,24 +183,22 @@ of type `JKS` have been deprecated as of `JDK 9`.
 2. One-to-many key entries - One-to-many certificates with private keys and optionally the full certificate chain.  Each certificate is identified with a custom alias.
 3. A mix of trust and key entries.
 
-
-
-
 #### Supported Operations
 
-| Operation    | Is Supported                                                                                                           |
-|--------------|------------------------------------------------------------------------------------------------------------------------|
-| Add          | ✅ Checked        |
-| Remove       | ✅ Checked     |
-| Discovery    | ✅ Checked  |
+| Operation    | Is Supported |
+|--------------|--------------|
+| Add          | ✅ Checked |
+| Remove       | ✅ Checked |
+| Discovery    | ✅ Checked |
 | Reenrollment | ✅ Checked |
-| Create       | ✅ Checked     |
+| Create       | ✅ Checked |
 
 #### Store Type Creation
 
 ##### Using kfutil:
 `kfutil` is a custom CLI for the Keyfactor Command API and can be used to create certificate store types.
 For more information on [kfutil](https://github.com/Keyfactor/kfutil) check out the [docs](https://github.com/Keyfactor/kfutil?tab=readme-ov-file#quickstart)
+
    <details><summary>Click to expand RFJKS kfutil details</summary>
 
    ##### Using online definition from GitHub:
@@ -228,10 +217,10 @@ For more information on [kfutil](https://github.com/Keyfactor/kfutil) check out 
    ```
    </details>
 
-
 #### Manual Creation
 Below are instructions on how to create the RFJKS store type manually in
 the Keyfactor Command Portal
+
    <details><summary>Click to expand manual RFJKS details</summary>
 
    Create a store type called `RFJKS` with the attributes in the tables below:
@@ -242,11 +231,11 @@ the Keyfactor Command Portal
    | Name | RFJKS | Display name for the store type (may be customized) |
    | Short Name | RFJKS | Short display name for the store type |
    | Capability | RFJKS | Store type name orchestrator will register with. Check the box to allow entry of value |
-   | Supports Add | ✅ Checked | Check the box. Indicates that the Store Type supports Management Add |
-   | Supports Remove | ✅ Checked | Check the box. Indicates that the Store Type supports Management Remove |
-   | Supports Discovery | ✅ Checked | Check the box. Indicates that the Store Type supports Discovery |
-   | Supports Reenrollment | ✅ Checked |  Indicates that the Store Type supports Reenrollment |
-   | Supports Create | ✅ Checked | Check the box. Indicates that the Store Type supports store creation |
+   | Supports Add | ✅ Checked | Indicates that the Store Type supports Management Add |
+   | Supports Remove | ✅ Checked | Indicates that the Store Type supports Management Remove |
+   | Supports Discovery | ✅ Checked | Indicates that the Store Type supports Discovery |
+   | Supports Reenrollment | ✅ Checked | Indicates that the Store Type supports Reenrollment |
+   | Supports Create | ✅ Checked | Indicates that the Store Type supports store creation |
    | Needs Server | ✅ Checked | Determines if a target server name is required when creating store |
    | Blueprint Allowed | 🔲 Unchecked | Determines if store type may be included in an Orchestrator blueprint |
    | Uses PowerShell | 🔲 Unchecked | Determines if underlying implementation is PowerShell |
@@ -255,18 +244,18 @@ the Keyfactor Command Portal
 
    The Basic tab should look like this:
 
-   ![RFJKS Basic Tab](docsource/images/RFJKS-basic-store-type-dialog.png)
+   ![RFJKS Basic Tab](docsource/images/RFJKS-basic-store-type-dialog.svg)
 
    ##### Advanced Tab
    | Attribute | Value | Description |
    | --------- | ----- | ----- |
    | Supports Custom Alias | Required | Determines if an individual entry within a store can have a custom Alias. |
-   | Private Key Handling | Optional | This determines if Keyfactor can send the private key associated with a certificate to the store. Required because IIS certificates without private keys would be invalid. |
+   | Private Key Handling | Optional | This determines if Keyfactor can send the private key associated with a certificate to the store. |
    | PFX Password Style | Default | 'Default' - PFX password is randomly generated, 'Custom' - PFX password may be specified when the enrollment job is created (Requires the Allow Custom Password application setting to be enabled.) |
 
    The Advanced tab should look like this:
 
-   ![RFJKS Advanced Tab](docsource/images/RFJKS-advanced-store-type-dialog.png)
+   ![RFJKS Advanced Tab](docsource/images/RFJKS-advanced-store-type-dialog.svg)
 
    > For Keyfactor **Command versions 24.4 and later**, a Certificate Format dropdown is available with PFX and PEM options. Ensure that **PFX** is selected, as this determines the format of new and renewed certificates sent to the Orchestrator during a Management job. Currently, all Keyfactor-supported Orchestrator extensions support only PFX.
 
@@ -285,11 +274,11 @@ the Keyfactor Command Portal
    | SSHPort | SSH Port | Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting. | String |  | 🔲 Unchecked |
    | UseShellCommands | Use Shell Commands | Recommended to be set to the default value of 'Y'.  For a detailed explanation of this setting, please refer to [Use Shell Commands Setting](#use-shell-commands-setting) | Bool | True | 🔲 Unchecked |
    | PostJobApplicationRestart | Post Job Application Restart | Select the command to be run after a Management Add or ODKG job executes.  Leave unselected if no command is desired. | MultipleChoice | Apache Tomcat Restart,Jetty Restart | 🔲 Unchecked |
+   | RequiresLegacyEncryption | Requires Legacy Encryption | Optional setting.  If set to true, PkcsObjectIdentifiers.PbeWithShaAnd3KeyTripleDesCbc and PkcsObjectIdentifiers.PbewithShaAnd40BitRC2Cbc algorithms will be used to create the underlying BouncyCastle Pkcs12Store used to feed the certificate store being managed during Management jobs.  Should be left not implemented or set to False for most instances. | Bool | False | 🔲 Unchecked |
 
    The Custom Fields tab should look like this:
 
-   ![RFJKS Custom Fields Tab](docsource/images/RFJKS-custom-fields-store-type-dialog.png)
-
+   ![RFJKS Custom Fields Tab](docsource/images/RFJKS-custom-fields-store-type-dialog.svg)
 
    ###### Server Username
    A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value*
@@ -297,8 +286,6 @@ the Keyfactor Command Portal
 
    > [!IMPORTANT]
    > This field is created by the `Needs Server` on the Basic tab, do not create this field manually.
-
-
 
 
    ###### Server Password
@@ -309,72 +296,67 @@ the Keyfactor Command Portal
    > This field is created by the `Needs Server` on the Basic tab, do not create this field manually.
 
 
-
-
    ###### Linux File Permissions on Store Creation
    The LinuxFilePermissionsOnStoreCreation field should contain a three-digit value between 000 and 777 representing the Linux file permissions to be set for the certificate store upon creation. Example: '600' or '755'.  Overrides DefaultLinuxPermissionOnStoreCreation [config.json](#post-installation) setting.
 
-   ![RFJKS Custom Field - LinuxFilePermissionsOnStoreCreation](docsource/images/RFJKS-custom-field-LinuxFilePermissionsOnStoreCreation-dialog.png)
-   ![RFJKS Custom Field - LinuxFilePermissionsOnStoreCreation](docsource/images/RFJKS-custom-field-LinuxFilePermissionsOnStoreCreation-validation-options-dialog.png)
-
+   ![RFJKS Custom Field - LinuxFilePermissionsOnStoreCreation](docsource/images/RFJKS-custom-field-LinuxFilePermissionsOnStoreCreation-dialog.svg)
+   ![RFJKS Custom Field - LinuxFilePermissionsOnStoreCreation](docsource/images/RFJKS-custom-field-LinuxFilePermissionsOnStoreCreation-validation-options-dialog.svg)
 
 
    ###### Linux File Owner on Store Creation
    The LinuxFileOwnerOnStoreCreation field should contain a valid user ID recognized by the destination Linux server, optionally followed by a colon and a group ID if the group owner differs. Example: 'userID' or 'userID:groupID'.  Overrides DefaultOwnerOnStoreCreation [config.json](#post-installation) setting.
 
-   ![RFJKS Custom Field - LinuxFileOwnerOnStoreCreation](docsource/images/RFJKS-custom-field-LinuxFileOwnerOnStoreCreation-dialog.png)
-   ![RFJKS Custom Field - LinuxFileOwnerOnStoreCreation](docsource/images/RFJKS-custom-field-LinuxFileOwnerOnStoreCreation-validation-options-dialog.png)
-
+   ![RFJKS Custom Field - LinuxFileOwnerOnStoreCreation](docsource/images/RFJKS-custom-field-LinuxFileOwnerOnStoreCreation-dialog.svg)
+   ![RFJKS Custom Field - LinuxFileOwnerOnStoreCreation](docsource/images/RFJKS-custom-field-LinuxFileOwnerOnStoreCreation-validation-options-dialog.svg)
 
 
    ###### Sudo Impersonating User
    The SudoImpersonatingUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'.  Overrides DefaultSudoImpersonatedUser [config.json](#post-installation) setting.
 
-   ![RFJKS Custom Field - SudoImpersonatingUser](docsource/images/RFJKS-custom-field-SudoImpersonatingUser-dialog.png)
-   ![RFJKS Custom Field - SudoImpersonatingUser](docsource/images/RFJKS-custom-field-SudoImpersonatingUser-validation-options-dialog.png)
-
+   ![RFJKS Custom Field - SudoImpersonatingUser](docsource/images/RFJKS-custom-field-SudoImpersonatingUser-dialog.svg)
+   ![RFJKS Custom Field - SudoImpersonatingUser](docsource/images/RFJKS-custom-field-SudoImpersonatingUser-validation-options-dialog.svg)
 
 
    ###### Remove Root Certificate from Chain
    Remove root certificate from chain when adding/renewing a certificate in a store.
 
-   ![RFJKS Custom Field - RemoveRootCertificate](docsource/images/RFJKS-custom-field-RemoveRootCertificate-dialog.png)
-   ![RFJKS Custom Field - RemoveRootCertificate](docsource/images/RFJKS-custom-field-RemoveRootCertificate-validation-options-dialog.png)
-
+   ![RFJKS Custom Field - RemoveRootCertificate](docsource/images/RFJKS-custom-field-RemoveRootCertificate-dialog.svg)
+   ![RFJKS Custom Field - RemoveRootCertificate](docsource/images/RFJKS-custom-field-RemoveRootCertificate-validation-options-dialog.svg)
 
 
    ###### Include Port in SPN for WinRM
    Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations.
 
-   ![RFJKS Custom Field - IncludePortInSPN](docsource/images/RFJKS-custom-field-IncludePortInSPN-dialog.png)
-   ![RFJKS Custom Field - IncludePortInSPN](docsource/images/RFJKS-custom-field-IncludePortInSPN-validation-options-dialog.png)
-
+   ![RFJKS Custom Field - IncludePortInSPN](docsource/images/RFJKS-custom-field-IncludePortInSPN-dialog.svg)
+   ![RFJKS Custom Field - IncludePortInSPN](docsource/images/RFJKS-custom-field-IncludePortInSPN-validation-options-dialog.svg)
 
 
    ###### SSH Port
    Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting.
 
-   ![RFJKS Custom Field - SSHPort](docsource/images/RFJKS-custom-field-SSHPort-dialog.png)
-   ![RFJKS Custom Field - SSHPort](docsource/images/RFJKS-custom-field-SSHPort-validation-options-dialog.png)
-
+   ![RFJKS Custom Field - SSHPort](docsource/images/RFJKS-custom-field-SSHPort-dialog.svg)
+   ![RFJKS Custom Field - SSHPort](docsource/images/RFJKS-custom-field-SSHPort-validation-options-dialog.svg)
 
 
    ###### Use Shell Commands
    Recommended to be set to the default value of 'Y'.  For a detailed explanation of this setting, please refer to [Use Shell Commands Setting](#use-shell-commands-setting)
 
-   ![RFJKS Custom Field - UseShellCommands](docsource/images/RFJKS-custom-field-UseShellCommands-dialog.png)
-   ![RFJKS Custom Field - UseShellCommands](docsource/images/RFJKS-custom-field-UseShellCommands-validation-options-dialog.png)
-
+   ![RFJKS Custom Field - UseShellCommands](docsource/images/RFJKS-custom-field-UseShellCommands-dialog.svg)
+   ![RFJKS Custom Field - UseShellCommands](docsource/images/RFJKS-custom-field-UseShellCommands-validation-options-dialog.svg)
 
 
    ###### Post Job Application Restart
    Select the command to be run after a Management Add or ODKG job executes.  Leave unselected if no command is desired.
 
-   ![RFJKS Custom Field - PostJobApplicationRestart](docsource/images/RFJKS-custom-field-PostJobApplicationRestart-dialog.png)
-   ![RFJKS Custom Field - PostJobApplicationRestart](docsource/images/RFJKS-custom-field-PostJobApplicationRestart-validation-options-dialog.png)
+   ![RFJKS Custom Field - PostJobApplicationRestart](docsource/images/RFJKS-custom-field-PostJobApplicationRestart-dialog.svg)
+   ![RFJKS Custom Field - PostJobApplicationRestart](docsource/images/RFJKS-custom-field-PostJobApplicationRestart-validation-options-dialog.svg)
 
 
+   ###### Requires Legacy Encryption
+   Optional setting.  If set to true, PkcsObjectIdentifiers.PbeWithShaAnd3KeyTripleDesCbc and PkcsObjectIdentifiers.PbewithShaAnd40BitRC2Cbc algorithms will be used to create the underlying BouncyCastle Pkcs12Store used to feed the certificate store being managed during Management jobs.  Should be left not implemented or set to False for most instances.
 
+   ![RFJKS Custom Field - RequiresLegacyEncryption](docsource/images/RFJKS-custom-field-RequiresLegacyEncryption-dialog.svg)
+   ![RFJKS Custom Field - RequiresLegacyEncryption](docsource/images/RFJKS-custom-field-RequiresLegacyEncryption-validation-options-dialog.svg)
 
 
    </details>
@@ -383,7 +365,6 @@ the Keyfactor Command Portal
 ### RFPEM
 
 <details><summary>Click to expand details</summary>
-
 
 The `RFPEM` store type can be used to manage `PEM` encoded files.
 
@@ -399,24 +380,22 @@ The `RFPEM` store type can be used to manage `PEM` encoded files.
 - Private keys will be stored in encrypted or unencrypted `PKCS#8` format (`BEGIN [ENCRYPTED] PRIVATE KEY`) based on the Store Password set on the Keyfactor Command Certificate Store unless managing a `PEM` store that currently contains a private key in `PKCS#1` format (`BEGIN RSA PRIVATE KEY` or `BEGIN EC PRIVATE KEY`). 
 - Store password *MUST* be set to `No Password` if managing a store with a `PKCS#1` private key, as encrypted `PKCS#1` keys are not supported with this integration.
 
-
-
-
 #### Supported Operations
 
-| Operation    | Is Supported                                                                                                           |
-|--------------|------------------------------------------------------------------------------------------------------------------------|
-| Add          | ✅ Checked        |
-| Remove       | ✅ Checked     |
-| Discovery    | ✅ Checked  |
+| Operation    | Is Supported |
+|--------------|--------------|
+| Add          | ✅ Checked |
+| Remove       | ✅ Checked |
+| Discovery    | ✅ Checked |
 | Reenrollment | ✅ Checked |
-| Create       | ✅ Checked     |
+| Create       | ✅ Checked |
 
 #### Store Type Creation
 
 ##### Using kfutil:
 `kfutil` is a custom CLI for the Keyfactor Command API and can be used to create certificate store types.
 For more information on [kfutil](https://github.com/Keyfactor/kfutil) check out the [docs](https://github.com/Keyfactor/kfutil?tab=readme-ov-file#quickstart)
+
    <details><summary>Click to expand RFPEM kfutil details</summary>
 
    ##### Using online definition from GitHub:
@@ -435,10 +414,10 @@ For more information on [kfutil](https://github.com/Keyfactor/kfutil) check out 
    ```
    </details>
 
-
 #### Manual Creation
 Below are instructions on how to create the RFPEM store type manually in
 the Keyfactor Command Portal
+
    <details><summary>Click to expand manual RFPEM details</summary>
 
    Create a store type called `RFPEM` with the attributes in the tables below:
@@ -449,11 +428,11 @@ the Keyfactor Command Portal
    | Name | RFPEM | Display name for the store type (may be customized) |
    | Short Name | RFPEM | Short display name for the store type |
    | Capability | RFPEM | Store type name orchestrator will register with. Check the box to allow entry of value |
-   | Supports Add | ✅ Checked | Check the box. Indicates that the Store Type supports Management Add |
-   | Supports Remove | ✅ Checked | Check the box. Indicates that the Store Type supports Management Remove |
-   | Supports Discovery | ✅ Checked | Check the box. Indicates that the Store Type supports Discovery |
-   | Supports Reenrollment | ✅ Checked |  Indicates that the Store Type supports Reenrollment |
-   | Supports Create | ✅ Checked | Check the box. Indicates that the Store Type supports store creation |
+   | Supports Add | ✅ Checked | Indicates that the Store Type supports Management Add |
+   | Supports Remove | ✅ Checked | Indicates that the Store Type supports Management Remove |
+   | Supports Discovery | ✅ Checked | Indicates that the Store Type supports Discovery |
+   | Supports Reenrollment | ✅ Checked | Indicates that the Store Type supports Reenrollment |
+   | Supports Create | ✅ Checked | Indicates that the Store Type supports store creation |
    | Needs Server | ✅ Checked | Determines if a target server name is required when creating store |
    | Blueprint Allowed | 🔲 Unchecked | Determines if store type may be included in an Orchestrator blueprint |
    | Uses PowerShell | 🔲 Unchecked | Determines if underlying implementation is PowerShell |
@@ -462,18 +441,18 @@ the Keyfactor Command Portal
 
    The Basic tab should look like this:
 
-   ![RFPEM Basic Tab](docsource/images/RFPEM-basic-store-type-dialog.png)
+   ![RFPEM Basic Tab](docsource/images/RFPEM-basic-store-type-dialog.svg)
 
    ##### Advanced Tab
    | Attribute | Value | Description |
    | --------- | ----- | ----- |
    | Supports Custom Alias | Forbidden | Determines if an individual entry within a store can have a custom Alias. |
-   | Private Key Handling | Optional | This determines if Keyfactor can send the private key associated with a certificate to the store. Required because IIS certificates without private keys would be invalid. |
+   | Private Key Handling | Optional | This determines if Keyfactor can send the private key associated with a certificate to the store. |
    | PFX Password Style | Default | 'Default' - PFX password is randomly generated, 'Custom' - PFX password may be specified when the enrollment job is created (Requires the Allow Custom Password application setting to be enabled.) |
 
    The Advanced tab should look like this:
 
-   ![RFPEM Advanced Tab](docsource/images/RFPEM-advanced-store-type-dialog.png)
+   ![RFPEM Advanced Tab](docsource/images/RFPEM-advanced-store-type-dialog.svg)
 
    > For Keyfactor **Command versions 24.4 and later**, a Certificate Format dropdown is available with PFX and PEM options. Ensure that **PFX** is selected, as this determines the format of new and renewed certificates sent to the Orchestrator during a Management job. Currently, all Keyfactor-supported Orchestrator extensions support only PFX.
 
@@ -496,11 +475,11 @@ the Keyfactor Command Portal
    | SSHPort | SSH Port | Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting. | String |  | 🔲 Unchecked |
    | UseShellCommands | Use Shell Commands | Recommended to be set to the default value of 'Y'.  For a detailed explanation of this setting, please refer to [Use Shell Commands Setting](#use-shell-commands-setting) | Bool | True | 🔲 Unchecked |
    | PostJobApplicationRestart | Post Job Application Restart | Select the command to be run after a Management Add or ODKG job executes.  Leave unselected if no command is desired. | MultipleChoice | Apache HTTPD Restart,NGNIX Restart,HAProxy Restart,Envoy Proxy Restart | 🔲 Unchecked |
+   | RequiresLegacyEncryption | Requires Legacy Encryption | Optional setting.  If set to true, PkcsObjectIdentifiers.PbeWithShaAnd3KeyTripleDesCbc and PkcsObjectIdentifiers.PbewithShaAnd40BitRC2Cbc algorithms will be used to create the underlying BouncyCastle Pkcs12Store used to feed the certificate store being managed during Management jobs.  Should be left not implemented or set to False for most instances. | Bool | False | 🔲 Unchecked |
 
    The Custom Fields tab should look like this:
 
-   ![RFPEM Custom Fields Tab](docsource/images/RFPEM-custom-fields-store-type-dialog.png)
-
+   ![RFPEM Custom Fields Tab](docsource/images/RFPEM-custom-fields-store-type-dialog.svg)
 
    ###### Server Username
    A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value*
@@ -508,8 +487,6 @@ the Keyfactor Command Portal
 
    > [!IMPORTANT]
    > This field is created by the `Needs Server` on the Basic tab, do not create this field manually.
-
-
 
 
    ###### Server Password
@@ -520,104 +497,95 @@ the Keyfactor Command Portal
    > This field is created by the `Needs Server` on the Basic tab, do not create this field manually.
 
 
-
-
    ###### Linux File Permissions on Store Creation
    The LinuxFilePermissionsOnStoreCreation field should contain a three-digit value between 000 and 777 representing the Linux file permissions to be set for the certificate store upon creation. Example: '600' or '755'.  Overrides DefaultLinuxPermissionOnStoreCreation [config.json](#post-installation) setting.
 
-   ![RFPEM Custom Field - LinuxFilePermissionsOnStoreCreation](docsource/images/RFPEM-custom-field-LinuxFilePermissionsOnStoreCreation-dialog.png)
-   ![RFPEM Custom Field - LinuxFilePermissionsOnStoreCreation](docsource/images/RFPEM-custom-field-LinuxFilePermissionsOnStoreCreation-validation-options-dialog.png)
-
+   ![RFPEM Custom Field - LinuxFilePermissionsOnStoreCreation](docsource/images/RFPEM-custom-field-LinuxFilePermissionsOnStoreCreation-dialog.svg)
+   ![RFPEM Custom Field - LinuxFilePermissionsOnStoreCreation](docsource/images/RFPEM-custom-field-LinuxFilePermissionsOnStoreCreation-validation-options-dialog.svg)
 
 
    ###### Linux File Owner on Store Creation
    The LinuxFileOwnerOnStoreCreation field should contain a valid user ID recognized by the destination Linux server, optionally followed by a colon and a group ID if the group owner differs. Example: 'userID' or 'userID:groupID'.  Overrides DefaultOwnerOnStoreCreation [config.json](#post-installation) setting.
 
-   ![RFPEM Custom Field - LinuxFileOwnerOnStoreCreation](docsource/images/RFPEM-custom-field-LinuxFileOwnerOnStoreCreation-dialog.png)
-   ![RFPEM Custom Field - LinuxFileOwnerOnStoreCreation](docsource/images/RFPEM-custom-field-LinuxFileOwnerOnStoreCreation-validation-options-dialog.png)
-
+   ![RFPEM Custom Field - LinuxFileOwnerOnStoreCreation](docsource/images/RFPEM-custom-field-LinuxFileOwnerOnStoreCreation-dialog.svg)
+   ![RFPEM Custom Field - LinuxFileOwnerOnStoreCreation](docsource/images/RFPEM-custom-field-LinuxFileOwnerOnStoreCreation-validation-options-dialog.svg)
 
 
    ###### Sudo Impersonating User
    The SudoImpersonatingUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'.  Overrides [config.json](#post-installation) DefaultSudoImpersonatedUser setting..
 
-   ![RFPEM Custom Field - SudoImpersonatingUser](docsource/images/RFPEM-custom-field-SudoImpersonatingUser-dialog.png)
-   ![RFPEM Custom Field - SudoImpersonatingUser](docsource/images/RFPEM-custom-field-SudoImpersonatingUser-validation-options-dialog.png)
-
+   ![RFPEM Custom Field - SudoImpersonatingUser](docsource/images/RFPEM-custom-field-SudoImpersonatingUser-dialog.svg)
+   ![RFPEM Custom Field - SudoImpersonatingUser](docsource/images/RFPEM-custom-field-SudoImpersonatingUser-validation-options-dialog.svg)
 
 
    ###### Trust Store
    The IsTrustStore field should contain a boolean value ('true' or 'false') indicating whether the store will be identified as a trust store, which can hold multiple certificates without private keys. Example: 'true' for a trust store or 'false' for a store with a single certificate and private key.
 
-   ![RFPEM Custom Field - IsTrustStore](docsource/images/RFPEM-custom-field-IsTrustStore-dialog.png)
-   ![RFPEM Custom Field - IsTrustStore](docsource/images/RFPEM-custom-field-IsTrustStore-validation-options-dialog.png)
-
+   ![RFPEM Custom Field - IsTrustStore](docsource/images/RFPEM-custom-field-IsTrustStore-dialog.svg)
+   ![RFPEM Custom Field - IsTrustStore](docsource/images/RFPEM-custom-field-IsTrustStore-validation-options-dialog.svg)
 
 
    ###### Store Includes Chain
    The IncludesChain field should contain a boolean value ('true' or 'false') indicating whether the certificate store includes the full certificate chain along with the end entity certificate. Example: 'true' to include the full chain or 'false' to exclude it.
 
-   ![RFPEM Custom Field - IncludesChain](docsource/images/RFPEM-custom-field-IncludesChain-dialog.png)
-   ![RFPEM Custom Field - IncludesChain](docsource/images/RFPEM-custom-field-IncludesChain-validation-options-dialog.png)
-
+   ![RFPEM Custom Field - IncludesChain](docsource/images/RFPEM-custom-field-IncludesChain-dialog.svg)
+   ![RFPEM Custom Field - IncludesChain](docsource/images/RFPEM-custom-field-IncludesChain-validation-options-dialog.svg)
 
 
    ###### Separate Private Key File Location
    The SeparatePrivateKeyFilePath field should contain the full path and file name where the separate private key file will be stored if it is to be kept outside the main certificate file. Example: '/path/to/privatekey.pem'.
 
-   ![RFPEM Custom Field - SeparatePrivateKeyFilePath](docsource/images/RFPEM-custom-field-SeparatePrivateKeyFilePath-dialog.png)
-   ![RFPEM Custom Field - SeparatePrivateKeyFilePath](docsource/images/RFPEM-custom-field-SeparatePrivateKeyFilePath-validation-options-dialog.png)
-
+   ![RFPEM Custom Field - SeparatePrivateKeyFilePath](docsource/images/RFPEM-custom-field-SeparatePrivateKeyFilePath-dialog.svg)
+   ![RFPEM Custom Field - SeparatePrivateKeyFilePath](docsource/images/RFPEM-custom-field-SeparatePrivateKeyFilePath-validation-options-dialog.svg)
 
 
    ###### Ignore Private Key On Inventory
    The IgnorePrivateKeyOnInventory field should contain a boolean value ('true' or 'false') indicating whether to disregard the private key during inventory. Setting this to 'true' will allow inventory for the store without needing to supply the location of the private key or the password if the key is encrypted.  However, doing this makes the store in effect inventory-only and no management jobs will be able to be run for this store. Example: 'true' to ignore the private key or 'false' to include it.
 
-   ![RFPEM Custom Field - IgnorePrivateKeyOnInventory](docsource/images/RFPEM-custom-field-IgnorePrivateKeyOnInventory-dialog.png)
-   ![RFPEM Custom Field - IgnorePrivateKeyOnInventory](docsource/images/RFPEM-custom-field-IgnorePrivateKeyOnInventory-validation-options-dialog.png)
-
+   ![RFPEM Custom Field - IgnorePrivateKeyOnInventory](docsource/images/RFPEM-custom-field-IgnorePrivateKeyOnInventory-dialog.svg)
+   ![RFPEM Custom Field - IgnorePrivateKeyOnInventory](docsource/images/RFPEM-custom-field-IgnorePrivateKeyOnInventory-validation-options-dialog.svg)
 
 
    ###### Remove Root Certificate from Chain
    Remove root certificate from chain when adding/renewing a certificate in a store.
 
-   ![RFPEM Custom Field - RemoveRootCertificate](docsource/images/RFPEM-custom-field-RemoveRootCertificate-dialog.png)
-   ![RFPEM Custom Field - RemoveRootCertificate](docsource/images/RFPEM-custom-field-RemoveRootCertificate-validation-options-dialog.png)
-
+   ![RFPEM Custom Field - RemoveRootCertificate](docsource/images/RFPEM-custom-field-RemoveRootCertificate-dialog.svg)
+   ![RFPEM Custom Field - RemoveRootCertificate](docsource/images/RFPEM-custom-field-RemoveRootCertificate-validation-options-dialog.svg)
 
 
    ###### Include Port in SPN for WinRM
    Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations.
 
-   ![RFPEM Custom Field - IncludePortInSPN](docsource/images/RFPEM-custom-field-IncludePortInSPN-dialog.png)
-   ![RFPEM Custom Field - IncludePortInSPN](docsource/images/RFPEM-custom-field-IncludePortInSPN-validation-options-dialog.png)
-
+   ![RFPEM Custom Field - IncludePortInSPN](docsource/images/RFPEM-custom-field-IncludePortInSPN-dialog.svg)
+   ![RFPEM Custom Field - IncludePortInSPN](docsource/images/RFPEM-custom-field-IncludePortInSPN-validation-options-dialog.svg)
 
 
    ###### SSH Port
    Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting.
 
-   ![RFPEM Custom Field - SSHPort](docsource/images/RFPEM-custom-field-SSHPort-dialog.png)
-   ![RFPEM Custom Field - SSHPort](docsource/images/RFPEM-custom-field-SSHPort-validation-options-dialog.png)
-
+   ![RFPEM Custom Field - SSHPort](docsource/images/RFPEM-custom-field-SSHPort-dialog.svg)
+   ![RFPEM Custom Field - SSHPort](docsource/images/RFPEM-custom-field-SSHPort-validation-options-dialog.svg)
 
 
    ###### Use Shell Commands
    Recommended to be set to the default value of 'Y'.  For a detailed explanation of this setting, please refer to [Use Shell Commands Setting](#use-shell-commands-setting)
 
-   ![RFPEM Custom Field - UseShellCommands](docsource/images/RFPEM-custom-field-UseShellCommands-dialog.png)
-   ![RFPEM Custom Field - UseShellCommands](docsource/images/RFPEM-custom-field-UseShellCommands-validation-options-dialog.png)
-
+   ![RFPEM Custom Field - UseShellCommands](docsource/images/RFPEM-custom-field-UseShellCommands-dialog.svg)
+   ![RFPEM Custom Field - UseShellCommands](docsource/images/RFPEM-custom-field-UseShellCommands-validation-options-dialog.svg)
 
 
    ###### Post Job Application Restart
    Select the command to be run after a Management Add or ODKG job executes.  Leave unselected if no command is desired.
 
-   ![RFPEM Custom Field - PostJobApplicationRestart](docsource/images/RFPEM-custom-field-PostJobApplicationRestart-dialog.png)
-   ![RFPEM Custom Field - PostJobApplicationRestart](docsource/images/RFPEM-custom-field-PostJobApplicationRestart-validation-options-dialog.png)
+   ![RFPEM Custom Field - PostJobApplicationRestart](docsource/images/RFPEM-custom-field-PostJobApplicationRestart-dialog.svg)
+   ![RFPEM Custom Field - PostJobApplicationRestart](docsource/images/RFPEM-custom-field-PostJobApplicationRestart-validation-options-dialog.svg)
 
 
+   ###### Requires Legacy Encryption
+   Optional setting.  If set to true, PkcsObjectIdentifiers.PbeWithShaAnd3KeyTripleDesCbc and PkcsObjectIdentifiers.PbewithShaAnd40BitRC2Cbc algorithms will be used to create the underlying BouncyCastle Pkcs12Store used to feed the certificate store being managed during Management jobs.  Should be left not implemented or set to False for most instances.
 
+   ![RFPEM Custom Field - RequiresLegacyEncryption](docsource/images/RFPEM-custom-field-RequiresLegacyEncryption-dialog.svg)
+   ![RFPEM Custom Field - RequiresLegacyEncryption](docsource/images/RFPEM-custom-field-RequiresLegacyEncryption-validation-options-dialog.svg)
 
 
    </details>
@@ -626,7 +594,6 @@ the Keyfactor Command Portal
 ### RFPkcs12
 
 <details><summary>Click to expand details</summary>
-
 
 The `RFPkcs12` store type can be used to manage any `PKCS#12` compliant file format INCLUDING java keystores of type `PKCS12`.
 
@@ -640,24 +607,22 @@ The `RFPkcs12` store type can be used to manage any `PKCS#12` compliant file for
 1. Multiple key and/or trust entries with a mix of existing and non-existing friendly names/aliases.
 2. Multiple key and/or trust entries with blank friendly names/aliases
 
-
-
-
 #### Supported Operations
 
-| Operation    | Is Supported                                                                                                           |
-|--------------|------------------------------------------------------------------------------------------------------------------------|
-| Add          | ✅ Checked        |
-| Remove       | ✅ Checked     |
-| Discovery    | ✅ Checked  |
+| Operation    | Is Supported |
+|--------------|--------------|
+| Add          | ✅ Checked |
+| Remove       | ✅ Checked |
+| Discovery    | ✅ Checked |
 | Reenrollment | ✅ Checked |
-| Create       | ✅ Checked     |
+| Create       | ✅ Checked |
 
 #### Store Type Creation
 
 ##### Using kfutil:
 `kfutil` is a custom CLI for the Keyfactor Command API and can be used to create certificate store types.
 For more information on [kfutil](https://github.com/Keyfactor/kfutil) check out the [docs](https://github.com/Keyfactor/kfutil?tab=readme-ov-file#quickstart)
+
    <details><summary>Click to expand RFPkcs12 kfutil details</summary>
 
    ##### Using online definition from GitHub:
@@ -676,10 +641,10 @@ For more information on [kfutil](https://github.com/Keyfactor/kfutil) check out 
    ```
    </details>
 
-
 #### Manual Creation
 Below are instructions on how to create the RFPkcs12 store type manually in
 the Keyfactor Command Portal
+
    <details><summary>Click to expand manual RFPkcs12 details</summary>
 
    Create a store type called `RFPkcs12` with the attributes in the tables below:
@@ -690,11 +655,11 @@ the Keyfactor Command Portal
    | Name | RFPkcs12 | Display name for the store type (may be customized) |
    | Short Name | RFPkcs12 | Short display name for the store type |
    | Capability | RFPkcs12 | Store type name orchestrator will register with. Check the box to allow entry of value |
-   | Supports Add | ✅ Checked | Check the box. Indicates that the Store Type supports Management Add |
-   | Supports Remove | ✅ Checked | Check the box. Indicates that the Store Type supports Management Remove |
-   | Supports Discovery | ✅ Checked | Check the box. Indicates that the Store Type supports Discovery |
-   | Supports Reenrollment | ✅ Checked |  Indicates that the Store Type supports Reenrollment |
-   | Supports Create | ✅ Checked | Check the box. Indicates that the Store Type supports store creation |
+   | Supports Add | ✅ Checked | Indicates that the Store Type supports Management Add |
+   | Supports Remove | ✅ Checked | Indicates that the Store Type supports Management Remove |
+   | Supports Discovery | ✅ Checked | Indicates that the Store Type supports Discovery |
+   | Supports Reenrollment | ✅ Checked | Indicates that the Store Type supports Reenrollment |
+   | Supports Create | ✅ Checked | Indicates that the Store Type supports store creation |
    | Needs Server | ✅ Checked | Determines if a target server name is required when creating store |
    | Blueprint Allowed | 🔲 Unchecked | Determines if store type may be included in an Orchestrator blueprint |
    | Uses PowerShell | 🔲 Unchecked | Determines if underlying implementation is PowerShell |
@@ -703,18 +668,18 @@ the Keyfactor Command Portal
 
    The Basic tab should look like this:
 
-   ![RFPkcs12 Basic Tab](docsource/images/RFPkcs12-basic-store-type-dialog.png)
+   ![RFPkcs12 Basic Tab](docsource/images/RFPkcs12-basic-store-type-dialog.svg)
 
    ##### Advanced Tab
    | Attribute | Value | Description |
    | --------- | ----- | ----- |
    | Supports Custom Alias | Required | Determines if an individual entry within a store can have a custom Alias. |
-   | Private Key Handling | Optional | This determines if Keyfactor can send the private key associated with a certificate to the store. Required because IIS certificates without private keys would be invalid. |
+   | Private Key Handling | Optional | This determines if Keyfactor can send the private key associated with a certificate to the store. |
    | PFX Password Style | Default | 'Default' - PFX password is randomly generated, 'Custom' - PFX password may be specified when the enrollment job is created (Requires the Allow Custom Password application setting to be enabled.) |
 
    The Advanced tab should look like this:
 
-   ![RFPkcs12 Advanced Tab](docsource/images/RFPkcs12-advanced-store-type-dialog.png)
+   ![RFPkcs12 Advanced Tab](docsource/images/RFPkcs12-advanced-store-type-dialog.svg)
 
    > For Keyfactor **Command versions 24.4 and later**, a Certificate Format dropdown is available with PFX and PEM options. Ensure that **PFX** is selected, as this determines the format of new and renewed certificates sent to the Orchestrator during a Management job. Currently, all Keyfactor-supported Orchestrator extensions support only PFX.
 
@@ -732,11 +697,12 @@ the Keyfactor Command Portal
    | IncludePortInSPN | Include Port in SPN for WinRM | Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations. | Bool | False | 🔲 Unchecked |
    | SSHPort | SSH Port | Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting. | String |  | 🔲 Unchecked |
    | UseShellCommands | Use Shell Commands | Recommended to be set to the default value of 'Y'.  For a detailed explanation of this setting, please refer to [Use Shell Commands Setting](#use-shell-commands-setting) | Bool | True | 🔲 Unchecked |
+   | PostJobApplicationRestart | Post Job Application Restart | Select the command to be run after a Management Add or ODKG job executes.  Leave unselected if no command is desired.  No options are initially delivered for RFPkcs12. | MultipleChoice | None | 🔲 Unchecked |
+   | RequiresLegacyEncryption | Requires Legacy Encryption | Optional setting.  If set to true, PkcsObjectIdentifiers.PbeWithShaAnd3KeyTripleDesCbc and PkcsObjectIdentifiers.PbewithShaAnd40BitRC2Cbc algorithms will be used to create the underlying BouncyCastle Pkcs12Store used to feed the certificate store being managed during Management jobs.  Should be left not implemented or set to False for most instances. | Bool | False | 🔲 Unchecked |
 
    The Custom Fields tab should look like this:
 
-   ![RFPkcs12 Custom Fields Tab](docsource/images/RFPkcs12-custom-fields-store-type-dialog.png)
-
+   ![RFPkcs12 Custom Fields Tab](docsource/images/RFPkcs12-custom-fields-store-type-dialog.svg)
 
    ###### Server Username
    A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value*
@@ -744,8 +710,6 @@ the Keyfactor Command Portal
 
    > [!IMPORTANT]
    > This field is created by the `Needs Server` on the Basic tab, do not create this field manually.
-
-
 
 
    ###### Server Password
@@ -756,64 +720,67 @@ the Keyfactor Command Portal
    > This field is created by the `Needs Server` on the Basic tab, do not create this field manually.
 
 
-
-
    ###### Linux File Permissions on Store Creation
    The LinuxFilePermissionsOnStoreCreation field should contain a three-digit value between 000 and 777 representing the Linux file permissions to be set for the certificate store upon creation. Example: '600' or '755'.  Overrides DefaultLinuxPermissionOnStoreCreation [config.json](#post-installation) setting.
 
-   ![RFPkcs12 Custom Field - LinuxFilePermissionsOnStoreCreation](docsource/images/RFPkcs12-custom-field-LinuxFilePermissionsOnStoreCreation-dialog.png)
-   ![RFPkcs12 Custom Field - LinuxFilePermissionsOnStoreCreation](docsource/images/RFPkcs12-custom-field-LinuxFilePermissionsOnStoreCreation-validation-options-dialog.png)
-
+   ![RFPkcs12 Custom Field - LinuxFilePermissionsOnStoreCreation](docsource/images/RFPkcs12-custom-field-LinuxFilePermissionsOnStoreCreation-dialog.svg)
+   ![RFPkcs12 Custom Field - LinuxFilePermissionsOnStoreCreation](docsource/images/RFPkcs12-custom-field-LinuxFilePermissionsOnStoreCreation-validation-options-dialog.svg)
 
 
    ###### Linux File Owner on Store Creation
    The LinuxFileOwnerOnStoreCreation field should contain a valid user ID recognized by the destination Linux server, optionally followed by a colon and a group ID if the group owner differs. Example: 'userID' or 'userID:groupID'.  Overrides DefaultOwnerOnStoreCreation [config.json](#post-installation) setting.
 
-   ![RFPkcs12 Custom Field - LinuxFileOwnerOnStoreCreation](docsource/images/RFPkcs12-custom-field-LinuxFileOwnerOnStoreCreation-dialog.png)
-   ![RFPkcs12 Custom Field - LinuxFileOwnerOnStoreCreation](docsource/images/RFPkcs12-custom-field-LinuxFileOwnerOnStoreCreation-validation-options-dialog.png)
-
+   ![RFPkcs12 Custom Field - LinuxFileOwnerOnStoreCreation](docsource/images/RFPkcs12-custom-field-LinuxFileOwnerOnStoreCreation-dialog.svg)
+   ![RFPkcs12 Custom Field - LinuxFileOwnerOnStoreCreation](docsource/images/RFPkcs12-custom-field-LinuxFileOwnerOnStoreCreation-validation-options-dialog.svg)
 
 
    ###### Sudo Impersonating User
    The SudoImpersonatingUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'.  Overrides DefaultSudoImpersonatedUser [config.json](#post-installation) setting.
 
-   ![RFPkcs12 Custom Field - SudoImpersonatingUser](docsource/images/RFPkcs12-custom-field-SudoImpersonatingUser-dialog.png)
-   ![RFPkcs12 Custom Field - SudoImpersonatingUser](docsource/images/RFPkcs12-custom-field-SudoImpersonatingUser-validation-options-dialog.png)
-
+   ![RFPkcs12 Custom Field - SudoImpersonatingUser](docsource/images/RFPkcs12-custom-field-SudoImpersonatingUser-dialog.svg)
+   ![RFPkcs12 Custom Field - SudoImpersonatingUser](docsource/images/RFPkcs12-custom-field-SudoImpersonatingUser-validation-options-dialog.svg)
 
 
    ###### Remove Root Certificate from Chain
    Remove root certificate from chain when adding/renewing a certificate in a store.
 
-   ![RFPkcs12 Custom Field - RemoveRootCertificate](docsource/images/RFPkcs12-custom-field-RemoveRootCertificate-dialog.png)
-   ![RFPkcs12 Custom Field - RemoveRootCertificate](docsource/images/RFPkcs12-custom-field-RemoveRootCertificate-validation-options-dialog.png)
-
+   ![RFPkcs12 Custom Field - RemoveRootCertificate](docsource/images/RFPkcs12-custom-field-RemoveRootCertificate-dialog.svg)
+   ![RFPkcs12 Custom Field - RemoveRootCertificate](docsource/images/RFPkcs12-custom-field-RemoveRootCertificate-validation-options-dialog.svg)
 
 
    ###### Include Port in SPN for WinRM
    Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations.
 
-   ![RFPkcs12 Custom Field - IncludePortInSPN](docsource/images/RFPkcs12-custom-field-IncludePortInSPN-dialog.png)
-   ![RFPkcs12 Custom Field - IncludePortInSPN](docsource/images/RFPkcs12-custom-field-IncludePortInSPN-validation-options-dialog.png)
-
+   ![RFPkcs12 Custom Field - IncludePortInSPN](docsource/images/RFPkcs12-custom-field-IncludePortInSPN-dialog.svg)
+   ![RFPkcs12 Custom Field - IncludePortInSPN](docsource/images/RFPkcs12-custom-field-IncludePortInSPN-validation-options-dialog.svg)
 
 
    ###### SSH Port
    Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting.
 
-   ![RFPkcs12 Custom Field - SSHPort](docsource/images/RFPkcs12-custom-field-SSHPort-dialog.png)
-   ![RFPkcs12 Custom Field - SSHPort](docsource/images/RFPkcs12-custom-field-SSHPort-validation-options-dialog.png)
-
+   ![RFPkcs12 Custom Field - SSHPort](docsource/images/RFPkcs12-custom-field-SSHPort-dialog.svg)
+   ![RFPkcs12 Custom Field - SSHPort](docsource/images/RFPkcs12-custom-field-SSHPort-validation-options-dialog.svg)
 
 
    ###### Use Shell Commands
    Recommended to be set to the default value of 'Y'.  For a detailed explanation of this setting, please refer to [Use Shell Commands Setting](#use-shell-commands-setting)
 
-   ![RFPkcs12 Custom Field - UseShellCommands](docsource/images/RFPkcs12-custom-field-UseShellCommands-dialog.png)
-   ![RFPkcs12 Custom Field - UseShellCommands](docsource/images/RFPkcs12-custom-field-UseShellCommands-validation-options-dialog.png)
+   ![RFPkcs12 Custom Field - UseShellCommands](docsource/images/RFPkcs12-custom-field-UseShellCommands-dialog.svg)
+   ![RFPkcs12 Custom Field - UseShellCommands](docsource/images/RFPkcs12-custom-field-UseShellCommands-validation-options-dialog.svg)
 
 
+   ###### Post Job Application Restart
+   Select the command to be run after a Management Add or ODKG job executes.  Leave unselected if no command is desired.  No options are initially delivered for RFPkcs12.
 
+   ![RFPkcs12 Custom Field - PostJobApplicationRestart](docsource/images/RFPkcs12-custom-field-PostJobApplicationRestart-dialog.svg)
+   ![RFPkcs12 Custom Field - PostJobApplicationRestart](docsource/images/RFPkcs12-custom-field-PostJobApplicationRestart-validation-options-dialog.svg)
+
+
+   ###### Requires Legacy Encryption
+   Optional setting.  If set to true, PkcsObjectIdentifiers.PbeWithShaAnd3KeyTripleDesCbc and PkcsObjectIdentifiers.PbewithShaAnd40BitRC2Cbc algorithms will be used to create the underlying BouncyCastle Pkcs12Store used to feed the certificate store being managed during Management jobs.  Should be left not implemented or set to False for most instances.
+
+   ![RFPkcs12 Custom Field - RequiresLegacyEncryption](docsource/images/RFPkcs12-custom-field-RequiresLegacyEncryption-dialog.svg)
+   ![RFPkcs12 Custom Field - RequiresLegacyEncryption](docsource/images/RFPkcs12-custom-field-RequiresLegacyEncryption-validation-options-dialog.svg)
 
 
    </details>
@@ -823,31 +790,28 @@ the Keyfactor Command Portal
 
 <details><summary>Click to expand details</summary>
 
-
 The `RFDER` store type can be used to manage DER encoded files.
 
 #### Supported use cases
 1. Single certificate stores with private key in an external file.
 2. Single certificate stores with no private key.
 
-
-
-
 #### Supported Operations
 
-| Operation    | Is Supported                                                                                                           |
-|--------------|------------------------------------------------------------------------------------------------------------------------|
-| Add          | ✅ Checked        |
-| Remove       | ✅ Checked     |
-| Discovery    | ✅ Checked  |
+| Operation    | Is Supported |
+|--------------|--------------|
+| Add          | ✅ Checked |
+| Remove       | ✅ Checked |
+| Discovery    | ✅ Checked |
 | Reenrollment | ✅ Checked |
-| Create       | ✅ Checked     |
+| Create       | ✅ Checked |
 
 #### Store Type Creation
 
 ##### Using kfutil:
 `kfutil` is a custom CLI for the Keyfactor Command API and can be used to create certificate store types.
 For more information on [kfutil](https://github.com/Keyfactor/kfutil) check out the [docs](https://github.com/Keyfactor/kfutil?tab=readme-ov-file#quickstart)
+
    <details><summary>Click to expand RFDER kfutil details</summary>
 
    ##### Using online definition from GitHub:
@@ -866,10 +830,10 @@ For more information on [kfutil](https://github.com/Keyfactor/kfutil) check out 
    ```
    </details>
 
-
 #### Manual Creation
 Below are instructions on how to create the RFDER store type manually in
 the Keyfactor Command Portal
+
    <details><summary>Click to expand manual RFDER details</summary>
 
    Create a store type called `RFDER` with the attributes in the tables below:
@@ -880,11 +844,11 @@ the Keyfactor Command Portal
    | Name | RFDER | Display name for the store type (may be customized) |
    | Short Name | RFDER | Short display name for the store type |
    | Capability | RFDER | Store type name orchestrator will register with. Check the box to allow entry of value |
-   | Supports Add | ✅ Checked | Check the box. Indicates that the Store Type supports Management Add |
-   | Supports Remove | ✅ Checked | Check the box. Indicates that the Store Type supports Management Remove |
-   | Supports Discovery | ✅ Checked | Check the box. Indicates that the Store Type supports Discovery |
-   | Supports Reenrollment | ✅ Checked |  Indicates that the Store Type supports Reenrollment |
-   | Supports Create | ✅ Checked | Check the box. Indicates that the Store Type supports store creation |
+   | Supports Add | ✅ Checked | Indicates that the Store Type supports Management Add |
+   | Supports Remove | ✅ Checked | Indicates that the Store Type supports Management Remove |
+   | Supports Discovery | ✅ Checked | Indicates that the Store Type supports Discovery |
+   | Supports Reenrollment | ✅ Checked | Indicates that the Store Type supports Reenrollment |
+   | Supports Create | ✅ Checked | Indicates that the Store Type supports store creation |
    | Needs Server | ✅ Checked | Determines if a target server name is required when creating store |
    | Blueprint Allowed | 🔲 Unchecked | Determines if store type may be included in an Orchestrator blueprint |
    | Uses PowerShell | 🔲 Unchecked | Determines if underlying implementation is PowerShell |
@@ -893,18 +857,18 @@ the Keyfactor Command Portal
 
    The Basic tab should look like this:
 
-   ![RFDER Basic Tab](docsource/images/RFDER-basic-store-type-dialog.png)
+   ![RFDER Basic Tab](docsource/images/RFDER-basic-store-type-dialog.svg)
 
    ##### Advanced Tab
    | Attribute | Value | Description |
    | --------- | ----- | ----- |
    | Supports Custom Alias | Forbidden | Determines if an individual entry within a store can have a custom Alias. |
-   | Private Key Handling | Optional | This determines if Keyfactor can send the private key associated with a certificate to the store. Required because IIS certificates without private keys would be invalid. |
+   | Private Key Handling | Optional | This determines if Keyfactor can send the private key associated with a certificate to the store. |
    | PFX Password Style | Default | 'Default' - PFX password is randomly generated, 'Custom' - PFX password may be specified when the enrollment job is created (Requires the Allow Custom Password application setting to be enabled.) |
 
    The Advanced tab should look like this:
 
-   ![RFDER Advanced Tab](docsource/images/RFDER-advanced-store-type-dialog.png)
+   ![RFDER Advanced Tab](docsource/images/RFDER-advanced-store-type-dialog.svg)
 
    > For Keyfactor **Command versions 24.4 and later**, a Certificate Format dropdown is available with PFX and PEM options. Ensure that **PFX** is selected, as this determines the format of new and renewed certificates sent to the Orchestrator during a Management job. Currently, all Keyfactor-supported Orchestrator extensions support only PFX.
 
@@ -923,11 +887,12 @@ the Keyfactor Command Portal
    | IncludePortInSPN | Include Port in SPN for WinRM | Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations. | Bool | False | 🔲 Unchecked |
    | SSHPort | SSH Port | Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting. | String |  | 🔲 Unchecked |
    | UseShellCommands | Use Shell Commands | Recommended to be set to the default value of 'Y'.  For a detailed explanation of this setting, please refer to [Use Shell Commands Setting](#use-shell-commands-setting) | Bool | True | 🔲 Unchecked |
+   | PostJobApplicationRestart | Post Job Application Restart | Select the command to be run after a Management Add or ODKG job executes.  Leave unselected if no command is desired.  No options are initially delivered for RFDER. | MultipleChoice | None | 🔲 Unchecked |
+   | RequiresLegacyEncryption | Requires Legacy Encryption | Optional setting.  If set to true, PkcsObjectIdentifiers.PbeWithShaAnd3KeyTripleDesCbc and PkcsObjectIdentifiers.PbewithShaAnd40BitRC2Cbc algorithms will be used to create the underlying BouncyCastle Pkcs12Store used to feed the certificate store being managed during Management jobs.  Should be left not implemented or set to False for most instances. | Bool | False | 🔲 Unchecked |
 
    The Custom Fields tab should look like this:
 
-   ![RFDER Custom Fields Tab](docsource/images/RFDER-custom-fields-store-type-dialog.png)
-
+   ![RFDER Custom Fields Tab](docsource/images/RFDER-custom-fields-store-type-dialog.svg)
 
    ###### Server Username
    A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value*
@@ -935,8 +900,6 @@ the Keyfactor Command Portal
 
    > [!IMPORTANT]
    > This field is created by the `Needs Server` on the Basic tab, do not create this field manually.
-
-
 
 
    ###### Server Password
@@ -947,72 +910,74 @@ the Keyfactor Command Portal
    > This field is created by the `Needs Server` on the Basic tab, do not create this field manually.
 
 
-
-
    ###### Linux File Permissions on Store Creation
    The LinuxFilePermissionsOnStoreCreation field should contain a three-digit value between 000 and 777 representing the Linux file permissions to be set for the certificate store upon creation. Example: '600' or '755'.  Overrides DefaultLinuxPermissionOnStoreCreation [config.json](#post-installation) setting.
 
-   ![RFDER Custom Field - LinuxFilePermissionsOnStoreCreation](docsource/images/RFDER-custom-field-LinuxFilePermissionsOnStoreCreation-dialog.png)
-   ![RFDER Custom Field - LinuxFilePermissionsOnStoreCreation](docsource/images/RFDER-custom-field-LinuxFilePermissionsOnStoreCreation-validation-options-dialog.png)
-
+   ![RFDER Custom Field - LinuxFilePermissionsOnStoreCreation](docsource/images/RFDER-custom-field-LinuxFilePermissionsOnStoreCreation-dialog.svg)
+   ![RFDER Custom Field - LinuxFilePermissionsOnStoreCreation](docsource/images/RFDER-custom-field-LinuxFilePermissionsOnStoreCreation-validation-options-dialog.svg)
 
 
    ###### Linux File Owner on Store Creation
    The LinuxFileOwnerOnStoreCreation field should contain a valid user ID recognized by the destination Linux server, optionally followed by a colon and a group ID if the group owner differs. Example: 'userID' or 'userID:groupID'.  Overrides DefaultOwnerOnStoreCreation [config.json](#post-installation) setting.
 
-   ![RFDER Custom Field - LinuxFileOwnerOnStoreCreation](docsource/images/RFDER-custom-field-LinuxFileOwnerOnStoreCreation-dialog.png)
-   ![RFDER Custom Field - LinuxFileOwnerOnStoreCreation](docsource/images/RFDER-custom-field-LinuxFileOwnerOnStoreCreation-validation-options-dialog.png)
-
+   ![RFDER Custom Field - LinuxFileOwnerOnStoreCreation](docsource/images/RFDER-custom-field-LinuxFileOwnerOnStoreCreation-dialog.svg)
+   ![RFDER Custom Field - LinuxFileOwnerOnStoreCreation](docsource/images/RFDER-custom-field-LinuxFileOwnerOnStoreCreation-validation-options-dialog.svg)
 
 
    ###### Sudo Impersonating User
    The SudoImpersonatingUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'.  Overrides [config.json](#post-installation) DefaultSudoImpersonatedUser setting.
 
-   ![RFDER Custom Field - SudoImpersonatingUser](docsource/images/RFDER-custom-field-SudoImpersonatingUser-dialog.png)
-   ![RFDER Custom Field - SudoImpersonatingUser](docsource/images/RFDER-custom-field-SudoImpersonatingUser-validation-options-dialog.png)
-
+   ![RFDER Custom Field - SudoImpersonatingUser](docsource/images/RFDER-custom-field-SudoImpersonatingUser-dialog.svg)
+   ![RFDER Custom Field - SudoImpersonatingUser](docsource/images/RFDER-custom-field-SudoImpersonatingUser-validation-options-dialog.svg)
 
 
    ###### Separate Private Key File Location
    The SeparatePrivateKeyFilePath field should contain the full path and file name where the separate private key file will be stored if it is to be kept outside the main certificate file. Example: '/path/to/privatekey.der'.
 
-   ![RFDER Custom Field - SeparatePrivateKeyFilePath](docsource/images/RFDER-custom-field-SeparatePrivateKeyFilePath-dialog.png)
-   ![RFDER Custom Field - SeparatePrivateKeyFilePath](docsource/images/RFDER-custom-field-SeparatePrivateKeyFilePath-validation-options-dialog.png)
-
+   ![RFDER Custom Field - SeparatePrivateKeyFilePath](docsource/images/RFDER-custom-field-SeparatePrivateKeyFilePath-dialog.svg)
+   ![RFDER Custom Field - SeparatePrivateKeyFilePath](docsource/images/RFDER-custom-field-SeparatePrivateKeyFilePath-validation-options-dialog.svg)
 
 
    ###### Remove Root Certificate from Chain
    Remove root certificate from chain when adding/renewing a certificate in a store.
 
-   ![RFDER Custom Field - RemoveRootCertificate](docsource/images/RFDER-custom-field-RemoveRootCertificate-dialog.png)
-   ![RFDER Custom Field - RemoveRootCertificate](docsource/images/RFDER-custom-field-RemoveRootCertificate-validation-options-dialog.png)
-
+   ![RFDER Custom Field - RemoveRootCertificate](docsource/images/RFDER-custom-field-RemoveRootCertificate-dialog.svg)
+   ![RFDER Custom Field - RemoveRootCertificate](docsource/images/RFDER-custom-field-RemoveRootCertificate-validation-options-dialog.svg)
 
 
    ###### Include Port in SPN for WinRM
    Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations.
 
-   ![RFDER Custom Field - IncludePortInSPN](docsource/images/RFDER-custom-field-IncludePortInSPN-dialog.png)
-   ![RFDER Custom Field - IncludePortInSPN](docsource/images/RFDER-custom-field-IncludePortInSPN-validation-options-dialog.png)
-
+   ![RFDER Custom Field - IncludePortInSPN](docsource/images/RFDER-custom-field-IncludePortInSPN-dialog.svg)
+   ![RFDER Custom Field - IncludePortInSPN](docsource/images/RFDER-custom-field-IncludePortInSPN-validation-options-dialog.svg)
 
 
    ###### SSH Port
    Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting.
 
-   ![RFDER Custom Field - SSHPort](docsource/images/RFDER-custom-field-SSHPort-dialog.png)
-   ![RFDER Custom Field - SSHPort](docsource/images/RFDER-custom-field-SSHPort-validation-options-dialog.png)
-
+   ![RFDER Custom Field - SSHPort](docsource/images/RFDER-custom-field-SSHPort-dialog.svg)
+   ![RFDER Custom Field - SSHPort](docsource/images/RFDER-custom-field-SSHPort-validation-options-dialog.svg)
 
 
    ###### Use Shell Commands
    Recommended to be set to the default value of 'Y'.  For a detailed explanation of this setting, please refer to [Use Shell Commands Setting](#use-shell-commands-setting)
 
-   ![RFDER Custom Field - UseShellCommands](docsource/images/RFDER-custom-field-UseShellCommands-dialog.png)
-   ![RFDER Custom Field - UseShellCommands](docsource/images/RFDER-custom-field-UseShellCommands-validation-options-dialog.png)
+   ![RFDER Custom Field - UseShellCommands](docsource/images/RFDER-custom-field-UseShellCommands-dialog.svg)
+   ![RFDER Custom Field - UseShellCommands](docsource/images/RFDER-custom-field-UseShellCommands-validation-options-dialog.svg)
 
 
+   ###### Post Job Application Restart
+   Select the command to be run after a Management Add or ODKG job executes.  Leave unselected if no command is desired.  No options are initially delivered for RFDER.
 
+   ![RFDER Custom Field - PostJobApplicationRestart](docsource/images/RFDER-custom-field-PostJobApplicationRestart-dialog.svg)
+   ![RFDER Custom Field - PostJobApplicationRestart](docsource/images/RFDER-custom-field-PostJobApplicationRestart-validation-options-dialog.svg)
+
+
+   ###### Requires Legacy Encryption
+   Optional setting.  If set to true, PkcsObjectIdentifiers.PbeWithShaAnd3KeyTripleDesCbc and PkcsObjectIdentifiers.PbewithShaAnd40BitRC2Cbc algorithms will be used to create the underlying BouncyCastle Pkcs12Store used to feed the certificate store being managed during Management jobs.  Should be left not implemented or set to False for most instances.
+
+   ![RFDER Custom Field - RequiresLegacyEncryption](docsource/images/RFDER-custom-field-RequiresLegacyEncryption-dialog.svg)
+   ![RFDER Custom Field - RequiresLegacyEncryption](docsource/images/RFDER-custom-field-RequiresLegacyEncryption-validation-options-dialog.svg)
 
 
    </details>
@@ -1021,7 +986,6 @@ the Keyfactor Command Portal
 ### RFKDB
 
 <details><summary>Click to expand details</summary>
-
 
 The `RFKDB` store type can be used to manage IBM Key Database Files (`KDB`) files.  The IBM utility, `GSKCAPICMD`, is used 
 to read and write certificates from and to the target store and is therefore required to be installed on the server where 
@@ -1032,24 +996,22 @@ each `KDB` certificate store being managed resides, and its location MUST be in 
 2. One-to-many key entries - One-to-many certificates with private keys and optionally the full certificate chain.  Each certificate is identified with a custom alias.
 3. A mix of trust and key entries.
 
-
-
-
 #### Supported Operations
 
-| Operation    | Is Supported                                                                                                           |
-|--------------|------------------------------------------------------------------------------------------------------------------------|
-| Add          | ✅ Checked        |
-| Remove       | ✅ Checked     |
-| Discovery    | ✅ Checked  |
+| Operation    | Is Supported |
+|--------------|--------------|
+| Add          | ✅ Checked |
+| Remove       | ✅ Checked |
+| Discovery    | ✅ Checked |
 | Reenrollment | 🔲 Unchecked |
-| Create       | ✅ Checked     |
+| Create       | ✅ Checked |
 
 #### Store Type Creation
 
 ##### Using kfutil:
 `kfutil` is a custom CLI for the Keyfactor Command API and can be used to create certificate store types.
 For more information on [kfutil](https://github.com/Keyfactor/kfutil) check out the [docs](https://github.com/Keyfactor/kfutil?tab=readme-ov-file#quickstart)
+
    <details><summary>Click to expand RFKDB kfutil details</summary>
 
    ##### Using online definition from GitHub:
@@ -1068,10 +1030,10 @@ For more information on [kfutil](https://github.com/Keyfactor/kfutil) check out 
    ```
    </details>
 
-
 #### Manual Creation
 Below are instructions on how to create the RFKDB store type manually in
 the Keyfactor Command Portal
+
    <details><summary>Click to expand manual RFKDB details</summary>
 
    Create a store type called `RFKDB` with the attributes in the tables below:
@@ -1082,11 +1044,11 @@ the Keyfactor Command Portal
    | Name | RFKDB | Display name for the store type (may be customized) |
    | Short Name | RFKDB | Short display name for the store type |
    | Capability | RFKDB | Store type name orchestrator will register with. Check the box to allow entry of value |
-   | Supports Add | ✅ Checked | Check the box. Indicates that the Store Type supports Management Add |
-   | Supports Remove | ✅ Checked | Check the box. Indicates that the Store Type supports Management Remove |
-   | Supports Discovery | ✅ Checked | Check the box. Indicates that the Store Type supports Discovery |
-   | Supports Reenrollment | 🔲 Unchecked |  Indicates that the Store Type supports Reenrollment |
-   | Supports Create | ✅ Checked | Check the box. Indicates that the Store Type supports store creation |
+   | Supports Add | ✅ Checked | Indicates that the Store Type supports Management Add |
+   | Supports Remove | ✅ Checked | Indicates that the Store Type supports Management Remove |
+   | Supports Discovery | ✅ Checked | Indicates that the Store Type supports Discovery |
+   | Supports Reenrollment | 🔲 Unchecked | Indicates that the Store Type supports Reenrollment |
+   | Supports Create | ✅ Checked | Indicates that the Store Type supports store creation |
    | Needs Server | ✅ Checked | Determines if a target server name is required when creating store |
    | Blueprint Allowed | 🔲 Unchecked | Determines if store type may be included in an Orchestrator blueprint |
    | Uses PowerShell | 🔲 Unchecked | Determines if underlying implementation is PowerShell |
@@ -1095,18 +1057,18 @@ the Keyfactor Command Portal
 
    The Basic tab should look like this:
 
-   ![RFKDB Basic Tab](docsource/images/RFKDB-basic-store-type-dialog.png)
+   ![RFKDB Basic Tab](docsource/images/RFKDB-basic-store-type-dialog.svg)
 
    ##### Advanced Tab
    | Attribute | Value | Description |
    | --------- | ----- | ----- |
    | Supports Custom Alias | Required | Determines if an individual entry within a store can have a custom Alias. |
-   | Private Key Handling | Optional | This determines if Keyfactor can send the private key associated with a certificate to the store. Required because IIS certificates without private keys would be invalid. |
+   | Private Key Handling | Optional | This determines if Keyfactor can send the private key associated with a certificate to the store. |
    | PFX Password Style | Default | 'Default' - PFX password is randomly generated, 'Custom' - PFX password may be specified when the enrollment job is created (Requires the Allow Custom Password application setting to be enabled.) |
 
    The Advanced tab should look like this:
 
-   ![RFKDB Advanced Tab](docsource/images/RFKDB-advanced-store-type-dialog.png)
+   ![RFKDB Advanced Tab](docsource/images/RFKDB-advanced-store-type-dialog.svg)
 
    > For Keyfactor **Command versions 24.4 and later**, a Certificate Format dropdown is available with PFX and PEM options. Ensure that **PFX** is selected, as this determines the format of new and renewed certificates sent to the Orchestrator during a Management job. Currently, all Keyfactor-supported Orchestrator extensions support only PFX.
 
@@ -1124,11 +1086,12 @@ the Keyfactor Command Portal
    | IncludePortInSPN | Include Port in SPN for WinRM | Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations. | Bool | False | 🔲 Unchecked |
    | SSHPort | SSH Port | Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting. | String |  | 🔲 Unchecked |
    | UseShellCommands | Use Shell Commands | Recommended to be set to the default value of 'Y'.  For a detailed explanation of this setting, please refer to [Use Shell Commands Setting](#use-shell-commands-setting) | Bool | True | 🔲 Unchecked |
+   | PostJobApplicationRestart | Post Job Application Restart | Select the command to be run after a Management Add or ODKG job executes.  Leave unselected if no command is desired.  No options are initially delivered for RFKDB. | MultipleChoice | None | 🔲 Unchecked |
+   | RequiresLegacyEncryption | Requires Legacy Encryption | Optional setting.  If set to true, PkcsObjectIdentifiers.PbeWithShaAnd3KeyTripleDesCbc and PkcsObjectIdentifiers.PbewithShaAnd40BitRC2Cbc algorithms will be used to create the underlying BouncyCastle Pkcs12Store used to feed the certificate store being managed during Management jobs.  Should be left not implemented or set to False for most instances. | Bool | False | 🔲 Unchecked |
 
    The Custom Fields tab should look like this:
 
-   ![RFKDB Custom Fields Tab](docsource/images/RFKDB-custom-fields-store-type-dialog.png)
-
+   ![RFKDB Custom Fields Tab](docsource/images/RFKDB-custom-fields-store-type-dialog.svg)
 
    ###### Server Username
    A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value*
@@ -1136,8 +1099,6 @@ the Keyfactor Command Portal
 
    > [!IMPORTANT]
    > This field is created by the `Needs Server` on the Basic tab, do not create this field manually.
-
-
 
 
    ###### Server Password
@@ -1148,64 +1109,67 @@ the Keyfactor Command Portal
    > This field is created by the `Needs Server` on the Basic tab, do not create this field manually.
 
 
-
-
    ###### Linux File Permissions on Store Creation
    The LinuxFilePermissionsOnStoreCreation field should contain a three-digit value between 000 and 777 representing the Linux file permissions to be set for the certificate store upon creation. Example: '600' or '755'.  Overrides DefaultLinuxPermissionOnStoreCreation [config.json](#post-installation) setting.
 
-   ![RFKDB Custom Field - LinuxFilePermissionsOnStoreCreation](docsource/images/RFKDB-custom-field-LinuxFilePermissionsOnStoreCreation-dialog.png)
-   ![RFKDB Custom Field - LinuxFilePermissionsOnStoreCreation](docsource/images/RFKDB-custom-field-LinuxFilePermissionsOnStoreCreation-validation-options-dialog.png)
-
+   ![RFKDB Custom Field - LinuxFilePermissionsOnStoreCreation](docsource/images/RFKDB-custom-field-LinuxFilePermissionsOnStoreCreation-dialog.svg)
+   ![RFKDB Custom Field - LinuxFilePermissionsOnStoreCreation](docsource/images/RFKDB-custom-field-LinuxFilePermissionsOnStoreCreation-validation-options-dialog.svg)
 
 
    ###### Linux File Owner on Store Creation
    The LinuxFileOwnerOnStoreCreation field should contain a valid user ID recognized by the destination Linux server, optionally followed by a colon and a group ID if the group owner differs. Example: 'userID' or 'userID:groupID'.  Overrides DefaultOwnerOnStoreCreation [config.json](#post-installation) setting.
 
-   ![RFKDB Custom Field - LinuxFileOwnerOnStoreCreation](docsource/images/RFKDB-custom-field-LinuxFileOwnerOnStoreCreation-dialog.png)
-   ![RFKDB Custom Field - LinuxFileOwnerOnStoreCreation](docsource/images/RFKDB-custom-field-LinuxFileOwnerOnStoreCreation-validation-options-dialog.png)
-
+   ![RFKDB Custom Field - LinuxFileOwnerOnStoreCreation](docsource/images/RFKDB-custom-field-LinuxFileOwnerOnStoreCreation-dialog.svg)
+   ![RFKDB Custom Field - LinuxFileOwnerOnStoreCreation](docsource/images/RFKDB-custom-field-LinuxFileOwnerOnStoreCreation-validation-options-dialog.svg)
 
 
    ###### Sudo Impersonating User
    The SudoImpersonatingUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'.  Overrides [config.json](#post-installation) DefaultSudoImpersonatedUser setting.
 
-   ![RFKDB Custom Field - SudoImpersonatingUser](docsource/images/RFKDB-custom-field-SudoImpersonatingUser-dialog.png)
-   ![RFKDB Custom Field - SudoImpersonatingUser](docsource/images/RFKDB-custom-field-SudoImpersonatingUser-validation-options-dialog.png)
-
+   ![RFKDB Custom Field - SudoImpersonatingUser](docsource/images/RFKDB-custom-field-SudoImpersonatingUser-dialog.svg)
+   ![RFKDB Custom Field - SudoImpersonatingUser](docsource/images/RFKDB-custom-field-SudoImpersonatingUser-validation-options-dialog.svg)
 
 
    ###### Remove Root Certificate from Chain
    Remove root certificate from chain when adding/renewing a certificate in a store.
 
-   ![RFKDB Custom Field - RemoveRootCertificate](docsource/images/RFKDB-custom-field-RemoveRootCertificate-dialog.png)
-   ![RFKDB Custom Field - RemoveRootCertificate](docsource/images/RFKDB-custom-field-RemoveRootCertificate-validation-options-dialog.png)
-
+   ![RFKDB Custom Field - RemoveRootCertificate](docsource/images/RFKDB-custom-field-RemoveRootCertificate-dialog.svg)
+   ![RFKDB Custom Field - RemoveRootCertificate](docsource/images/RFKDB-custom-field-RemoveRootCertificate-validation-options-dialog.svg)
 
 
    ###### Include Port in SPN for WinRM
    Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations.
 
-   ![RFKDB Custom Field - IncludePortInSPN](docsource/images/RFKDB-custom-field-IncludePortInSPN-dialog.png)
-   ![RFKDB Custom Field - IncludePortInSPN](docsource/images/RFKDB-custom-field-IncludePortInSPN-validation-options-dialog.png)
-
+   ![RFKDB Custom Field - IncludePortInSPN](docsource/images/RFKDB-custom-field-IncludePortInSPN-dialog.svg)
+   ![RFKDB Custom Field - IncludePortInSPN](docsource/images/RFKDB-custom-field-IncludePortInSPN-validation-options-dialog.svg)
 
 
    ###### SSH Port
    Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting.
 
-   ![RFKDB Custom Field - SSHPort](docsource/images/RFKDB-custom-field-SSHPort-dialog.png)
-   ![RFKDB Custom Field - SSHPort](docsource/images/RFKDB-custom-field-SSHPort-validation-options-dialog.png)
-
+   ![RFKDB Custom Field - SSHPort](docsource/images/RFKDB-custom-field-SSHPort-dialog.svg)
+   ![RFKDB Custom Field - SSHPort](docsource/images/RFKDB-custom-field-SSHPort-validation-options-dialog.svg)
 
 
    ###### Use Shell Commands
    Recommended to be set to the default value of 'Y'.  For a detailed explanation of this setting, please refer to [Use Shell Commands Setting](#use-shell-commands-setting)
 
-   ![RFKDB Custom Field - UseShellCommands](docsource/images/RFKDB-custom-field-UseShellCommands-dialog.png)
-   ![RFKDB Custom Field - UseShellCommands](docsource/images/RFKDB-custom-field-UseShellCommands-validation-options-dialog.png)
+   ![RFKDB Custom Field - UseShellCommands](docsource/images/RFKDB-custom-field-UseShellCommands-dialog.svg)
+   ![RFKDB Custom Field - UseShellCommands](docsource/images/RFKDB-custom-field-UseShellCommands-validation-options-dialog.svg)
 
 
+   ###### Post Job Application Restart
+   Select the command to be run after a Management Add or ODKG job executes.  Leave unselected if no command is desired.  No options are initially delivered for RFKDB.
 
+   ![RFKDB Custom Field - PostJobApplicationRestart](docsource/images/RFKDB-custom-field-PostJobApplicationRestart-dialog.svg)
+   ![RFKDB Custom Field - PostJobApplicationRestart](docsource/images/RFKDB-custom-field-PostJobApplicationRestart-validation-options-dialog.svg)
+
+
+   ###### Requires Legacy Encryption
+   Optional setting.  If set to true, PkcsObjectIdentifiers.PbeWithShaAnd3KeyTripleDesCbc and PkcsObjectIdentifiers.PbewithShaAnd40BitRC2Cbc algorithms will be used to create the underlying BouncyCastle Pkcs12Store used to feed the certificate store being managed during Management jobs.  Should be left not implemented or set to False for most instances.
+
+   ![RFKDB Custom Field - RequiresLegacyEncryption](docsource/images/RFKDB-custom-field-RequiresLegacyEncryption-dialog.svg)
+   ![RFKDB Custom Field - RequiresLegacyEncryption](docsource/images/RFKDB-custom-field-RequiresLegacyEncryption-validation-options-dialog.svg)
 
 
    </details>
@@ -1215,35 +1179,29 @@ the Keyfactor Command Portal
 
 <details><summary>Click to expand details</summary>
 
-
-The `RFORA` store type can be used to manage `PKCS12` Oracle Wallets. 
-
-> NOTE: This should work for `PKCS12` Oracle Wallets installed on both Windows and Linux servers, this has only been tested on wallets installed on Windows.  
-> NOTE: When entering the Store Path for an Oracle Wallet in Keyfactor Command, make sure to INCLUDE the `eWallet.p12` file name that by convention is the name of the `PKCS12` wallet file that gets created.
+The `RFORA` store type can be used to manage `PKCS12` Oracle wallets. Although implemented as a separate store type, Oracle wallets are accessed and managed identically to RFPkcs12 store types.  The file is expected to compatible with the Pkcs#12 standard.
 
 #### Supported use cases
 1. One-to-many trust entries - A trust entry is defined as a single certificate without a private key in a certificate store.  Each trust entry is identified with a custom alias.
 2. One-to-many key entries - One-to-many certificates with private keys and optionally the full certificate chain.  Each certificate is identified with a custom alias.
 3. A mix of trust and key entries.
 
-
-
-
 #### Supported Operations
 
-| Operation    | Is Supported                                                                                                           |
-|--------------|------------------------------------------------------------------------------------------------------------------------|
-| Add          | ✅ Checked        |
-| Remove       | ✅ Checked     |
-| Discovery    | ✅ Checked  |
+| Operation    | Is Supported |
+|--------------|--------------|
+| Add          | ✅ Checked |
+| Remove       | ✅ Checked |
+| Discovery    | ✅ Checked |
 | Reenrollment | 🔲 Unchecked |
-| Create       | ✅ Checked     |
+| Create       | ✅ Checked |
 
 #### Store Type Creation
 
 ##### Using kfutil:
 `kfutil` is a custom CLI for the Keyfactor Command API and can be used to create certificate store types.
 For more information on [kfutil](https://github.com/Keyfactor/kfutil) check out the [docs](https://github.com/Keyfactor/kfutil?tab=readme-ov-file#quickstart)
+
    <details><summary>Click to expand RFORA kfutil details</summary>
 
    ##### Using online definition from GitHub:
@@ -1262,10 +1220,10 @@ For more information on [kfutil](https://github.com/Keyfactor/kfutil) check out 
    ```
    </details>
 
-
 #### Manual Creation
 Below are instructions on how to create the RFORA store type manually in
 the Keyfactor Command Portal
+
    <details><summary>Click to expand manual RFORA details</summary>
 
    Create a store type called `RFORA` with the attributes in the tables below:
@@ -1276,11 +1234,11 @@ the Keyfactor Command Portal
    | Name | RFORA | Display name for the store type (may be customized) |
    | Short Name | RFORA | Short display name for the store type |
    | Capability | RFORA | Store type name orchestrator will register with. Check the box to allow entry of value |
-   | Supports Add | ✅ Checked | Check the box. Indicates that the Store Type supports Management Add |
-   | Supports Remove | ✅ Checked | Check the box. Indicates that the Store Type supports Management Remove |
-   | Supports Discovery | ✅ Checked | Check the box. Indicates that the Store Type supports Discovery |
-   | Supports Reenrollment | 🔲 Unchecked |  Indicates that the Store Type supports Reenrollment |
-   | Supports Create | ✅ Checked | Check the box. Indicates that the Store Type supports store creation |
+   | Supports Add | ✅ Checked | Indicates that the Store Type supports Management Add |
+   | Supports Remove | ✅ Checked | Indicates that the Store Type supports Management Remove |
+   | Supports Discovery | ✅ Checked | Indicates that the Store Type supports Discovery |
+   | Supports Reenrollment | 🔲 Unchecked | Indicates that the Store Type supports Reenrollment |
+   | Supports Create | ✅ Checked | Indicates that the Store Type supports store creation |
    | Needs Server | ✅ Checked | Determines if a target server name is required when creating store |
    | Blueprint Allowed | 🔲 Unchecked | Determines if store type may be included in an Orchestrator blueprint |
    | Uses PowerShell | 🔲 Unchecked | Determines if underlying implementation is PowerShell |
@@ -1289,18 +1247,18 @@ the Keyfactor Command Portal
 
    The Basic tab should look like this:
 
-   ![RFORA Basic Tab](docsource/images/RFORA-basic-store-type-dialog.png)
+   ![RFORA Basic Tab](docsource/images/RFORA-basic-store-type-dialog.svg)
 
    ##### Advanced Tab
    | Attribute | Value | Description |
    | --------- | ----- | ----- |
    | Supports Custom Alias | Required | Determines if an individual entry within a store can have a custom Alias. |
-   | Private Key Handling | Optional | This determines if Keyfactor can send the private key associated with a certificate to the store. Required because IIS certificates without private keys would be invalid. |
+   | Private Key Handling | Optional | This determines if Keyfactor can send the private key associated with a certificate to the store. |
    | PFX Password Style | Default | 'Default' - PFX password is randomly generated, 'Custom' - PFX password may be specified when the enrollment job is created (Requires the Allow Custom Password application setting to be enabled.) |
 
    The Advanced tab should look like this:
 
-   ![RFORA Advanced Tab](docsource/images/RFORA-advanced-store-type-dialog.png)
+   ![RFORA Advanced Tab](docsource/images/RFORA-advanced-store-type-dialog.svg)
 
    > For Keyfactor **Command versions 24.4 and later**, a Certificate Format dropdown is available with PFX and PEM options. Ensure that **PFX** is selected, as this determines the format of new and renewed certificates sent to the Orchestrator during a Management job. Currently, all Keyfactor-supported Orchestrator extensions support only PFX.
 
@@ -1314,16 +1272,16 @@ the Keyfactor Command Portal
    | LinuxFilePermissionsOnStoreCreation | Linux File Permissions on Store Creation | The LinuxFilePermissionsOnStoreCreation field should contain a three-digit value between 000 and 777 representing the Linux file permissions to be set for the certificate store upon creation. Example: '600' or '755'.  Overrides DefaultLinuxPermissionOnStoreCreation [config.json](#post-installation) setting. | String |  | 🔲 Unchecked |
    | LinuxFileOwnerOnStoreCreation | Linux File Owner on Store Creation | The LinuxFileOwnerOnStoreCreation field should contain a valid user ID recognized by the destination Linux server, optionally followed by a colon and a group ID if the group owner differs. Example: 'userID' or 'userID:groupID'.  Overrides DefaultOwnerOnStoreCreation [config.json](#post-installation) setting. | String |  | 🔲 Unchecked |
    | SudoImpersonatingUser | Sudo Impersonating User | The SudoImpersonatingUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'.  Overrides [config.json](#post-installation) DefaultSudoImpersonatedUser setting. | String |  | 🔲 Unchecked |
-   | WorkFolder | Location to use for creation/removal of work files | The WorkFolder field should contain the path on the managed server where temporary work files can be created, modified, and deleted during Inventory and Management jobs. Example: '/path/to/workfolder'. | String |  | ✅ Checked |
    | RemoveRootCertificate | Remove Root Certificate from Chain | Remove root certificate from chain when adding/renewing a certificate in a store. | Bool | False | 🔲 Unchecked |
    | IncludePortInSPN | Include Port in SPN for WinRM | Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations. | Bool | False | 🔲 Unchecked |
    | SSHPort | SSH Port | Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting. | String |  | 🔲 Unchecked |
    | UseShellCommands | Use Shell Commands | Recommended to be set to the default value of 'Y'.  For a detailed explanation of this setting, please refer to [Use Shell Commands Setting](#use-shell-commands-setting) | Bool | True | 🔲 Unchecked |
+   | PostJobApplicationRestart | Post Job Application Restart | Select the command to be run after a Management Add or ODKG job executes.  Leave unselected if no command is desired.  No options are initially delivered for RFORA. | MultipleChoice | None | 🔲 Unchecked |
+   | RequiresLegacyEncryption | Requires Legacy Encryption | Optional setting.  If set to true, PkcsObjectIdentifiers.PbeWithShaAnd3KeyTripleDesCbc and PkcsObjectIdentifiers.PbewithShaAnd40BitRC2Cbc algorithms will be used to create the underlying BouncyCastle Pkcs12Store used to feed the certificate store being managed during Management jobs.  Should be left not implemented or set to False for most instances. | Bool | False | 🔲 Unchecked |
 
    The Custom Fields tab should look like this:
 
-   ![RFORA Custom Fields Tab](docsource/images/RFORA-custom-fields-store-type-dialog.png)
-
+   ![RFORA Custom Fields Tab](docsource/images/RFORA-custom-fields-store-type-dialog.svg)
 
    ###### Server Username
    A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value*
@@ -1331,8 +1289,6 @@ the Keyfactor Command Portal
 
    > [!IMPORTANT]
    > This field is created by the `Needs Server` on the Basic tab, do not create this field manually.
-
-
 
 
    ###### Server Password
@@ -1343,72 +1299,67 @@ the Keyfactor Command Portal
    > This field is created by the `Needs Server` on the Basic tab, do not create this field manually.
 
 
-
-
    ###### Linux File Permissions on Store Creation
    The LinuxFilePermissionsOnStoreCreation field should contain a three-digit value between 000 and 777 representing the Linux file permissions to be set for the certificate store upon creation. Example: '600' or '755'.  Overrides DefaultLinuxPermissionOnStoreCreation [config.json](#post-installation) setting.
 
-   ![RFORA Custom Field - LinuxFilePermissionsOnStoreCreation](docsource/images/RFORA-custom-field-LinuxFilePermissionsOnStoreCreation-dialog.png)
-   ![RFORA Custom Field - LinuxFilePermissionsOnStoreCreation](docsource/images/RFORA-custom-field-LinuxFilePermissionsOnStoreCreation-validation-options-dialog.png)
-
+   ![RFORA Custom Field - LinuxFilePermissionsOnStoreCreation](docsource/images/RFORA-custom-field-LinuxFilePermissionsOnStoreCreation-dialog.svg)
+   ![RFORA Custom Field - LinuxFilePermissionsOnStoreCreation](docsource/images/RFORA-custom-field-LinuxFilePermissionsOnStoreCreation-validation-options-dialog.svg)
 
 
    ###### Linux File Owner on Store Creation
    The LinuxFileOwnerOnStoreCreation field should contain a valid user ID recognized by the destination Linux server, optionally followed by a colon and a group ID if the group owner differs. Example: 'userID' or 'userID:groupID'.  Overrides DefaultOwnerOnStoreCreation [config.json](#post-installation) setting.
 
-   ![RFORA Custom Field - LinuxFileOwnerOnStoreCreation](docsource/images/RFORA-custom-field-LinuxFileOwnerOnStoreCreation-dialog.png)
-   ![RFORA Custom Field - LinuxFileOwnerOnStoreCreation](docsource/images/RFORA-custom-field-LinuxFileOwnerOnStoreCreation-validation-options-dialog.png)
-
+   ![RFORA Custom Field - LinuxFileOwnerOnStoreCreation](docsource/images/RFORA-custom-field-LinuxFileOwnerOnStoreCreation-dialog.svg)
+   ![RFORA Custom Field - LinuxFileOwnerOnStoreCreation](docsource/images/RFORA-custom-field-LinuxFileOwnerOnStoreCreation-validation-options-dialog.svg)
 
 
    ###### Sudo Impersonating User
    The SudoImpersonatingUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'.  Overrides [config.json](#post-installation) DefaultSudoImpersonatedUser setting.
 
-   ![RFORA Custom Field - SudoImpersonatingUser](docsource/images/RFORA-custom-field-SudoImpersonatingUser-dialog.png)
-   ![RFORA Custom Field - SudoImpersonatingUser](docsource/images/RFORA-custom-field-SudoImpersonatingUser-validation-options-dialog.png)
-
-
-
-   ###### Location to use for creation/removal of work files
-   The WorkFolder field should contain the path on the managed server where temporary work files can be created, modified, and deleted during Inventory and Management jobs. Example: '/path/to/workfolder'.
-
-   ![RFORA Custom Field - WorkFolder](docsource/images/RFORA-custom-field-WorkFolder-dialog.png)
-   ![RFORA Custom Field - WorkFolder](docsource/images/RFORA-custom-field-WorkFolder-validation-options-dialog.png)
-
+   ![RFORA Custom Field - SudoImpersonatingUser](docsource/images/RFORA-custom-field-SudoImpersonatingUser-dialog.svg)
+   ![RFORA Custom Field - SudoImpersonatingUser](docsource/images/RFORA-custom-field-SudoImpersonatingUser-validation-options-dialog.svg)
 
 
    ###### Remove Root Certificate from Chain
    Remove root certificate from chain when adding/renewing a certificate in a store.
 
-   ![RFORA Custom Field - RemoveRootCertificate](docsource/images/RFORA-custom-field-RemoveRootCertificate-dialog.png)
-   ![RFORA Custom Field - RemoveRootCertificate](docsource/images/RFORA-custom-field-RemoveRootCertificate-validation-options-dialog.png)
-
+   ![RFORA Custom Field - RemoveRootCertificate](docsource/images/RFORA-custom-field-RemoveRootCertificate-dialog.svg)
+   ![RFORA Custom Field - RemoveRootCertificate](docsource/images/RFORA-custom-field-RemoveRootCertificate-validation-options-dialog.svg)
 
 
    ###### Include Port in SPN for WinRM
    Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations.
 
-   ![RFORA Custom Field - IncludePortInSPN](docsource/images/RFORA-custom-field-IncludePortInSPN-dialog.png)
-   ![RFORA Custom Field - IncludePortInSPN](docsource/images/RFORA-custom-field-IncludePortInSPN-validation-options-dialog.png)
-
+   ![RFORA Custom Field - IncludePortInSPN](docsource/images/RFORA-custom-field-IncludePortInSPN-dialog.svg)
+   ![RFORA Custom Field - IncludePortInSPN](docsource/images/RFORA-custom-field-IncludePortInSPN-validation-options-dialog.svg)
 
 
    ###### SSH Port
    Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting.
 
-   ![RFORA Custom Field - SSHPort](docsource/images/RFORA-custom-field-SSHPort-dialog.png)
-   ![RFORA Custom Field - SSHPort](docsource/images/RFORA-custom-field-SSHPort-validation-options-dialog.png)
-
+   ![RFORA Custom Field - SSHPort](docsource/images/RFORA-custom-field-SSHPort-dialog.svg)
+   ![RFORA Custom Field - SSHPort](docsource/images/RFORA-custom-field-SSHPort-validation-options-dialog.svg)
 
 
    ###### Use Shell Commands
    Recommended to be set to the default value of 'Y'.  For a detailed explanation of this setting, please refer to [Use Shell Commands Setting](#use-shell-commands-setting)
 
-   ![RFORA Custom Field - UseShellCommands](docsource/images/RFORA-custom-field-UseShellCommands-dialog.png)
-   ![RFORA Custom Field - UseShellCommands](docsource/images/RFORA-custom-field-UseShellCommands-validation-options-dialog.png)
+   ![RFORA Custom Field - UseShellCommands](docsource/images/RFORA-custom-field-UseShellCommands-dialog.svg)
+   ![RFORA Custom Field - UseShellCommands](docsource/images/RFORA-custom-field-UseShellCommands-validation-options-dialog.svg)
 
 
+   ###### Post Job Application Restart
+   Select the command to be run after a Management Add or ODKG job executes.  Leave unselected if no command is desired.  No options are initially delivered for RFORA.
 
+   ![RFORA Custom Field - PostJobApplicationRestart](docsource/images/RFORA-custom-field-PostJobApplicationRestart-dialog.svg)
+   ![RFORA Custom Field - PostJobApplicationRestart](docsource/images/RFORA-custom-field-PostJobApplicationRestart-validation-options-dialog.svg)
+
+
+   ###### Requires Legacy Encryption
+   Optional setting.  If set to true, PkcsObjectIdentifiers.PbeWithShaAnd3KeyTripleDesCbc and PkcsObjectIdentifiers.PbewithShaAnd40BitRC2Cbc algorithms will be used to create the underlying BouncyCastle Pkcs12Store used to feed the certificate store being managed during Management jobs.  Should be left not implemented or set to False for most instances.
+
+   ![RFORA Custom Field - RequiresLegacyEncryption](docsource/images/RFORA-custom-field-RequiresLegacyEncryption-dialog.svg)
+   ![RFORA Custom Field - RequiresLegacyEncryption](docsource/images/RFORA-custom-field-RequiresLegacyEncryption-validation-options-dialog.svg)
 
 
    </details>
@@ -1419,12 +1370,12 @@ the Keyfactor Command Portal
 
 1. **Download the latest Remote File Universal Orchestrator extension from GitHub.**
 
-    Navigate to the [Remote File Universal Orchestrator extension GitHub version page](https://github.com/Keyfactor/remote-file-orchestrator/releases/latest). Refer to the compatibility matrix below to determine the asset should be downloaded. Then, click the corresponding asset to download the zip archive.
+    Navigate to the [Remote File Universal Orchestrator extension GitHub version page](https://github.com/Keyfactor/remote-file-orchestrator/releases/latest). Refer to the compatibility matrix below to determine which asset should be downloaded. Then, click the corresponding asset to download the zip archive.
 
    | Universal Orchestrator Version | Latest .NET version installed on the Universal Orchestrator server | `rollForward` condition in `Orchestrator.runtimeconfig.json` | `remote-file-orchestrator` .NET version to download |
    | --------- | ----------- | ----------- | ----------- |
    | Between `11.0.0` and `11.5.1` (inclusive) | `net8.0` | `LatestMajor` | `net8.0` |
-   | `11.6` _and_ newer | `net8.0` | | `net8.0` | 
+   | `11.6` _and_ newer | `net8.0` | | `net8.0` |
 
     Unzip the archive containing extension assemblies to a known location.
 
@@ -1446,16 +1397,13 @@ the Keyfactor Command Portal
 
     Refer to [Starting/Restarting the Universal Orchestrator service](https://software.keyfactor.com/Core-OnPrem/Current/Content/InstallingAgents/NetCoreOrchestrator/StarttheService.htm).
 
-
 6. **(optional) PAM Integration**
 
     The Remote File Universal Orchestrator extension is compatible with all supported Keyfactor PAM extensions to resolve PAM-eligible secrets. PAM extensions running on Universal Orchestrators enable secure retrieval of secrets from a connected PAM provider.
 
     To configure a PAM provider, [reference the Keyfactor Integration Catalog](https://keyfactor.github.io/integrations-catalog/content/pam) to select an extension and follow the associated instructions to install it on the Universal Orchestrator (remote).
 
-
 > The above installation steps can be supplemented by the [official Command documentation](https://software.keyfactor.com/Core-OnPrem/Current/Content/InstallingAgents/NetCoreOrchestrator/CustomExtensions.htm?Highlight=extensions).
-
 
 ## Post Installation
 
@@ -1520,13 +1468,11 @@ The Remote File Orchestrator Extension uses a JSON configuration file. It is loc
 | `UseShellCommands`                       | `Y`           | `Y/N`                                 | Recommended to be set to the default value of 'Y'.  For a detailed explanation of this setting, please refer to [Use Shell Commands Setting](#use-shell-commands-setting).                                                                               |
 | `PostJobCommands`                        |               | See JSON above                        | JSON values representing post processing commands for Management-Add and ODKG job.  For a detailed explanation of this optional setting, please refer to [Post Job Command Execution](#post-job-command-execution).                                      |
 
-
 ## Defining Certificate Stores
 
 The Remote File Universal Orchestrator extension implements 6 Certificate Store Types, each of which implements different functionality. Refer to the individual instructions below for each Certificate Store Type that you deemed necessary for your use case from the installation section.
 
 <details><summary>RFJKS (RFJKS)</summary>
-
 
 ### Store Creation
 
@@ -1542,8 +1488,8 @@ The Remote File Universal Orchestrator extension implements 6 Certificate Store 
 
     Click the Add button to add a new Certificate Store. Use the table below to populate the **Attributes** in the **Add** form.
 
-   | Attribute | Description                                             |
-   | --------- |---------------------------------------------------------|
+   | Attribute | Description |
+   | --------- | ----------- |
    | Category | Select "RFJKS" or the customized certificate store name from the previous step. |
    | Container | Optional container to associate certificate store with. |
    | Client Machine | The IP address or DNS of the server hosting the certificate store.  For more information, see [Client Machine ](#client-machine-instructions) |
@@ -1560,10 +1506,9 @@ The Remote File Universal Orchestrator extension implements 6 Certificate Store 
    | SSHPort | Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting. |
    | UseShellCommands | Recommended to be set to the default value of 'Y'.  For a detailed explanation of this setting, please refer to [Use Shell Commands Setting](#use-shell-commands-setting) |
    | PostJobApplicationRestart | Select the command to be run after a Management Add or ODKG job executes.  Leave unselected if no command is desired. |
+   | RequiresLegacyEncryption | Optional setting.  If set to true, PkcsObjectIdentifiers.PbeWithShaAnd3KeyTripleDesCbc and PkcsObjectIdentifiers.PbewithShaAnd40BitRC2Cbc algorithms will be used to create the underlying BouncyCastle Pkcs12Store used to feed the certificate store being managed during Management jobs.  Should be left not implemented or set to False for most instances. |
 
 </details>
-
-
 
 #### Using kfutil CLI
 
@@ -1596,6 +1541,7 @@ The Remote File Universal Orchestrator extension implements 6 Certificate Store 
    | Properties.SSHPort | Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting. |
    | Properties.UseShellCommands | Recommended to be set to the default value of 'Y'.  For a detailed explanation of this setting, please refer to [Use Shell Commands Setting](#use-shell-commands-setting) |
    | Properties.PostJobApplicationRestart | Select the command to be run after a Management Add or ODKG job executes.  Leave unselected if no command is desired. |
+   | Properties.RequiresLegacyEncryption | Optional setting.  If set to true, PkcsObjectIdentifiers.PbeWithShaAnd3KeyTripleDesCbc and PkcsObjectIdentifiers.PbewithShaAnd40BitRC2Cbc algorithms will be used to create the underlying BouncyCastle Pkcs12Store used to feed the certificate store being managed during Management jobs.  Should be left not implemented or set to False for most instances. |
 
 3. **Import the CSV file to create the certificate stores**
 
@@ -1604,7 +1550,6 @@ The Remote File Universal Orchestrator extension implements 6 Certificate Store 
     ```
 
 </details>
-
 
 #### PAM Provider Eligible Fields
 <details><summary>Attributes eligible for retrieval by a PAM Provider on the Universal Orchestrator</summary>
@@ -1615,21 +1560,18 @@ If a PAM provider was installed _on the Universal Orchestrator_ in the [Installa
    | --------- | ----------- |
    | ServerUsername | A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value* |
    | ServerPassword | A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value* |
-   | StorePassword | Password used to secure the Certificate Store |
+   | StorePassword | Password to use when reading/writing to store |
 
 Please refer to the **Universal Orchestrator (remote)** usage section ([PAM providers on the Keyfactor Integration Catalog](https://keyfactor.github.io/integrations-catalog/content/pam)) for your selected PAM provider for instructions on how to load attributes orchestrator-side.
 > Any secret can be rendered by a PAM provider _installed on the Keyfactor Command server_. The above parameters are specific to attributes that can be fetched by an installed PAM provider running on the Universal Orchestrator server itself.
 
 </details>
 
-
 > The content in this section can be supplemented by the [official Command documentation](https://software.keyfactor.com/Core-OnPrem/Current/Content/ReferenceGuide/Certificate%20Stores.htm?Highlight=certificate%20store).
-
 
 </details>
 
 <details><summary>RFPEM (RFPEM)</summary>
-
 
 ### Store Creation
 
@@ -1645,8 +1587,8 @@ Please refer to the **Universal Orchestrator (remote)** usage section ([PAM prov
 
     Click the Add button to add a new Certificate Store. Use the table below to populate the **Attributes** in the **Add** form.
 
-   | Attribute | Description                                             |
-   | --------- |---------------------------------------------------------|
+   | Attribute | Description |
+   | --------- | ----------- |
    | Category | Select "RFPEM" or the customized certificate store name from the previous step. |
    | Container | Optional container to associate certificate store with. |
    | Client Machine | The Client Machine field should contain the DNS name or IP address of the remote orchestrated server for Linux orchestrated servers, formatted as a URL (protocol://dns-or-ip:port) for Windows orchestrated servers, or '1.1.1.1|LocalMachine' for local agents. Example: 'https://myserver.mydomain.com:5986' or '1.1.1.1|LocalMachine' for local access. |
@@ -1667,10 +1609,9 @@ Please refer to the **Universal Orchestrator (remote)** usage section ([PAM prov
    | SSHPort | Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting. |
    | UseShellCommands | Recommended to be set to the default value of 'Y'.  For a detailed explanation of this setting, please refer to [Use Shell Commands Setting](#use-shell-commands-setting) |
    | PostJobApplicationRestart | Select the command to be run after a Management Add or ODKG job executes.  Leave unselected if no command is desired. |
+   | RequiresLegacyEncryption | Optional setting.  If set to true, PkcsObjectIdentifiers.PbeWithShaAnd3KeyTripleDesCbc and PkcsObjectIdentifiers.PbewithShaAnd40BitRC2Cbc algorithms will be used to create the underlying BouncyCastle Pkcs12Store used to feed the certificate store being managed during Management jobs.  Should be left not implemented or set to False for most instances. |
 
 </details>
-
-
 
 #### Using kfutil CLI
 
@@ -1707,6 +1648,7 @@ Please refer to the **Universal Orchestrator (remote)** usage section ([PAM prov
    | Properties.SSHPort | Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting. |
    | Properties.UseShellCommands | Recommended to be set to the default value of 'Y'.  For a detailed explanation of this setting, please refer to [Use Shell Commands Setting](#use-shell-commands-setting) |
    | Properties.PostJobApplicationRestart | Select the command to be run after a Management Add or ODKG job executes.  Leave unselected if no command is desired. |
+   | Properties.RequiresLegacyEncryption | Optional setting.  If set to true, PkcsObjectIdentifiers.PbeWithShaAnd3KeyTripleDesCbc and PkcsObjectIdentifiers.PbewithShaAnd40BitRC2Cbc algorithms will be used to create the underlying BouncyCastle Pkcs12Store used to feed the certificate store being managed during Management jobs.  Should be left not implemented or set to False for most instances. |
 
 3. **Import the CSV file to create the certificate stores**
 
@@ -1715,7 +1657,6 @@ Please refer to the **Universal Orchestrator (remote)** usage section ([PAM prov
     ```
 
 </details>
-
 
 #### PAM Provider Eligible Fields
 <details><summary>Attributes eligible for retrieval by a PAM Provider on the Universal Orchestrator</summary>
@@ -1726,21 +1667,18 @@ If a PAM provider was installed _on the Universal Orchestrator_ in the [Installa
    | --------- | ----------- |
    | ServerUsername | A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value* |
    | ServerPassword | A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value* |
-   | StorePassword | Password used to secure the Certificate Store.  For stores with PKCS#8 private keys, set the password for encrypted private keys (BEGIN ENCRYPTED PRIVATE KEY) or 'No Value' for unencrypted private keys (BEGIN PRIVATE KEY).  If managing a store with a PKCS#1 private key (BEGIN RSA PRIVATE KEY), this value MUST be set to 'No Value' |
+   | StorePassword | Password to use when reading/writing to store |
 
 Please refer to the **Universal Orchestrator (remote)** usage section ([PAM providers on the Keyfactor Integration Catalog](https://keyfactor.github.io/integrations-catalog/content/pam)) for your selected PAM provider for instructions on how to load attributes orchestrator-side.
 > Any secret can be rendered by a PAM provider _installed on the Keyfactor Command server_. The above parameters are specific to attributes that can be fetched by an installed PAM provider running on the Universal Orchestrator server itself.
 
 </details>
 
-
 > The content in this section can be supplemented by the [official Command documentation](https://software.keyfactor.com/Core-OnPrem/Current/Content/ReferenceGuide/Certificate%20Stores.htm?Highlight=certificate%20store).
-
 
 </details>
 
 <details><summary>RFPkcs12 (RFPkcs12)</summary>
-
 
 ### Store Creation
 
@@ -1756,8 +1694,8 @@ Please refer to the **Universal Orchestrator (remote)** usage section ([PAM prov
 
     Click the Add button to add a new Certificate Store. Use the table below to populate the **Attributes** in the **Add** form.
 
-   | Attribute | Description                                             |
-   | --------- |---------------------------------------------------------|
+   | Attribute | Description |
+   | --------- | ----------- |
    | Category | Select "RFPkcs12" or the customized certificate store name from the previous step. |
    | Container | Optional container to associate certificate store with. |
    | Client Machine | The Client Machine field should contain the DNS name or IP address of the remote orchestrated server for Linux orchestrated servers, formatted as a URL (protocol://dns-or-ip:port) for Windows orchestrated servers, or '1.1.1.1|LocalMachine' for local agents. Example: 'https://myserver.mydomain.com:5986' or '1.1.1.1|LocalMachine' for local access. |
@@ -1773,10 +1711,10 @@ Please refer to the **Universal Orchestrator (remote)** usage section ([PAM prov
    | IncludePortInSPN | Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations. |
    | SSHPort | Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting. |
    | UseShellCommands | Recommended to be set to the default value of 'Y'.  For a detailed explanation of this setting, please refer to [Use Shell Commands Setting](#use-shell-commands-setting) |
+   | PostJobApplicationRestart | Select the command to be run after a Management Add or ODKG job executes.  Leave unselected if no command is desired.  No options are initially delivered for RFPkcs12. |
+   | RequiresLegacyEncryption | Optional setting.  If set to true, PkcsObjectIdentifiers.PbeWithShaAnd3KeyTripleDesCbc and PkcsObjectIdentifiers.PbewithShaAnd40BitRC2Cbc algorithms will be used to create the underlying BouncyCastle Pkcs12Store used to feed the certificate store being managed during Management jobs.  Should be left not implemented or set to False for most instances. |
 
 </details>
-
-
 
 #### Using kfutil CLI
 
@@ -1808,6 +1746,8 @@ Please refer to the **Universal Orchestrator (remote)** usage section ([PAM prov
    | Properties.IncludePortInSPN | Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations. |
    | Properties.SSHPort | Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting. |
    | Properties.UseShellCommands | Recommended to be set to the default value of 'Y'.  For a detailed explanation of this setting, please refer to [Use Shell Commands Setting](#use-shell-commands-setting) |
+   | Properties.PostJobApplicationRestart | Select the command to be run after a Management Add or ODKG job executes.  Leave unselected if no command is desired.  No options are initially delivered for RFPkcs12. |
+   | Properties.RequiresLegacyEncryption | Optional setting.  If set to true, PkcsObjectIdentifiers.PbeWithShaAnd3KeyTripleDesCbc and PkcsObjectIdentifiers.PbewithShaAnd40BitRC2Cbc algorithms will be used to create the underlying BouncyCastle Pkcs12Store used to feed the certificate store being managed during Management jobs.  Should be left not implemented or set to False for most instances. |
 
 3. **Import the CSV file to create the certificate stores**
 
@@ -1816,7 +1756,6 @@ Please refer to the **Universal Orchestrator (remote)** usage section ([PAM prov
     ```
 
 </details>
-
 
 #### PAM Provider Eligible Fields
 <details><summary>Attributes eligible for retrieval by a PAM Provider on the Universal Orchestrator</summary>
@@ -1827,21 +1766,18 @@ If a PAM provider was installed _on the Universal Orchestrator_ in the [Installa
    | --------- | ----------- |
    | ServerUsername | A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value* |
    | ServerPassword | A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value* |
-   | StorePassword | Password used to secure the Certificate Store |
+   | StorePassword | Password to use when reading/writing to store |
 
 Please refer to the **Universal Orchestrator (remote)** usage section ([PAM providers on the Keyfactor Integration Catalog](https://keyfactor.github.io/integrations-catalog/content/pam)) for your selected PAM provider for instructions on how to load attributes orchestrator-side.
 > Any secret can be rendered by a PAM provider _installed on the Keyfactor Command server_. The above parameters are specific to attributes that can be fetched by an installed PAM provider running on the Universal Orchestrator server itself.
 
 </details>
 
-
 > The content in this section can be supplemented by the [official Command documentation](https://software.keyfactor.com/Core-OnPrem/Current/Content/ReferenceGuide/Certificate%20Stores.htm?Highlight=certificate%20store).
-
 
 </details>
 
 <details><summary>RFDER (RFDER)</summary>
-
 
 ### Store Creation
 
@@ -1857,8 +1793,8 @@ Please refer to the **Universal Orchestrator (remote)** usage section ([PAM prov
 
     Click the Add button to add a new Certificate Store. Use the table below to populate the **Attributes** in the **Add** form.
 
-   | Attribute | Description                                             |
-   | --------- |---------------------------------------------------------|
+   | Attribute | Description |
+   | --------- | ----------- |
    | Category | Select "RFDER" or the customized certificate store name from the previous step. |
    | Container | Optional container to associate certificate store with. |
    | Client Machine | The Client Machine field should contain the DNS name or IP address of the remote orchestrated server for Linux orchestrated servers, formatted as a URL (protocol://dns-or-ip:port) for Windows orchestrated servers, or '1.1.1.1|LocalMachine' for local agents. Example: 'https://myserver.mydomain.com:5986' or '1.1.1.1|LocalMachine' for local access. |
@@ -1875,10 +1811,10 @@ Please refer to the **Universal Orchestrator (remote)** usage section ([PAM prov
    | IncludePortInSPN | Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations. |
    | SSHPort | Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting. |
    | UseShellCommands | Recommended to be set to the default value of 'Y'.  For a detailed explanation of this setting, please refer to [Use Shell Commands Setting](#use-shell-commands-setting) |
+   | PostJobApplicationRestart | Select the command to be run after a Management Add or ODKG job executes.  Leave unselected if no command is desired.  No options are initially delivered for RFDER. |
+   | RequiresLegacyEncryption | Optional setting.  If set to true, PkcsObjectIdentifiers.PbeWithShaAnd3KeyTripleDesCbc and PkcsObjectIdentifiers.PbewithShaAnd40BitRC2Cbc algorithms will be used to create the underlying BouncyCastle Pkcs12Store used to feed the certificate store being managed during Management jobs.  Should be left not implemented or set to False for most instances. |
 
 </details>
-
-
 
 #### Using kfutil CLI
 
@@ -1911,6 +1847,8 @@ Please refer to the **Universal Orchestrator (remote)** usage section ([PAM prov
    | Properties.IncludePortInSPN | Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations. |
    | Properties.SSHPort | Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting. |
    | Properties.UseShellCommands | Recommended to be set to the default value of 'Y'.  For a detailed explanation of this setting, please refer to [Use Shell Commands Setting](#use-shell-commands-setting) |
+   | Properties.PostJobApplicationRestart | Select the command to be run after a Management Add or ODKG job executes.  Leave unselected if no command is desired.  No options are initially delivered for RFDER. |
+   | Properties.RequiresLegacyEncryption | Optional setting.  If set to true, PkcsObjectIdentifiers.PbeWithShaAnd3KeyTripleDesCbc and PkcsObjectIdentifiers.PbewithShaAnd40BitRC2Cbc algorithms will be used to create the underlying BouncyCastle Pkcs12Store used to feed the certificate store being managed during Management jobs.  Should be left not implemented or set to False for most instances. |
 
 3. **Import the CSV file to create the certificate stores**
 
@@ -1919,7 +1857,6 @@ Please refer to the **Universal Orchestrator (remote)** usage section ([PAM prov
     ```
 
 </details>
-
 
 #### PAM Provider Eligible Fields
 <details><summary>Attributes eligible for retrieval by a PAM Provider on the Universal Orchestrator</summary>
@@ -1930,21 +1867,18 @@ If a PAM provider was installed _on the Universal Orchestrator_ in the [Installa
    | --------- | ----------- |
    | ServerUsername | A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value* |
    | ServerPassword | A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value* |
-   | StorePassword | Password used to secure the Certificate Store |
+   | StorePassword | Password to use when reading/writing to store |
 
 Please refer to the **Universal Orchestrator (remote)** usage section ([PAM providers on the Keyfactor Integration Catalog](https://keyfactor.github.io/integrations-catalog/content/pam)) for your selected PAM provider for instructions on how to load attributes orchestrator-side.
 > Any secret can be rendered by a PAM provider _installed on the Keyfactor Command server_. The above parameters are specific to attributes that can be fetched by an installed PAM provider running on the Universal Orchestrator server itself.
 
 </details>
 
-
 > The content in this section can be supplemented by the [official Command documentation](https://software.keyfactor.com/Core-OnPrem/Current/Content/ReferenceGuide/Certificate%20Stores.htm?Highlight=certificate%20store).
-
 
 </details>
 
 <details><summary>RFKDB (RFKDB)</summary>
-
 
 ### Store Creation
 
@@ -1960,8 +1894,8 @@ Please refer to the **Universal Orchestrator (remote)** usage section ([PAM prov
 
     Click the Add button to add a new Certificate Store. Use the table below to populate the **Attributes** in the **Add** form.
 
-   | Attribute | Description                                             |
-   | --------- |---------------------------------------------------------|
+   | Attribute | Description |
+   | --------- | ----------- |
    | Category | Select "RFKDB" or the customized certificate store name from the previous step. |
    | Container | Optional container to associate certificate store with. |
    | Client Machine | The Client Machine field should contain the DNS name or IP address of the remote orchestrated server for Linux orchestrated servers, formatted as a URL (protocol://dns-or-ip:port) for Windows orchestrated servers, or '1.1.1.1|LocalMachine' for local agents. Example: 'https://myserver.mydomain.com:5986' or '1.1.1.1|LocalMachine' for local access. |
@@ -1977,10 +1911,10 @@ Please refer to the **Universal Orchestrator (remote)** usage section ([PAM prov
    | IncludePortInSPN | Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations. |
    | SSHPort | Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting. |
    | UseShellCommands | Recommended to be set to the default value of 'Y'.  For a detailed explanation of this setting, please refer to [Use Shell Commands Setting](#use-shell-commands-setting) |
+   | PostJobApplicationRestart | Select the command to be run after a Management Add or ODKG job executes.  Leave unselected if no command is desired.  No options are initially delivered for RFKDB. |
+   | RequiresLegacyEncryption | Optional setting.  If set to true, PkcsObjectIdentifiers.PbeWithShaAnd3KeyTripleDesCbc and PkcsObjectIdentifiers.PbewithShaAnd40BitRC2Cbc algorithms will be used to create the underlying BouncyCastle Pkcs12Store used to feed the certificate store being managed during Management jobs.  Should be left not implemented or set to False for most instances. |
 
 </details>
-
-
 
 #### Using kfutil CLI
 
@@ -2012,6 +1946,8 @@ Please refer to the **Universal Orchestrator (remote)** usage section ([PAM prov
    | Properties.IncludePortInSPN | Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations. |
    | Properties.SSHPort | Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting. |
    | Properties.UseShellCommands | Recommended to be set to the default value of 'Y'.  For a detailed explanation of this setting, please refer to [Use Shell Commands Setting](#use-shell-commands-setting) |
+   | Properties.PostJobApplicationRestart | Select the command to be run after a Management Add or ODKG job executes.  Leave unselected if no command is desired.  No options are initially delivered for RFKDB. |
+   | Properties.RequiresLegacyEncryption | Optional setting.  If set to true, PkcsObjectIdentifiers.PbeWithShaAnd3KeyTripleDesCbc and PkcsObjectIdentifiers.PbewithShaAnd40BitRC2Cbc algorithms will be used to create the underlying BouncyCastle Pkcs12Store used to feed the certificate store being managed during Management jobs.  Should be left not implemented or set to False for most instances. |
 
 3. **Import the CSV file to create the certificate stores**
 
@@ -2020,7 +1956,6 @@ Please refer to the **Universal Orchestrator (remote)** usage section ([PAM prov
     ```
 
 </details>
-
 
 #### PAM Provider Eligible Fields
 <details><summary>Attributes eligible for retrieval by a PAM Provider on the Universal Orchestrator</summary>
@@ -2031,21 +1966,18 @@ If a PAM provider was installed _on the Universal Orchestrator_ in the [Installa
    | --------- | ----------- |
    | ServerUsername | A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value* |
    | ServerPassword | A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value* |
-   | StorePassword | Password used to secure the Certificate Store |
+   | StorePassword | Password to use when reading/writing to store |
 
 Please refer to the **Universal Orchestrator (remote)** usage section ([PAM providers on the Keyfactor Integration Catalog](https://keyfactor.github.io/integrations-catalog/content/pam)) for your selected PAM provider for instructions on how to load attributes orchestrator-side.
 > Any secret can be rendered by a PAM provider _installed on the Keyfactor Command server_. The above parameters are specific to attributes that can be fetched by an installed PAM provider running on the Universal Orchestrator server itself.
 
 </details>
 
-
 > The content in this section can be supplemented by the [official Command documentation](https://software.keyfactor.com/Core-OnPrem/Current/Content/ReferenceGuide/Certificate%20Stores.htm?Highlight=certificate%20store).
-
 
 </details>
 
 <details><summary>RFORA (RFORA)</summary>
-
 
 ### Store Creation
 
@@ -2061,12 +1993,12 @@ Please refer to the **Universal Orchestrator (remote)** usage section ([PAM prov
 
     Click the Add button to add a new Certificate Store. Use the table below to populate the **Attributes** in the **Add** form.
 
-   | Attribute | Description                                             |
-   | --------- |---------------------------------------------------------|
+   | Attribute | Description |
+   | --------- | ----------- |
    | Category | Select "RFORA" or the customized certificate store name from the previous step. |
    | Container | Optional container to associate certificate store with. |
    | Client Machine | The Client Machine field should contain the DNS name or IP address of the remote orchestrated server for Linux orchestrated servers, formatted as a URL (protocol://dns-or-ip:port) for Windows orchestrated servers, or '1.1.1.1|LocalMachine' for local agents. Example: 'https://myserver.mydomain.com:5986' or '1.1.1.1|LocalMachine' for local access. |
-   | Store Path | The Store Path field should contain the full path and file name of the Oracle Wallet, including the 'eWallet.p12' file name by convention. Example: '/path/to/eWallet.p12' or 'c:\path\to\eWallet.p12'. |
+   | Store Path | The Store Path field should contain the full path and file name of the Oracle Wallet, including the 'eWallet.p12' file name that is generally used by convention. Example: '/path/to/eWallet.p12' or 'c:\path\to\eWallet.p12'. |
    | Store Password | Password used to secure the Certificate Store |
    | Orchestrator | Select an approved orchestrator capable of managing `RFORA` certificates. Specifically, one with the `RFORA` capability. |
    | ServerUsername | A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value* |
@@ -2074,15 +2006,14 @@ Please refer to the **Universal Orchestrator (remote)** usage section ([PAM prov
    | LinuxFilePermissionsOnStoreCreation | The LinuxFilePermissionsOnStoreCreation field should contain a three-digit value between 000 and 777 representing the Linux file permissions to be set for the certificate store upon creation. Example: '600' or '755'.  Overrides DefaultLinuxPermissionOnStoreCreation [config.json](#post-installation) setting. |
    | LinuxFileOwnerOnStoreCreation | The LinuxFileOwnerOnStoreCreation field should contain a valid user ID recognized by the destination Linux server, optionally followed by a colon and a group ID if the group owner differs. Example: 'userID' or 'userID:groupID'.  Overrides DefaultOwnerOnStoreCreation [config.json](#post-installation) setting. |
    | SudoImpersonatingUser | The SudoImpersonatingUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'.  Overrides [config.json](#post-installation) DefaultSudoImpersonatedUser setting. |
-   | WorkFolder | The WorkFolder field should contain the path on the managed server where temporary work files can be created, modified, and deleted during Inventory and Management jobs. Example: '/path/to/workfolder'. |
    | RemoveRootCertificate | Remove root certificate from chain when adding/renewing a certificate in a store. |
    | IncludePortInSPN | Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations. |
    | SSHPort | Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting. |
    | UseShellCommands | Recommended to be set to the default value of 'Y'.  For a detailed explanation of this setting, please refer to [Use Shell Commands Setting](#use-shell-commands-setting) |
+   | PostJobApplicationRestart | Select the command to be run after a Management Add or ODKG job executes.  Leave unselected if no command is desired.  No options are initially delivered for RFORA. |
+   | RequiresLegacyEncryption | Optional setting.  If set to true, PkcsObjectIdentifiers.PbeWithShaAnd3KeyTripleDesCbc and PkcsObjectIdentifiers.PbewithShaAnd40BitRC2Cbc algorithms will be used to create the underlying BouncyCastle Pkcs12Store used to feed the certificate store being managed during Management jobs.  Should be left not implemented or set to False for most instances. |
 
 </details>
-
-
 
 #### Using kfutil CLI
 
@@ -2102,7 +2033,7 @@ Please refer to the **Universal Orchestrator (remote)** usage section ([PAM prov
    | Category | Select "RFORA" or the customized certificate store name from the previous step. |
    | Container | Optional container to associate certificate store with. |
    | Client Machine | The Client Machine field should contain the DNS name or IP address of the remote orchestrated server for Linux orchestrated servers, formatted as a URL (protocol://dns-or-ip:port) for Windows orchestrated servers, or '1.1.1.1|LocalMachine' for local agents. Example: 'https://myserver.mydomain.com:5986' or '1.1.1.1|LocalMachine' for local access. |
-   | Store Path | The Store Path field should contain the full path and file name of the Oracle Wallet, including the 'eWallet.p12' file name by convention. Example: '/path/to/eWallet.p12' or 'c:\path\to\eWallet.p12'. |
+   | Store Path | The Store Path field should contain the full path and file name of the Oracle Wallet, including the 'eWallet.p12' file name that is generally used by convention. Example: '/path/to/eWallet.p12' or 'c:\path\to\eWallet.p12'. |
    | Store Password | Password used to secure the Certificate Store |
    | Orchestrator | Select an approved orchestrator capable of managing `RFORA` certificates. Specifically, one with the `RFORA` capability. |
    | Properties.ServerUsername | A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value* |
@@ -2110,11 +2041,12 @@ Please refer to the **Universal Orchestrator (remote)** usage section ([PAM prov
    | Properties.LinuxFilePermissionsOnStoreCreation | The LinuxFilePermissionsOnStoreCreation field should contain a three-digit value between 000 and 777 representing the Linux file permissions to be set for the certificate store upon creation. Example: '600' or '755'.  Overrides DefaultLinuxPermissionOnStoreCreation [config.json](#post-installation) setting. |
    | Properties.LinuxFileOwnerOnStoreCreation | The LinuxFileOwnerOnStoreCreation field should contain a valid user ID recognized by the destination Linux server, optionally followed by a colon and a group ID if the group owner differs. Example: 'userID' or 'userID:groupID'.  Overrides DefaultOwnerOnStoreCreation [config.json](#post-installation) setting. |
    | Properties.SudoImpersonatingUser | The SudoImpersonatingUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'.  Overrides [config.json](#post-installation) DefaultSudoImpersonatedUser setting. |
-   | Properties.WorkFolder | The WorkFolder field should contain the path on the managed server where temporary work files can be created, modified, and deleted during Inventory and Management jobs. Example: '/path/to/workfolder'. |
    | Properties.RemoveRootCertificate | Remove root certificate from chain when adding/renewing a certificate in a store. |
    | Properties.IncludePortInSPN | Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations. |
    | Properties.SSHPort | Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting. |
    | Properties.UseShellCommands | Recommended to be set to the default value of 'Y'.  For a detailed explanation of this setting, please refer to [Use Shell Commands Setting](#use-shell-commands-setting) |
+   | Properties.PostJobApplicationRestart | Select the command to be run after a Management Add or ODKG job executes.  Leave unselected if no command is desired.  No options are initially delivered for RFORA. |
+   | Properties.RequiresLegacyEncryption | Optional setting.  If set to true, PkcsObjectIdentifiers.PbeWithShaAnd3KeyTripleDesCbc and PkcsObjectIdentifiers.PbewithShaAnd40BitRC2Cbc algorithms will be used to create the underlying BouncyCastle Pkcs12Store used to feed the certificate store being managed during Management jobs.  Should be left not implemented or set to False for most instances. |
 
 3. **Import the CSV file to create the certificate stores**
 
@@ -2123,7 +2055,6 @@ Please refer to the **Universal Orchestrator (remote)** usage section ([PAM prov
     ```
 
 </details>
-
 
 #### PAM Provider Eligible Fields
 <details><summary>Attributes eligible for retrieval by a PAM Provider on the Universal Orchestrator</summary>
@@ -2134,20 +2065,19 @@ If a PAM provider was installed _on the Universal Orchestrator_ in the [Installa
    | --------- | ----------- |
    | ServerUsername | A username (or valid PAM key if the username is stored in a KF Command configured PAM integration). If acting as an *agent* using local file access, just check *No Value* |
    | ServerPassword | A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value* |
-   | StorePassword | Password used to secure the Certificate Store |
+   | StorePassword | Password to use when reading/writing to store |
 
 Please refer to the **Universal Orchestrator (remote)** usage section ([PAM providers on the Keyfactor Integration Catalog](https://keyfactor.github.io/integrations-catalog/content/pam)) for your selected PAM provider for instructions on how to load attributes orchestrator-side.
 > Any secret can be rendered by a PAM provider _installed on the Keyfactor Command server_. The above parameters are specific to attributes that can be fetched by an installed PAM provider running on the Universal Orchestrator server itself.
 
 </details>
 
-
 > The content in this section can be supplemented by the [official Command documentation](https://software.keyfactor.com/Core-OnPrem/Current/Content/ReferenceGuide/Certificate%20Stores.htm?Highlight=certificate%20store).
-
 
 </details>
 
 ## Discovering Certificate Stores with the Discovery Job
+
 When scheduling discovery jobs in Keyfactor Command, there are a few fields that are important to highlight here:
 
 | Field                    | Description                                                                                                                                                                                                                                                                                                                                           |
@@ -2159,13 +2089,6 @@ When scheduling discovery jobs in Keyfactor Command, there are a few fields that
 
 Please refer to the Keyfactor Command Reference Guide for complete information on creating certificate stores and
 scheduling discovery jobs in Keyfactor Command.
-
-
-
-
-
-
-
 
 
 ## Client Machine Instructions
@@ -2289,7 +2212,6 @@ Steps to create a new supported file-based certificate store type:
    what you used for your new classes. Note that the namespace for Discovery uses a common class for all supported
    types. Discovery is a common implementation for all supported store types.
 8. Modify the integration-manifest.json file to add the new store type under the store_types element.
-
 
 ## License
 

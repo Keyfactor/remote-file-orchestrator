@@ -19,6 +19,7 @@ using Microsoft.Extensions.Logging;
 using Org.BouncyCastle.Pkcs;
 using Org.BouncyCastle.Security;
 using Newtonsoft.Json;
+using Keyfactor.Extensions.Orchestrator.RemoteFile.PKCS12;
 
 namespace Keyfactor.Extensions.Orchestrator.RemoteFile.OraWlt
 {
@@ -26,113 +27,107 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.OraWlt
     {
         private ILogger logger;
 
-        public string WorkFolder { get; set; }
-
         public OraWltCertificateStoreSerializer(string storeProperties) 
         {
             logger = LogHandler.GetClassLogger(this.GetType());
-            LoadCustomProperties(storeProperties);
         }
 
         public Pkcs12Store DeserializeRemoteCertificateStore(byte[] storeContentBytes, string storePath, string storePassword, IRemoteHandler remoteHandler, bool isInventory)
         {
             logger.MethodEntry(LogLevel.Debug);
 
-            string tempStoreFile = Guid.NewGuid().ToString().Replace("-", string.Empty) + ".p12";
-            string tempStoreFileJKS = Guid.NewGuid().ToString().Replace("-", string.Empty) + ".jks";
+            PKCS12CertificateStoreSerializer serializer = new PKCS12CertificateStoreSerializer(string.Empty);
 
-            string orapkiCommand = $"orapki wallet pkcs12_to_jks -wallet \"{WorkFolder}{tempStoreFile}\" -pwd \"{storePassword}\" -jksKeyStoreLoc \"{WorkFolder}{tempStoreFileJKS}\" -jksKeyStorepwd \"{storePassword}\"";
+            //string tempStoreFile = Guid.NewGuid().ToString().Replace("-", string.Empty) + ".p12";
+            //string tempStoreFileJKS = Guid.NewGuid().ToString().Replace("-", string.Empty) + ".jks";
 
-            JksStore jksStore = new JksStore();
-            Pkcs12StoreBuilder storeBuilder = new Pkcs12StoreBuilder();
-            Pkcs12Store store = storeBuilder.Build();
+            //string orapkiCommand = $"orapki wallet pkcs12_to_jks -wallet \"{WorkFolder}{tempStoreFile}\" -pwd \"{storePassword}\" -jksKeyStoreLoc \"{WorkFolder}{tempStoreFileJKS}\" -jksKeyStorepwd \"{storePassword}\"";
 
-            try
-            {
-                remoteHandler.UploadCertificateFile(WorkFolder, tempStoreFile, storeContentBytes);
+            //JksStore jksStore = new JksStore();
+            //Pkcs12StoreBuilder storeBuilder = new Pkcs12StoreBuilder();
+            //Pkcs12Store store = storeBuilder.Build();
 
-                remoteHandler.RunCommand(orapkiCommand, null, ApplicationSettings.UseSudo, null);
+            //try
+            //{
+            //    remoteHandler.UploadCertificateFile(WorkFolder, tempStoreFile, storeContentBytes);
 
-                byte[] storeBytes = remoteHandler.DownloadCertificateFile($"{WorkFolder}{tempStoreFileJKS}");
-                jksStore.Load(new MemoryStream(storeBytes), string.IsNullOrEmpty(storePassword) ? new char[0] : storePassword.ToCharArray());
+            //    remoteHandler.RunCommand(orapkiCommand, null, ApplicationSettings.UseSudo, null);
 
-                JKSCertificateStoreSerializer serializer = new JKSCertificateStoreSerializer(String.Empty);
-                store = serializer.DeserializeRemoteCertificateStore(storeBytes, $"{WorkFolder}{tempStoreFileJKS}", storePassword, remoteHandler, isInventory);
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-            finally
-            {
-                try { remoteHandler.RemoveCertificateFile(WorkFolder, tempStoreFile); } catch (Exception) { };
-                try { remoteHandler.RemoveCertificateFile(WorkFolder, tempStoreFile+".lck"); } catch (Exception) { };
-                try { remoteHandler.RemoveCertificateFile(WorkFolder, tempStoreFileJKS); } catch (Exception) { };
-            }
+            //    byte[] storeBytes = remoteHandler.DownloadCertificateFile($"{WorkFolder}{tempStoreFileJKS}");
+            //    jksStore.Load(new MemoryStream(storeBytes), string.IsNullOrEmpty(storePassword) ? new char[0] : storePassword.ToCharArray());
+
+            //    JKSCertificateStoreSerializer serializer = new JKSCertificateStoreSerializer(String.Empty);
+            //    store = serializer.DeserializeRemoteCertificateStore(storeBytes, $"{WorkFolder}{tempStoreFileJKS}", storePassword, remoteHandler, isInventory);
+            //}
+            //catch (Exception)
+            //{
+            //    throw;
+            //}
+            //finally
+            //{
+            //    try { remoteHandler.RemoveCertificateFile(WorkFolder, tempStoreFile); } catch (Exception) { };
+            //    try { remoteHandler.RemoveCertificateFile(WorkFolder, tempStoreFile+".lck"); } catch (Exception) { };
+            //    try { remoteHandler.RemoveCertificateFile(WorkFolder, tempStoreFileJKS); } catch (Exception) { };
+            //}
 
             logger.MethodExit(LogLevel.Debug);
-            return store;
+
+            return serializer.DeserializeRemoteCertificateStore(storeContentBytes, storePath, storePassword, remoteHandler, isInventory);
+            //return store;
         }
 
         public List<SerializedStoreInfo> SerializeRemoteCertificateStore(Pkcs12Store certificateStore, string storePath, string storeFileName, string storePassword, IRemoteHandler remoteHandler)
         {
             logger.MethodEntry(LogLevel.Debug);
 
-            List<SerializedStoreInfo> storeInfo = new List<SerializedStoreInfo>();
-
-            string tempStoreFileJKS = Guid.NewGuid().ToString().Replace("-", string.Empty) + ".jks";
-
-            string orapkiCommand1 = $"orapki wallet create -wallet \"{WorkFolder}\" -pwd \"{storePassword}\"";
-            string orapkiCommand2 = $"orapki wallet jks_to_pkcs12 -wallet \"{WorkFolder}\" -pwd \"{storePassword}\" -keystore \"{WorkFolder}{tempStoreFileJKS}\" -jkspwd \"{storePassword}\"";
-
-            JksStore jksStore = new JksStore();
-
-            JKSCertificateStoreSerializer serializer = new JKSCertificateStoreSerializer(string.Empty);
-            List<SerializedStoreInfo> jksStoreInfo = serializer.SerializeRemoteCertificateStore(certificateStore, WorkFolder, storeFileName, storePassword, remoteHandler);
+            PKCS12CertificateStoreSerializer serializer = new PKCS12CertificateStoreSerializer(string.Empty);
 
             try
             {
-                remoteHandler.UploadCertificateFile($"{WorkFolder}", $"{tempStoreFileJKS}", jksStoreInfo[0].Contents);
-                remoteHandler.RunCommand(orapkiCommand1, null, ApplicationSettings.UseSudo, [storePassword]);
-                remoteHandler.RunCommand(orapkiCommand2, null, ApplicationSettings.UseSudo, [storePassword]);
-
-                byte[] storeContents = remoteHandler.DownloadCertificateFile($"{WorkFolder}ewallet.p12");
-
-                storeInfo.Add(new SerializedStoreInfo() { Contents = storeContents, FilePath = storePath+storeFileName });
-                return storeInfo;
-            }
-            catch (Exception)
-            {
-                throw;
+                return serializer.SerializeRemoteCertificateStore(certificateStore, storePath, storeFileName, storePassword, remoteHandler);
             }
             finally
             {
-                try { remoteHandler.RemoveCertificateFile(WorkFolder, "ewallet.p12"); } catch (Exception) { };
-                try { remoteHandler.RemoveCertificateFile(WorkFolder, "ewallet.p12.lck"); } catch (Exception) { };
-                try { remoteHandler.RemoveCertificateFile(WorkFolder, tempStoreFileJKS); } catch (Exception) { };
+                logger.MethodExit(LogLevel.Debug);
             }
+
+            //List<SerializedStoreInfo> storeInfo = new List<SerializedStoreInfo>();
+
+            //string tempStoreFileJKS = Guid.NewGuid().ToString().Replace("-", string.Empty) + ".jks";
+
+            //string orapkiCommand1 = $"orapki wallet create -wallet \"{WorkFolder}\" -pwd \"{storePassword}\"";
+            //string orapkiCommand2 = $"orapki wallet jks_to_pkcs12 -wallet \"{WorkFolder}\" -pwd \"{storePassword}\" -keystore \"{WorkFolder}{tempStoreFileJKS}\" -jkspwd \"{storePassword}\"";
+
+            //JksStore jksStore = new JksStore();
+
+            //JKSCertificateStoreSerializer serializer = new JKSCertificateStoreSerializer(string.Empty);
+            //List<SerializedStoreInfo> jksStoreInfo = serializer.SerializeRemoteCertificateStore(certificateStore, WorkFolder, storeFileName, storePassword, remoteHandler);
+
+            //try
+            //{
+            //    remoteHandler.UploadCertificateFile($"{WorkFolder}", $"{tempStoreFileJKS}", jksStoreInfo[0].Contents);
+            //    remoteHandler.RunCommand(orapkiCommand1, null, ApplicationSettings.UseSudo, [storePassword]);
+            //    remoteHandler.RunCommand(orapkiCommand2, null, ApplicationSettings.UseSudo, [storePassword]);
+
+            //    byte[] storeContents = remoteHandler.DownloadCertificateFile($"{WorkFolder}ewallet.p12");
+
+            //    storeInfo.Add(new SerializedStoreInfo() { Contents = storeContents, FilePath = storePath+storeFileName });
+            //    return storeInfo;
+            //}
+            //finally
+            //{
+            //    try { remoteHandler.RemoveCertificateFile(WorkFolder, "ewallet.p12"); } catch (Exception) { }
+            //    ;
+            //    try { remoteHandler.RemoveCertificateFile(WorkFolder, "ewallet.p12.lck"); } catch (Exception) { }
+            //    ;
+            //    try { remoteHandler.RemoveCertificateFile(WorkFolder, tempStoreFileJKS); } catch (Exception) { }
+            //    ;
+            //}
         }
 
         public string GetPrivateKeyPath()
         {
             return null;
         }
-        private void LoadCustomProperties(string storeProperties)
-        {
-            logger.MethodEntry(LogLevel.Debug);
-
-            dynamic properties = JsonConvert.DeserializeObject(storeProperties);
-            WorkFolder = properties.WorkFolder == null || string.IsNullOrEmpty(properties.WorkFolder.Value) ? String.Empty : properties.WorkFolder.Value;
-
-            string pathDelimiter = @"\";
-            if (WorkFolder.Substring(0, 1) == @"/")
-                pathDelimiter = @"/";
-
-            if (WorkFolder.Substring(WorkFolder.Length - 1, 1) != pathDelimiter)
-                WorkFolder += pathDelimiter;
-
-            logger.MethodExit(LogLevel.Debug);
-        }
-
     }
 }
