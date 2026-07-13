@@ -6,7 +6,6 @@
 // and limitations under the License.
 
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
@@ -19,9 +18,7 @@ using Microsoft.Extensions.Logging;
 using Keyfactor.Logging;
 using Keyfactor.PKI.PrivateKeys;
 using Keyfactor.PKI.PEM;
-using static Microsoft.ApplicationInsights.MetricDimensionNames.TelemetryContext;
 using Renci.SshNet.Common;
-using Org.BouncyCastle.Bcpg;
 
 namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
 {
@@ -57,19 +54,25 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
             {
                 PrivateKeyFile privateKeyFile;
 
+                string privateKey = string.Empty;
+
+                string[] sshSecret = serverPassword.Split(new[] { "|||" }, 2, StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
                 try
                 {
-                    using (MemoryStream ms = new MemoryStream(Encoding.ASCII.GetBytes(FormatPrivateKey(serverPassword))))
-                    {
-                        privateKeyFile = new PrivateKeyFile(ms);
-                    }
+                    privateKey = FormatPrivateKey(sshSecret[0]);
                 }
                 catch (Exception)
                 {
-                    using (MemoryStream ms = new MemoryStream(Encoding.ASCII.GetBytes(ConvertToPKCS1(serverPassword))))
+                    privateKey = ConvertToPKCS1(sshSecret[0]);
+                }
+
+                using (MemoryStream ms = new MemoryStream(Encoding.ASCII.GetBytes(privateKey)))
+                {
+                    using (MemoryStream ms2 = new MemoryStream(Encoding.ASCII.GetBytes(sshSecret.Length == 1 ? string.Empty : sshSecret[1])))
                     {
-                        privateKeyFile = new PrivateKeyFile(ms);
+                        privateKeyFile = new PrivateKeyFile(ms, null, ms2.Length == 0 ? null : ms2);
                     }
+                    privateKeyFile = new PrivateKeyFile(ms);
                 }
 
                 Connection = new ConnectionInfo(server, sshPort, serverLogin, new PrivateKeyAuthenticationMethod(serverLogin, privateKeyFile)); 
