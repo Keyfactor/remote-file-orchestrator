@@ -125,37 +125,10 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             logger.MethodExit(LogLevel.Debug);
         }
 
-        internal Pkcs12Store GetCertificateStore(bool requiresLegacyEncryption)
+        internal Pkcs12Store GetCertificateStore()
         {
             logger.MethodEntry(LogLevel.Debug);
             logger.MethodExit(LogLevel.Debug);
-
-            if (requiresLegacyEncryption)
-            {
-                Pkcs12StoreBuilder builder = new Pkcs12StoreBuilder();
-                builder.SetKeyAlgorithm(PkcsObjectIdentifiers.PbeWithShaAnd3KeyTripleDesCbc);
-                builder.SetCertAlgorithm(PkcsObjectIdentifiers.PbewithShaAnd40BitRC2Cbc);
-
-                Pkcs12Store tempStore = builder.Build();
-
-                foreach (string alias in CertificateStore.Aliases)
-                {
-                    if (CertificateStore.IsKeyEntry(alias))
-                    {
-                        var keyEntry = CertificateStore.GetKey(alias);
-                        var certChain = CertificateStore.GetCertificateChain(alias);
-
-                        tempStore.SetKeyEntry(alias, keyEntry, certChain);
-                    }
-                    else if (CertificateStore.IsCertificateEntry(alias))
-                    {
-                        var certEntry = CertificateStore.GetCertificate(alias);
-                        tempStore.SetCertificateEntry(alias, certEntry);
-                    }
-                }
-
-                CertificateStore = tempStore;
-            }
 
             return CertificateStore;
         }

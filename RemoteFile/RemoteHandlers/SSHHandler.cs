@@ -72,7 +72,6 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
                     {
                         privateKeyFile = new PrivateKeyFile(ms, null, ms2.Length == 0 ? null : ms2);
                     }
-                    privateKeyFile = new PrivateKeyFile(ms);
                 }
 
                 Connection = new ConnectionInfo(server, sshPort, serverLogin, new PrivateKeyAuthenticationMethod(serverLogin, privateKeyFile)); 
