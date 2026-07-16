@@ -131,11 +131,6 @@ Before installing the Remote File Universal Orchestrator extension, we recommend
 
 3. Please see [SSH Authentication Options](#ssh-authentication-options) for detailed information regarding connecting to managed
    Linux servers using SSH.
-
-Please reference [Post Installation](#post-installation) for more information on setting up the `config.json` file
-and [Defining Certificate Stores](#defining-certificate-stores)
-and [Discovering Certificate Stores with the Discovery Job](#discovering-certificate-stores-with-the-discovery-job) for
-more information on defining and configuring certificate stores.
 </details>  
 
 <details>  
@@ -151,8 +146,13 @@ Please reference [Certificate Stores and Discovery Jobs](#certificate-stores-and
 creating certificate stores for the `RemoteFile` Orchestrator Extension.  
 
 </details>
-C
+
 Please consult with your system administrator for more information on configuring `SSH/SCP/SFTP` or `WinRM` in your environment.
+
+Please reference [Post Installation](#post-installation) for more information on setting up the `config.json` file
+and [Defining Certificate Stores](#defining-certificate-stores)
+and [Discovering Certificate Stores with the Discovery Job](#discovering-certificate-stores-with-the-discovery-job) for
+more information on defining and configuring certificate stores.
 
 ## Certificate Store Types
 
