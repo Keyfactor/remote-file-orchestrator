@@ -78,18 +78,8 @@ certificates and certificate store files.
    access to read/write to the certificate store location, OR the `config.json` file must be set up to use the alternative
    upload/download file.
 
-3. `SSH` Authentication: When creating a Keyfactor certificate store for the `RemoteFile` orchestrator extension, you may
-   supply either a user id and password for the certificate store credentials (directly or through one of Keyfactor
-   Command's PAM integrations), or supply a user id and `SSH` private key. When using a password, the connection is
-   attempted using `SSH` password authentication. If that fails, Keyboard Interactive Authentication is automatically
-   attempted. One or both of these must be enabled on the Linux box being managed. If private key authentication is
-   desired, copy and paste the full SSH private key into the Password textbox (or pointer to the private key if using a
-   PAM provider). Please note that SSH Private Key Authentication is not available when running locally as an agent. The
-   following private key formats are supported:
-
-- PKCS#1 (`BEGIN RSA PRIVATE KEY`)
-- PKCS#8 (`BEGIN PRIVATE KEY`)
-- ECDSA OPENSSH (`BEGIN OPENSSH PRIVATE KEY`)
+3. Please see [SSH Authentication Options](#ssh-authentication-options) for detailed information regarding connecting to managed
+   Linux servers using SSH.
 
 Please reference [Post Installation](#post-installation) for more information on setting up the `config.json` file
 and [Defining Certificate Stores](#defining-certificate-stores)
@@ -223,6 +213,58 @@ For agent mode (accessing stores on the same server where Universal Orchestrator
     - `Store Type` + `Client Machine` + `Store Path` must be unique in Keyfactor Command
     - Best practice: Use the full DNS or IP Address to the left of the `|` character
 
+## SSH Authentication Options
+   When managing certificate stores on remote Linux servers, SSH is used to communicate between the Keyfactor Universal
+   Orchestrator server and the orchestrated server hosting the certificate store.  There are three options for SSH authentication:
+   * `SSH` user id and password authentication
+   * `SSH` private key authentication, or 
+   * `SSH` certificate authentication
+
+   **User ID and Password Authentication:**
+   This is the simplest method and requires you to enter a valid Linux user id and password into the server username and
+   server password fields when creating the Keyfactor Command certificate store or discovery job.  If the user id and/or
+   password is stored in a Keyfactor Command PAM integration, you would enter the PAM provider key for each respective value.
+   If the user id and password are valid, the orchestrator will connect to the orchestrated server and manage the certificate 
+   store as needed.  If this method is used, please ensure that either SSH Password Authentication or Keyboard Interactive 
+   Authentication is enabled on the Linux server.
+   
+   **SSH Private Key Authentication:**
+   This method requires you to enter a valid Linux user id and the full SSH private key (non-encrypted) into the server username and
+   server password fields when creating the Keyfactor Command certificate store or discovery job.  A PAM provider may
+   be alternatively utilized for either or both the user id and private key similar to **User ID/Password Authentication**.
+   Valid SSH Private key formats are: 
+
+   - PKCS#1 (`BEGIN RSA PRIVATE KEY`)
+   - PKCS#8 (`BEGIN PRIVATE KEY`)
+   - ECDSA OPENSSH (`BEGIN OPENSSH PRIVATE KEY`)
+ 
+   If using this method, make sure that:
+
+   - The accompanying SSH public key is correctly installed into the Linux server's `~/.ssh/authorized_keys` file for the user id 
+   being used.
+   - If creating the key pair on a Linux server and transferring it to the server password field in a browser on a Windows server, 
+   make sure that extra white space characters or line breaks are not added to the private key when copying and pasting.  The private 
+   key must be in the same format as it was generated.  Your best bet is to SFTP or SCP the contents of the private key to a Windows
+   server rather than making use of copy and paste.  If making use of a PAM Provider, ensure that the private key is stored in the 
+   same format as it was generated.
+   - Private key authentication is enabled on the Linux server.  If not, the orchestrator will attempt to connect using password 
+   authentication and fail.
+
+   **SSH Certificate Authentication:**
+   This method is similar to SSH Private Key Authentication, but requires you to enter a valid Linux user id and the full SSH private key
+   concatenated with the accompanying SSH certificate into the server username and server password fields respectively when creating 
+   the Keyfactor Command certificate store or discovery job.  The private key and certificate must be delimited using 3 pipe characters 
+   ("|||") as the delimiter (i.e. "...-----END OPENSSH PRIVATE KEY-----|||ssh-ed25519-cert-v01@openssh.com AAAAIHNzaC1lZDI1NTE5L...".  
+   A PAM provider may be alternatively utilized for either or both the user id and private key/certificate similar to **User ID/Password 
+   Authentication**.  Valid private key formats are the same as for SSH Private Key Authentication, and the SSH certificate must be in OpenSSH format.
+
+   If using this method, make sure that:
+
+   - The SSH certificate is trusted on the destination Linux server.  Set the TrustedUserCAKeys option in the `/etc/ssh/sshd_config` file to points 
+   to the public key of the CA that signed the SSH certificate.  If this is not done, the orchestrator will attempt to connect using password authentication 
+   and fail.
+   - No matching certificate needs to exist in the `~/.ssh/authorized_keys` file for the user id being used.  The SSH certificate is validated against the 
+   CA public key specified in the `TrustedUserCAKeys` option in the `/etc/ssh/sshd_config` file.
 
 ## Use Shell Commands Setting
 
