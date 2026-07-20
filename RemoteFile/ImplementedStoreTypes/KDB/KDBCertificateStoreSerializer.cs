@@ -146,6 +146,8 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.KDB
 
             try
             {
+                remoteHandler.RunCommand(command, null, ApplicationSettings.UseSudo, new string[] { storePassword });
+
                 remoteHandler.CreateEmptyStoreFile(path + fileName + ".kdb", linuxFilePermissions, linuxFileOwner);
                 remoteHandler.CreateEmptyStoreFile(path + fileName + ".rdb", linuxFilePermissions, linuxFileOwner);
                 remoteHandler.CreateEmptyStoreFile(path + fileName + ".crl", linuxFilePermissions, linuxFileOwner);
