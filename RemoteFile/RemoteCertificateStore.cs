@@ -237,19 +237,17 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
                 ApplicationSettings.DefaultOwnerOnStoreCreation :
                 propertiesCollection.LinuxFileOwnerOnStoreCreation.Value;
 
-            RemoteHandler.CreateEmptyStoreFile(storePath, linuxFilePermissions, linuxFileOwner);
-            string privateKeyPath = certificateStoreSerializer.GetPrivateKeyPath();
-            if (!string.IsNullOrEmpty(privateKeyPath))
-                RemoteHandler.CreateEmptyStoreFile(privateKeyPath, linuxFilePermissions, linuxFileOwner);
-
-            logger.MethodExit(LogLevel.Debug);
-        }
-
-        internal void CreateCertificateStore(ICertificateStoreSerializer certificateStoreSerializer, string storePath, string linuxFilePermissions, string linuxFileOwner)
-        {
-            logger.MethodEntry(LogLevel.Debug);
-
-
+            if (certificateStoreSerializer is ICustomFileCreator)
+            {
+                ((ICustomFileCreator)certificateStoreSerializer).CreateEmptyStoreFile(storePath, StorePassword, linuxFilePermissions, linuxFileOwner, RemoteHandler);
+            }
+            else
+            {
+                RemoteHandler.CreateEmptyStoreFile(storePath, linuxFilePermissions, linuxFileOwner);
+                string privateKeyPath = certificateStoreSerializer.GetPrivateKeyPath();
+                if (!string.IsNullOrEmpty(privateKeyPath))
+                    RemoteHandler.CreateEmptyStoreFile(privateKeyPath, linuxFilePermissions, linuxFileOwner);
+            }
 
             logger.MethodExit(LogLevel.Debug);
         }
