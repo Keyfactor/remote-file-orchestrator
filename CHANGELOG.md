@@ -1,7 +1,8 @@
 v4.2.0
 - Deprecate legacy encryption.  From this release forward, RequiresLegacyEncryption will be ignored.
 - Modification to suppor SSH certificate authentication for Linux managed servers.  If a certificate is used, the private key must be in OpenSSH format and the public key must be in OpenSSH format or PEM format.
-- Add new custom field to RFKDB to support management of IBM MQ key database files.
+- Modify Management-Create job for RFKDB to create all 4 IBM key dabase files - kdb, rdb, sth, and crl.  Actual certificate management, however, remains centered on the kdb file.  The other 3 files are 
+created to ensure that the kdb file can be used by IBM applications that require all 4 files to be present, such as IBM MQ.
 
 v4.1.0
 - Add custom field to select legacy encryption for certificate stores
