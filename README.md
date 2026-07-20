@@ -2096,7 +2096,7 @@ For agent mode (accessing stores on the same server where Universal Orchestrator
    This method is similar to SSH Private Key Authentication, but requires you to enter a valid Linux user id and the full SSH private key
    concatenated with the accompanying SSH certificate into the server username and server password fields respectively when creating 
    the Keyfactor Command certificate store or discovery job.  The private key and certificate must be delimited using 3 pipe characters 
-   ("|||") as the delimiter (i.e. "...-----END OPENSSH PRIVATE KEY-----|||ssh-ed25519-cert-v01@openssh.com AAAAIHNzaC1lZDI1NTE5L...".  
+   ("|||") as the delimiter (i.e. "...-----END OPENSSH PRIVATE KEY-----|||ssh-ed25519-cert-v01`@`openssh.com AAAAIHNzaC1lZDI1NTE5L...".  
    A PAM provider may be alternatively utilized for either or both the user id and private key/certificate similar to **User ID/Password 
    Authentication**.  Valid private key formats are the same as for SSH Private Key Authentication, and the SSH certificate must be in OpenSSH format.
 
