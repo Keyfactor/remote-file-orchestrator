@@ -129,23 +129,8 @@ Before installing the Remote File Universal Orchestrator extension, we recommend
    access to read/write to the certificate store location, OR the `config.json` file must be set up to use the alternative
    upload/download file.
 
-3. `SSH` Authentication: When creating a Keyfactor certificate store for the `RemoteFile` orchestrator extension, you may
-   supply either a user id and password for the certificate store credentials (directly or through one of Keyfactor
-   Command's PAM integrations), or supply a user id and `SSH` private key. When using a password, the connection is
-   attempted using `SSH` password authentication. If that fails, Keyboard Interactive Authentication is automatically
-   attempted. One or both of these must be enabled on the Linux box being managed. If private key authentication is
-   desired, copy and paste the full SSH private key into the Password textbox (or pointer to the private key if using a
-   PAM provider). Please note that SSH Private Key Authentication is not available when running locally as an agent. The
-   following private key formats are supported:
-
-- PKCS#1 (`BEGIN RSA PRIVATE KEY`)
-- PKCS#8 (`BEGIN PRIVATE KEY`)
-- ECDSA OPENSSH (`BEGIN OPENSSH PRIVATE KEY`)
-
-Please reference [Post Installation](#post-installation) for more information on setting up the `config.json` file
-and [Defining Certificate Stores](#defining-certificate-stores)
-and [Discovering Certificate Stores with the Discovery Job](#discovering-certificate-stores-with-the-discovery-job) for
-more information on defining and configuring certificate stores.
+3. Please see [SSH Authentication Options](#ssh-authentication-options) for detailed information regarding connecting to managed
+   Linux servers using SSH.
 </details>  
 
 <details>  
@@ -161,8 +146,13 @@ Please reference [Certificate Stores and Discovery Jobs](#certificate-stores-and
 creating certificate stores for the `RemoteFile` Orchestrator Extension.  
 
 </details>
-C
+
 Please consult with your system administrator for more information on configuring `SSH/SCP/SFTP` or `WinRM` in your environment.
+
+Please reference [Post Installation](#post-installation) for more information on setting up the `config.json` file
+and [Defining Certificate Stores](#defining-certificate-stores)
+and [Discovering Certificate Stores with the Discovery Job](#discovering-certificate-stores-with-the-discovery-job) for
+more information on defining and configuring certificate stores.
 
 ## Certificate Store Types
 
@@ -274,7 +264,6 @@ the Keyfactor Command Portal
    | SSHPort | SSH Port | Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting. | String |  | 🔲 Unchecked |
    | UseShellCommands | Use Shell Commands | Recommended to be set to the default value of 'Y'.  For a detailed explanation of this setting, please refer to [Use Shell Commands Setting](#use-shell-commands-setting) | Bool | True | 🔲 Unchecked |
    | PostJobApplicationRestart | Post Job Application Restart | Select the command to be run after a Management Add or ODKG job executes.  Leave unselected if no command is desired. | MultipleChoice | Apache Tomcat Restart,Jetty Restart | 🔲 Unchecked |
-   | RequiresLegacyEncryption | Requires Legacy Encryption | Optional setting.  If set to true, PkcsObjectIdentifiers.PbeWithShaAnd3KeyTripleDesCbc and PkcsObjectIdentifiers.PbewithShaAnd40BitRC2Cbc algorithms will be used to create the underlying BouncyCastle Pkcs12Store used to feed the certificate store being managed during Management jobs.  Should be left not implemented or set to False for most instances. | Bool | False | 🔲 Unchecked |
 
    The Custom Fields tab should look like this:
 
@@ -350,13 +339,6 @@ the Keyfactor Command Portal
 
    ![RFJKS Custom Field - PostJobApplicationRestart](docsource/images/RFJKS-custom-field-PostJobApplicationRestart-dialog.svg)
    ![RFJKS Custom Field - PostJobApplicationRestart](docsource/images/RFJKS-custom-field-PostJobApplicationRestart-validation-options-dialog.svg)
-
-
-   ###### Requires Legacy Encryption
-   Optional setting.  If set to true, PkcsObjectIdentifiers.PbeWithShaAnd3KeyTripleDesCbc and PkcsObjectIdentifiers.PbewithShaAnd40BitRC2Cbc algorithms will be used to create the underlying BouncyCastle Pkcs12Store used to feed the certificate store being managed during Management jobs.  Should be left not implemented or set to False for most instances.
-
-   ![RFJKS Custom Field - RequiresLegacyEncryption](docsource/images/RFJKS-custom-field-RequiresLegacyEncryption-dialog.svg)
-   ![RFJKS Custom Field - RequiresLegacyEncryption](docsource/images/RFJKS-custom-field-RequiresLegacyEncryption-validation-options-dialog.svg)
 
 
    </details>
@@ -475,7 +457,6 @@ the Keyfactor Command Portal
    | SSHPort | SSH Port | Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting. | String |  | 🔲 Unchecked |
    | UseShellCommands | Use Shell Commands | Recommended to be set to the default value of 'Y'.  For a detailed explanation of this setting, please refer to [Use Shell Commands Setting](#use-shell-commands-setting) | Bool | True | 🔲 Unchecked |
    | PostJobApplicationRestart | Post Job Application Restart | Select the command to be run after a Management Add or ODKG job executes.  Leave unselected if no command is desired. | MultipleChoice | Apache HTTPD Restart,NGNIX Restart,HAProxy Restart,Envoy Proxy Restart | 🔲 Unchecked |
-   | RequiresLegacyEncryption | Requires Legacy Encryption | Optional setting.  If set to true, PkcsObjectIdentifiers.PbeWithShaAnd3KeyTripleDesCbc and PkcsObjectIdentifiers.PbewithShaAnd40BitRC2Cbc algorithms will be used to create the underlying BouncyCastle Pkcs12Store used to feed the certificate store being managed during Management jobs.  Should be left not implemented or set to False for most instances. | Bool | False | 🔲 Unchecked |
 
    The Custom Fields tab should look like this:
 
@@ -579,13 +560,6 @@ the Keyfactor Command Portal
 
    ![RFPEM Custom Field - PostJobApplicationRestart](docsource/images/RFPEM-custom-field-PostJobApplicationRestart-dialog.svg)
    ![RFPEM Custom Field - PostJobApplicationRestart](docsource/images/RFPEM-custom-field-PostJobApplicationRestart-validation-options-dialog.svg)
-
-
-   ###### Requires Legacy Encryption
-   Optional setting.  If set to true, PkcsObjectIdentifiers.PbeWithShaAnd3KeyTripleDesCbc and PkcsObjectIdentifiers.PbewithShaAnd40BitRC2Cbc algorithms will be used to create the underlying BouncyCastle Pkcs12Store used to feed the certificate store being managed during Management jobs.  Should be left not implemented or set to False for most instances.
-
-   ![RFPEM Custom Field - RequiresLegacyEncryption](docsource/images/RFPEM-custom-field-RequiresLegacyEncryption-dialog.svg)
-   ![RFPEM Custom Field - RequiresLegacyEncryption](docsource/images/RFPEM-custom-field-RequiresLegacyEncryption-validation-options-dialog.svg)
 
 
    </details>
@@ -698,7 +672,6 @@ the Keyfactor Command Portal
    | SSHPort | SSH Port | Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting. | String |  | 🔲 Unchecked |
    | UseShellCommands | Use Shell Commands | Recommended to be set to the default value of 'Y'.  For a detailed explanation of this setting, please refer to [Use Shell Commands Setting](#use-shell-commands-setting) | Bool | True | 🔲 Unchecked |
    | PostJobApplicationRestart | Post Job Application Restart | Select the command to be run after a Management Add or ODKG job executes.  Leave unselected if no command is desired.  No options are initially delivered for RFPkcs12. | MultipleChoice | None | 🔲 Unchecked |
-   | RequiresLegacyEncryption | Requires Legacy Encryption | Optional setting.  If set to true, PkcsObjectIdentifiers.PbeWithShaAnd3KeyTripleDesCbc and PkcsObjectIdentifiers.PbewithShaAnd40BitRC2Cbc algorithms will be used to create the underlying BouncyCastle Pkcs12Store used to feed the certificate store being managed during Management jobs.  Should be left not implemented or set to False for most instances. | Bool | False | 🔲 Unchecked |
 
    The Custom Fields tab should look like this:
 
@@ -774,13 +747,6 @@ the Keyfactor Command Portal
 
    ![RFPkcs12 Custom Field - PostJobApplicationRestart](docsource/images/RFPkcs12-custom-field-PostJobApplicationRestart-dialog.svg)
    ![RFPkcs12 Custom Field - PostJobApplicationRestart](docsource/images/RFPkcs12-custom-field-PostJobApplicationRestart-validation-options-dialog.svg)
-
-
-   ###### Requires Legacy Encryption
-   Optional setting.  If set to true, PkcsObjectIdentifiers.PbeWithShaAnd3KeyTripleDesCbc and PkcsObjectIdentifiers.PbewithShaAnd40BitRC2Cbc algorithms will be used to create the underlying BouncyCastle Pkcs12Store used to feed the certificate store being managed during Management jobs.  Should be left not implemented or set to False for most instances.
-
-   ![RFPkcs12 Custom Field - RequiresLegacyEncryption](docsource/images/RFPkcs12-custom-field-RequiresLegacyEncryption-dialog.svg)
-   ![RFPkcs12 Custom Field - RequiresLegacyEncryption](docsource/images/RFPkcs12-custom-field-RequiresLegacyEncryption-validation-options-dialog.svg)
 
 
    </details>
@@ -888,7 +854,6 @@ the Keyfactor Command Portal
    | SSHPort | SSH Port | Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting. | String |  | 🔲 Unchecked |
    | UseShellCommands | Use Shell Commands | Recommended to be set to the default value of 'Y'.  For a detailed explanation of this setting, please refer to [Use Shell Commands Setting](#use-shell-commands-setting) | Bool | True | 🔲 Unchecked |
    | PostJobApplicationRestart | Post Job Application Restart | Select the command to be run after a Management Add or ODKG job executes.  Leave unselected if no command is desired.  No options are initially delivered for RFDER. | MultipleChoice | None | 🔲 Unchecked |
-   | RequiresLegacyEncryption | Requires Legacy Encryption | Optional setting.  If set to true, PkcsObjectIdentifiers.PbeWithShaAnd3KeyTripleDesCbc and PkcsObjectIdentifiers.PbewithShaAnd40BitRC2Cbc algorithms will be used to create the underlying BouncyCastle Pkcs12Store used to feed the certificate store being managed during Management jobs.  Should be left not implemented or set to False for most instances. | Bool | False | 🔲 Unchecked |
 
    The Custom Fields tab should look like this:
 
@@ -971,13 +936,6 @@ the Keyfactor Command Portal
 
    ![RFDER Custom Field - PostJobApplicationRestart](docsource/images/RFDER-custom-field-PostJobApplicationRestart-dialog.svg)
    ![RFDER Custom Field - PostJobApplicationRestart](docsource/images/RFDER-custom-field-PostJobApplicationRestart-validation-options-dialog.svg)
-
-
-   ###### Requires Legacy Encryption
-   Optional setting.  If set to true, PkcsObjectIdentifiers.PbeWithShaAnd3KeyTripleDesCbc and PkcsObjectIdentifiers.PbewithShaAnd40BitRC2Cbc algorithms will be used to create the underlying BouncyCastle Pkcs12Store used to feed the certificate store being managed during Management jobs.  Should be left not implemented or set to False for most instances.
-
-   ![RFDER Custom Field - RequiresLegacyEncryption](docsource/images/RFDER-custom-field-RequiresLegacyEncryption-dialog.svg)
-   ![RFDER Custom Field - RequiresLegacyEncryption](docsource/images/RFDER-custom-field-RequiresLegacyEncryption-validation-options-dialog.svg)
 
 
    </details>
@@ -1087,7 +1045,6 @@ the Keyfactor Command Portal
    | SSHPort | SSH Port | Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting. | String |  | 🔲 Unchecked |
    | UseShellCommands | Use Shell Commands | Recommended to be set to the default value of 'Y'.  For a detailed explanation of this setting, please refer to [Use Shell Commands Setting](#use-shell-commands-setting) | Bool | True | 🔲 Unchecked |
    | PostJobApplicationRestart | Post Job Application Restart | Select the command to be run after a Management Add or ODKG job executes.  Leave unselected if no command is desired.  No options are initially delivered for RFKDB. | MultipleChoice | None | 🔲 Unchecked |
-   | RequiresLegacyEncryption | Requires Legacy Encryption | Optional setting.  If set to true, PkcsObjectIdentifiers.PbeWithShaAnd3KeyTripleDesCbc and PkcsObjectIdentifiers.PbewithShaAnd40BitRC2Cbc algorithms will be used to create the underlying BouncyCastle Pkcs12Store used to feed the certificate store being managed during Management jobs.  Should be left not implemented or set to False for most instances. | Bool | False | 🔲 Unchecked |
 
    The Custom Fields tab should look like this:
 
@@ -1163,13 +1120,6 @@ the Keyfactor Command Portal
 
    ![RFKDB Custom Field - PostJobApplicationRestart](docsource/images/RFKDB-custom-field-PostJobApplicationRestart-dialog.svg)
    ![RFKDB Custom Field - PostJobApplicationRestart](docsource/images/RFKDB-custom-field-PostJobApplicationRestart-validation-options-dialog.svg)
-
-
-   ###### Requires Legacy Encryption
-   Optional setting.  If set to true, PkcsObjectIdentifiers.PbeWithShaAnd3KeyTripleDesCbc and PkcsObjectIdentifiers.PbewithShaAnd40BitRC2Cbc algorithms will be used to create the underlying BouncyCastle Pkcs12Store used to feed the certificate store being managed during Management jobs.  Should be left not implemented or set to False for most instances.
-
-   ![RFKDB Custom Field - RequiresLegacyEncryption](docsource/images/RFKDB-custom-field-RequiresLegacyEncryption-dialog.svg)
-   ![RFKDB Custom Field - RequiresLegacyEncryption](docsource/images/RFKDB-custom-field-RequiresLegacyEncryption-validation-options-dialog.svg)
 
 
    </details>
@@ -1277,7 +1227,6 @@ the Keyfactor Command Portal
    | SSHPort | SSH Port | Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting. | String |  | 🔲 Unchecked |
    | UseShellCommands | Use Shell Commands | Recommended to be set to the default value of 'Y'.  For a detailed explanation of this setting, please refer to [Use Shell Commands Setting](#use-shell-commands-setting) | Bool | True | 🔲 Unchecked |
    | PostJobApplicationRestart | Post Job Application Restart | Select the command to be run after a Management Add or ODKG job executes.  Leave unselected if no command is desired.  No options are initially delivered for RFORA. | MultipleChoice | None | 🔲 Unchecked |
-   | RequiresLegacyEncryption | Requires Legacy Encryption | Optional setting.  If set to true, PkcsObjectIdentifiers.PbeWithShaAnd3KeyTripleDesCbc and PkcsObjectIdentifiers.PbewithShaAnd40BitRC2Cbc algorithms will be used to create the underlying BouncyCastle Pkcs12Store used to feed the certificate store being managed during Management jobs.  Should be left not implemented or set to False for most instances. | Bool | False | 🔲 Unchecked |
 
    The Custom Fields tab should look like this:
 
@@ -1355,13 +1304,6 @@ the Keyfactor Command Portal
    ![RFORA Custom Field - PostJobApplicationRestart](docsource/images/RFORA-custom-field-PostJobApplicationRestart-validation-options-dialog.svg)
 
 
-   ###### Requires Legacy Encryption
-   Optional setting.  If set to true, PkcsObjectIdentifiers.PbeWithShaAnd3KeyTripleDesCbc and PkcsObjectIdentifiers.PbewithShaAnd40BitRC2Cbc algorithms will be used to create the underlying BouncyCastle Pkcs12Store used to feed the certificate store being managed during Management jobs.  Should be left not implemented or set to False for most instances.
-
-   ![RFORA Custom Field - RequiresLegacyEncryption](docsource/images/RFORA-custom-field-RequiresLegacyEncryption-dialog.svg)
-   ![RFORA Custom Field - RequiresLegacyEncryption](docsource/images/RFORA-custom-field-RequiresLegacyEncryption-validation-options-dialog.svg)
-
-
    </details>
 </details>
 
@@ -1376,10 +1318,11 @@ the Keyfactor Command Portal
    | --------- | ----------- | ----------- | ----------- |
    | Between `11.0.0` and `11.5.1` (inclusive) | `net8.0` | `LatestMajor` | `net8.0` |
    | `11.6` _and_ newer | `net8.0` | | `net8.0` |
+   | `25.5` _and_ newer | `net10.0` | | `net10.0` |
 
     Unzip the archive containing extension assemblies to a known location.
 
-    > **Note** If you don't see an asset with a corresponding .NET version, you should always assume that it was compiled for `net8.0`.
+    > **Note** If you don't see an asset with a corresponding .NET version, you should always assume that it was compiled for `net10.0`.
 
 2. **Locate the Universal Orchestrator extensions directory.**
 
@@ -1506,7 +1449,6 @@ The Remote File Universal Orchestrator extension implements 6 Certificate Store 
    | SSHPort | Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting. |
    | UseShellCommands | Recommended to be set to the default value of 'Y'.  For a detailed explanation of this setting, please refer to [Use Shell Commands Setting](#use-shell-commands-setting) |
    | PostJobApplicationRestart | Select the command to be run after a Management Add or ODKG job executes.  Leave unselected if no command is desired. |
-   | RequiresLegacyEncryption | Optional setting.  If set to true, PkcsObjectIdentifiers.PbeWithShaAnd3KeyTripleDesCbc and PkcsObjectIdentifiers.PbewithShaAnd40BitRC2Cbc algorithms will be used to create the underlying BouncyCastle Pkcs12Store used to feed the certificate store being managed during Management jobs.  Should be left not implemented or set to False for most instances. |
 
 </details>
 
@@ -1541,7 +1483,6 @@ The Remote File Universal Orchestrator extension implements 6 Certificate Store 
    | Properties.SSHPort | Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting. |
    | Properties.UseShellCommands | Recommended to be set to the default value of 'Y'.  For a detailed explanation of this setting, please refer to [Use Shell Commands Setting](#use-shell-commands-setting) |
    | Properties.PostJobApplicationRestart | Select the command to be run after a Management Add or ODKG job executes.  Leave unselected if no command is desired. |
-   | Properties.RequiresLegacyEncryption | Optional setting.  If set to true, PkcsObjectIdentifiers.PbeWithShaAnd3KeyTripleDesCbc and PkcsObjectIdentifiers.PbewithShaAnd40BitRC2Cbc algorithms will be used to create the underlying BouncyCastle Pkcs12Store used to feed the certificate store being managed during Management jobs.  Should be left not implemented or set to False for most instances. |
 
 3. **Import the CSV file to create the certificate stores**
 
@@ -1609,7 +1550,6 @@ Please refer to the **Universal Orchestrator (remote)** usage section ([PAM prov
    | SSHPort | Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting. |
    | UseShellCommands | Recommended to be set to the default value of 'Y'.  For a detailed explanation of this setting, please refer to [Use Shell Commands Setting](#use-shell-commands-setting) |
    | PostJobApplicationRestart | Select the command to be run after a Management Add or ODKG job executes.  Leave unselected if no command is desired. |
-   | RequiresLegacyEncryption | Optional setting.  If set to true, PkcsObjectIdentifiers.PbeWithShaAnd3KeyTripleDesCbc and PkcsObjectIdentifiers.PbewithShaAnd40BitRC2Cbc algorithms will be used to create the underlying BouncyCastle Pkcs12Store used to feed the certificate store being managed during Management jobs.  Should be left not implemented or set to False for most instances. |
 
 </details>
 
@@ -1648,7 +1588,6 @@ Please refer to the **Universal Orchestrator (remote)** usage section ([PAM prov
    | Properties.SSHPort | Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting. |
    | Properties.UseShellCommands | Recommended to be set to the default value of 'Y'.  For a detailed explanation of this setting, please refer to [Use Shell Commands Setting](#use-shell-commands-setting) |
    | Properties.PostJobApplicationRestart | Select the command to be run after a Management Add or ODKG job executes.  Leave unselected if no command is desired. |
-   | Properties.RequiresLegacyEncryption | Optional setting.  If set to true, PkcsObjectIdentifiers.PbeWithShaAnd3KeyTripleDesCbc and PkcsObjectIdentifiers.PbewithShaAnd40BitRC2Cbc algorithms will be used to create the underlying BouncyCastle Pkcs12Store used to feed the certificate store being managed during Management jobs.  Should be left not implemented or set to False for most instances. |
 
 3. **Import the CSV file to create the certificate stores**
 
@@ -1712,7 +1651,6 @@ Please refer to the **Universal Orchestrator (remote)** usage section ([PAM prov
    | SSHPort | Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting. |
    | UseShellCommands | Recommended to be set to the default value of 'Y'.  For a detailed explanation of this setting, please refer to [Use Shell Commands Setting](#use-shell-commands-setting) |
    | PostJobApplicationRestart | Select the command to be run after a Management Add or ODKG job executes.  Leave unselected if no command is desired.  No options are initially delivered for RFPkcs12. |
-   | RequiresLegacyEncryption | Optional setting.  If set to true, PkcsObjectIdentifiers.PbeWithShaAnd3KeyTripleDesCbc and PkcsObjectIdentifiers.PbewithShaAnd40BitRC2Cbc algorithms will be used to create the underlying BouncyCastle Pkcs12Store used to feed the certificate store being managed during Management jobs.  Should be left not implemented or set to False for most instances. |
 
 </details>
 
@@ -1747,7 +1685,6 @@ Please refer to the **Universal Orchestrator (remote)** usage section ([PAM prov
    | Properties.SSHPort | Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting. |
    | Properties.UseShellCommands | Recommended to be set to the default value of 'Y'.  For a detailed explanation of this setting, please refer to [Use Shell Commands Setting](#use-shell-commands-setting) |
    | Properties.PostJobApplicationRestart | Select the command to be run after a Management Add or ODKG job executes.  Leave unselected if no command is desired.  No options are initially delivered for RFPkcs12. |
-   | Properties.RequiresLegacyEncryption | Optional setting.  If set to true, PkcsObjectIdentifiers.PbeWithShaAnd3KeyTripleDesCbc and PkcsObjectIdentifiers.PbewithShaAnd40BitRC2Cbc algorithms will be used to create the underlying BouncyCastle Pkcs12Store used to feed the certificate store being managed during Management jobs.  Should be left not implemented or set to False for most instances. |
 
 3. **Import the CSV file to create the certificate stores**
 
@@ -1812,7 +1749,6 @@ Please refer to the **Universal Orchestrator (remote)** usage section ([PAM prov
    | SSHPort | Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting. |
    | UseShellCommands | Recommended to be set to the default value of 'Y'.  For a detailed explanation of this setting, please refer to [Use Shell Commands Setting](#use-shell-commands-setting) |
    | PostJobApplicationRestart | Select the command to be run after a Management Add or ODKG job executes.  Leave unselected if no command is desired.  No options are initially delivered for RFDER. |
-   | RequiresLegacyEncryption | Optional setting.  If set to true, PkcsObjectIdentifiers.PbeWithShaAnd3KeyTripleDesCbc and PkcsObjectIdentifiers.PbewithShaAnd40BitRC2Cbc algorithms will be used to create the underlying BouncyCastle Pkcs12Store used to feed the certificate store being managed during Management jobs.  Should be left not implemented or set to False for most instances. |
 
 </details>
 
@@ -1848,7 +1784,6 @@ Please refer to the **Universal Orchestrator (remote)** usage section ([PAM prov
    | Properties.SSHPort | Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting. |
    | Properties.UseShellCommands | Recommended to be set to the default value of 'Y'.  For a detailed explanation of this setting, please refer to [Use Shell Commands Setting](#use-shell-commands-setting) |
    | Properties.PostJobApplicationRestart | Select the command to be run after a Management Add or ODKG job executes.  Leave unselected if no command is desired.  No options are initially delivered for RFDER. |
-   | Properties.RequiresLegacyEncryption | Optional setting.  If set to true, PkcsObjectIdentifiers.PbeWithShaAnd3KeyTripleDesCbc and PkcsObjectIdentifiers.PbewithShaAnd40BitRC2Cbc algorithms will be used to create the underlying BouncyCastle Pkcs12Store used to feed the certificate store being managed during Management jobs.  Should be left not implemented or set to False for most instances. |
 
 3. **Import the CSV file to create the certificate stores**
 
@@ -1912,7 +1847,6 @@ Please refer to the **Universal Orchestrator (remote)** usage section ([PAM prov
    | SSHPort | Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting. |
    | UseShellCommands | Recommended to be set to the default value of 'Y'.  For a detailed explanation of this setting, please refer to [Use Shell Commands Setting](#use-shell-commands-setting) |
    | PostJobApplicationRestart | Select the command to be run after a Management Add or ODKG job executes.  Leave unselected if no command is desired.  No options are initially delivered for RFKDB. |
-   | RequiresLegacyEncryption | Optional setting.  If set to true, PkcsObjectIdentifiers.PbeWithShaAnd3KeyTripleDesCbc and PkcsObjectIdentifiers.PbewithShaAnd40BitRC2Cbc algorithms will be used to create the underlying BouncyCastle Pkcs12Store used to feed the certificate store being managed during Management jobs.  Should be left not implemented or set to False for most instances. |
 
 </details>
 
@@ -1947,7 +1881,6 @@ Please refer to the **Universal Orchestrator (remote)** usage section ([PAM prov
    | Properties.SSHPort | Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting. |
    | Properties.UseShellCommands | Recommended to be set to the default value of 'Y'.  For a detailed explanation of this setting, please refer to [Use Shell Commands Setting](#use-shell-commands-setting) |
    | Properties.PostJobApplicationRestart | Select the command to be run after a Management Add or ODKG job executes.  Leave unselected if no command is desired.  No options are initially delivered for RFKDB. |
-   | Properties.RequiresLegacyEncryption | Optional setting.  If set to true, PkcsObjectIdentifiers.PbeWithShaAnd3KeyTripleDesCbc and PkcsObjectIdentifiers.PbewithShaAnd40BitRC2Cbc algorithms will be used to create the underlying BouncyCastle Pkcs12Store used to feed the certificate store being managed during Management jobs.  Should be left not implemented or set to False for most instances. |
 
 3. **Import the CSV file to create the certificate stores**
 
@@ -2011,7 +1944,6 @@ Please refer to the **Universal Orchestrator (remote)** usage section ([PAM prov
    | SSHPort | Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting. |
    | UseShellCommands | Recommended to be set to the default value of 'Y'.  For a detailed explanation of this setting, please refer to [Use Shell Commands Setting](#use-shell-commands-setting) |
    | PostJobApplicationRestart | Select the command to be run after a Management Add or ODKG job executes.  Leave unselected if no command is desired.  No options are initially delivered for RFORA. |
-   | RequiresLegacyEncryption | Optional setting.  If set to true, PkcsObjectIdentifiers.PbeWithShaAnd3KeyTripleDesCbc and PkcsObjectIdentifiers.PbewithShaAnd40BitRC2Cbc algorithms will be used to create the underlying BouncyCastle Pkcs12Store used to feed the certificate store being managed during Management jobs.  Should be left not implemented or set to False for most instances. |
 
 </details>
 
@@ -2046,7 +1978,6 @@ Please refer to the **Universal Orchestrator (remote)** usage section ([PAM prov
    | Properties.SSHPort | Integer value representing the port that should be used when connecting to Linux servers over SSH.  Overrides SSHPort [config.json](#post-installation) setting. |
    | Properties.UseShellCommands | Recommended to be set to the default value of 'Y'.  For a detailed explanation of this setting, please refer to [Use Shell Commands Setting](#use-shell-commands-setting) |
    | Properties.PostJobApplicationRestart | Select the command to be run after a Management Add or ODKG job executes.  Leave unselected if no command is desired.  No options are initially delivered for RFORA. |
-   | Properties.RequiresLegacyEncryption | Optional setting.  If set to true, PkcsObjectIdentifiers.PbeWithShaAnd3KeyTripleDesCbc and PkcsObjectIdentifiers.PbewithShaAnd40BitRC2Cbc algorithms will be used to create the underlying BouncyCastle Pkcs12Store used to feed the certificate store being managed during Management jobs.  Should be left not implemented or set to False for most instances. |
 
 3. **Import the CSV file to create the certificate stores**
 
@@ -2123,6 +2054,59 @@ For agent mode (accessing stores on the same server where Universal Orchestrator
 2. Important considerations:
     - `Store Type` + `Client Machine` + `Store Path` must be unique in Keyfactor Command
     - Best practice: Use the full DNS or IP Address to the left of the `|` character
+
+## SSH Authentication Options
+   When managing certificate stores on remote Linux servers, SSH is used to communicate between the Keyfactor Universal
+   Orchestrator server and the orchestrated server hosting the certificate store.  There are three options for SSH authentication:
+   * `SSH` user id and password authentication
+   * `SSH` private key authentication, or 
+   * `SSH` certificate authentication
+
+   **User ID and Password Authentication:**
+   This is the simplest method and requires you to enter a valid Linux user id and password into the server username and
+   server password fields when creating the Keyfactor Command certificate store or discovery job.  If the user id and/or
+   password is stored in a Keyfactor Command PAM integration, you would enter the PAM provider key for each respective value.
+   If the user id and password are valid, the orchestrator will connect to the orchestrated server and manage the certificate 
+   store as needed.  If this method is used, please ensure that either SSH Password Authentication or Keyboard Interactive 
+   Authentication is enabled on the Linux server.
+   
+   **SSH Private Key Authentication:**
+   This method requires you to enter a valid Linux user id and the full SSH private key (non-encrypted) into the server username and
+   server password fields when creating the Keyfactor Command certificate store or discovery job.  A PAM provider may
+   be alternatively utilized for either or both the user id and private key similar to **User ID/Password Authentication**.
+   Valid SSH Private key formats are: 
+
+   - PKCS#1 (`BEGIN RSA PRIVATE KEY`)
+   - PKCS#8 (`BEGIN PRIVATE KEY`)
+   - ECDSA OPENSSH (`BEGIN OPENSSH PRIVATE KEY`)
+ 
+   If using this method, make sure that:
+
+   - The accompanying SSH public key is correctly installed into the Linux server's `~/.ssh/authorized_keys` file for the user id 
+   being used.
+   - If creating the key pair on a Linux server and transferring it to the server password field in a browser on a Windows server, 
+   make sure that extra white space characters or line breaks are not added to the private key when copying and pasting.  The private 
+   key must be in the same format as it was generated.  Your best bet is to SFTP or SCP the contents of the private key to a Windows
+   server rather than making use of copy and paste.  If making use of a PAM Provider, ensure that the private key is stored in the 
+   same format as it was generated.
+   - Private key authentication is enabled on the Linux server.  If not, the orchestrator will attempt to connect using password 
+   authentication and fail.
+
+   **SSH Certificate Authentication:**
+   This method is similar to SSH Private Key Authentication, but requires you to enter a valid Linux user id and the full SSH private key
+   concatenated with the accompanying SSH certificate into the server username and server password fields respectively when creating 
+   the Keyfactor Command certificate store or discovery job.  The private key and certificate must be delimited using 3 pipe characters 
+   ("|||") as the delimiter (i.e. "...-----END OPENSSH PRIVATE KEY-----|||ssh-ed25519-cert-v01`@`openssh.com AAAAIHNzaC1lZDI1NTE5L...".  
+   A PAM provider may be alternatively utilized for either or both the user id and private key/certificate similar to **User ID/Password 
+   Authentication**.  Valid private key formats are the same as for SSH Private Key Authentication, and the SSH certificate must be in OpenSSH format.
+
+   If using this method, make sure that:
+
+   - The SSH certificate is trusted on the destination Linux server.  Set the TrustedUserCAKeys option in the `/etc/ssh/sshd_config` file to points 
+   to the public key of the CA that signed the SSH certificate.  If this is not done, the orchestrator will attempt to connect using password authentication 
+   and fail.
+   - No matching certificate needs to exist in the `~/.ssh/authorized_keys` file for the user id being used.  The SSH certificate is validated against the 
+   CA public key specified in the `TrustedUserCAKeys` option in the `/etc/ssh/sshd_config` file.
 
 ## Use Shell Commands Setting
 
