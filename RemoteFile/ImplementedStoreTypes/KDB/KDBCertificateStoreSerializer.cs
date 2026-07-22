@@ -154,7 +154,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.KDB
                 remoteHandler.CreateEmptyStoreFile(path + fileName + ".sth", linuxFilePermissions, linuxFileOwner);
 
                 remoteHandler.RunCommand($"cp {path}{tempStoreFile}.kdb {path}{fileName}.kdb", null, ApplicationSettings.UseSudo, null);
-                remoteHandler.RunCommand($"cp {path}{tempStoreFile}.kdb {path}{fileName}.rdb", null, ApplicationSettings.UseSudo, null);
+                remoteHandler.RunCommand($"cp {path}{tempStoreFile}.rdb {path}{fileName}.rdb", null, ApplicationSettings.UseSudo, null);
                 remoteHandler.RunCommand($"cp {path}{tempStoreFile}.crl {path}{fileName}.crl", null, ApplicationSettings.UseSudo, null);
                 remoteHandler.RunCommand($"cp {path}{tempStoreFile}.sth {path}{fileName}.sth", null, ApplicationSettings.UseSudo, null);
             }
