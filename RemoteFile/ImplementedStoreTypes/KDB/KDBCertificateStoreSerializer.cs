@@ -5,25 +5,24 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions
 // and limitations under the License.
 
+using Keyfactor.Extensions.Orchestrator.RemoteFile.Models;
+using Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers;
+using Keyfactor.Logging;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+using Org.BouncyCastle.Pkcs;
+using Renci.SshNet;
 using System;
 using System.Collections.Generic;
 using System.IO;
 
-using Keyfactor.Logging;
-using Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers;
-using Keyfactor.Extensions.Orchestrator.RemoteFile.Models;
-
-using Microsoft.Extensions.Logging;
-
-using Org.BouncyCastle.Pkcs;
-
 namespace Keyfactor.Extensions.Orchestrator.RemoteFile.KDB
 {
-    class KDBCertificateStoreSerializer : ICertificateStoreSerializer
+    class KDBCertificateStoreSerializer : ICertificateStoreSerializer, ICustomFileCreator
     {
         private ILogger logger;
 
-        public KDBCertificateStoreSerializer(string storeProperties) 
+        public KDBCertificateStoreSerializer(string storeProperties)
         {
             logger = LogHandler.GetClassLogger(this.GetType());
         }
@@ -44,7 +43,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.KDB
 
             remoteHandler.UploadCertificateFile(storePath, tempStoreFile, storeContentBytes);
             
-            string command = $"{bashCommand}gskcapicmd -keydb -convert -db \"{storePath}{tempStoreFile}\" -pw \"{storePassword}\" -type kdb -new_db \"{storePath}{tempCertFile}\" -new_pw \"{storePassword}\" -new_format p12";
+            string command = $"{bashCommand}gskcapicmd -keydb -convert -db \"{storePath}{tempStoreFile}\" -pw \"{storePassword}\" -new_db \"{storePath}{tempCertFile}\" -new_pw \"{storePassword}\" -new_format p12";
 
             try
             {
@@ -86,7 +85,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.KDB
             string tempStoreFile = Guid.NewGuid().ToString().Replace("-", string.Empty) + ".kdb";
             string tempCertFile = Guid.NewGuid().ToString().Replace("-", string.Empty) + ".p12";
 
-            string command = $"{bashCommand}gskcapicmd -keydb -convert -db \"{storePath}{tempCertFile}\" -pw \"{storePassword}\" -type p12 -new_db \"{storePath}{tempStoreFile}\" -new_pw \"{storePassword}\" -new_format kdb";
+            string command = $"{bashCommand}gskcapicmd -keydb -convert -db \"{storePath}{tempCertFile}\" -pw \"{storePassword}\" -type p12 -new_db \"{storePath}{tempStoreFile}\" -new_pw \"{storePassword}\" -new_format cms";
             
             try
             {
@@ -122,6 +121,66 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.KDB
         public string GetPrivateKeyPath() 
         {
             return null;
+        }
+
+        public void CreateEmptyStoreFile(string storePath, string storePassword, string linuxFilePermissions, string linuxFileOwner, IRemoteHandler remoteHandler)
+        {
+            logger.MethodEntry(LogLevel.Debug);
+
+            int extIdx = storePath.LastIndexOf('.');
+            if (extIdx == -1)
+                throw new Exception("Store path must include a file name with an extension.");
+            
+            string pathDelim = storePath.Substring(0, 1) == "/" ? "/" : "\\";
+            int fileNameIdx = storePath.LastIndexOf(pathDelim) + 1;
+            if (fileNameIdx == -1)
+                throw new Exception("Invalid format for store path.");
+
+            string bashCommand = storePath.Substring(0, 1) == "/" ? "bash " : string.Empty;
+            if (storePath.Substring(0, 1) == "|")
+                storePath = "/" + storePath.Substring(1);
+
+            string path = storePath.Substring(0, fileNameIdx);
+            string fileName = storePath.Substring(fileNameIdx, extIdx - fileNameIdx);
+
+            string tempStoreFile = Guid.NewGuid().ToString().Replace("-", string.Empty);
+
+            string command = $"{bashCommand}gskcapicmd -keydb -create -db \"{path}{tempStoreFile + ".kdb"}\" -pw \"{storePassword}\" -type cms -stash";
+
+            try
+            {
+                remoteHandler.RunCommand(command, null, ApplicationSettings.UseSudo, new string[] { storePassword });
+
+                remoteHandler.CreateEmptyStoreFile(path + fileName + ".kdb", linuxFilePermissions, linuxFileOwner);
+                remoteHandler.CreateEmptyStoreFile(path + fileName + ".rdb", linuxFilePermissions, linuxFileOwner);
+                remoteHandler.CreateEmptyStoreFile(path + fileName + ".crl", linuxFilePermissions, linuxFileOwner);
+                remoteHandler.CreateEmptyStoreFile(path + fileName + ".sth", linuxFilePermissions, linuxFileOwner);
+
+                remoteHandler.RunCommand($"cp {path}{tempStoreFile}.kdb {path}{fileName}.kdb", null, ApplicationSettings.UseSudo, null);
+                remoteHandler.RunCommand($"cp {path}{tempStoreFile}.rdb {path}{fileName}.rdb", null, ApplicationSettings.UseSudo, null);
+                remoteHandler.RunCommand($"cp {path}{tempStoreFile}.crl {path}{fileName}.crl", null, ApplicationSettings.UseSudo, null);
+                remoteHandler.RunCommand($"cp {path}{tempStoreFile}.sth {path}{fileName}.sth", null, ApplicationSettings.UseSudo, null);
+            }
+            catch (Exception ex)
+            {
+                if (ex.Message.Contains("cannot execute binary file", StringComparison.InvariantCultureIgnoreCase) && storePath.Substring(0, 1) == "/")
+                {
+                    storePath = "|" + storePath.Substring(1);
+                    CreateEmptyStoreFile(storePath, storePassword, linuxFilePermissions, linuxFileOwner, remoteHandler);
+                }
+                else
+                    throw;
+            }
+            finally
+            {
+                try { remoteHandler.RemoveCertificateFile(path, tempStoreFile + ".kdb"); } catch (Exception) { };
+                try { remoteHandler.RemoveCertificateFile(path, tempStoreFile + ".sth"); } catch (Exception) { };
+                try { remoteHandler.RemoveCertificateFile(path, tempStoreFile + ".rdb"); } catch (Exception) { };
+                try { remoteHandler.RemoveCertificateFile(path, tempStoreFile + ".crl"); } catch (Exception) { };
+            }
+
+
+            logger.MethodExit(LogLevel.Debug);
         }
     }
 }

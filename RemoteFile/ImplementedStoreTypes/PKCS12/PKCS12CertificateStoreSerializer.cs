@@ -56,7 +56,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.PKCS12
         public List<SerializedStoreInfo> SerializeRemoteCertificateStore(Pkcs12Store certificateStore, string storePath, string storeFileName, string storePassword, IRemoteHandler remoteHandler)
         {
             Pkcs12StoreBuilder storeBuilder = new Pkcs12StoreBuilder();
-            storeBuilder.SetCertAlgorithm(PkcsObjectIdentifiers.PbeWithShaAnd3KeyTripleDesCbc);
+            //storeBuilder.SetCertAlgorithm(PkcsObjectIdentifiers.PbeWithShaAnd3KeyTripleDesCbc);
             storeBuilder.SetKeyAlgorithm(NistObjectIdentifiers.IdAes256Cbc, PkcsObjectIdentifiers.IdHmacWithSha256);
             storeBuilder.SetUseDerEncoding(true);
 
@@ -95,7 +95,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.PKCS12
         private Pkcs12Store ConvertAliases(Pkcs12Store workingStore, bool useThumbprintAsAlias)
         {
             Pkcs12StoreBuilder storeBuilder = new Pkcs12StoreBuilder();
-            storeBuilder.SetCertAlgorithm(PkcsObjectIdentifiers.PbeWithShaAnd3KeyTripleDesCbc);
+            //storeBuilder.SetCertAlgorithm(PkcsObjectIdentifiers.PbeWithShaAnd3KeyTripleDesCbc);
             storeBuilder.SetKeyAlgorithm(NistObjectIdentifiers.IdAes256Cbc, PkcsObjectIdentifiers.IdHmacWithSha256);
             storeBuilder.SetUseDerEncoding(true);
 
