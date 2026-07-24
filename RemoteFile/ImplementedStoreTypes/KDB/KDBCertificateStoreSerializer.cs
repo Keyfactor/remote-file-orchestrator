@@ -136,11 +136,14 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.KDB
             if (fileNameIdx == -1)
                 throw new Exception("Invalid format for store path.");
 
+            string bashCommand = storePath.Substring(0, 1) == "/" ? "bash " : string.Empty;
+            if (storePath.Substring(0, 1) == "|")
+                storePath = "/" + storePath.Substring(1);
+
             string path = storePath.Substring(0, fileNameIdx);
             string fileName = storePath.Substring(fileNameIdx, extIdx - fileNameIdx);
 
             string tempStoreFile = Guid.NewGuid().ToString().Replace("-", string.Empty);
-            string bashCommand = storePath.Substring(0, 1) == "/" ? "bash " : string.Empty;
 
             string command = $"{bashCommand}gskcapicmd -keydb -create -db \"{path}{tempStoreFile + ".kdb"}\" -pw \"{storePassword}\" -type cms -stash";
 
@@ -157,6 +160,16 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.KDB
                 remoteHandler.RunCommand($"cp {path}{tempStoreFile}.rdb {path}{fileName}.rdb", null, ApplicationSettings.UseSudo, null);
                 remoteHandler.RunCommand($"cp {path}{tempStoreFile}.crl {path}{fileName}.crl", null, ApplicationSettings.UseSudo, null);
                 remoteHandler.RunCommand($"cp {path}{tempStoreFile}.sth {path}{fileName}.sth", null, ApplicationSettings.UseSudo, null);
+            }
+            catch (Exception ex)
+            {
+                if (ex.Message.Contains("cannot execute binary file", StringComparison.InvariantCultureIgnoreCase) && storePath.Substring(0, 1) == "/")
+                {
+                    storePath = "|" + storePath.Substring(1);
+                    CreateEmptyStoreFile(storePath, storePassword, linuxFilePermissions, linuxFileOwner, remoteHandler);
+                }
+                else
+                    throw;
             }
             finally
             {
