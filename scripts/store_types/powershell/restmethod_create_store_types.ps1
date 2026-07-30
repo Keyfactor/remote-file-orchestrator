@@ -131,15 +131,6 @@ $Body = @'
       "Type": "MultipleChoice",
       "DefaultValue": "Apache Tomcat Restart,Jetty Restart",
       "Description": "Select the command to be run after a Management Add or ODKG job executes.  Leave unselected if no command is desired."
-    },
-    {
-      "Name": "RequiresLegacyEncryption",
-      "DisplayName": "Requires Legacy Encryption",
-      "Required": false,
-      "DependsOn": "",
-      "Type": "Bool",
-      "DefaultValue": "False",
-      "Description": "Optional setting.  If set to true, PkcsObjectIdentifiers.PbeWithShaAnd3KeyTripleDesCbc and PkcsObjectIdentifiers.PbewithShaAnd40BitRC2Cbc algorithms will be used to create the underlying BouncyCastle Pkcs12Store used to feed the certificate store being managed during Management jobs.  Should be left not implemented or set to False for most instances."
     }
   ],
   "EntryParameters": []
@@ -303,15 +294,6 @@ $Body = @'
       "Type": "MultipleChoice",
       "DefaultValue": "Apache HTTPD Restart,NGNIX Restart,HAProxy Restart,Envoy Proxy Restart",
       "Description": "Select the command to be run after a Management Add or ODKG job executes.  Leave unselected if no command is desired."
-    },
-    {
-      "Name": "RequiresLegacyEncryption",
-      "DisplayName": "Requires Legacy Encryption",
-      "Required": false,
-      "DependsOn": "",
-      "Type": "Bool",
-      "DefaultValue": "False",
-      "Description": "Optional setting.  If set to true, PkcsObjectIdentifiers.PbeWithShaAnd3KeyTripleDesCbc and PkcsObjectIdentifiers.PbewithShaAnd40BitRC2Cbc algorithms will be used to create the underlying BouncyCastle Pkcs12Store used to feed the certificate store being managed during Management jobs.  Should be left not implemented or set to False for most instances."
     }
   ],
   "EntryParameters": []
@@ -439,15 +421,6 @@ $Body = @'
       "Type": "MultipleChoice",
       "DefaultValue": "None",
       "Description": "Select the command to be run after a Management Add or ODKG job executes.  Leave unselected if no command is desired.  No options are initially delivered for RFPkcs12."
-    },
-    {
-      "Name": "RequiresLegacyEncryption",
-      "DisplayName": "Requires Legacy Encryption",
-      "Required": false,
-      "DependsOn": "",
-      "Type": "Bool",
-      "DefaultValue": "False",
-      "Description": "Optional setting.  If set to true, PkcsObjectIdentifiers.PbeWithShaAnd3KeyTripleDesCbc and PkcsObjectIdentifiers.PbewithShaAnd40BitRC2Cbc algorithms will be used to create the underlying BouncyCastle Pkcs12Store used to feed the certificate store being managed during Management jobs.  Should be left not implemented or set to False for most instances."
     }
   ],
   "EntryParameters": []
@@ -584,15 +557,6 @@ $Body = @'
       "Type": "MultipleChoice",
       "DefaultValue": "None",
       "Description": "Select the command to be run after a Management Add or ODKG job executes.  Leave unselected if no command is desired.  No options are initially delivered for RFDER."
-    },
-    {
-      "Name": "RequiresLegacyEncryption",
-      "DisplayName": "Requires Legacy Encryption",
-      "Required": false,
-      "DependsOn": "",
-      "Type": "Bool",
-      "DefaultValue": "False",
-      "Description": "Optional setting.  If set to true, PkcsObjectIdentifiers.PbeWithShaAnd3KeyTripleDesCbc and PkcsObjectIdentifiers.PbewithShaAnd40BitRC2Cbc algorithms will be used to create the underlying BouncyCastle Pkcs12Store used to feed the certificate store being managed during Management jobs.  Should be left not implemented or set to False for most instances."
     }
   ],
   "EntryParameters": []
@@ -720,15 +684,6 @@ $Body = @'
       "Type": "MultipleChoice",
       "DefaultValue": "None",
       "Description": "Select the command to be run after a Management Add or ODKG job executes.  Leave unselected if no command is desired.  No options are initially delivered for RFKDB."
-    },
-    {
-      "Name": "RequiresLegacyEncryption",
-      "DisplayName": "Requires Legacy Encryption",
-      "Required": false,
-      "DependsOn": "",
-      "Type": "Bool",
-      "DefaultValue": "False",
-      "Description": "Optional setting.  If set to true, PkcsObjectIdentifiers.PbeWithShaAnd3KeyTripleDesCbc and PkcsObjectIdentifiers.PbewithShaAnd40BitRC2Cbc algorithms will be used to create the underlying BouncyCastle Pkcs12Store used to feed the certificate store being managed during Management jobs.  Should be left not implemented or set to False for most instances."
     }
   ],
   "EntryParameters": []
@@ -856,15 +811,6 @@ $Body = @'
       "Type": "MultipleChoice",
       "DefaultValue": "None",
       "Description": "Select the command to be run after a Management Add or ODKG job executes.  Leave unselected if no command is desired.  No options are initially delivered for RFORA."
-    },
-    {
-      "Name": "RequiresLegacyEncryption",
-      "DisplayName": "Requires Legacy Encryption",
-      "Required": false,
-      "DependsOn": "",
-      "Type": "Bool",
-      "DefaultValue": "False",
-      "Description": "Optional setting.  If set to true, PkcsObjectIdentifiers.PbeWithShaAnd3KeyTripleDesCbc and PkcsObjectIdentifiers.PbewithShaAnd40BitRC2Cbc algorithms will be used to create the underlying BouncyCastle Pkcs12Store used to feed the certificate store being managed during Management jobs.  Should be left not implemented or set to False for most instances."
     }
   ],
   "EntryParameters": []
