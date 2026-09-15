@@ -1,3 +1,6 @@
+v4.3.0
+- For RFKDB store type, added new optional custom field CommandPath, which if used, should contain the path to the IBM CLI GSKCAPICMD utility.  If this field is not used, the integration will attempt to find the utility in the system path.
+
 v4.2.0
 - Deprecate legacy encryption.  From this release forward, RequiresLegacyEncryption will be ignored.
 - Modification to suppor SSH certificate authentication for Linux managed servers.  If a certificate is used, the private key must be in OpenSSH format and the public key must be in OpenSSH format or PEM format.
