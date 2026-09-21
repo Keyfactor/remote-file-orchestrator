@@ -79,13 +79,13 @@ $Body = @'
       "Description": "The LinuxFileOwnerOnStoreCreation field should contain a valid user ID recognized by the destination Linux server, optionally followed by a colon and a group ID if the group owner differs. Example: 'userID' or 'userID:groupID'.  Overrides DefaultOwnerOnStoreCreation [config.json](#post-installation) setting."
     },
     {
-      "Name": "SudoImpersonatingUser",
+      "Name": "SudoImpersonatedUser",
       "DisplayName": "Sudo Impersonating User",
       "Required": false,
       "DependsOn": "",
       "Type": "String",
       "DefaultValue": "",
-      "Description": "The SudoImpersonatingUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'.  Overrides DefaultSudoImpersonatedUser [config.json](#post-installation) setting."
+      "Description": "The SudoImpersonatedUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'.  Overrides DefaultSudoImpersonatedUser [config.json](#post-installation) setting."
     },
     {
       "Name": "RemoveRootCertificate",
@@ -206,13 +206,13 @@ $Body = @'
       "Description": "The LinuxFileOwnerOnStoreCreation field should contain a valid user ID recognized by the destination Linux server, optionally followed by a colon and a group ID if the group owner differs. Example: 'userID' or 'userID:groupID'.  Overrides DefaultOwnerOnStoreCreation [config.json](#post-installation) setting."
     },
     {
-      "Name": "SudoImpersonatingUser",
+      "Name": "SudoImpersonatedUser",
       "DisplayName": "Sudo Impersonating User",
       "Required": false,
       "DependsOn": "",
       "Type": "String",
       "DefaultValue": "",
-      "Description": "The SudoImpersonatingUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'.  Overrides [config.json](#post-installation) DefaultSudoImpersonatedUser setting.."
+      "Description": "The SudoImpersonatedUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'.  Overrides [config.json](#post-installation) DefaultSudoImpersonatedUser setting.."
     },
     {
       "Name": "IsTrustStore",
@@ -369,13 +369,13 @@ $Body = @'
       "Description": "The LinuxFileOwnerOnStoreCreation field should contain a valid user ID recognized by the destination Linux server, optionally followed by a colon and a group ID if the group owner differs. Example: 'userID' or 'userID:groupID'.  Overrides DefaultOwnerOnStoreCreation [config.json](#post-installation) setting."
     },
     {
-      "Name": "SudoImpersonatingUser",
+      "Name": "SudoImpersonatedUser",
       "DisplayName": "Sudo Impersonating User",
       "Required": false,
       "DependsOn": "",
       "Type": "String",
       "DefaultValue": "",
-      "Description": "The SudoImpersonatingUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'.  Overrides DefaultSudoImpersonatedUser [config.json](#post-installation) setting."
+      "Description": "The SudoImpersonatedUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'.  Overrides DefaultSudoImpersonatedUser [config.json](#post-installation) setting."
     },
     {
       "Name": "RemoveRootCertificate",
@@ -496,13 +496,13 @@ $Body = @'
       "Description": "The LinuxFileOwnerOnStoreCreation field should contain a valid user ID recognized by the destination Linux server, optionally followed by a colon and a group ID if the group owner differs. Example: 'userID' or 'userID:groupID'.  Overrides DefaultOwnerOnStoreCreation [config.json](#post-installation) setting."
     },
     {
-      "Name": "SudoImpersonatingUser",
+      "Name": "SudoImpersonatedUser",
       "DisplayName": "Sudo Impersonating User",
       "Required": false,
       "DependsOn": "",
       "Type": "String",
       "DefaultValue": "",
-      "Description": "The SudoImpersonatingUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'.  Overrides [config.json](#post-installation) DefaultSudoImpersonatedUser setting."
+      "Description": "The SudoImpersonatedUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'.  Overrides [config.json](#post-installation) DefaultSudoImpersonatedUser setting."
     },
     {
       "Name": "SeparatePrivateKeyFilePath",
@@ -632,13 +632,13 @@ $Body = @'
       "Description": "The LinuxFileOwnerOnStoreCreation field should contain a valid user ID recognized by the destination Linux server, optionally followed by a colon and a group ID if the group owner differs. Example: 'userID' or 'userID:groupID'.  Overrides DefaultOwnerOnStoreCreation [config.json](#post-installation) setting."
     },
     {
-      "Name": "SudoImpersonatingUser",
+      "Name": "SudoImpersonatedUser",
       "DisplayName": "Sudo Impersonating User",
       "Required": false,
       "DependsOn": "",
       "Type": "String",
       "DefaultValue": "",
-      "Description": "The SudoImpersonatingUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'.  Overrides [config.json](#post-installation) DefaultSudoImpersonatedUser setting."
+      "Description": "The SudoImpersonatedUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'.  Overrides [config.json](#post-installation) DefaultSudoImpersonatedUser setting."
     },
     {
       "Name": "RemoveRootCertificate",
@@ -759,13 +759,13 @@ $Body = @'
       "Description": "The LinuxFileOwnerOnStoreCreation field should contain a valid user ID recognized by the destination Linux server, optionally followed by a colon and a group ID if the group owner differs. Example: 'userID' or 'userID:groupID'.  Overrides DefaultOwnerOnStoreCreation [config.json](#post-installation) setting."
     },
     {
-      "Name": "SudoImpersonatingUser",
+      "Name": "SudoImpersonatedUser",
       "DisplayName": "Sudo Impersonating User",
       "Required": false,
       "DependsOn": "",
       "Type": "String",
       "DefaultValue": "",
-      "Description": "The SudoImpersonatingUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'.  Overrides [config.json](#post-installation) DefaultSudoImpersonatedUser setting."
+      "Description": "The SudoImpersonatedUser field should contain a valid user ID to impersonate using sudo on the destination Linux server. Example: 'impersonatedUserID'.  Overrides [config.json](#post-installation) DefaultSudoImpersonatedUser setting."
     },
     {
       "Name": "RemoveRootCertificate",
