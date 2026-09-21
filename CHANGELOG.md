@@ -1,5 +1,6 @@
 v4.3.0
 - For RFKDB store type, added new optional custom field CommandPath, which if used, should contain the path to the IBM CLI GSKCAPICMD utility.  If this field is not used, the integration will attempt to find the utility in the system path.
+- Bug Fix: Renamed SudoImpersonatingUser to SudoImpersonatedUser to correct a typo in the name of the custom field for all store types.
 
 v4.2.0
 - Deprecate legacy encryption.  From this release forward, RequiresLegacyEncryption will be ignored.
