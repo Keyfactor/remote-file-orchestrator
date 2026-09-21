@@ -614,6 +614,16 @@ curl -s -X POST "https://${KEYFACTOR_HOSTNAME}/${KEYFACTOR_API_PATH}/Certificate
       "Description": "A password (or valid PAM key if the password is stored in a KF Command configured PAM integration). The password can also be an SSH private key if connecting via SSH to a server using SSH private key authentication. If acting as an *agent* using local file access, just check *No Value*"
     },
     {
+      "Name": "CommandPath",
+      "DisplayName": "GSKCAPICMD installation folder path",
+      "Type": "String",
+      "DependsOn": "",
+      "DefaultValue": "",
+      "Required": false,
+      "IsPAMEligible": false,
+      "Description": "The full folder path (not including the file name itself) where the GSKCAPCMD CLI located is installed."
+    },
+    {
       "Name": "LinuxFilePermissionsOnStoreCreation",
       "DisplayName": "Linux File Permissions on Store Creation",
       "Required": false,
