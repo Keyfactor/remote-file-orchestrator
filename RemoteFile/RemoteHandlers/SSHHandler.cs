@@ -258,8 +258,6 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
             _logger.LogDebug($"Download path: {downloadPath}");
             _logger.LogDebug($"IsStoreServerLinux: {IsStoreServerLinux}");
             
-            _logger.LogDebug($"Attempting SCP download...");
-            
             using (SftpClient client = new SftpClient(Connection))
             {
                 try
@@ -287,8 +285,6 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
 
             if (sftpError)
             {
-                _logger.LogDebug($"Attempting SFTP download...");
-
                 using (ScpClient client = new ScpClient(Connection))
                 {
                     try
