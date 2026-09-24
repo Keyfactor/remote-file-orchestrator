@@ -188,7 +188,8 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
                 catch (Exception ex)
                 {
                     sftpError = true;
-                    _logger.LogDebug($"{RemoteFileException.FlattenExceptionMessages(ex, "SFTP upload failed.  Attempting with SCP protocol...")}");
+                    _logger.LogDebug($"{RemoteFileException.FlattenExceptionMessages(ex, "SFTP upload failed...")}");
+                    _logger.LogDebug($"Attempting with SCP protocol next...");
                 }
                 finally
                 {
@@ -213,8 +214,9 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
                     }
                     catch (Exception ex)
                     {
-                        _logger.LogError($"{RemoteFileException.FlattenExceptionMessages(ex, "Exception during SCP upload...")}");
-                        throw new RemoteFileException($"Error attempting file transfer using SFTP and SCP to {Connection.Host} using login {Connection.Username} and connection method {Connection.AuthenticationMethods[0].Name}.  Please contact your company's system administrator to verify connection and permission settings.", ex);
+                        _logger.LogDebug($"{RemoteFileException.FlattenExceptionMessages(ex, "SCP upload failed...")}");
+                        _logger.LogError($"File {uploadPath} could not be uploaded.  Both SFTP and SCP failed.");
+                        throw new RemoteFileException($"Error attempting file transfer using SFTP and SCP from {Connection.Host} using login {Connection.Username} and connection method {Connection.AuthenticationMethods[0].Name}.  Please contact your company's system administrator to verify connection and permission settings.", ex);
                     }
                     finally
                     {
@@ -275,7 +277,8 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
                 catch (Exception ex)
                 {
                     sftpError = true;
-                    _logger.LogDebug($"{RemoteFileException.FlattenExceptionMessages(ex, "SFTP download failed.  Attempting with SCP protocol...")}");
+                    _logger.LogDebug($"{RemoteFileException.FlattenExceptionMessages(ex, "SFTP download failed...")}");
+                    _logger.LogDebug("Attempting with SCP protocol next...");
                 }
                 finally
                 {
@@ -301,8 +304,9 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
                     }
                     catch (Exception ex)
                     {
-                        _logger.LogError($"{RemoteFileException.FlattenExceptionMessages(ex, "Exception during SCP download...")}");
-                        throw new RemoteFileException($"Error attempting file transfer using SFTP and SCP from {Connection.Host} using login {Connection.Username} and connection method {Connection.AuthenticationMethods[0].Name}.  Please contact your company's system administrator to verify connection and permission settings.", ex);
+                        _logger.LogDebug($"{RemoteFileException.FlattenExceptionMessages(ex, "SCP download failed...")}");
+                        _logger.LogError($"File {downloadPath} could not be downloaded.  Both SFTP and SCP failed.");
+                        throw new RemoteFileException($"Error attempting file transfer using SFTP and SCP to {Connection.Host} using login {Connection.Username} and connection method {Connection.AuthenticationMethods[0].Name}.  Please contact your company's system administrator to verify connection and permission settings.", ex);
                     }
                     finally
                     {
