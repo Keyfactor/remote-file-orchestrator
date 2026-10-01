@@ -25,13 +25,14 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
         private readonly string[] IgnoreErrors = { "Could not chdir to home directory" };
         private ConnectionInfo Connection { get; set; }
         private string SudoImpersonatedUser { get; set; }
+        private ApplicationSettings.FileTransferProtocolEnum FileTransferProtocol { get; set; }
         private bool IsStoreServerLinux { get; set; }
         private bool UseShellCommands { get; set; }
         private string UserId { get; set; }
         private string Password { get; set; }
         private SshClient sshClient;
 
-        internal SSHHandler(string server, string serverLogin, string serverPassword, bool isStoreServerLinux, int sshPort, string sudoImpersonatedUser, bool useShellCommands)
+        internal SSHHandler(string server, string serverLogin, string serverPassword, bool isStoreServerLinux, ApplicationSettings.FileTransferProtocolEnum fileTransferProtocol, int sshPort, string sudoImpersonatedUser, bool useShellCommands)
         {
             _logger.MethodEntry(LogLevel.Debug);
             
@@ -171,33 +172,36 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
             }
 
             bool sftpError = false;
-            
-            using (SftpClient client = new SftpClient(Connection))
-            {
-                try
-                {
-                    _logger.LogDebug($"SFTP connection attempt to {Connection.Host} using login {Connection.Username} and connection method {Connection.AuthenticationMethods[0].Name}");
-                    client.OperationTimeout = System.TimeSpan.FromSeconds(60);
-                    client.Connect();
 
-                    using (MemoryStream stream = new MemoryStream(certBytes))
+            if (FileTransferProtocol == ApplicationSettings.FileTransferProtocolEnum.Both || FileTransferProtocol == ApplicationSettings.FileTransferProtocolEnum.SFTP)
+            {
+                using (SftpClient client = new SftpClient(Connection))
+                {
+                    try
                     {
-                        client.UploadFile(stream, FormatFTPPath(uploadPath, !IsStoreServerLinux));
+                        _logger.LogDebug($"SFTP connection attempt to {Connection.Host} using login {Connection.Username} and connection method {Connection.AuthenticationMethods[0].Name}");
+                        client.OperationTimeout = System.TimeSpan.FromSeconds(60);
+                        client.Connect();
+
+                        using (MemoryStream stream = new MemoryStream(certBytes))
+                        {
+                            client.UploadFile(stream, FormatFTPPath(uploadPath, !IsStoreServerLinux));
+                        }
                     }
-                }
-                catch (Exception ex)
-                {
-                    sftpError = true;
-                    _logger.LogDebug($"{RemoteFileException.FlattenExceptionMessages(ex, "SFTP upload failed...")}");
-                    _logger.LogDebug($"Attempting with SCP protocol next...");
-                }
-                finally
-                {
-                    client.Disconnect();
+                    catch (Exception ex)
+                    {
+                        sftpError = true;
+                        _logger.LogDebug($"{RemoteFileException.FlattenExceptionMessages(ex, "SFTP upload failed...")}");
+                        _logger.LogDebug($"Attempting with SCP protocol next...");
+                    }
+                    finally
+                    {
+                        client.Disconnect();
+                    }
                 }
             }
 
-            if (sftpError)
+            if ((FileTransferProtocol == ApplicationSettings.FileTransferProtocolEnum.Both && sftpError) || FileTransferProtocol == ApplicationSettings.FileTransferProtocolEnum.SCP)
             {
                 using (ScpClient client = new ScpClient(Connection))
                 {
@@ -259,34 +263,37 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
 
             _logger.LogDebug($"Download path: {downloadPath}");
             _logger.LogDebug($"IsStoreServerLinux: {IsStoreServerLinux}");
-            
-            using (SftpClient client = new SftpClient(Connection))
-            {
-                try
-                {
-                    _logger.LogDebug($"SFTP connection attempt from {Connection.Host} using login {Connection.Username} and connection method {Connection.AuthenticationMethods[0].Name}");
-                    client.OperationTimeout = System.TimeSpan.FromSeconds(60);
-                    client.Connect();
 
-                    using (MemoryStream stream = new MemoryStream())
+            if (FileTransferProtocol == ApplicationSettings.FileTransferProtocolEnum.Both || FileTransferProtocol == ApplicationSettings.FileTransferProtocolEnum.SFTP)
+            {
+                using (SftpClient client = new SftpClient(Connection))
+                {
+                    try
                     {
-                        client.DownloadFile(FormatFTPPath(downloadPath, !IsStoreServerLinux), stream);
-                        rtnStore = stream.ToArray();
+                        _logger.LogDebug($"SFTP connection attempt from {Connection.Host} using login {Connection.Username} and connection method {Connection.AuthenticationMethods[0].Name}");
+                        client.OperationTimeout = System.TimeSpan.FromSeconds(60);
+                        client.Connect();
+
+                        using (MemoryStream stream = new MemoryStream())
+                        {
+                            client.DownloadFile(FormatFTPPath(downloadPath, !IsStoreServerLinux), stream);
+                            rtnStore = stream.ToArray();
+                        }
                     }
-                }
-                catch (Exception ex)
-                {
-                    sftpError = true;
-                    _logger.LogDebug($"{RemoteFileException.FlattenExceptionMessages(ex, "SFTP download failed...")}");
-                    _logger.LogDebug("Attempting with SCP protocol next...");
-                }
-                finally
-                {
-                    client.Disconnect();
+                    catch (Exception ex)
+                    {
+                        sftpError = true;
+                        _logger.LogDebug($"{RemoteFileException.FlattenExceptionMessages(ex, "SFTP download failed...")}");
+                        _logger.LogDebug("Attempting with SCP protocol next...");
+                    }
+                    finally
+                    {
+                        client.Disconnect();
+                    }
                 }
             }
 
-            if (sftpError)
+            if ((FileTransferProtocol == ApplicationSettings.FileTransferProtocolEnum.Both && sftpError) || FileTransferProtocol == ApplicationSettings.FileTransferProtocolEnum.SCP)
             {
                 using (ScpClient client = new ScpClient(Connection))
                 {
