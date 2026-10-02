@@ -106,6 +106,15 @@ $Body = @'
       "Description": "Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations."
     },
     {
+      "Name": "FileTransferProtocol",
+      "DisplayName": "File Transfer Protocol to Use",
+      "Required": false,
+      "DependsOn": "",
+      "Type": "MultipleChoice",
+      "DefaultValue": ",SCP,SFTP,Both",
+      "Description": "Which protocol should be used when uploading/downloading files - SCP, SFTP, or Both (try one, and then if necessary, the other).  Overrides FileTransferProtocol [config.json](#post-installation) setting."
+    },
+    {
       "Name": "SSHPort",
       "DisplayName": "SSH Port",
       "Required": false,
@@ -269,6 +278,15 @@ $Body = @'
       "Description": "Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations."
     },
     {
+      "Name": "FileTransferProtocol",
+      "DisplayName": "File Transfer Protocol to Use",
+      "Required": false,
+      "DependsOn": "",
+      "Type": "MultipleChoice",
+      "DefaultValue": ",SCP,SFTP,Both",
+      "Description": "Which protocol should be used when uploading/downloading files - SCP, SFTP, or Both (try one, and then if necessary, the other).  Overrides FileTransferProtocol [config.json](#post-installation) setting."
+    },
+    {
       "Name": "SSHPort",
       "DisplayName": "SSH Port",
       "Required": false,
@@ -394,6 +412,15 @@ $Body = @'
       "Type": "Bool",
       "DefaultValue": "False",
       "Description": "Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations."
+    },
+    {
+      "Name": "FileTransferProtocol",
+      "DisplayName": "File Transfer Protocol to Use",
+      "Required": false,
+      "DependsOn": "",
+      "Type": "MultipleChoice",
+      "DefaultValue": ",SCP,SFTP,Both",
+      "Description": "Which protocol should be used when uploading/downloading files - SCP, SFTP, or Both (try one, and then if necessary, the other).  Overrides FileTransferProtocol [config.json](#post-installation) setting."
     },
     {
       "Name": "SSHPort",
@@ -530,6 +557,15 @@ $Body = @'
       "Type": "Bool",
       "DefaultValue": "False",
       "Description": "Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations."
+    },
+    {
+      "Name": "FileTransferProtocol",
+      "DisplayName": "File Transfer Protocol to Use",
+      "Required": false,
+      "DependsOn": "",
+      "Type": "MultipleChoice",
+      "DefaultValue": ",SCP,SFTP,Both",
+      "Description": "Which protocol should be used when uploading/downloading files - SCP, SFTP, or Both (try one, and then if necessary, the other).  Overrides FileTransferProtocol [config.json](#post-installation) setting."
     },
     {
       "Name": "SSHPort",
@@ -669,6 +705,15 @@ $Body = @'
       "Description": "Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations."
     },
     {
+      "Name": "FileTransferProtocol",
+      "DisplayName": "File Transfer Protocol to Use",
+      "Required": false,
+      "DependsOn": "",
+      "Type": "MultipleChoice",
+      "DefaultValue": ",SCP,SFTP,Both",
+      "Description": "Which protocol should be used when uploading/downloading files - SCP, SFTP, or Both (try one, and then if necessary, the other).  Overrides FileTransferProtocol [config.json](#post-installation) setting."
+    },
+    {
       "Name": "SSHPort",
       "DisplayName": "SSH Port",
       "Required": false,
@@ -794,6 +839,15 @@ $Body = @'
       "Type": "Bool",
       "DefaultValue": "False",
       "Description": "Internally set the -IncludePortInSPN option when creating the remote PowerShell connection. Needed for some Kerberos configurations."
+    },
+    {
+      "Name": "FileTransferProtocol",
+      "DisplayName": "File Transfer Protocol to Use",
+      "Required": false,
+      "DependsOn": "",
+      "Type": "MultipleChoice",
+      "DefaultValue": ",SCP,SFTP,Both",
+      "Description": "Which protocol should be used when uploading/downloading files - SCP, SFTP, or Both (try one, and then if necessary, the other).  Overrides FileTransferProtocol [config.json](#post-installation) setting."
     },
     {
       "Name": "SSHPort",
