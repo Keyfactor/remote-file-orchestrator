@@ -25,17 +25,17 @@
   </g>
   <text x="20" y="110" class="label">Name</text>
   <rect x="20" y="113" width="660" height="36" fill="#ffffff" stroke="#cccccc" rx="4" />
-  <text x="30" y="138" class="value">SudoImpersonatedUser</text>
+  <text x="30" y="138" class="value">FileTransferProtocol</text>
   <text x="20" y="173" class="label">Display Name</text>
   <rect x="20" y="176" width="660" height="36" fill="#ffffff" stroke="#cccccc" rx="4" />
-  <text x="30" y="201" class="value">Sudo Impersonating User</text>
+  <text x="30" y="201" class="value">File Transfer Protocol to Use</text>
   <text x="20" y="236" class="label">Type</text>
   <rect x="20" y="239" width="660" height="36" fill="#e8e8e8" stroke="#cccccc" rx="4" />
-  <text x="30" y="264" class="value">String</text>
+  <text x="30" y="264" class="value">MultipleChoice</text>
   <text x="666" y="265" font-size="12" fill="#666666" font-family="'Segoe UI', Arial, sans-serif">∨</text>
-  <text x="20" y="299" class="label">Default Value</text>
+  <text x="20" y="299" class="label">Multiple Choice Options</text>
   <rect x="20" y="302" width="660" height="36" fill="#ffffff" stroke="#cccccc" rx="4" />
-  <text x="30" y="327" class="value"></text>
+  <text x="30" y="327" class="value">,SCP,SFTP,Both</text>
   <text x="20" y="362" class="label">Depends On</text>
   <rect x="20" y="375" width="15" height="15" fill="#ffffff" stroke="#cccccc" rx="2" />
   <rect x="43" y="365" width="637" height="36" fill="#e8e8e8" stroke="#cccccc" rx="4" />
