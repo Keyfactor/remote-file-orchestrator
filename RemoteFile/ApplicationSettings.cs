@@ -24,7 +24,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
         {
             SCP,
             SFTP,
-            Both
+            BOTH
         }
 
         private const string DEFAULT_LINUX_PERMISSION_SETTING = "";
@@ -69,7 +69,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
                 ILogger logger = LogHandler.GetClassLogger<ApplicationSettings>();
 
                 if (!configuration.ContainsKey("FileTransferProtocol"))
-                    return FileTransferProtocolEnum.Both;
+                    return FileTransferProtocolEnum.BOTH;
 
                 string protocolNames = string.Empty;
                 foreach (string protocolName in Enum.GetNames(typeof(FileTransferProtocolEnum)))
@@ -79,7 +79,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
                 protocolNames = protocolNames.Substring(0, protocolNames.Length - 2);
                 string? protocolValue = configuration["FileTransferProtocol"].ToString();
 
-                if (!PropertyUtilities.TryEnumParse(protocolValue, out bool isFlagCombination, out FileTransferProtocolEnum protocol))
+                if (!PropertyUtilities.TryEnumParse(protocolValue.ToUpper(), out bool isFlagCombination, out FileTransferProtocolEnum protocol))
                     throw new RemoteFileException($"Invalid optional config.json FileTransferProtocol option of {protocolValue}.  If present, must be one of these values: {protocolNames}.");
 
                 // Issue: If received a comma-delimited list ("SCP,SFTP,Both"), it's treating it as a flag combination (i.e. mapping it to 0+1+2=3)
@@ -87,7 +87,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
                 if (isFlagCombination)
                 {
                     logger.LogWarning($"FileTransferProtocol config value {protocolValue} mapped to a flag combination. Setting FileTransferProtocol explicitly to Both.");
-                    protocol = FileTransferProtocolEnum.Both;
+                    protocol = FileTransferProtocolEnum.BOTH;
                 }
 
                 return protocol;

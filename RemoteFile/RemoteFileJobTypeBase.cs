@@ -78,7 +78,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             {
                 logger.LogDebug($"Attempting to map file transfer protocol from properties. Current Value: {FileTransferProtocol}, Property Value: {properties.FileTransferProtocol.Value}");
                 ApplicationSettings.FileTransferProtocolEnum fileTransferProtocol;
-                if (PropertyUtilities.TryEnumParse(properties.FileTransferProtocol.Value, out bool isFlagCombination, out fileTransferProtocol))
+                if (PropertyUtilities.TryEnumParse(properties.FileTransferProtocol.Value.ToString().ToUpper(), out bool isFlagCombination, out fileTransferProtocol))
                 {
                     logger.LogDebug($"Successfully mapped file transfer protocol from properties. Value: {fileTransferProtocol}");
                     FileTransferProtocol = fileTransferProtocol;
@@ -89,7 +89,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
                 if (isFlagCombination)
                 {
                     logger.LogWarning($"FileTransferProtocol job property value {properties.FileTransferProtocol.Value} mapped to a flag combination. Setting FileTransferProtocol explicitly to Both.");
-                    FileTransferProtocol = ApplicationSettings.FileTransferProtocolEnum.Both;
+                    FileTransferProtocol = ApplicationSettings.FileTransferProtocolEnum.BOTH;
                 }
             }
 
@@ -115,6 +115,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             logger.LogDebug($"StorePassword: {LogSensitiveField(StorePassword)}");
             logger.LogDebug($"SudoImpersonatedUser: {SudoImpersonatedUser}");
             logger.LogDebug($"RemoveRootCertificate: {RemoveRootCertificate}");
+            logger.LogDebug($"FileTransferProtocol: {FileTransferProtocol.ToString()}");
             logger.LogDebug($"SSHPort: {SSHPort}");
             logger.LogDebug($"IncludePortInSPN: {IncludePortInSPN}");
             logger.LogDebug($"UseShellCommands: {UseShellCommands}");

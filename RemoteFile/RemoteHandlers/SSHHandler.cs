@@ -42,6 +42,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
             UseShellCommands = useShellCommands;
             UserId = serverLogin;
             Password = serverPassword;
+            FileTransferProtocol = fileTransferProtocol;
 
             if (serverPassword.Length < PASSWORD_LENGTH_MAX)
             {
@@ -173,7 +174,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
 
             bool sftpError = false;
 
-            if (FileTransferProtocol == ApplicationSettings.FileTransferProtocolEnum.Both || FileTransferProtocol == ApplicationSettings.FileTransferProtocolEnum.SFTP)
+            if (FileTransferProtocol == ApplicationSettings.FileTransferProtocolEnum.BOTH || FileTransferProtocol == ApplicationSettings.FileTransferProtocolEnum.SFTP)
             {
                 using (SftpClient client = new SftpClient(Connection))
                 {
@@ -192,7 +193,10 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
                     {
                         sftpError = true;
                         _logger.LogDebug($"{RemoteFileException.FlattenExceptionMessages(ex, "SFTP upload failed...")}");
-                        _logger.LogDebug($"Attempting with SCP protocol next...");
+                        if (FileTransferProtocol == ApplicationSettings.FileTransferProtocolEnum.BOTH)
+                            _logger.LogDebug("Attempting with SCP protocol next...");
+                        else
+                            throw;
                     }
                     finally
                     {
@@ -201,7 +205,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
                 }
             }
 
-            if ((FileTransferProtocol == ApplicationSettings.FileTransferProtocolEnum.Both && sftpError) || FileTransferProtocol == ApplicationSettings.FileTransferProtocolEnum.SCP)
+            if ((FileTransferProtocol == ApplicationSettings.FileTransferProtocolEnum.BOTH && sftpError) || FileTransferProtocol == ApplicationSettings.FileTransferProtocolEnum.SCP)
             {
                 using (ScpClient client = new ScpClient(Connection))
                 {
@@ -264,7 +268,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
             _logger.LogDebug($"Download path: {downloadPath}");
             _logger.LogDebug($"IsStoreServerLinux: {IsStoreServerLinux}");
 
-            if (FileTransferProtocol == ApplicationSettings.FileTransferProtocolEnum.Both || FileTransferProtocol == ApplicationSettings.FileTransferProtocolEnum.SFTP)
+            if (FileTransferProtocol == ApplicationSettings.FileTransferProtocolEnum.BOTH || FileTransferProtocol == ApplicationSettings.FileTransferProtocolEnum.SFTP)
             {
                 using (SftpClient client = new SftpClient(Connection))
                 {
@@ -284,7 +288,10 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
                     {
                         sftpError = true;
                         _logger.LogDebug($"{RemoteFileException.FlattenExceptionMessages(ex, "SFTP download failed...")}");
-                        _logger.LogDebug("Attempting with SCP protocol next...");
+                        if (FileTransferProtocol == ApplicationSettings.FileTransferProtocolEnum.BOTH)
+                            _logger.LogDebug("Attempting with SCP protocol next...");
+                        else
+                            throw;
                     }
                     finally
                     {
@@ -293,7 +300,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
                 }
             }
 
-            if ((FileTransferProtocol == ApplicationSettings.FileTransferProtocolEnum.Both && sftpError) || FileTransferProtocol == ApplicationSettings.FileTransferProtocolEnum.SCP)
+            if ((FileTransferProtocol == ApplicationSettings.FileTransferProtocolEnum.BOTH && sftpError) || FileTransferProtocol == ApplicationSettings.FileTransferProtocolEnum.SCP)
             {
                 using (ScpClient client = new ScpClient(Connection))
                 {
