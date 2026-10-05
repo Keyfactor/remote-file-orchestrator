@@ -20,16 +20,20 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.KDB
 {
     class KDBCertificateStoreSerializer : ICertificateStoreSerializer, ICustomFileCreator
     {
+        private string CommandPath { get; set; }
         private ILogger logger;
 
         public KDBCertificateStoreSerializer(string storeProperties)
         {
             logger = LogHandler.GetClassLogger(this.GetType());
+            LoadCustomProperties(storeProperties);
         }
 
         public Pkcs12Store DeserializeRemoteCertificateStore(byte[] storeContentBytes, string storePath, string storePassword, IRemoteHandler remoteHandler, bool isInventory)
         {
             logger.MethodEntry(LogLevel.Debug);
+
+            string commandPrefix = BuildCommandPrefix(storePath);
 
             string bashCommand = storePath.Substring(0, 1) == "/" ? "bash " : string.Empty;
             if (storePath.Substring(0, 1) == "|")
@@ -43,7 +47,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.KDB
 
             remoteHandler.UploadCertificateFile(storePath, tempStoreFile, storeContentBytes);
             
-            string command = $"{bashCommand}gskcapicmd -keydb -convert -db \"{storePath}{tempStoreFile}\" -pw \"{storePassword}\" -new_db \"{storePath}{tempCertFile}\" -new_pw \"{storePassword}\" -new_format p12";
+            string command = $"{commandPrefix}{bashCommand}gskcapicmd -keydb -convert -db \"{storePath}{tempStoreFile}\" -pw \"{storePassword}\" -new_db \"{storePath}{tempCertFile}\" -new_pw \"{storePassword}\" -new_format p12";
 
             try
             {
@@ -76,6 +80,8 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.KDB
         {
             logger.MethodEntry(LogLevel.Debug);
 
+            string commandPrefix = BuildCommandPrefix(storePath);
+
             List<SerializedStoreInfo> storeInfo = new List<SerializedStoreInfo>();
 
             string bashCommand = storePath.Substring(0, 1) == "/" ? "bash " : string.Empty;
@@ -85,7 +91,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.KDB
             string tempStoreFile = Guid.NewGuid().ToString().Replace("-", string.Empty) + ".kdb";
             string tempCertFile = Guid.NewGuid().ToString().Replace("-", string.Empty) + ".p12";
 
-            string command = $"{bashCommand}gskcapicmd -keydb -convert -db \"{storePath}{tempCertFile}\" -pw \"{storePassword}\" -type p12 -new_db \"{storePath}{tempStoreFile}\" -new_pw \"{storePassword}\" -new_format cms";
+            string command = $"{commandPrefix}{bashCommand}gskcapicmd -keydb -convert -db \"{storePath}{tempCertFile}\" -pw \"{storePassword}\" -type p12 -new_db \"{storePath}{tempStoreFile}\" -new_pw \"{storePassword}\" -new_format cms";
             
             try
             {
@@ -127,6 +133,8 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.KDB
         {
             logger.MethodEntry(LogLevel.Debug);
 
+            string commandPrefix = BuildCommandPrefix(storePath);
+
             int extIdx = storePath.LastIndexOf('.');
             if (extIdx == -1)
                 throw new Exception("Store path must include a file name with an extension.");
@@ -145,7 +153,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.KDB
 
             string tempStoreFile = Guid.NewGuid().ToString().Replace("-", string.Empty);
 
-            string command = $"{bashCommand}gskcapicmd -keydb -create -db \"{path}{tempStoreFile + ".kdb"}\" -pw \"{storePassword}\" -type cms -stash";
+            string command = $"{commandPrefix}{bashCommand}gskcapicmd -keydb -create -db \"{path}{tempStoreFile + ".kdb"}\" -pw \"{storePassword}\" -type cms -stash";
 
             try
             {
@@ -181,6 +189,46 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.KDB
 
 
             logger.MethodExit(LogLevel.Debug);
+        }
+
+        private void LoadCustomProperties(string storeProperties)
+        {
+            logger.MethodEntry(LogLevel.Debug);
+
+            dynamic properties = JsonConvert.DeserializeObject(storeProperties);
+            CommandPath = properties.CommandPath == null || string.IsNullOrEmpty(properties.CommandPath.Value) ? String.Empty : properties.CommandPath.Value;
+
+            logger.LogDebug("Custom Properties have been loaded:");
+            logger.LogDebug($"CommandPath: {CommandPath}");
+
+            logger.MethodExit(LogLevel.Debug);
+        }
+
+        private string BuildCommandPrefix(string storePath)
+        {
+            logger.MethodEntry(LogLevel.Debug);
+
+            string commandPrefix = string.Empty;
+
+            if (!string.IsNullOrEmpty(CommandPath))
+            {
+                commandPrefix = $"cd {CommandPath}";
+                if (storePath.StartsWith("/"))
+                {
+                    if (!CommandPath.EndsWith("/"))
+                        commandPrefix += "/";
+                    commandPrefix += $" && ";
+                }
+                else
+                {
+                    if (!CommandPath.EndsWith(@"\"))
+                        commandPrefix += @"\";
+                    commandPrefix += $"; ";
+                }
+            }
+
+            logger.MethodExit(LogLevel.Debug);
+            return commandPrefix;
         }
     }
 }
