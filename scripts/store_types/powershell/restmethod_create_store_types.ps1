@@ -111,7 +111,7 @@ $Body = @'
       "Required": false,
       "DependsOn": "",
       "Type": "MultipleChoice",
-      "DefaultValue": ",SCP,SFTP,Both",
+      "DefaultValue": "SCP,SFTP,Both",
       "Description": "Which protocol should be used when uploading/downloading files - SCP, SFTP, or Both (try one, and then if necessary, the other).  Overrides FileTransferProtocol [config.json](#post-installation) setting."
     },
     {
@@ -283,7 +283,7 @@ $Body = @'
       "Required": false,
       "DependsOn": "",
       "Type": "MultipleChoice",
-      "DefaultValue": ",SCP,SFTP,Both",
+      "DefaultValue": "SCP,SFTP,Both",
       "Description": "Which protocol should be used when uploading/downloading files - SCP, SFTP, or Both (try one, and then if necessary, the other).  Overrides FileTransferProtocol [config.json](#post-installation) setting."
     },
     {
@@ -419,7 +419,7 @@ $Body = @'
       "Required": false,
       "DependsOn": "",
       "Type": "MultipleChoice",
-      "DefaultValue": ",SCP,SFTP,Both",
+      "DefaultValue": "SCP,SFTP,Both",
       "Description": "Which protocol should be used when uploading/downloading files - SCP, SFTP, or Both (try one, and then if necessary, the other).  Overrides FileTransferProtocol [config.json](#post-installation) setting."
     },
     {
@@ -564,7 +564,7 @@ $Body = @'
       "Required": false,
       "DependsOn": "",
       "Type": "MultipleChoice",
-      "DefaultValue": ",SCP,SFTP,Both",
+      "DefaultValue": "SCP,SFTP,Both",
       "Description": "Which protocol should be used when uploading/downloading files - SCP, SFTP, or Both (try one, and then if necessary, the other).  Overrides FileTransferProtocol [config.json](#post-installation) setting."
     },
     {
@@ -710,7 +710,7 @@ $Body = @'
       "Required": false,
       "DependsOn": "",
       "Type": "MultipleChoice",
-      "DefaultValue": ",SCP,SFTP,Both",
+      "DefaultValue": "SCP,SFTP,Both",
       "Description": "Which protocol should be used when uploading/downloading files - SCP, SFTP, or Both (try one, and then if necessary, the other).  Overrides FileTransferProtocol [config.json](#post-installation) setting."
     },
     {
@@ -846,7 +846,7 @@ $Body = @'
       "Required": false,
       "DependsOn": "",
       "Type": "MultipleChoice",
-      "DefaultValue": ",SCP,SFTP,Both",
+      "DefaultValue": "SCP,SFTP,Both",
       "Description": "Which protocol should be used when uploading/downloading files - SCP, SFTP, or Both (try one, and then if necessary, the other).  Overrides FileTransferProtocol [config.json](#post-installation) setting."
     },
     {
