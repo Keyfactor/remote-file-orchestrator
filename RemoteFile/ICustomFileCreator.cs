@@ -12,7 +12,7 @@ using System.Collections.Generic;
 
 namespace Keyfactor.Extensions.Orchestrator.RemoteFile
 {
-    interface ICustomFileCreator
+    public interface ICustomFileCreator
     {
         void CreateEmptyStoreFile(string storePath, string storePassword, string linuxFilePermissions, string linuxFileOwner, IRemoteHandler remoteHandler);
     }

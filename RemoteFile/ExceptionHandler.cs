@@ -9,7 +9,7 @@ using System;
 
 namespace Keyfactor.Extensions.Orchestrator.RemoteFile
 {
-    class RemoteFileException : ApplicationException
+    public class RemoteFileException : ApplicationException
     {
         public RemoteFileException(string message) : base(message)
         { }

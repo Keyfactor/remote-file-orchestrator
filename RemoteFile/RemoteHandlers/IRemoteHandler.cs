@@ -11,7 +11,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
     /// Defines the interface that must be implemented by the method used to send data across the wire (i.e. SSH or WinRM via PS)
     /// Currently with the dependency on the SSH class, need to look into refactoring to the inerface to allow SSH or WimRM
     /// </summary>
-    interface IRemoteHandler
+    public interface IRemoteHandler
     {
         
         string [] Warnings { get; set; }

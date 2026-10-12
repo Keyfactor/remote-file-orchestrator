@@ -6,18 +6,17 @@
 // and limitations under the License.
 
 using Keyfactor.Orchestrators.Extensions.Interfaces;
-using System.Management.Automation.Configuration;
 
-namespace Keyfactor.Extensions.Orchestrator.RemoteFile.DER
+namespace Keyfactor.Extensions.Orchestrator.RemoteFile.JKS
 {
-    public class Inventory : InventoryBase
+    public class Reenrollment : ReenrollmentBase
     {
-        internal override ICertificateStoreSerializer GetCertificateStoreSerializer(string storeProperties)
+        public override ICertificateStoreSerializer GetCertificateStoreSerializer(string storeProperties)
         {
-            return new DERCertificateStoreSerializer(storeProperties);
+            return new JKSCertificateStoreSerializer(storeProperties);
         }
 
-        public Inventory(IPAMSecretResolver resolver)
+        public Reenrollment(IPAMSecretResolver resolver)
         {
             _resolver = resolver;
         }

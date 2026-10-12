@@ -7,13 +7,13 @@
 
 using Keyfactor.Orchestrators.Extensions.Interfaces;
 
-namespace Keyfactor.Extensions.Orchestrator.RemoteFile.DER
+namespace Keyfactor.Extensions.Orchestrator.RemoteFile.OraWlt
 {
     public class Management : ManagementBase
     {
-        internal override ICertificateStoreSerializer GetCertificateStoreSerializer(string storeProperties)
+        public override ICertificateStoreSerializer GetCertificateStoreSerializer(string storeProperties)
         {
-            return new DERCertificateStoreSerializer(storeProperties);
+            return new OraWltCertificateStoreSerializer(storeProperties);
         }
 
         public Management(IPAMSecretResolver resolver)

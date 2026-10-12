@@ -7,7 +7,7 @@
 
 namespace Keyfactor.Extensions.Orchestrator.RemoteFile.Models
 {
-    internal class SerializedStoreInfo
+    public class SerializedStoreInfo
     {
         public string FilePath { get; set; }
 

@@ -5,15 +5,16 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions
 // and limitations under the License.
 
+using Keyfactor.Extensions.Orchestrator.RemoteFile.PEM;
 using Keyfactor.Orchestrators.Extensions.Interfaces;
 
-namespace Keyfactor.Extensions.Orchestrator.RemoteFile.JKS
+namespace Keyfactor.Extensions.Orchestrator.RemoteFile.PEM
 {
     public class Management : ManagementBase
     {
-        internal override ICertificateStoreSerializer GetCertificateStoreSerializer(string storeProperties)
+        public override ICertificateStoreSerializer GetCertificateStoreSerializer(string storeProperties)
         {
-            return new JKSCertificateStoreSerializer(storeProperties);
+            return new PEMCertificateStoreSerializer(storeProperties);
         }
 
         public Management(IPAMSecretResolver resolver)

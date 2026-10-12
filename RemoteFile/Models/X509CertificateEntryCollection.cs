@@ -10,7 +10,7 @@ using System.Collections.Generic;
 
 namespace Keyfactor.Extensions.Orchestrator.RemoteFile.Models
 {
-    internal class X509CertificateEntryCollection
+    public class X509CertificateEntryCollection
     {
         public string Alias { get; set; }
 

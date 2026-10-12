@@ -22,7 +22,7 @@ using Org.BouncyCastle.Asn1.Nist;
 
 namespace Keyfactor.Extensions.Orchestrator.RemoteFile.PKCS12
 {
-    class PKCS12CertificateStoreSerializer : ICertificateStoreSerializer
+    public class PKCS12CertificateStoreSerializer : ICertificateStoreSerializer
     {
         private ILogger logger;
         private bool HasEmptyAliases { get; set; }

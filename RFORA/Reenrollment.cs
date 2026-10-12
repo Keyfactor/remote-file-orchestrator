@@ -7,13 +7,13 @@
 
 using Keyfactor.Orchestrators.Extensions.Interfaces;
 
-namespace Keyfactor.Extensions.Orchestrator.RemoteFile.JKS
+namespace Keyfactor.Extensions.Orchestrator.RemoteFile.OraWlt
 {
     public class Reenrollment : ReenrollmentBase
     {
-        internal override ICertificateStoreSerializer GetCertificateStoreSerializer(string storeProperties)
+        public override ICertificateStoreSerializer GetCertificateStoreSerializer(string storeProperties)
         {
-            return new JKSCertificateStoreSerializer(storeProperties);
+            return new OraWltCertificateStoreSerializer(storeProperties);
         }
 
         public Reenrollment(IPAMSecretResolver resolver)

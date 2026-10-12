@@ -5,19 +5,18 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions
 // and limitations under the License.
 
-using Keyfactor.Extensions.Orchestrator.RemoteFile.PEM;
 using Keyfactor.Orchestrators.Extensions.Interfaces;
 
-namespace Keyfactor.Extensions.Orchestrator.RemoteFile.PEM
+namespace Keyfactor.Extensions.Orchestrator.RemoteFile.JKS
 {
-    public class Reenrollment : ReenrollmentBase
+    public class Inventory : InventoryBase
     {
-        internal override ICertificateStoreSerializer GetCertificateStoreSerializer(string storeProperties)
+        public override ICertificateStoreSerializer GetCertificateStoreSerializer(string storeProperties)
         {
-            return new PEMCertificateStoreSerializer(storeProperties);
+            return new JKSCertificateStoreSerializer(storeProperties);
         }
 
-        public Reenrollment(IPAMSecretResolver resolver)
+        public Inventory(IPAMSecretResolver resolver)
         {
             _resolver = resolver;
         }

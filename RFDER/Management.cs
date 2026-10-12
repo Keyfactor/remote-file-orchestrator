@@ -5,16 +5,15 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions
 // and limitations under the License.
 
-using Keyfactor.Extensions.Orchestrator.RemoteFile.KDB;
 using Keyfactor.Orchestrators.Extensions.Interfaces;
 
-namespace Keyfactor.Extensions.Orchestrator.RemoteFile.OraWlt
+namespace Keyfactor.Extensions.Orchestrator.RemoteFile.DER
 {
     public class Management : ManagementBase
     {
-        internal override ICertificateStoreSerializer GetCertificateStoreSerializer(string storeProperties)
+        public override ICertificateStoreSerializer GetCertificateStoreSerializer(string storeProperties)
         {
-            return new OraWltCertificateStoreSerializer(storeProperties);
+            return new DERCertificateStoreSerializer(storeProperties);
         }
 
         public Management(IPAMSecretResolver resolver)

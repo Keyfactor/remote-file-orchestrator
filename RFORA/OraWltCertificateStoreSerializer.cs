@@ -12,14 +12,11 @@ using System.IO;
 using Keyfactor.Logging;
 using Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers;
 using Keyfactor.Extensions.Orchestrator.RemoteFile.Models;
-using Keyfactor.Extensions.Orchestrator.RemoteFile.JKS;
+using Keyfactor.Extensions.Orchestrator.RemoteFile.PKCS12;
 
 using Microsoft.Extensions.Logging;
 
 using Org.BouncyCastle.Pkcs;
-using Org.BouncyCastle.Security;
-using Newtonsoft.Json;
-using Keyfactor.Extensions.Orchestrator.RemoteFile.PKCS12;
 
 namespace Keyfactor.Extensions.Orchestrator.RemoteFile.OraWlt
 {

@@ -12,12 +12,12 @@ using System.Collections.Generic;
 
 namespace Keyfactor.Extensions.Orchestrator.RemoteFile
 {
-    interface ICertificateStoreSerializer
+    public interface ICertificateStoreSerializer
     {
-        Pkcs12Store DeserializeRemoteCertificateStore(byte[] storeContents, string storePath, string storePassword, IRemoteHandler remoteHandler, bool isInventory);
+        public Pkcs12Store DeserializeRemoteCertificateStore(byte[] storeContents, string storePath, string storePassword, IRemoteHandler remoteHandler, bool isInventory);
 
-        List<SerializedStoreInfo> SerializeRemoteCertificateStore(Pkcs12Store certificateStore, string storePath, string storeFileName, string storePassword, IRemoteHandler remoteHandler);
+        public List<SerializedStoreInfo> SerializeRemoteCertificateStore(Pkcs12Store certificateStore, string storePath, string storeFileName, string storePassword, IRemoteHandler remoteHandler);
 
-        string GetPrivateKeyPath();
+        public string GetPrivateKeyPath();
     }
 }

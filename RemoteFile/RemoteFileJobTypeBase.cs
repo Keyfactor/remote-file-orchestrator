@@ -20,7 +20,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
         private const string POST_JOB_APPLICATION_RESTART_NO_VALUE = "None";
 
         public IPAMSecretResolver _resolver;
-        internal abstract ICertificateStoreSerializer GetCertificateStoreSerializer(string storeProperties);
+        public abstract ICertificateStoreSerializer GetCertificateStoreSerializer(string storeProperties);
 
         internal string UserName { get; set; }
         internal string UserPassword { get; set; }

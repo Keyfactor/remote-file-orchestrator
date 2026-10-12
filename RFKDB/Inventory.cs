@@ -7,16 +7,16 @@
 
 using Keyfactor.Orchestrators.Extensions.Interfaces;
 
-namespace Keyfactor.Extensions.Orchestrator.RemoteFile.PKCS12
+namespace Keyfactor.Extensions.Orchestrator.RemoteFile.KDB
 {
-    public class Management : ManagementBase
+    public class Inventory : InventoryBase
     {
-        internal override ICertificateStoreSerializer GetCertificateStoreSerializer(string storeProperties)
+        public override ICertificateStoreSerializer GetCertificateStoreSerializer(string storeProperties)
         {
-            return new PKCS12CertificateStoreSerializer(storeProperties);
+            return new KDBCertificateStoreSerializer(storeProperties);
         }
 
-        public Management(IPAMSecretResolver resolver)
+        public Inventory(IPAMSecretResolver resolver)
         {
             _resolver = resolver;
         }

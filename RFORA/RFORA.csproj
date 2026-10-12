@@ -1,0 +1,35 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <AppendTargetFrameworkToOutputPath>true</AppendTargetFrameworkToOutputPath>
+    <TargetFrameworks>net8.0;net10.0</TargetFrameworks>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    <ImplicitUsings>disable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="BouncyCastle.Cryptography" Version="2.7.0" />
+    <PackageReference Include="CliWrap" Version="3.6.6" />
+    <PackageReference Include="Keyfactor.Orchestrators.IOrchestratorJobExtensions" Version="1.0.0" />
+    <PackageReference Include="Keyfactor.PKI" Version="8.1.1" />
+    <PackageReference Include="Microsoft.PowerShell.SDK" Version="7.4.13" />
+    <PackageReference Include="SSH.NET" Version="2026.0.0" />
+
+    <None Update="manifest.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="config.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="ImplementedStoreTypes\PEM\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\RemoteFile\RemoteFile.csproj" />
+    <ProjectReference Include="..\RFPkcs12\RFPkcs12.csproj" />
+  </ItemGroup>
+
+</Project>

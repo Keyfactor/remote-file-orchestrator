@@ -5,15 +5,16 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions
 // and limitations under the License.
 
+using Keyfactor.Extensions.Orchestrator.RemoteFile.PEM;
 using Keyfactor.Orchestrators.Extensions.Interfaces;
 
-namespace Keyfactor.Extensions.Orchestrator.RemoteFile.KDB
+namespace Keyfactor.Extensions.Orchestrator.RemoteFile.PEM
 {
     public class Reenrollment : ReenrollmentBase
     {
-        internal override ICertificateStoreSerializer GetCertificateStoreSerializer(string storeProperties)
+        public override ICertificateStoreSerializer GetCertificateStoreSerializer(string storeProperties)
         {
-            return new KDBCertificateStoreSerializer(storeProperties);
+            return new PEMCertificateStoreSerializer(storeProperties);
         }
 
         public Reenrollment(IPAMSecretResolver resolver)

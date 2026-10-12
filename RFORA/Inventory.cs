@@ -7,13 +7,13 @@
 
 using Keyfactor.Orchestrators.Extensions.Interfaces;
 
-namespace Keyfactor.Extensions.Orchestrator.RemoteFile.PEM
+namespace Keyfactor.Extensions.Orchestrator.RemoteFile.OraWlt
 {
     public class Inventory : InventoryBase
     {
-        internal override ICertificateStoreSerializer GetCertificateStoreSerializer(string storeProperties)
+        public override ICertificateStoreSerializer GetCertificateStoreSerializer(string storeProperties)
         {
-            return new PEMCertificateStoreSerializer(storeProperties);
+            return new OraWltCertificateStoreSerializer(storeProperties);
         }
 
         public Inventory(IPAMSecretResolver resolver)

@@ -7,16 +7,16 @@
 
 using Keyfactor.Orchestrators.Extensions.Interfaces;
 
-namespace Keyfactor.Extensions.Orchestrator.RemoteFile.DER
+namespace Keyfactor.Extensions.Orchestrator.RemoteFile.KDB
 {
-    public class Reenrollment : ReenrollmentBase
+    public class Management : ManagementBase
     {
-        internal override ICertificateStoreSerializer GetCertificateStoreSerializer(string storeProperties)
+        public override ICertificateStoreSerializer GetCertificateStoreSerializer(string storeProperties)
         {
-            return new DERCertificateStoreSerializer(storeProperties);
+            return new KDBCertificateStoreSerializer(storeProperties);
         }
 
-        public Reenrollment(IPAMSecretResolver resolver)
+        public Management(IPAMSecretResolver resolver)
         {
             _resolver = resolver;
         }
