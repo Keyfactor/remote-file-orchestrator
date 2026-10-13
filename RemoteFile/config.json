@@ -4,9 +4,10 @@
   "CreateStoreIfMissing": "N",
   "UseNegotiate": "N",
   "SeparateUploadFilePath": "",
+  "FileTransferProtocol": "BOTH",
   "DefaultLinuxPermissionsOnStoreCreation": "600",
   "DefaultOwnerOnStoreCreation": "",
-  "SSHPort":  "",
+  "SSHPort": "",
 
   "PostJobCommands": [
     {

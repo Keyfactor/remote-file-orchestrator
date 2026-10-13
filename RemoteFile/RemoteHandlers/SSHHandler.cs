@@ -5,20 +5,18 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions
 // and limitations under the License.
 
+using Keyfactor.Logging;
+using Keyfactor.PKI.PEM;
+using Keyfactor.PKI.PrivateKeys;
+using Microsoft.Extensions.Logging;
+using Renci.SshNet;
+using Renci.SshNet.Common;
 using System;
+using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
-
-using Renci.SshNet;
-
-using Microsoft.Extensions.Logging;
-
-using Keyfactor.Logging;
-using Keyfactor.PKI.PrivateKeys;
-using Keyfactor.PKI.PEM;
-using Renci.SshNet.Common;
 
 namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
 {
@@ -27,13 +25,14 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
         private readonly string[] IgnoreErrors = { "Could not chdir to home directory" };
         private ConnectionInfo Connection { get; set; }
         private string SudoImpersonatedUser { get; set; }
+        private ApplicationSettings.FileTransferProtocolEnum FileTransferProtocol { get; set; }
         private bool IsStoreServerLinux { get; set; }
         private bool UseShellCommands { get; set; }
         private string UserId { get; set; }
         private string Password { get; set; }
         private SshClient sshClient;
 
-        internal SSHHandler(string server, string serverLogin, string serverPassword, bool isStoreServerLinux, int sshPort, string sudoImpersonatedUser, bool useShellCommands)
+        internal SSHHandler(string server, string serverLogin, string serverPassword, bool isStoreServerLinux, ApplicationSettings.FileTransferProtocolEnum fileTransferProtocol, int sshPort, string sudoImpersonatedUser, bool useShellCommands)
         {
             _logger.MethodEntry(LogLevel.Debug);
             
@@ -43,6 +42,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
             UseShellCommands = useShellCommands;
             UserId = serverLogin;
             Password = serverPassword;
+            FileTransferProtocol = fileTransferProtocol;
 
             if (serverPassword.Length < PASSWORD_LENGTH_MAX)
             {
@@ -172,33 +172,9 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
                 _logger.LogDebug($"uploadPath: {uploadPath}");
             }
 
-            bool scpError = false;
+            bool sftpError = false;
 
-            using (ScpClient client = new ScpClient(Connection))
-            {
-                try
-                {
-                    _logger.LogDebug($"SCP connection attempt to {Connection.Host} using login {Connection.Username} and connection method {Connection.AuthenticationMethods[0].Name}");
-                    client.OperationTimeout = System.TimeSpan.FromSeconds(60);
-                    client.Connect();
-
-                    using (MemoryStream stream = new MemoryStream(certBytes))
-                    {
-                        client.Upload(stream, FormatFTPPath(uploadPath, false));
-                    }
-                }
-                catch (Exception ex)
-                {
-                    scpError = true;
-                    _logger.LogDebug($"SCP upload failed.  Attempting with SFTP protocol...");
-                }
-                finally
-                {
-                    client.Disconnect();
-                }
-            }
-
-            if (scpError)
+            if (FileTransferProtocol == ApplicationSettings.FileTransferProtocolEnum.BOTH || FileTransferProtocol == ApplicationSettings.FileTransferProtocolEnum.SFTP)
             {
                 using (SftpClient client = new SftpClient(Connection))
                 {
@@ -215,8 +191,40 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
                     }
                     catch (Exception ex)
                     {
-                        _logger.LogError($"Upload Exception: {RemoteFileException.FlattenExceptionMessages(ex, "Exception during SFTP download...")}");
-                        throw new RemoteFileException($"Error attempting SFTP file transfer to {Connection.Host} using login {Connection.Username} and connection method {Connection.AuthenticationMethods[0].Name}.  Please contact your company's system administrator to verify connection and permission settings.", ex);
+                        sftpError = true;
+                        _logger.LogDebug($"{RemoteFileException.FlattenExceptionMessages(ex, "SFTP upload failed...")}");
+                        if (FileTransferProtocol == ApplicationSettings.FileTransferProtocolEnum.BOTH)
+                            _logger.LogDebug("Attempting with SCP protocol next...");
+                        else
+                            throw;
+                    }
+                    finally
+                    {
+                        client.Disconnect();
+                    }
+                }
+            }
+
+            if ((FileTransferProtocol == ApplicationSettings.FileTransferProtocolEnum.BOTH && sftpError) || FileTransferProtocol == ApplicationSettings.FileTransferProtocolEnum.SCP)
+            {
+                using (ScpClient client = new ScpClient(Connection))
+                {
+                    try
+                    {
+                        _logger.LogDebug($"SCP connection attempt to {Connection.Host} using login {Connection.Username} and connection method {Connection.AuthenticationMethods[0].Name}");
+                        client.OperationTimeout = System.TimeSpan.FromSeconds(60);
+                        client.Connect();
+
+                        using (MemoryStream stream = new MemoryStream(certBytes))
+                        {
+                            client.Upload(stream, FormatFTPPath(uploadPath, false));
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.LogDebug($"{RemoteFileException.FlattenExceptionMessages(ex, "SCP upload failed...")}");
+                        _logger.LogError($"File {uploadPath} could not be uploaded.  Both SFTP and SCP failed.");
+                        throw new RemoteFileException($"Error attempting file transfer using SFTP and SCP from {Connection.Host} using login {Connection.Username} and connection method {Connection.AuthenticationMethods[0].Name}.  Please contact your company's system administrator to verify connection and permission settings.", ex);
                     }
                     finally
                     {
@@ -255,41 +263,13 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
                     RunCommand($"chown {Connection.Username} {downloadPath}", null, ApplicationSettings.UseSudo, null);
             }
 
-            bool scpError = false;
+            bool sftpError = false;
 
             _logger.LogDebug($"Download path: {downloadPath}");
             _logger.LogDebug($"IsStoreServerLinux: {IsStoreServerLinux}");
-            
-            _logger.LogDebug($"Attempting SCP download...");
-            using (ScpClient client = new ScpClient(Connection))
-            {
-                try
-                {
-                    _logger.LogDebug($"SCP connection attempt from {Connection.Host} using login {Connection.Username} and connection method {Connection.AuthenticationMethods[0].Name}");
-                    client.OperationTimeout = System.TimeSpan.FromSeconds(60); 
-                    client.Connect();
 
-                    using (MemoryStream stream = new MemoryStream())
-                    {
-                        client.Download(FormatFTPPath(downloadPath, false), stream);
-                        rtnStore = stream.ToArray();
-                    }
-                }
-                catch (Exception ex)
-                {
-                    scpError = true;
-                    _logger.LogError($"Download Exception: {RemoteFileException.FlattenExceptionMessages(ex, "Exception during SCP download...")}");
-                    _logger.LogDebug($"SCP download failed.  Attempting with SFTP protocol...");
-                }
-                finally
-                {
-                    client.Disconnect();
-                }
-            }
-
-            if (scpError)
+            if (FileTransferProtocol == ApplicationSettings.FileTransferProtocolEnum.BOTH || FileTransferProtocol == ApplicationSettings.FileTransferProtocolEnum.SFTP)
             {
-                _logger.LogDebug($"Attempting SFTP download...");
                 using (SftpClient client = new SftpClient(Connection))
                 {
                     try
@@ -306,8 +286,41 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers
                     }
                     catch (Exception ex)
                     {
-                        _logger.LogError($"Download Exception: {RemoteFileException.FlattenExceptionMessages(ex, "Exception during SFTP download...")}");
-                        throw new RemoteFileException($"Error attempting SFTP file transfer from {Connection.Host} using login {Connection.Username} and connection method {Connection.AuthenticationMethods[0].Name}.  Please contact your company's system administrator to verify connection and permission settings.", ex);
+                        sftpError = true;
+                        _logger.LogDebug($"{RemoteFileException.FlattenExceptionMessages(ex, "SFTP download failed...")}");
+                        if (FileTransferProtocol == ApplicationSettings.FileTransferProtocolEnum.BOTH)
+                            _logger.LogDebug("Attempting with SCP protocol next...");
+                        else
+                            throw;
+                    }
+                    finally
+                    {
+                        client.Disconnect();
+                    }
+                }
+            }
+
+            if ((FileTransferProtocol == ApplicationSettings.FileTransferProtocolEnum.BOTH && sftpError) || FileTransferProtocol == ApplicationSettings.FileTransferProtocolEnum.SCP)
+            {
+                using (ScpClient client = new ScpClient(Connection))
+                {
+                    try
+                    {
+                        _logger.LogDebug($"SCP connection attempt from {Connection.Host} using login {Connection.Username} and connection method {Connection.AuthenticationMethods[0].Name}");
+                        client.OperationTimeout = System.TimeSpan.FromSeconds(60);
+                        client.Connect();
+
+                        using (MemoryStream stream = new MemoryStream())
+                        {
+                            client.Download(FormatFTPPath(downloadPath, false), stream);
+                            rtnStore = stream.ToArray();
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.LogDebug($"{RemoteFileException.FlattenExceptionMessages(ex, "SCP download failed...")}");
+                        _logger.LogError($"File {downloadPath} could not be downloaded.  Both SFTP and SCP failed.");
+                        throw new RemoteFileException($"Error attempting file transfer using SFTP and SCP to {Connection.Host} using login {Connection.Username} and connection method {Connection.AuthenticationMethods[0].Name}.  Please contact your company's system administrator to verify connection and permission settings.", ex);
                     }
                     finally
                     {

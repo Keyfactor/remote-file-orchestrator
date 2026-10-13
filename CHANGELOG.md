@@ -1,3 +1,9 @@
+v4.3.0
+- For RFKDB store type, added new optional custom field CommandPath, which if used, should contain the path to the IBM CLI GSKCAPICMD utility.  If this field is not used, the integration will attempt to find the utility in the system path.
+- Bug Fix: Renamed SudoImpersonatingUser to SudoImpersonatedUser to correct a typo in the name of the custom field for all store types.
+- Re-added optional config.json and custom field (to override at a store level what is entered in the config.json) FileTransferProtocol settings.  These settings were removed in release 3.0.  Adding back in per customer request.  
+   One small difference, however, SFTP will be attempted first and then SCP when BOTH is selected for this setting.
+
 v4.2.0
 - Deprecate legacy encryption.  From this release forward, RequiresLegacyEncryption will be ignored.
 - Modification to suppor SSH certificate authentication for Linux managed servers.  If a certificate is used, the private key must be in OpenSSH format and the public key must be in OpenSSH format or PEM format.
