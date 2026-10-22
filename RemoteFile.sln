@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 18
-VisualStudioVersion = 18.10.12224.181 stable
+VisualStudioVersion = 18.10.12224.181
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RemoteFile", "RemoteFile\RemoteFile.csproj", "{A006BFAB-20F7-4F42-8B5F-591268ACE836}"
 EndProject
@@ -20,6 +20,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RFPkcs12", "RFPkcs12\RFPkcs12.csproj", "{ECCE766D-8C6F-4411-B7B3-2FD97628A7CA}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RFKDB", "RFKDB\RFKDB.csproj", "{124E2988-45F5-4BB7-9BEF-E179382F7925}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RFJKSCertificateStoreTypeFactory", "RFJKSCertificateStoreTypeFactory\RFJKSCertificateStoreTypeFactory.csproj", "{D717245D-CFFF-430D-B85F-3175A4B8097F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -59,6 +61,10 @@ Global
 		{124E2988-45F5-4BB7-9BEF-E179382F7925}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{124E2988-45F5-4BB7-9BEF-E179382F7925}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{124E2988-45F5-4BB7-9BEF-E179382F7925}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D717245D-CFFF-430D-B85F-3175A4B8097F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D717245D-CFFF-430D-B85F-3175A4B8097F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D717245D-CFFF-430D-B85F-3175A4B8097F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D717245D-CFFF-430D-B85F-3175A4B8097F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
