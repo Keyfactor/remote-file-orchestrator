@@ -90,9 +90,104 @@ namespace RemoteFileTypeHandlers.RFJKS
                 {
                     Name = "ServerUsername",
                     DisplayName = "Server Username",
-                    Type = CertificateStorePropertyDataType.Secret
+                    Type = CertificateStorePropertyDataType.Secret,
+                    DependsOn = "",
+                    DefaultValue = "",
+                    Required = false
+                },
+                new CertificateStoreTypeProperty()
+                {
+                    Name = "ServerPassword",
+                    DisplayName = "Server Password",
+                    Type = CertificateStorePropertyDataType.Secret,
+                    DependsOn = "",
+                    DefaultValue = "",
+                    Required = false
+                },
+                new CertificateStoreTypeProperty()
+                {
+                    Name = "LinuxFilePermissionsOnStoreCreation",
+                    DisplayName = "Linux File Permissions on Store Creation",
+                    Required = false,
+                    DependsOn = "",
+                    Type = CertificateStorePropertyDataType.String,
+                    DefaultValue = ""
+                },
+                new CertificateStoreTypeProperty()
+                {
+                    Name = "LinuxFileOwnerOnStoreCreation",
+                    DisplayName = "Linux File Owner on Store Creation",
+                    Required = false,
+                    DependsOn = "",
+                    Type = CertificateStorePropertyDataType.String,
+                    DefaultValue = ""
+                },
+                new CertificateStoreTypeProperty()
+                {
+                    Name = "SudoImpersonatedUser",
+                    DisplayName = "Sudo Impersonating User",
+                    Required = false,
+                    DependsOn = "",
+                    Type = CertificateStorePropertyDataType.String,
+                    DefaultValue = ""
+                },
+                new CertificateStoreTypeProperty()
+                {
+                    Name = "RemoveRootCertificate",
+                    DisplayName = "Remove Root Certificate from Chain",
+                    Required = false,
+                    DependsOn = "",
+                    Type = CertificateStorePropertyDataType.Bool,
+                    DefaultValue = "False"
+                },
+                new CertificateStoreTypeProperty()
+                {
+                    Name = "IncludePortInSPN",
+                    DisplayName = "Include Port in SPN for WinRM",
+                    Required = false,
+                    DependsOn = "",
+                    Type = CertificateStorePropertyDataType.Bool,
+                    DefaultValue = "False"
+                },
+                new CertificateStoreTypeProperty()
+                {
+                    Name = "FileTransferProtocol",
+                    DisplayName = "File Transfer Protocol to Use",
+                    Required = false,
+                    DependsOn = "",
+                    Type = CertificateStorePropertyDataType.MultipleChoice,
+                    DefaultValue = "SCP,SFTP,Both"
+                },
+                new CertificateStoreTypeProperty()
+                {
+                    Name = "SSHPort",
+                    DisplayName = "SSH Port",
+                    Required = false,
+                    DependsOn = "",
+                    Type = CertificateStorePropertyDataType.String,
+                    DefaultValue = ""
+                },
+                new CertificateStoreTypeProperty()
+                {
+                    Name = "UseShellCommands",
+                    DisplayName = "Use Shell Commands",
+                    Required = false,
+                    DependsOn = "",
+                    Type = CertificateStorePropertyDataType.Bool,
+                    DefaultValue = "True"
+                },
+                new CertificateStoreTypeProperty()
+                {
+                    Name = "PostJobApplicationRestart",
+                    DisplayName = "Post Job Application Restart",
+                    Required = false,
+                    DependsOn = "",
+                    Type = CertificateStorePropertyDataType.MultipleChoice,
+                    DefaultValue = "Apache Tomcat Restart,Jetty Restart"
                 }
             };
+
+            storeType.Properties = properties;
 
             return storeType;
         }
