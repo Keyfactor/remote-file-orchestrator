@@ -100,7 +100,7 @@ namespace RemoteFileTypeHandlers.RFJKS
                     DisplayName = "Server Password",
                     Type = CertificateStorePropertyDataType.Secret,
                     DependsOn = "",
-                    DefaultValue = ""
+                    DefaultValue = "", ValidationOptions = new PropertiesValidationOptionsModel() { OnCreation = new PropertiesValidationOptionsModel.ValidationOptions() { Required = true } }
                 },
                 new CertificateStoreTypeProperty()
                 {
