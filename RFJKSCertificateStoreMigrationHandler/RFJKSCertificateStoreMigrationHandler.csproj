@@ -10,4 +10,8 @@
     <PackageReference Include="Keyfactor.Platform.ICertificateStoreTypeMigrationHandler" Version="0.0.0-PRERELEASE-98863-6ad83a8c2c" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\RFJKSCertificateStoreTypeFactory\RFJKSCertificateStoreTypeFactory.csproj" />
+  </ItemGroup>
+
 </Project>
