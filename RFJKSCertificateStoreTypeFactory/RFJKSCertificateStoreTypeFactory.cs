@@ -169,9 +169,7 @@ namespace RemoteFileTypeHandlers.RFJKS
             };
 
 
-        public CertificateStoreTypeSeed Create()
-        {
-            CertificateStoreTypeSeed storeType = new CertificateStoreTypeSeed()
+        public static CertificateStoreTypeSeed StoreType { get; } = new CertificateStoreTypeSeed()
             {
                 CertificateFormat = CertificateFormat.PFX,
                 Name = "RFJKS",
@@ -194,13 +192,11 @@ namespace RemoteFileTypeHandlers.RFJKS
                     EntrySupported = false,
                     StoreRequired = true
                 },
-                GlobalConfiguration = CONFIG_CONSTANT
+                GlobalConfiguration = CONFIG_CONSTANT,
+                Properties = CustomFields
             };
 
-            storeType.Properties = CustomFields;
-
-            return storeType;
-        }
+        public CertificateStoreTypeSeed Create() => StoreType;
         /// <summary>
         /// probably not needed to be implemented, but need to remove the NotImplementedException, just leave empty.  This is a place holder in case we need to dispose something.
         /// </summary>

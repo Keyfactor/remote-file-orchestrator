@@ -43,9 +43,7 @@ namespace RemoteFileTypeHandlers.RFKDB
                 new CertificateStoreTypeProperty() { Name = "PostJobApplicationRestart", DisplayName = "Post Job Application Restart", DependsOn = "", Type = CertificateStorePropertyDataType.MultipleChoice, DefaultValue = "None", ValidationOptions = new PropertiesValidationOptionsModel() { OnCreation = CertificateStoreTypeValidationOptions.Optional } }
             };
 
-        public CertificateStoreTypeSeed Create()
-        {
-            CertificateStoreTypeSeed storeType = new CertificateStoreTypeSeed()
+        public static CertificateStoreTypeSeed StoreType { get; } = new CertificateStoreTypeSeed()
             {
                 CertificateFormat = CertificateFormat.PFX,
                 Name = "RFKDB",
@@ -68,12 +66,11 @@ namespace RemoteFileTypeHandlers.RFKDB
                     EntrySupported = false,
                     StoreRequired = true
                 },
-                GlobalConfiguration = CONFIG_CONSTANT
+                GlobalConfiguration = CONFIG_CONSTANT,
+                Properties = CustomFields
             };
 
-            storeType.Properties = CustomFields;
-            return storeType;
-        }
+        public CertificateStoreTypeSeed Create() => StoreType;
 
         public void Dispose()
         {

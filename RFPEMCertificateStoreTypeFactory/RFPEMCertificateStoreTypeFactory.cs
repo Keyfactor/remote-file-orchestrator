@@ -46,9 +46,7 @@ namespace RemoteFileTypeHandlers.RFPEM
                 new CertificateStoreTypeProperty() { Name = "PostJobApplicationRestart", DisplayName = "Post Job Application Restart", DependsOn = "", Type = CertificateStorePropertyDataType.MultipleChoice, DefaultValue = "Apache HTTPD Restart,NGNIX Restart,HAProxy Restart,Envoy Proxy Restart", ValidationOptions = new PropertiesValidationOptionsModel() { OnCreation = CertificateStoreTypeValidationOptions.Optional } }
             };
 
-        public CertificateStoreTypeSeed Create()
-        {
-            CertificateStoreTypeSeed storeType = new CertificateStoreTypeSeed()
+        public static CertificateStoreTypeSeed StoreType { get; } = new CertificateStoreTypeSeed()
             {
                 CertificateFormat = CertificateFormat.PFX,
                 Name = "RFPEM",
@@ -71,12 +69,11 @@ namespace RemoteFileTypeHandlers.RFPEM
                     EntrySupported = false,
                     StoreRequired = true
                 },
-                GlobalConfiguration = CONFIG_CONSTANT
+                GlobalConfiguration = CONFIG_CONSTANT,
+                Properties = CustomFields
             };
 
-            storeType.Properties = CustomFields;
-            return storeType;
-        }
+        public CertificateStoreTypeSeed Create() => StoreType;
 
         public void Dispose()
         {
