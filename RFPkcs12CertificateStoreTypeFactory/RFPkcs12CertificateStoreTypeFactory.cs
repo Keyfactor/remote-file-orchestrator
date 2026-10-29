@@ -30,6 +30,7 @@ namespace RemoteFileTypeHandlers.RFPkcs12
             {
                 new CertificateStoreTypeProperty() { Name = "ServerUsername", DisplayName = "Server Username", Type = CertificateStorePropertyDataType.Secret, DependsOn = "", DefaultValue = "" },
                 new CertificateStoreTypeProperty() { Name = "ServerPassword", DisplayName = "Server Password", Type = CertificateStorePropertyDataType.Secret, DependsOn = "", DefaultValue = "" },
+                new CertificateStoreTypeProperty() { Name = "ServerUseSsl", DisplayName = "Use SSL", Type = CertificateStorePropertyDataType.Bool, DependsOn = "", DefaultValue = "", ValidationOptions = new PropertiesValidationOptionsModel() { OnCreation = CertificateStoreTypeValidationOptions.Required } },
                 new CertificateStoreTypeProperty() { Name = "LinuxFilePermissionsOnStoreCreation", DisplayName = "Linux File Permissions on Store Creation", DependsOn = "", Type = CertificateStorePropertyDataType.String, DefaultValue = "" },
                 new CertificateStoreTypeProperty() { Name = "LinuxFileOwnerOnStoreCreation", DisplayName = "Linux File Owner on Store Creation", DependsOn = "", Type = CertificateStorePropertyDataType.String, DefaultValue = "" },
                 new CertificateStoreTypeProperty() { Name = "SudoImpersonatedUser", DisplayName = "Sudo Impersonating User", DependsOn = "", Type = CertificateStorePropertyDataType.String, DefaultValue = "" },
