@@ -26,6 +26,22 @@ namespace RemoteFileTypeHandlers.RFDER
         }
         """;
 
+        public static List<CertificateStoreTypeProperty> CustomFields { get; } = new List<CertificateStoreTypeProperty>()
+            {
+                new CertificateStoreTypeProperty() { Name = "ServerUsername", DisplayName = "Server Username", Type = CertificateStorePropertyDataType.Secret, DependsOn = "", DefaultValue = "" },
+                new CertificateStoreTypeProperty() { Name = "ServerPassword", DisplayName = "Server Password", Type = CertificateStorePropertyDataType.Secret, DependsOn = "", DefaultValue = "" },
+                new CertificateStoreTypeProperty() { Name = "LinuxFilePermissionsOnStoreCreation", DisplayName = "Linux File Permissions on Store Creation", DependsOn = "", Type = CertificateStorePropertyDataType.String, DefaultValue = "" },
+                new CertificateStoreTypeProperty() { Name = "LinuxFileOwnerOnStoreCreation", DisplayName = "Linux File Owner on Store Creation", DependsOn = "", Type = CertificateStorePropertyDataType.String, DefaultValue = "" },
+                new CertificateStoreTypeProperty() { Name = "SudoImpersonatedUser", DisplayName = "Sudo Impersonating User", DependsOn = "", Type = CertificateStorePropertyDataType.String, DefaultValue = "" },
+                new CertificateStoreTypeProperty() { Name = "SeparatePrivateKeyFilePath", DisplayName = "Separate Private Key File Location", DependsOn = "", Type = CertificateStorePropertyDataType.String, DefaultValue = "" },
+                new CertificateStoreTypeProperty() { Name = "RemoveRootCertificate", DisplayName = "Remove Root Certificate from Chain", DependsOn = "", Type = CertificateStorePropertyDataType.Bool, DefaultValue = "False" },
+                new CertificateStoreTypeProperty() { Name = "IncludePortInSPN", DisplayName = "Include Port in SPN for WinRM", DependsOn = "", Type = CertificateStorePropertyDataType.Bool, DefaultValue = "False" },
+                new CertificateStoreTypeProperty() { Name = "FileTransferProtocol", DisplayName = "File Transfer Protocol to Use", DependsOn = "", Type = CertificateStorePropertyDataType.MultipleChoice, DefaultValue = "SCP,SFTP,Both" },
+                new CertificateStoreTypeProperty() { Name = "SSHPort", DisplayName = "SSH Port", DependsOn = "", Type = CertificateStorePropertyDataType.String, DefaultValue = "" },
+                new CertificateStoreTypeProperty() { Name = "UseShellCommands", DisplayName = "Use Shell Commands", DependsOn = "", Type = CertificateStorePropertyDataType.Bool, DefaultValue = "True" },
+                new CertificateStoreTypeProperty() { Name = "PostJobApplicationRestart", DisplayName = "Post Job Application Restart", DependsOn = "", Type = CertificateStorePropertyDataType.MultipleChoice, DefaultValue = "None" }
+            };
+
         public CertificateStoreTypeSeed Create()
         {
             CertificateStoreTypeSeed storeType = new CertificateStoreTypeSeed()
@@ -54,23 +70,7 @@ namespace RemoteFileTypeHandlers.RFDER
                 GlobalConfiguration = CONFIG_CONSTANT
             };
 
-            List<CertificateStoreTypeProperty> properties = new List<CertificateStoreTypeProperty>()
-            {
-                new CertificateStoreTypeProperty() { Name = "ServerUsername", DisplayName = "Server Username", Type = CertificateStorePropertyDataType.Secret, DependsOn = "", DefaultValue = "" },
-                new CertificateStoreTypeProperty() { Name = "ServerPassword", DisplayName = "Server Password", Type = CertificateStorePropertyDataType.Secret, DependsOn = "", DefaultValue = "" },
-                new CertificateStoreTypeProperty() { Name = "LinuxFilePermissionsOnStoreCreation", DisplayName = "Linux File Permissions on Store Creation", DependsOn = "", Type = CertificateStorePropertyDataType.String, DefaultValue = "" },
-                new CertificateStoreTypeProperty() { Name = "LinuxFileOwnerOnStoreCreation", DisplayName = "Linux File Owner on Store Creation", DependsOn = "", Type = CertificateStorePropertyDataType.String, DefaultValue = "" },
-                new CertificateStoreTypeProperty() { Name = "SudoImpersonatedUser", DisplayName = "Sudo Impersonating User", DependsOn = "", Type = CertificateStorePropertyDataType.String, DefaultValue = "" },
-                new CertificateStoreTypeProperty() { Name = "SeparatePrivateKeyFilePath", DisplayName = "Separate Private Key File Location", DependsOn = "", Type = CertificateStorePropertyDataType.String, DefaultValue = "" },
-                new CertificateStoreTypeProperty() { Name = "RemoveRootCertificate", DisplayName = "Remove Root Certificate from Chain", DependsOn = "", Type = CertificateStorePropertyDataType.Bool, DefaultValue = "False" },
-                new CertificateStoreTypeProperty() { Name = "IncludePortInSPN", DisplayName = "Include Port in SPN for WinRM", DependsOn = "", Type = CertificateStorePropertyDataType.Bool, DefaultValue = "False" },
-                new CertificateStoreTypeProperty() { Name = "FileTransferProtocol", DisplayName = "File Transfer Protocol to Use", DependsOn = "", Type = CertificateStorePropertyDataType.MultipleChoice, DefaultValue = "SCP,SFTP,Both" },
-                new CertificateStoreTypeProperty() { Name = "SSHPort", DisplayName = "SSH Port", DependsOn = "", Type = CertificateStorePropertyDataType.String, DefaultValue = "" },
-                new CertificateStoreTypeProperty() { Name = "UseShellCommands", DisplayName = "Use Shell Commands", DependsOn = "", Type = CertificateStorePropertyDataType.Bool, DefaultValue = "True" },
-                new CertificateStoreTypeProperty() { Name = "PostJobApplicationRestart", DisplayName = "Post Job Application Restart", DependsOn = "", Type = CertificateStorePropertyDataType.MultipleChoice, DefaultValue = "None" }
-            };
-
-            storeType.Properties = properties;
+            storeType.Properties = CustomFields;
             return storeType;
         }
 

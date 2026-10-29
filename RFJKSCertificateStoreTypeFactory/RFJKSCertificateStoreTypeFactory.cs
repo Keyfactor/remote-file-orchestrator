@@ -56,7 +56,7 @@ namespace RemoteFileTypeHandlers.RFJKS
         }
         """;
 
-        public static List<CertificateStoreTypeProperty> CustomFields = new List<CertificateStoreTypeProperty>()
+        public static List<CertificateStoreTypeProperty> CustomFields { get; } = new List<CertificateStoreTypeProperty>()
             {
                 new CertificateStoreTypeProperty()
                 {
