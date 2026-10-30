@@ -1,0 +1,10 @@
+﻿{
+  "extensions": {
+    "Keyfactor.Platform.ICertificateStoreTypeMigrationHandler.ICertificateStoreTypeConstructor": {
+      "Keyfactor.RFORA.StoreTypeConstructor": {
+        "assemblypath": "RFORACertificateStoreTypeFactory.dll",
+        "TypeFullName": "Keyfactor.RemoteFileTypeandlers.RFORA.RFORACertificateStoreTypeFactory"
+      }
+    }
+  }
+}

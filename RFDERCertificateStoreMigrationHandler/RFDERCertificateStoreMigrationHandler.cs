@@ -1,8 +1,8 @@
 ﻿using Keyfactor.Platform.ICertificateStoreTypeMigrationHandler;
 using Keyfactor.Platform.ICertificateStoreTypeMigrationHandler.Models;
-using RemoteFileTypeHandlers.BaseMigration;
+using Keyfactor.RemoteFileTypeandlers.BaseMigration;
 
-namespace RemoteFileTypeHandlers.RFDER
+namespace Keyfactor.RemoteFileTypeandlers.RFDER
 {
     public class RFDERCertificateStoreMigrationHandler : ICertificateStoreMigrationHandler
     {

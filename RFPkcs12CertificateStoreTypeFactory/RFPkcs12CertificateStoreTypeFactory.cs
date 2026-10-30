@@ -1,6 +1,6 @@
 ﻿using Keyfactor.Platform.ICertificateStoreTypeMigrationHandler;
 
-namespace RemoteFileTypeHandlers.RFPkcs12
+namespace Keyfactor.RemoteFileTypeandlers.RFPkcs12
 {
     public class RFPkcs12CertificateStoreTypeFactory : ICertificateStoreTypeFactory
     {

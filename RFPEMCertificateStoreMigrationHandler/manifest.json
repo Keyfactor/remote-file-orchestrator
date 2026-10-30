@@ -1,0 +1,10 @@
+﻿{
+  "extensions": {
+    "Keyfactor.Platform.ICertificateStoreTypeMigrationHandler.ICertificateStoreMigrationHandler": {
+      "Keyfactor.RFPEM.StoreMigrator": {
+        "assemblypath": "RFPEMCertificateStoreMigrationHandler.dll",
+        "TypeFullName": "Keyfactor.RemoteFileTypeandlers.RFPEM.RFPEMCertificateStoreMigrationHandler"
+      }
+    }
+  }
+}

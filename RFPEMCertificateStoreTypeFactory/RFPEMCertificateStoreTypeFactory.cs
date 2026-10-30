@@ -1,6 +1,6 @@
 ﻿using Keyfactor.Platform.ICertificateStoreTypeMigrationHandler;
 
-namespace RemoteFileTypeHandlers.RFPEM
+namespace Keyfactor.RemoteFileTypeandlers.RFPEM
 {
     public class RFPEMCertificateStoreTypeFactory : ICertificateStoreTypeFactory
     {

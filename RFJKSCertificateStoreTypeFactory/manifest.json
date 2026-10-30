@@ -1,0 +1,10 @@
+﻿{
+  "extensions": {
+    "Keyfactor.Platform.ICertificateStoreTypeMigrationHandler.ICertificateStoreTypeConstructor": {
+      "Keyfactor.RFJKS.StoreTypeConstructor": {
+        "assemblypath": "RFJKSCertificateStoreTypeFactory.dll",
+        "TypeFullName": "Keyfactor.RemoteFileTypeandlers.RFJKS.RFJKSCertificateStoreTypeFactory"
+      }
+    }
+  }
+}

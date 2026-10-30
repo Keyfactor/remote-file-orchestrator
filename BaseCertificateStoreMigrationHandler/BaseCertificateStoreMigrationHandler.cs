@@ -2,7 +2,7 @@
 using Keyfactor.Platform.ICertificateStoreTypeMigrationHandler.Models;
 using System.Text.Json;
 
-namespace RemoteFileTypeHandlers.BaseMigration
+namespace Keyfactor.RemoteFileTypeandlers.BaseMigration
 {
     public static class BaseCertificateStoreMigrationHandler
     {

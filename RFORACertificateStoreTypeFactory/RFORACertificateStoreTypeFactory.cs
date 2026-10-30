@@ -1,6 +1,6 @@
 ﻿using Keyfactor.Platform.ICertificateStoreTypeMigrationHandler;
 
-namespace RemoteFileTypeHandlers.RFORA
+namespace Keyfactor.RemoteFileTypeandlers.RFORA
 {
     public class RFORACertificateStoreTypeFactory : ICertificateStoreTypeFactory
     {
