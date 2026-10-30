@@ -1,0 +1,22 @@
+﻿{
+  "extensions": {
+    "Keyfactor.Orchestrators.Extensions.IOrchestratorJobExtension": {
+      "CertStores.RFKDB.Inventory": {
+        "assemblypath": "RFKDB.dll",
+        "TypeFullName": "Keyfactor.Extensions.Orchestrator.RemoteFile.KDB.Inventory"
+      },
+      "CertStores.RFKDB.Management": {
+        "assemblypath": "RFKDB.dll",
+        "TypeFullName": "Keyfactor.Extensions.Orchestrator.RemoteFile.KDB.Management"
+      },
+      "CertStores.RFKDB.Reenrollment": {
+        "assemblypath": "RFKDB.dll",
+        "TypeFullName": "Keyfactor.Extensions.Orchestrator.RemoteFile.KDB.Reenrollment"
+      },
+      "CertStores.RFKDB.Discovery": {
+        "assemblypath": "RemoteFile.dll",
+        "TypeFullName": "Keyfactor.Extensions.Orchestrator.RemoteFile.Discovery"
+      }
+    }
+  }
+}

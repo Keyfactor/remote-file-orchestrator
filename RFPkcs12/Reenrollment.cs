@@ -7,13 +7,13 @@
 
 using Keyfactor.Orchestrators.Extensions.Interfaces;
 
-namespace Keyfactor.Extensions.Orchestrator.RemoteFile.PKCS12
+namespace Keyfactor.Extensions.Orchestrator.RemoteFile.Pkcs12
 {
     public class Reenrollment : ReenrollmentBase
     {
         public override ICertificateStoreSerializer GetCertificateStoreSerializer(string storeProperties)
         {
-            return new PKCS12CertificateStoreSerializer(storeProperties);
+            return new Pkcs12CertificateStoreSerializer(storeProperties);
         }
 
         public Reenrollment(IPAMSecretResolver resolver)

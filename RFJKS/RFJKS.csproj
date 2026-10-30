@@ -18,18 +18,16 @@
     <None Update="manifest.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="config.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="ImplementedStoreTypes\PEM\" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\RemoteFile\RemoteFile.csproj" />
     <ProjectReference Include="..\RFPkcs12\RFPkcs12.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Adds assembly attribute [assembly: AssemblyMetadata("VersionedExtension", "")] -->
+    <AssemblyMetadata Include="VersionedExtension" />
   </ItemGroup>
 
 </Project>

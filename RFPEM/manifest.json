@@ -1,0 +1,22 @@
+﻿{
+  "extensions": {
+    "Keyfactor.Orchestrators.Extensions.IOrchestratorJobExtension": {
+      "CertStores.RFPEM.Inventory": {
+        "assemblypath": "RFPEM.dll",
+        "TypeFullName": "Keyfactor.Extensions.Orchestrator.RemoteFile.PEM.Inventory"
+      },
+      "CertStores.RFPEM.Management": {
+        "assemblypath": "RFPEM.dll",
+        "TypeFullName": "Keyfactor.Extensions.Orchestrator.RemoteFile.PEM.Management"
+      },
+      "CertStores.RFPEM.Reenrollment": {
+        "assemblypath": "RFPEM.dll",
+        "TypeFullName": "Keyfactor.Extensions.Orchestrator.RemoteFile.PEM.Reenrollment"
+      },
+      "CertStores.RFPEM.Discovery": {
+        "assemblypath": "RemoteFile.dll",
+        "TypeFullName": "Keyfactor.Extensions.Orchestrator.RemoteFile.Discovery"
+      }
+    }
+  }
+}

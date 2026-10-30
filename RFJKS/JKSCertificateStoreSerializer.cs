@@ -9,7 +9,7 @@ using System.IO;
 using System.Collections.Generic;
 using Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers;
 using Keyfactor.Extensions.Orchestrator.RemoteFile.Models;
-using Keyfactor.Extensions.Orchestrator.RemoteFile.PKCS12;
+using Keyfactor.Extensions.Orchestrator.RemoteFile.Pkcs12;
 
 using Keyfactor.Logging;
 
@@ -89,8 +89,8 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.JKS
             }
             else
             {
-                logger.LogDebug("Store is of type PKCS12");
-                PKCS12CertificateStoreSerializer pkcs12Serializer = new PKCS12CertificateStoreSerializer(string.Empty);
+                logger.LogDebug("Store is of type Pkcs12");
+                Pkcs12CertificateStoreSerializer pkcs12Serializer = new Pkcs12CertificateStoreSerializer(string.Empty);
                 pkcs12StoreNew = pkcs12Serializer.DeserializeRemoteCertificateStore(storeContents, storePath, storePassword, remoteHandler, isInventory);
             }
 
@@ -141,7 +141,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.JKS
             }
             else
             {
-                PKCS12CertificateStoreSerializer pkcs12Serializer = new PKCS12CertificateStoreSerializer(string.Empty);
+                Pkcs12CertificateStoreSerializer pkcs12Serializer = new Pkcs12CertificateStoreSerializer(string.Empty);
                 storeInfo = pkcs12Serializer.SerializeRemoteCertificateStore(certificateStore, storePath, storeFileName, storePassword, remoteHandler);
             }
 

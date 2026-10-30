@@ -90,7 +90,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile
             {
                 logger.LogDebug("Store path not valid");
                 string partialMessage = ServerType == ServerTypeEnum.Windows ? @"'\', ':', " : string.Empty;
-                throw new RemoteFileException($"PKCS12 store path {storeFileAndPath} is invalid.  Only alphanumeric, '.', '/', {partialMessage}'-', and '_' characters are allowed in the store path.");
+                throw new RemoteFileException($"Pkcs12 store path {storeFileAndPath} is invalid.  Only alphanumeric, '.', '/', {partialMessage}'-', and '_' characters are allowed in the store path.");
             }
             logger.LogDebug("Store path valid");
 

@@ -1,0 +1,22 @@
+﻿{
+  "extensions": {
+    "Keyfactor.Orchestrators.Extensions.IOrchestratorJobExtension": {
+      "CertStores.RFORA.Inventory": {
+        "assemblypath": "RFORA.dll",
+        "TypeFullName": "Keyfactor.Extensions.Orchestrator.RemoteFile.ORA.Inventory"
+      },
+      "CertStores.RFORA.Management": {
+        "assemblypath": "RFORA.dll",
+        "TypeFullName": "Keyfactor.Extensions.Orchestrator.RemoteFile.ORA.Management"
+      },
+      "CertStores.RFORA.Reenrollment": {
+        "assemblypath": "RFORA.dll",
+        "TypeFullName": "Keyfactor.Extensions.Orchestrator.RemoteFile.ORA.Reenrollment"
+      },
+      "CertStores.RFORA.Discovery": {
+        "assemblypath": "RemoteFile.dll",
+        "TypeFullName": "Keyfactor.Extensions.Orchestrator.RemoteFile.Discovery"
+      }
+    }
+  }
+}

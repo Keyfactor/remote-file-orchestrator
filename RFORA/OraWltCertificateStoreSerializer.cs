@@ -12,7 +12,7 @@ using System.IO;
 using Keyfactor.Logging;
 using Keyfactor.Extensions.Orchestrator.RemoteFile.RemoteHandlers;
 using Keyfactor.Extensions.Orchestrator.RemoteFile.Models;
-using Keyfactor.Extensions.Orchestrator.RemoteFile.PKCS12;
+using Keyfactor.Extensions.Orchestrator.RemoteFile.Pkcs12;
 
 using Microsoft.Extensions.Logging;
 
@@ -33,7 +33,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.OraWlt
         {
             logger.MethodEntry(LogLevel.Debug);
 
-            PKCS12CertificateStoreSerializer serializer = new PKCS12CertificateStoreSerializer(string.Empty);
+            Pkcs12CertificateStoreSerializer serializer = new Pkcs12CertificateStoreSerializer(string.Empty);
 
             //string tempStoreFile = Guid.NewGuid().ToString().Replace("-", string.Empty) + ".p12";
             //string tempStoreFileJKS = Guid.NewGuid().ToString().Replace("-", string.Empty) + ".jks";
@@ -77,7 +77,7 @@ namespace Keyfactor.Extensions.Orchestrator.RemoteFile.OraWlt
         {
             logger.MethodEntry(LogLevel.Debug);
 
-            PKCS12CertificateStoreSerializer serializer = new PKCS12CertificateStoreSerializer(string.Empty);
+            Pkcs12CertificateStoreSerializer serializer = new Pkcs12CertificateStoreSerializer(string.Empty);
 
             try
             {

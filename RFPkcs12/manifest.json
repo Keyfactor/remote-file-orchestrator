@@ -1,0 +1,22 @@
+﻿{
+  "extensions": {
+    "Keyfactor.Orchestrators.Extensions.IOrchestratorJobExtension": {
+      "CertStores.RFPkcs12.Inventory": {
+        "assemblypath": "RFPkcs12.dll",
+        "TypeFullName": "Keyfactor.Extensions.Orchestrator.RemoteFile.Pkcs12.Inventory"
+      },
+      "CertStores.RFPkcs12.Management": {
+        "assemblypath": "RFPkcs12.dll",
+        "TypeFullName": "Keyfactor.Extensions.Orchestrator.RemoteFile.Pkcs12.Management"
+      },
+      "CertStores.RFPkcs12.Reenrollment": {
+        "assemblypath": "RFPkcs12.dll",
+        "TypeFullName": "Keyfactor.Extensions.Orchestrator.RemoteFile.Pkcs12.Reenrollment"
+      },
+      "CertStores.RFPkcs12.Discovery": {
+        "assemblypath": "RemoteFile.dll",
+        "TypeFullName": "Keyfactor.Extensions.Orchestrator.RemoteFile.Discovery"
+      }
+    }
+  }
+}

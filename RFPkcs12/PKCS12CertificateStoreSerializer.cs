@@ -20,14 +20,14 @@ using System.Linq;
 using Keyfactor.PKI.Extensions;
 using Org.BouncyCastle.Asn1.Nist;
 
-namespace Keyfactor.Extensions.Orchestrator.RemoteFile.PKCS12
+namespace Keyfactor.Extensions.Orchestrator.RemoteFile.Pkcs12
 {
-    public class PKCS12CertificateStoreSerializer : ICertificateStoreSerializer
+    public class Pkcs12CertificateStoreSerializer : ICertificateStoreSerializer
     {
         private ILogger logger;
         private bool HasEmptyAliases { get; set; }
 
-        public PKCS12CertificateStoreSerializer(string storeProperties)
+        public Pkcs12CertificateStoreSerializer(string storeProperties)
         {
             logger = LogHandler.GetClassLogger(this.GetType());
         }
