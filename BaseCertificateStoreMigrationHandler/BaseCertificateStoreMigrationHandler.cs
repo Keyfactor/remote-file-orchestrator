@@ -64,7 +64,7 @@ namespace RemoteFileTypeHandlers.BaseMigration
                 results.Add(new MigrationResult()
                 {
                     CertificateStore = snapshot,
-                    Status = MigrationResultStatus.Success
+                    Status = MigrationResultStatus.NeedsInventory
                 });
             }
 
